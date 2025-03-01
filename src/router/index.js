@@ -35,6 +35,7 @@ const SparepartsPage = () => import('@/views/menu/SparepartsPage.vue')
 const SparepartsAddPage = () => import('@/views/menu/SparepartsAddPage.vue')
 const SparepartsDetailPage = () => import('@/views/menu/SparepartsDetailPage.vue')
 const EmployeePage = () => import('@/views/menu/EmployeePage.vue')
+const EmployeeAddPage = () => import('@/views/menu/EmployeeAddPage.vue')
 const EmployeeDetailPage = () => import('@/views/menu/EmployeeDetailPage.vue')
 
 const router = createRouter({
@@ -267,6 +268,14 @@ const router = createRouter({
               path: '',
               name: menuConfig.employee.name,
               component: EmployeePage
+            },
+            {
+              path: menuConfig.employee_add.path,
+              name: menuConfig.employee_add.name,
+              component: EmployeeAddPage,
+              meta: {
+                useBack: true
+              }
             },
             {
               path: menuConfig.employee_detail.path,

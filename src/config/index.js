@@ -115,6 +115,10 @@ const menuMapping = {
     name: 'Employee',
     path: '/employee'
   },
+  employee_add: {
+    name: 'Add Employee',
+    path: '/employee/add'
+  },
   employee_detail: {
     name: 'Detail Employee',
     path: '/employee/:id'
@@ -173,7 +177,7 @@ const api = {
   sparepart: '/api/sparepart',
   work_order: '/api/work-order',
   employee: '/api/employee',
-  purchase: '/api/purchase'
+  purchase: '/api/buy'
 }
 
 export {
