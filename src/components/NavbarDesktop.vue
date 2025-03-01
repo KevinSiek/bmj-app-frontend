@@ -2,7 +2,9 @@
   <div class="contain">
     <div class="webName">
       <!-- <img src="../assets/WebName.png" alt=""> -->
-      PT. BMJ
+      <router-link :to="menuMapping.menu.path" class="nav-link">
+        PT. BMJ
+      </router-link>
     </div>
     <div class="navs">
       <div v-for="(menu) in menus" class="menu-role nav-link" :key="menu.path">
