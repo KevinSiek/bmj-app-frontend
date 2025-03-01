@@ -22,7 +22,7 @@ const deleteEmployee = (id) => {
 }
 
 
-export {
+export default {
 	getAllEmployee,
   addEmployee,
   getEmployeeById,
