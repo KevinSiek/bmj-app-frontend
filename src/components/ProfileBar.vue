@@ -30,7 +30,7 @@ defineProps(["logout"])
 const authStore = useAuthStore()
 
 const userName = computed(() =>
-  authStore.user?.name?.split(' ')[0] || 'User'
+  authStore.user?.fullname?.split(' ')[0] || 'User'
 )
 
 </script>
