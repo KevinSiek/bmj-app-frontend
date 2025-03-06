@@ -42,6 +42,9 @@ $primary-color: black;
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .paginate {
+    height: 65vh;
+  }
 }
 @media only screen and (max-width: 769px) {
   .contain{
