@@ -37,9 +37,9 @@ const mainStore = useMainStore()
 
 const { isMobile } = storeToRefs(mainStore)
 
-const firstSection = computed(() => props.item?.customer || props.item?.name || props.item?.partName)
+const firstSection = computed(() => props.item?.customer || props.item?.name || props.item?.partName || props.item?.fullname)
 const secondSection = computed(() => props.item?.date || props.item?.partNumber)
-const thirdSection = computed(() => props.item?.type)
+const thirdSection = computed(() => props.item?.type || props.item?.role)
 
 const hasSecondSection = computed(() => (!!secondSection.value && !isMobile.value) || (!hasStatus.value && isMobile.value))
 const hasThirdSection = computed(() => !!thirdSection.value && !isMobile.value)
