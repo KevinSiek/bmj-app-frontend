@@ -3,7 +3,7 @@
     <form @submit.prevent="action()" class="row form">
       <div class="input form-group col-12">
         <label for="name">Full Name</label><br>
-        <input type="text" class="form-control mt-2" v-model="employee.name" placeholder="Full name">
+        <input type="text" class="form-control mt-2" v-model="employee.fullname" placeholder="Full name">
       </div>
       <div class="input form-group col-12">
         <label for="email">Email</label><br>
@@ -36,12 +36,14 @@
 </template>
 
 <script setup>
+import { menuMapping } from '@/config'
 import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
-import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-const route = useRoute()
+const router = useRouter()
 const modalStore = useModalStore()
 const employeeStore = useEmployeeStore()
 
@@ -55,8 +57,13 @@ const roles = [
   'Service'
 ]
 
-const addEmployee = () => {
-  return employeeStore.addEmployee()
+onMounted(() => {
+  employeeStore.$resetEmployee()
+})
+
+const addEmployee = async () => {
+  await employeeStore.addEmployee()
+  router.push(menuMapping.employee.path)
 }
 
 const updateEmployeeConfirmation = () => {

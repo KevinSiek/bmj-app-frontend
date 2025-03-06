@@ -8,13 +8,14 @@
         <button class="btn btn-primary" @click="goToAdd">Add Employee</button>
       </div>
     </div>
-    <div class="lower shadow">
+    <div class="lower paginate shadow">
       <SelectDate />
       <div class="list">
-        <ItemComponent v-for="(employee, index) in employees" :key="index" :number="index + 1" :item="employee"
-          @click="goToDetail(employee)" />
+        <ItemComponent v-for="(employee, index) in employees" :key="index" :number="index + paginationData.from"
+          :item="employee" @click="goToDetail(employee)" />
       </div>
     </div>
+    <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" :action="fetchEmployees" />
   </div>
 </template>
 
@@ -23,20 +24,27 @@ import { menuMapping as menuConfig } from '@/config'
 import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useEmployeeStore } from '@/stores/employee'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
+import Pagination from '@/components/pagination.vue'
 import { onMounted } from 'vue'
 
+const route = useRoute()
 const router = useRouter()
 const employeeStore = useEmployeeStore()
 
-const { employees } = storeToRefs(employeeStore)
+const { employees, paginationData } = storeToRefs(employeeStore)
 
-onMounted(() => {
-  employeeStore.getAllEmployee()
+onMounted(async () => {
+  fetchEmployees()
 })
+
+const fetchEmployees = async () => {
+  const { page, search } = route.query
+  employeeStore.getAllEmployee({ page, search })
+}
 
 const searchEmployee = () => {
   console.log('SEARCH EMPLOYEE')
