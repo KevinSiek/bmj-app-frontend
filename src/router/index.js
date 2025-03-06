@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { menuMapping as menuConfig } from '@/config'
+import { useAuthStore } from '@/stores/auth'
+import { getToken } from '@/utils/local-storage'
 
 const HomePage = () => import('@/views/HomePage.vue')
 const LoginPage = () => import('@/views/LoginPage.vue')
@@ -45,12 +47,18 @@ const router = createRouter({
     {
       path: '/login',
       name: 'Login',
-      component: LoginPage
+      component: LoginPage,
+      meta: {
+        authPage: true
+      },
     },
     {
       path: '/menu',
       name: 'Menu',
       component: MenuPage,
+      meta: {
+        requireAuth: true
+      },
       children: [
         {
           path: '',
@@ -88,6 +96,9 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: HomePage,
+      meta: {
+        requireAuth: true,
+      },
       children: [
         {
           path: menuConfig.profile.path,
@@ -328,6 +339,37 @@ const router = createRouter({
       ]
     }
   ],
+})
+
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+  const token = getToken('token-bmj')
+
+  if (token && !authStore.user) {
+    await authStore.getUser()
+  }
+
+  if(to.meta.requireAuth){
+    if(authStore.authenticated){
+      next()
+    }
+    else {
+      next('/login')
+    }
+  }
+  else{
+    if(to.meta.authPage){
+      if(!authStore.authenticated) {
+        next()
+      }
+      else{
+        next(from)
+      }
+    }
+    else{
+      next()
+    }
+  }
 })
 
 export default router
