@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const getDataViaApi = async (path, query, cb) => {
   return axios.get(path, { params: query })
-    .then((res) => res.data.data)
+    .then((res) => res.data)
     .catch((err) => {
       throw err.response
     })
@@ -10,7 +10,7 @@ const getDataViaApi = async (path, query, cb) => {
 
 const postDataViaApi = async (path, data, cb) => {
 	return axios.post(path, data)
-		.then((res) => res.data.data)
+		.then((res) => res.data)
     .catch((err) => {
       throw err.response
     })
@@ -18,7 +18,7 @@ const postDataViaApi = async (path, data, cb) => {
 
 const getDataByIdViaApi = async (path, cb) => {
 	return axios.get(path)
-		.then((res) => res.data.data)
+		.then((res) => res.data)
     .catch((err) => {
 			throw err.response
 		})
@@ -26,7 +26,7 @@ const getDataByIdViaApi = async (path, cb) => {
 
 const putDataViaApi = async (path, data, cb) => {
 	return axios.put(path, data)
-		.then((res) => res.data.data)
+		.then((res) => res.data)
     .catch((err) => {
       throw err.response
     })
@@ -34,7 +34,7 @@ const putDataViaApi = async (path, data, cb) => {
 
 const deleteDataViaApi = async (path, cb) => {
 	return axios.delete(path)
-		.then((res) => res.data.data)
+		.then((res) => res.data)
     .catch((err) => {
       throw err.response
     })
