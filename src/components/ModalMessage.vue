@@ -19,8 +19,12 @@
             </svg>
           </div>
           <div class="text-header">
-            <div v-if="modalStore.type == common.modal.success" class="text text-success">{{ modalStore.type }}</div>
-            <div v-else class="text text-danger">{{ modalStore.type }}</div>
+            <div v-if="modalStore.type == common.modal.success" class="text text-success mt-1">{{ modalStore.type }}
+            </div>
+            <div v-else class="text text-danger mt-1">{{ modalStore.type }}</div>
+          </div>
+          <div class="text">
+            {{ modalStore.messages }}
           </div>
           <div class="button-modal">
             <button type="button" class="btn btn-outline-dark mx-2 px-5 py-2"
@@ -61,13 +65,12 @@ $primary-color: black;
   }
 
   .text {
-    padding-top: 2%;
     text-align: center;
     font-size: 1.2vw;
   }
 
   .button-modal {
-    margin-top: 7%;
+    margin-top: 5%;
     padding-bottom: 4%;
     // .btn{
     //   background-color: $primary-color;
