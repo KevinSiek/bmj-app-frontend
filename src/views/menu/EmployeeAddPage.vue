@@ -42,6 +42,7 @@ import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { validatePassword } from '@/utils/form-util'
 
 const router = useRouter()
 const modalStore = useModalStore()
@@ -62,12 +63,17 @@ onMounted(() => {
 })
 
 const addEmployee = async () => {
-  await employeeStore.addEmployee()
-  router.push(menuMapping.employee.path)
+  if (validatePassword(employee.value.password, employee.value.password_confirmation)) {
+    await employeeStore.addEmployee()
+    router.push(menuMapping.employee.path)
+  }
+  else {
+    throw new Error('Confirm Password is not Match')
+  }
 }
 
 const updateEmployeeConfirmation = () => {
-  modalStore.openConfirmationModal('Are you sure to Add this Employee ?', addEmployee)
+  modalStore.openConfirmationModal('Are you sure to Add this Employee ?', 'Add Employee Success', addEmployee)
 }
 
 </script>
