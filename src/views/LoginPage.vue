@@ -8,6 +8,7 @@ import LoginDesktop from '@/components/LoginDesktop.vue'
 import { reactive, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useModalStore } from '@/stores/modal'
+import { common } from '@/config'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -27,7 +28,7 @@ const login = async () => {
     await auth.login(user)
     router.push('/menu')
   } catch (error) {
-    modalStore.openMessageModal('failed', 'Email or Password is incorrect')
+    modalStore.openMessageModal(common.modal.failed, 'Email or Password is incorrect')
   }
   isLoading.value = false
 }
