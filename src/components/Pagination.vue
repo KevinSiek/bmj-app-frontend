@@ -28,7 +28,10 @@ const route = useRoute()
 
 const props = defineProps({
   firstPage: Number,
-  lastPage: Number,
+  lastPage: {
+    type: Number,
+    default: 1
+  },
   action: Function
 })
 const currentPage = ref(1)
