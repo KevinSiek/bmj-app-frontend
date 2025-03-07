@@ -28,7 +28,7 @@ const editQuotation = async () => {
 }
 
 const editQuotationConfirmation = () => {
-  modalStore.openConfirmationModal('You want to Edit this Quotation', editQuotation)
+  modalStore.openConfirmationModal('You want to Edit this Quotation', 'Edit Quotation Success', editQuotation)
 }
 
 const back = () => {

@@ -173,7 +173,7 @@ const doPurchase = async () => {
 
 const doPurchaseConfirmation = () => {
   purchase.value.spareparts = purchase.value.spareparts.filter((item) => item.quantity > 0)
-  modalStore.openConfirmationModal(`You want to Purchase ${purchase.value.spareparts.length} Spareparts ?`, doPurchase)
+  modalStore.openConfirmationModal(`You want to Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Success', doPurchase)
 }
 
 </script>

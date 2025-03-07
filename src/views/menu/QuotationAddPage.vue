@@ -26,7 +26,7 @@ const addQuotation = () => {
 }
 
 const addQuotationConfirmation = () => {
-  modalStore.openConfirmationModal('Are you sure to Add this Quotation ?', addQuotation)
+  modalStore.openConfirmationModal('Are you sure to Add this Quotation ?', 'Add Quotation Success', addQuotation)
 }
 
 </script>

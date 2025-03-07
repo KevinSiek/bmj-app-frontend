@@ -272,7 +272,7 @@ const changePrice = () => {
 }
 
 const changePriceConfirmation = () => {
-  modalStore.openConfirmationModal(`You want to Request Change Price ?`, changePrice)
+  modalStore.openConfirmationModal(`You want to Request Change Price ?`, `Change Price Success ?`, changePrice)
 }
 
 const searchSparepart = () => {
