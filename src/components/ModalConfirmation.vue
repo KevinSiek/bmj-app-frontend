@@ -11,8 +11,8 @@
           <div class="text-header">
             Are you sure
           </div>
-          <div class="text">
-            {{ modalStore.messages }}
+          <div class="text mt-1">
+            {{ modalStore.confirmationMessages }}
           </div>
           <div class="button-modal">
             <button type="button" class="btn btn-danger mx-2 px-4 py-2" data-bs-dismiss="modal"
@@ -35,10 +35,10 @@ const modalStore = useModalStore()
 const event = async () => {
   try {
     await modalStore.action()
-    modalStore.openMessageModal(common.modal.success, 'Success')
+    modalStore.openMessageModal(common.modal.success, modalStore.messages)
   } catch (error) {
     console.log(error)
-    modalStore.openMessageModal(common.modal.failed, 'Failed')
+    modalStore.openMessageModal(common.modal.failed, error.message)
   }
 }
 </script>
