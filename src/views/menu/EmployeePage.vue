@@ -9,7 +9,6 @@
       </div>
     </div>
     <div class="lower paginate shadow">
-      <SelectDate />
       <div class="list">
         <ItemComponent v-for="(employee, index) in employees" :key="index" :number="index + paginationData.from"
           :item="employee" @click="goToDetail(employee)" />
@@ -21,7 +20,6 @@
 
 <script setup>
 import { menuMapping as menuConfig } from '@/config'
-import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -67,4 +65,8 @@ const goToDetail = async (employee) => {
 
 <style lang="scss" scoped>
 @use '@/assets/css/page.scss';
+
+.list {
+  margin: 3.5% 0%;
+}
 </style>
