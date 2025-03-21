@@ -21,8 +21,7 @@ const deletePurchase = (id) => {
   return httpApi.deleteDataViaApi(`${api.purchase}/${id}`)
 }
 
-
-export {
+export default {
 	getAllPurchase,
   addPurchase,
   getPurchaseById,

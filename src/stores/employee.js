@@ -40,16 +40,17 @@ export const useEmployeeStore = defineStore('employee', () => {
     employee.email = data.email
     employee.password = data.password
     employee.role = data.role
-  }
-
-  async function updateEmployee () {
-    const { data } = await employeeApi.updateEmployee(employee.id, employee)
-    await setEmployee(data)
+    employee.password_confirmation = ''
   }
 
   async function addEmployee () {
     await employeeApi.addEmployee(employee)
     $resetEmployee()
+  }
+
+  async function updateEmployee () {
+    const { data } = await employeeApi.updateEmployee(employee.id, employee)
+    await setEmployee(data)
   }
 
   async function deleteEmployee (id) {

@@ -20,7 +20,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { updateQuery } from '@/utils/route-util'
+import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
@@ -31,8 +32,7 @@ const props = defineProps({
   lastPage: {
     type: Number,
     default: 1
-  },
-  action: Function
+  }
 })
 const currentPage = ref(1)
 const maxVisiblePages = 3
@@ -48,37 +48,6 @@ const visiblePage = computed(() => {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 })
 
-watch(() => route.query, (before, after) => {
-  if (!route.query.page) {
-    return
-  }
-  if (JSON.stringify(before) !== JSON.stringify(after)) {
-    props.action()
-  }
-})
-
-onMounted(async () => {
-  // Handle first load
-  if (!route.query.page) {
-    updateQuery({ page: 1, search: route.query.search })
-    return
-  }
-})
-
-const updateQuery = (params, replace = true) => {
-  const newRoute = {
-    query: {
-      ...route.query,
-      ...params
-    }
-  }
-
-  if (replace) {
-    router.replace(newRoute)
-    return
-  }
-  router.push(route)
-}
 const onClickPrevious = () => {
   if (currentPage.value > 1) currentPage.value--
 }
@@ -87,7 +56,7 @@ const onClickNext = () => {
 }
 const onClickPage = (page) => {
   currentPage.value = page
-  updateQuery({ page: page })
+  updateQuery(router, route, { page })
 }
 </script>
 

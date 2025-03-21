@@ -1,14 +1,14 @@
 <template>
   <div class="date m-1">
     <div class="month m-3">
-      <select class="form-select" v-model="selectedMonth">
+      <select class="form-select" v-model="selectedMonth" @change="selectMonth()">
         <option v-for="(month, index) in months" :key="index" :value="index">
           {{ month }}
         </option>
       </select>
     </div>
     <div class="year m-3">
-      <select class="form-select" v-model="selectedYear">
+      <select class="form-select" v-model="selectedYear" @change="selectYear()">
         <option v-for="n in yearRange" :key="n" :value="n">
           {{ n }}
         </option>
@@ -18,7 +18,12 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { updateQuery } from '@/utils/route-util'
+import { computed, ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
 
 const date = new Date()
 const months = [
@@ -26,8 +31,6 @@ const months = [
   'May', 'June', 'July', 'August',
   'September', 'October', 'November', 'December'
 ]
-
-const emit = defineEmits(['dateChanged'])
 
 const currentYear = ref(date.getFullYear())
 const selectedMonth = ref(date.getMonth())
@@ -38,9 +41,14 @@ const yearRange = computed(() => {
   return Array.from({ length: endYear.value - startYear + 1 }, (_, i) => startYear + i);
 })
 
-watch([selectedMonth, selectedYear], ([newMonth, newYear]) => {
-  emit('dateChanged', { newMonth, newYear })
-})
+const selectMonth = () => {
+  console.log('Select month', months[selectedMonth.value])
+  updateQuery(router, route, { month: months[selectedMonth.value].toLowerCase() })
+}
+const selectYear = () => {
+  console.log('Select year', selectedYear.value)
+  updateQuery(router, route, { year: selectedYear.value })
+}
 </script>
 
 <style lang="scss" scoped>

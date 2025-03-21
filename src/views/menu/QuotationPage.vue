@@ -13,13 +13,14 @@
         <button class="btn btn-primary" @click="goToAdd">Add Quotation</button>
       </div>
     </div>
-    <div class="lower shadow">
-      <SelectDate @dateChanged="refetchData" />
+    <div class="lower paginate shadow">
+      <SelectDate />
       <div class="list">
         <ItemComponent v-for="(quotation, index) in quotations" :key="index" :number="index + 1" :item="quotation"
           @click="goToDetail(quotation)" />
       </div>
     </div>
+    <!-- <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" /> -->
   </div>
 </template>
 
@@ -28,18 +29,41 @@ import { menuMapping as menuConfig } from '@/config'
 import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
+import { onMounted, watch } from 'vue'
+import { updateQuery } from '@/utils/route-util'
 
 const router = useRouter()
+const route = useRoute()
 const quotationStore = useQuotationStore()
 
 const { quotations } = storeToRefs(quotationStore)
 
-const refetchData = ({ newMonth, newYear }) => {
-  quotationStore.getQuotationByDate(newMonth, newYear)
+onMounted(async () => {
+  // Handle first load
+  if (!route.query.page) {
+    updateQuery(router, route, { ...route.query, page: 1 })
+    return
+  }
+  fetchQuotation()
+})
+
+watch(() => route.query, (before, after) => {
+  if (!route.query.page) {
+    return
+  }
+  if (JSON.stringify(before) !== JSON.stringify(after)) {
+    fetchQuotation()
+    console.log("REFETCH QUOTATION")
+  }
+})
+
+const fetchQuotation = async () => {
+  const { page, search, month, year } = route.query
+  quotationStore.getAllQuotation({ page, search, month, year })
 }
 
 const searchQuotation = () => {

@@ -77,11 +77,7 @@
       </div>
     </div>
     <div class="sparepart my-2">
-      <div class="title">
-        Sparepart
-        <button type="button" class="btn btn-request" @click="changePriceConfirmation">Request Change
-          Price</button>
-      </div>
+      <div class="title">Sparepart</div>
       <div v-if="isTypeEdit" class="table-placeholder">
         <table class="table table-hover">
           <thead>
@@ -198,8 +194,7 @@
                     @input="selectItem(quotationIndex, quotation)">
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Unit Price" v-model="quotation.unitPrice"
-                    :disabled="!requestPriceChanges">
+                  <input type="number" class="form-control mt-2" placeholder="Unit Price" v-model="quotation.unitPrice">
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price"
@@ -232,7 +227,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { common } from '@/config'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
@@ -242,7 +237,7 @@ import { useModalStore } from '@/stores/modal'
 const quotationStore = useQuotationStore()
 const modalStore = useModalStore()
 
-const { quotation, requestPriceChanges } = storeToRefs(quotationStore)
+const { quotation } = storeToRefs(quotationStore)
 
 const props = defineProps({
   type: String,
@@ -266,14 +261,6 @@ const searchedSparepart = ref([{
 ])
 
 const totalQuotation = computed(() => quotation.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
-
-const changePrice = () => {
-  requestPriceChanges.value = true
-}
-
-const changePriceConfirmation = () => {
-  modalStore.openConfirmationModal(`You want to Request Change Price ?`, `Change Price Success ?`, changePrice)
-}
 
 const searchSparepart = () => {
   console.log('SEARCH SPAREPART')

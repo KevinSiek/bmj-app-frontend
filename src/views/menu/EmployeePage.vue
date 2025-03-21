@@ -14,7 +14,7 @@
           :item="employee" @click="goToDetail(employee)" />
       </div>
     </div>
-    <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" :action="fetchEmployees" />
+    <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
   </div>
 </template>
 
@@ -27,7 +27,8 @@ import { useEmployeeStore } from '@/stores/employee'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import Pagination from '@/components/pagination.vue'
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
+import { updateQuery } from '@/utils/route-util'
 
 const route = useRoute()
 const router = useRouter()
@@ -36,7 +37,21 @@ const employeeStore = useEmployeeStore()
 const { employees, paginationData } = storeToRefs(employeeStore)
 
 onMounted(async () => {
+  // Handle first load
+  if (!route.query.page) {
+    updateQuery(router, route, { ...route.query, page: 1 })
+    return
+  }
   fetchEmployees()
+})
+
+watch(() => route.query, (before, after) => {
+  if (!route.query.page) {
+    return
+  }
+  if (JSON.stringify(before) !== JSON.stringify(after)) {
+    fetchEmployees()
+  }
 })
 
 const fetchEmployees = async () => {

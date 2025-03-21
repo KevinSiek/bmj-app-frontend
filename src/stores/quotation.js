@@ -1,9 +1,10 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { getAllQuotations, getAllReviewQuotations, addQuotation as addQuotationApi, getQuotationyId } from '@/api/quotation'
+import quotationApi from '@/api/quotation'
 
 export const useQuotationStore = defineStore('quotation', () => {
   const quotation = reactive({
+    id: '',
     customer: {
       companyName: '',
       address: '',
@@ -147,6 +148,8 @@ export const useQuotationStore = defineStore('quotation', () => {
       status: 'Ready'
     }
   ])
+  const paginationData = ref({})
+
   function $resetQuotation () {
     quotation.customer.companyName = ''
     quotation.customer.address = ''
@@ -164,15 +167,33 @@ export const useQuotationStore = defineStore('quotation', () => {
     quotation.notes = ''
     quotation.spareparts = []
   }
-  const requestPriceChanges = ref(false)
 
-  async function getAllQuotationByDate (month, year) {
-    console.log('FETCH QUOTATION BY DATE', month, year)
-    // const response = await getAllQuotations({ month, year })
-    // quotations.value = response.body
+  function setQuotation (data) {
+    quotation.customer.companyName = data.customer.companyName
+    quotation.customer.address = data.customer.address
+    quotation.customer.city = data.customer.city
+    quotation.customer.province = data.customer.province
+    quotation.customer.office = data.customer.office
+    quotation.customer.urban = data.customer.urban
+    quotation.customer.subdistrict = data.customer.subdistrict
+    quotation.customer.postalCode = data.customer.postalCode
+    quotation.project.noQuotation = data.project.noQuotation
+    quotation.project.type = data.project.type
+    quotation.price.subtotal = data.price.subtotal
+    quotation.price.ppn = data.price.ppn
+    quotation.price.grandTotal = data.price.grandTotal
+    quotation.notes = data.notes
+    quotation.spareparts = data.spareparts
   }
 
-  async function getAllQuotationReviewByDate (month, year) {
+  async function getAllQuotation (param) {
+    console.log('FETCH QUOTATION BY DATE', param)
+    const response = await quotationApi.getAllQuotations(param)
+    console.log("RES", response)
+    quotations.value = response
+  }
+
+  async function getAllQuotationReview (month, year) {
     console.log('FETCH REVIEW QUOTATION BY DATE', month, year)
     // const response = await getAllReviewQuotations({ month, year })
     // quotationReviews.value = response.body
@@ -185,15 +206,21 @@ export const useQuotationStore = defineStore('quotation', () => {
     // const response = await addQuotationApi(quotation)
   }
 
-  async function editQuotation () {
-    console.log('EDIT QUOTATION')
-    // const response = await addQuotationApi(quotation)
-    // getQuotationyId(quotation.id)
+  async function updateQuotation () {
+    console.log('UPDATE QUOTATION')
+    // const { data } = await quotationApi.updateQuotation(quotation.id, quotation)
+    // setQuotation(data)
   }
 
-  async function getQuotation () {
-    console.log('GET QUOTATION')
-    // const response = await addQuotationApi(quotation)
+  async function getQuotation (id) {
+    const response = await quotationApi.getQuotationyId(id)
+    console.log('GET QUOTATION', response)
+    // const { data } = await quotationApi.getQuotationyId(id)
+    setQuotation(response)
+  }
+
+  async function processQuotation(id) {
+    // const response = await quotationApi.processQuotation(id)
   }
 
   return {
@@ -201,12 +228,14 @@ export const useQuotationStore = defineStore('quotation', () => {
     quotations,
     quotationReview,
     quotationReviews,
-    requestPriceChanges,
+    paginationData,
     $resetQuotation,
-    getAllQuotationByDate,
-    getAllQuotationReviewByDate,
+    setQuotation,
+    getAllQuotation,
+    getAllQuotationReview,
     addQuotation,
-    editQuotation,
-    getQuotation
+    updateQuotation,
+    getQuotation,
+    processQuotation
   }
 })

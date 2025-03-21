@@ -7,7 +7,7 @@
       <button type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process">Process</button>
+      <button type="button" class="btn btn-process" @click="process">Process</button>
     </div>
   </div>
 </template>
@@ -15,12 +15,23 @@
 <script setup>
 import { menuMapping as menuConfig, common } from '@/config'
 import QuotationForm from '@/components/quotation/QuotationForm.vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import { useQuotationStore } from '@/stores/quotation'
 
+const route = useRoute()
 const router = useRouter()
+const quotationStore = useQuotationStore()
+
+onMounted(() => {
+  quotationStore.getQuotation(route.params.id)
+})
 
 const goToEdit = () => {
   router.push(menuConfig.quotation_edit.path)
+}
+const process = () => {
+  quotationStore.processQuotation(route.params.id)
 }
 </script>
 
