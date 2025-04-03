@@ -49,7 +49,7 @@ const menuMapping = {
   },
   quotation_detail: {
     name: 'Detail Quotation',
-    path: ':id'
+    path: '/quotation/:id'
   },
   quotation_review_detail: {
     name: 'Detail Quotation Review',
