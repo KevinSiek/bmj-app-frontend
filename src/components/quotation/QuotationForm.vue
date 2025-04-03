@@ -164,41 +164,42 @@
           </div>
         </div>
         <div class="form-group col-12 mx-3">
-          <div v-for="(quotation, quotationIndex) in quotation.spareparts" :key="quotationIndex" class="list row">
+          <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
                 <div class="col-4">
-                  <input type="text" class="form-control mt-2" v-model="quotation.partName" placeholder="Part Name"
-                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch"
-                    @keyup="handleInputSearch">
+                  <input type="text" class="form-control mt-2" v-model="sparepart.partName" placeholder="Part Name"
+                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.partName)"
+                    @keyup="handleInputSearch(sparepart.partName)">
                   <ul class="dropdown-menu">
-                    <li v-for="(sparepart, index) in searchedSparepart" :key="index" class="dropdown-item"
-                      @click="selectItem(quotationIndex, quotation, sparepart)">
-                      {{ sparepart.partName }}
+                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
+                      @click="selectItem(sparepartIndex, sparepart, item)">
+                      {{ item.name }}
                     </li>
                   </ul>
                 </div>
                 <div class="col-2">
-                  <input type="text" class="form-control mt-2" v-model="quotation.partNumber" placeholder="Part Number"
-                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch"
-                    @keyup="handleInputSearch">
+                  <input type="text" class="form-control mt-2" v-model="sparepart.partNumber" placeholder="Part Number"
+                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.partNumber)"
+                    @keyup="handleInputSearch(sparepart.partNumber)">
                   <ul class="dropdown-menu">
-                    <li v-for="(sparepart, index) in searchedSparepart" :key="index" class="dropdown-item"
-                      @click="selectItem(quotationIndex, quotation, sparepart)">
-                      {{ sparepart.partNumber }}
+                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
+                      @click="selectItem(sparepartIndex, sparepart, item)">
+                      {{ item.no_sparepart }}
                     </li>
                   </ul>
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="quotation.quantity"
-                    @input="selectItem(quotationIndex, quotation)">
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
+                    @input="selectItem(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Unit Price" v-model="quotation.unitPrice">
+                  <input type="number" class="form-control mt-2" placeholder="Unit Price" v-model="sparepart.unitPrice"
+                    @change="selectItem(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price"
-                    v-model="quotation.totalPrice" disabled>
+                    v-model="sparepart.totalPrice" disabled>
                 </div>
               </div>
             </div>
@@ -214,6 +215,17 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="price my-2">
+      <div class="subtotal">
+        Subtotal: {{ quotation.price.subtotal }}
+      </div>
+      <div class="ppn">
+        PPN: {{ quotation.price.ppn }}
+      </div>
+      <div class="grand-total">
+        Grand Total: {{ quotation.price.grandTotal }}
       </div>
     </div>
     <div class="notes my-2">
@@ -237,7 +249,7 @@ import { useModalStore } from '@/stores/modal'
 const quotationStore = useQuotationStore()
 const modalStore = useModalStore()
 
-const { quotation } = storeToRefs(quotationStore)
+const { quotation, searchedSpareparts } = storeToRefs(quotationStore)
 
 const props = defineProps({
   type: String,
@@ -245,38 +257,44 @@ const props = defineProps({
 })
 
 const isTypeEdit = props.type == common.form.type.view
-
 const disabled = computed(() => isTypeEdit ? true : false)
 
-const searchedSparepart = ref([{
-  partName: 'NEW BEARING SET, CON ROD',
-  partNumber: '30L19-342289',
-  unitPrice: 500000
-},
-{
-  partName: 'BEARING SET, CON ROD',
-  partNumber: '30L19-342289',
-  unitPrice: 494000
-},
-])
+// const searchedSparepart = ref([{
+//   partName: 'NEW BEARING SET, CON ROD',
+//   partNumber: '30L19-342289',
+//   unitPrice: 500000
+// },
+// {
+//   partName: 'BEARING SET, CON ROD',
+//   partNumber: '30L19-342289',
+//   unitPrice: 494000
+// },
+// ])
 
-const totalQuotation = computed(() => quotation.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
+const subtotal = computed(() => quotation.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
 
-const searchSparepart = () => {
-  console.log('SEARCH SPAREPART')
+const searchSparepart = (search) => {
+  if (search !== '') quotationStore.getSpareparts({ page: 1, search })
 }
 
-const handleInputSearch = () => {
-  debounce(searchSparepart, 500, 'search-quotation-sparepart')
+const handleInputSearch = (search) => {
+  debounce(() => searchSparepart(search), 500, 'search-quotation-sparepart')
 }
 
 const selectItem = (index, purchaseData, sparepartData) => {
   const data = {
     ...purchaseData,
-    ...sparepartData
+    partNumber: sparepartData?.no_sparepart || purchaseData.partNumber,
+    partName: sparepartData?.name || purchaseData.partName,
+    unitPrice: sparepartData?.unit_price_sell || purchaseData.unitPrice
   }
   data.totalPrice = data.quantity * data.unitPrice
+
   quotation.value.spareparts.splice(index, 1, data)
+  quotation.value.price.subtotal = subtotal.value
+  const ppn = subtotal.value * 11 / 100
+  quotation.value.price.ppn = ppn
+  quotation.value.price.grandTotal = subtotal.value + ppn
 }
 
 const addSparepart = () => {
@@ -350,5 +368,27 @@ $secondary-color: rgb(98, 98, 98);
 
 .dropdown-menu {
   text-align: center;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-right: -10%;
+}
+
+.dropdown-menu::-webkit-scrollbar {
+  margin-right: -10px;
+  width: 10px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: grey;
+  border-radius: 10px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #696969;
 }
 </style>
