@@ -2,7 +2,7 @@
   <div class="contain">
     <div class="upper">
       <div class="left">
-        <SearchBar @updated="handleUpdateSearch" />
+        <SearchBar @searched="handleUpdateSearch" />
       </div>
       <div class="btn-add">
         <button class="btn btn-primary" @click="goToAdd">Add Purchase</button>
