@@ -8,10 +8,13 @@
 </template>
 
 <script setup>
-const emit = defineEmits(['updated'])
+import { ref } from 'vue'
 
+const emit = defineEmits(['searched'])
+
+const search = ref('')
 const handleInputSearch = () => {
-  emit('updated')
+  emit('searched', search.value)
 }
 </script>
 
