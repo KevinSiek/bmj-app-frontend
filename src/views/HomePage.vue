@@ -55,7 +55,7 @@ const goBack = () => {
 
 const logout = async () => {
   await authStore.logout()
-  router.replace({ name: 'login' })
+  router.replace({ name: 'Login' })
 }
 </script>
 
