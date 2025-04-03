@@ -22,7 +22,7 @@ const deleteInvoice = (id) => {
 }
 
 
-export {
+export default {
 	getAllInvoice,
   addInvoice,
   getInvoiceById,

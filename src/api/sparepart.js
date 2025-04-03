@@ -1,7 +1,7 @@
 import httpApi from '@/utils/http-api'
 import { api } from '@/config'
 
-const getAllSparepart = async (param) => {
+export const getAllSparepart = async (param) => {
   return httpApi.getDataViaApi(api.sparepart, param)
 }
 
@@ -26,7 +26,7 @@ const addSparepartInBulk = (spareparts) => {
 }
 
 
-export {
+export default {
 	getAllSparepart,
   addSparepart,
   getSparepartById,

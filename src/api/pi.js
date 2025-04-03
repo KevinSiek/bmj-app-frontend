@@ -22,7 +22,7 @@ const deleteProformaInvoice = (id) => {
 }
 
 
-export {
+export default {
 	getAllProformaInvoice,
   addProformaInvoice,
   getProformaInvoiceById,

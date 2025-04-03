@@ -22,7 +22,7 @@ const deleteBackOrder = (id) => {
 }
 
 
-export {
+export default {
 	getAllBackOrder,
   addBackOrder,
   getBackOrderById,

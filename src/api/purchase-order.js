@@ -22,7 +22,7 @@ const deletePurchaseOrder = (id) => {
 }
 
 
-export {
+export default {
 	getAllPurchaseOrder,
   addPurchaseOrder,
   getPurchaseOrderById,

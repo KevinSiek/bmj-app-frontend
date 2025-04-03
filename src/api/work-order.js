@@ -22,7 +22,7 @@ const deleteWorkOrder = (id) => {
 }
 
 
-export {
+export default {
 	getAllWorkOrder,
   addWorkOrder,
   getWorkOrderById,
