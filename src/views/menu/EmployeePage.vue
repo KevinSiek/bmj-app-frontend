@@ -2,7 +2,7 @@
   <div class="contain">
     <div class="upper">
       <div class="left">
-        <SearchBar @updated="handleUpdateSearch" />
+        <SearchBar @searched="handleUpdateSearch" />
       </div>
       <div class="btn-add">
         <button class="btn btn-primary" @click="goToAdd">Add Employee</button>
@@ -11,7 +11,7 @@
     <div class="lower paginate shadow">
       <div class="list">
         <ItemComponent v-for="(employee, index) in employees" :key="index" :number="index + paginationData.from"
-          :item="employee" @click="goToDetail(employee)" />
+          :item="employee" first-section-key="fullname" @click="goToDetail(employee)" />
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -22,11 +22,11 @@
 import { menuMapping as menuConfig } from '@/config'
 import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
+import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useEmployeeStore } from '@/stores/employee'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import Pagination from '@/components/pagination.vue'
 import { onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 

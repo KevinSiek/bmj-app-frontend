@@ -2,7 +2,7 @@
   <div class="contain">
     <div class="upper">
       <div class="left">
-        <SearchBar @updated="handleUpdateSearch" />
+        <SearchBar @searched="handleUpdateSearch" />
         <div class="review">
           <router-link :to="menuConfig.quotation_review.path" class="nav-link">
             <button class="btn btn-primary">Review</button>
@@ -16,11 +16,11 @@
     <div class="lower paginate shadow">
       <SelectDate />
       <div class="list">
-        <ItemComponent v-for="(quotation, index) in quotations" :key="index" :number="index + 1" :item="quotation"
-          @click="goToDetail(quotation)" />
+        <ItemComponent v-for="(quotation, index) in quotations" :key="index" :number="index + paginationData.from"
+          :item="quotation" first-section-key="no_quotation" @click="goToDetail(quotation)" />
       </div>
     </div>
-    <!-- <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" /> -->
+    <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
   </div>
 </template>
 
@@ -29,6 +29,7 @@ import { menuMapping as menuConfig } from '@/config'
 import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
+import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
@@ -40,7 +41,7 @@ const router = useRouter()
 const route = useRoute()
 const quotationStore = useQuotationStore()
 
-const { quotations } = storeToRefs(quotationStore)
+const { quotations, paginationData } = storeToRefs(quotationStore)
 
 onMounted(async () => {
   // Handle first load
@@ -66,18 +67,20 @@ const fetchQuotation = async () => {
   quotationStore.getAllQuotation({ page, search, month, year })
 }
 
-const searchQuotation = () => {
-  console.log('SEARCH QUOTATION')
+const searchQuotation = (search) => {
+  console.log('SEARCH QUOTATION', search)
+  updateQuery(router, route, { ...route.query, search })
 }
 
-const handleUpdateSearch = () => {
-  debounce(searchQuotation, 1000, 'search-quotation')
+const handleUpdateSearch = (search) => {
+  debounce(() => searchQuotation(search), 1000, 'search-quotation')
 }
 
 const goToDetail = (quotation) => {
-  router.push(`${menuConfig.quotation.path}/${quotation.id}`)
+  router.push(`${menuConfig.quotation.path}/${quotation.slug}`)
 }
 const goToAdd = () => {
+  quotationStore.$resetQuotation()
   router.push(menuConfig.quotation_add.path)
 }
 </script>
