@@ -1,3 +1,4 @@
+
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import purchaseApi from '@/api/purchase'
@@ -9,7 +10,15 @@ export const usePurchaseStore = defineStore('purchase', () => {
     notes: '',
     status: '',
     totalPurchase: 0,
-    spareparts: []
+    spareparts: [
+      {
+        partName: '',
+        partNumber: '',
+        quantity: 0,
+        unitPrice: 0,
+        totalPrice: 0,
+      }
+    ]
   })
   const purchases = ref([])
   const paginationData = ref({})
