@@ -28,6 +28,9 @@ import { common } from '@/config'
 
 const props = defineProps({
   number: Number,
+  firstSectionKey: String,
+  secondSectionKey: String,
+  thirdSectionKey: String,
   item: Object,
   bigRow: Boolean,
   color: String
@@ -37,8 +40,8 @@ const mainStore = useMainStore()
 
 const { isMobile } = storeToRefs(mainStore)
 
-const firstSection = computed(() => props.item?.customer || props.item?.name || props.item?.partName || props.item?.fullname)
-const secondSection = computed(() => props.item?.date || props.item?.partNumber)
+const firstSection = computed(() => props.item[props.firstSectionKey])
+const secondSection = computed(() => props.item[props.secondSectionKey] || props.item?.date || props.item?.partNumber)
 const thirdSection = computed(() => props.item?.type || props.item?.role)
 
 const hasSecondSection = computed(() => (!!secondSection.value && !isMobile.value) || (!hasStatus.value && isMobile.value))
