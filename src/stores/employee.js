@@ -15,6 +15,8 @@ export const useEmployeeStore = defineStore('employee', () => {
   const paginationData = ref({})
 
   function $resetEmployee () {
+    // Reset basic properties
+    employee.id = ''
     employee.fullname = ''
     employee.email = ''
     employee.role = ''
@@ -22,25 +24,26 @@ export const useEmployeeStore = defineStore('employee', () => {
     employee.password_confirmation = ''
   }
 
+  function setEmployee (data) {
+    // Set basic properties with fallback values
+    employee.id = data.id || ''
+    employee.fullname = data.fullname || ''
+    employee.email = data.email || ''
+    employee.role = data.role || ''
+    employee.password = data.password || ''
+    employee.password_confirmation = ''
+  }
+
   async function getAllEmployee (param) {
-    const response = await employeeApi.getAllEmployee(param)
-    employees.value = response.data.data
-    paginationData.value = response.data
-    console.log('FETCH EMPLOYEE', response)
+    const { data } = await employeeApi.getAllEmployee(param)
+    employees.value = data.data
+    paginationData.value = data
+    console.log('FETCH EMPLOYEE', data)
   }
 
   async function getEmployee (id) {
     const { data } = await employeeApi.getEmployeeById(id)
     setEmployee(data)
-  }
-
-  async function setEmployee (data) {
-    employee.id = data.id
-    employee.fullname = data.fullname
-    employee.email = data.email
-    employee.password = data.password
-    employee.role = data.role
-    employee.password_confirmation = ''
   }
 
   async function addEmployee () {
@@ -50,7 +53,7 @@ export const useEmployeeStore = defineStore('employee', () => {
 
   async function updateEmployee () {
     const { data } = await employeeApi.updateEmployee(employee.id, employee)
-    await setEmployee(data)
+    setEmployee(data)
   }
 
   async function deleteEmployee (id) {

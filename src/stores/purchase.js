@@ -1,67 +1,83 @@
-
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { getAllPurchase } from '@/api/purchase'
+import purchaseApi from '@/api/purchase'
 
 export const usePurchaseStore = defineStore('purchase', () => {
   const purchase = reactive({
-    notes: 'PURCHASE ITEM FROM SELLER KM',
-    status: 'REVIEW',
-    totalPurchase: 10000000,
-    spareparts: [
-      {
-        partName: 'BEARING SET, CON ROD',
-        partNumber: '30L19-342289',
-        quantity: 3,
-        unitPrice: 494000,
-        totalPrice: 1482000
-      },
-      {
-        partName: 'BEARING SET, CON ROD',
-        partNumber: '30L19-342289',
-        quantity: 3,
-        unitPrice: 494000,
-        totalPrice: 1482000
-      },
-    ]
+    id: '',
+    no_buy: '',
+    notes: '',
+    status: '',
+    totalPurchase: 0,
+    spareparts: []
   })
-  const purchases = ref([
-    {
-      id: '1',
-      name: 'BMJ-PU/01/V/2024',
-      date: '21  Mei 2020',
-      status: 'On Review'
-    },
-    {
-      id: '2',
-      name: 'BMJ-PU/01/V/2024',
-      date: '21  Mei 2020',
-      status: 'Approved'
-    },
-    {
-      id: '3',
-      name: 'BMJ-PU/01/V/2024',
-      date: '21  Mei 2020',
-      status: 'Done'
-    }
-  ])
+  const purchases = ref([])
+  const paginationData = ref({})
 
   function $resetPurchase () {
-    purchase.status = ''
+    // Reset basic properties
+    purchase.id = ''
+    purchase.no_buy = ''
     purchase.notes = ''
+    purchase.status = ''
+    purchase.totalPurchase = 0
+
+    // Reset spareparts array
     purchase.spareparts = []
   }
 
-  async function getAllPurchaseByDate () {
-    console.log('FETCH PURCHASE')
-    // const response = await getAllPurchase()
-    // purchases.value = response.body
+  function setPurchase (data) {
+    // Set basic properties with fallback values
+    purchase.id = data.id || ''
+    purchase.no_buy = data.no_buy || ''
+    purchase.notes = data.notes || ''
+    purchase.status = data.status || ''
+    purchase.totalPurchase = data.totalPurchase || 0
+
+    // Set spareparts array with proper mapping
+    purchase.spareparts = (data.spareparts || []).map(sparepart => ({
+      partName: sparepart.partName || '',
+      partNumber: sparepart.partNumber || '',
+      quantity: sparepart.quantity || 0,
+      unitPrice: sparepart.unitPrice || 0,
+      totalPrice: sparepart.totalPrice || 0
+    }))
+  }
+
+  async function getAllPurchase (param) {
+    console.log('FETCH PURCHASE', param)
+    const { data } = await purchaseApi.getAllPurchase(param)
+    purchases.value = data.data
+    paginationData.value = data
+    console.log('PURCHASE', purchases.value)
   }
 
   async function addPurchase () {
     console.log('ADD PURCHASES', purchase)
+    await purchaseApi.addPurchase(purchase)
     $resetPurchase()
   }
 
-  return { purchase, purchases, $resetPurchase, getAllPurchaseByDate, addPurchase }
+  async function updatePurchase () {
+    console.log('UPDATE PURCHASE')
+    const { data } = await purchaseApi.updatePurchase(purchase.id)
+    setPurchase(data)
+  }
+
+  async function getPurchase (id) {
+    const { data } = await purchaseApi.getPurchaseById(id)
+    console.log('GET PURCHASE', data)
+    setPurchase(data)
+  }
+
+  return {
+    purchase,
+    purchases,
+    paginationData,
+    $resetPurchase,
+    getAllPurchase,
+    addPurchase,
+    updatePurchase,
+    getPurchase
+  }
 })

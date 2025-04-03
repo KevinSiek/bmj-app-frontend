@@ -1,10 +1,13 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import quotationApi from '@/api/quotation'
+import { getAllSparepart } from '@/api/sparepart'
 
 export const useQuotationStore = defineStore('quotation', () => {
   const quotation = reactive({
     id: '',
+    slug: '',
+    no_quotation: '',
     customer: {
       companyName: '',
       address: '',
@@ -20,68 +23,24 @@ export const useQuotationStore = defineStore('quotation', () => {
       type: ''
     },
     price: {
-      subtotal: 1482000,
-      ppn: 82000,
-      grandTotal: 1400000
+      subtotal: 0,
+      ppn: 0,
+      grandTotal: 0
     },
     status: '',
     notes: '',
     spareparts: [
       {
-        partName: 'BEARING SET, CON ROD',
-        partNumber: '30L19-342289',
-        quantity: 3,
-        unitPrice: 494000,
-        totalPrice: 1482000,
-        stock: 'INDENT'
-      },
-      {
-        partName: 'BEARING SET, CON ROD',
-        partNumber: '30L19-342289',
-        quantity: 3,
-        unitPrice: 494000,
-        totalPrice: 1482000,
-        stock: 'INDENT'
+        partName: '',
+        partNumber: '',
+        quantity: 0,
+        unitPrice: 0,
+        totalPrice: 0,
+        stock: ''
       }
     ]
   })
-  const quotations = ref([
-    {
-      id: '1',
-      customer: 'PT.Sukses Selalu',
-      date: '21  Mei 2020',
-      type: 'Goods',
-      status: 'Process'
-    },
-    {
-      id: '2',
-      customer: 'PT.Sukses Selalu',
-      date: '21  Mei 2020',
-      type: 'Goods',
-      status: 'On Review'
-    },
-    {
-      id: '3',
-      customer: 'PT.Sukses Selalu',
-      date: '21  Mei 2020',
-      type: 'Goods',
-      status: 'Cancelled'
-    },
-    {
-      id: '4',
-      customer: 'PT.Sukses Selalu',
-      date: '21  Mei 2020',
-      type: 'Goods',
-      status: 'Revised'
-    },
-    {
-      id: '5',
-      customer: 'PT.Sukses Selalu',
-      date: '21  Mei 2020',
-      type: 'Goods',
-      status: 'PO'
-    }
-  ])
+  const quotations = ref([])
   const quotationReview = reactive({
     customer: {
       companyName: '',
@@ -98,112 +57,118 @@ export const useQuotationStore = defineStore('quotation', () => {
       type: ''
     },
     price: {
-      subtotal: 1482000,
-      ppn: 82000,
-      grandTotal: 1400000
+      subtotal: 0,
+      ppn: 0,
+      grandTotal: 0
     },
     status: '',
     notes: '',
     spareparts: [
       {
-        partName: 'BEARING SET, CON ROD',
-        partNumber: '30L19-342289',
-        quantity: 3,
-        unit: 'pcs',
-        unitPrice: 494000,
-        totalPrice: 1482000,
-        stock: 'INDENT'
-      },
-      {
-        partName: 'BEARING SET, CON ROD',
-        partNumber: '30L19-342289',
-        quantity: 3,
-        unit: 'pcs',
-        unitPrice: 494000,
-        totalPrice: 1482000,
-        stock: 'INDENT'
+        partName: '',
+        partNumber: '',
+        quantity: 0,
+        unitPrice: 0,
+        totalPrice: 0,
+        stock: ''
       }
     ]
   })
-  const quotationReviews = ref([
-    {
-      id: '1',
-      customer: 'PT.Sukses Selalu',
-      date: '21  Mei 2020',
-      type: 'Goods',
-      status: 'Ready'
-    },
-    {
-      id: '2',
-      customer: 'PT.Sukses Selalu',
-      date: '21  Mei 2020',
-      type: 'Goods',
-      status: 'Ready'
-    },
-    {
-      id: '3',
-      customer: 'PT.Sukses Selalu',
-      date: '21  Mei 2020',
-      type: 'Goods',
-      status: 'Ready'
-    }
-  ])
+  const quotationReviews = ref([])
   const paginationData = ref({})
+  const searchedSpareparts = ref([])
 
   function $resetQuotation () {
+    // Reset basic properties
+    quotation.id = ''
+    quotation.slug = ''
+    quotation.no_quotation = ''
+    quotation.status = ''
+    quotation.notes = ''
+
+    // Reset customer properties
     quotation.customer.companyName = ''
     quotation.customer.address = ''
     quotation.customer.city = ''
     quotation.customer.province = ''
     quotation.customer.office = ''
-    quotation.customer.urban = '',
-    quotation.customer.subdistrict = '',
+    quotation.customer.urban = ''
+    quotation.customer.subdistrict = ''
     quotation.customer.postalCode = ''
-    quotation.project.noQuotation = '',
+
+    // Reset project properties
+    quotation.project.noQuotation = ''
     quotation.project.type = ''
-    quotation.price.subtotal = 0,
-    quotation.price.ppn = 0,
+
+    // Reset price properties
+    quotation.price.subtotal = 0
+    quotation.price.ppn = 0
     quotation.price.grandTotal = 0
-    quotation.notes = ''
+
+    // Reset spareparts array
     quotation.spareparts = []
   }
 
   function setQuotation (data) {
-    quotation.customer.companyName = data.customer.companyName
-    quotation.customer.address = data.customer.address
-    quotation.customer.city = data.customer.city
-    quotation.customer.province = data.customer.province
-    quotation.customer.office = data.customer.office
-    quotation.customer.urban = data.customer.urban
-    quotation.customer.subdistrict = data.customer.subdistrict
-    quotation.customer.postalCode = data.customer.postalCode
-    quotation.project.noQuotation = data.project.noQuotation
-    quotation.project.type = data.project.type
-    quotation.price.subtotal = data.price.subtotal
-    quotation.price.ppn = data.price.ppn
-    quotation.price.grandTotal = data.price.grandTotal
-    quotation.notes = data.notes
-    quotation.spareparts = data.spareparts
+    // Set basic properties
+    quotation.id = data.id || ''
+    quotation.slug = data.slug || ''
+    quotation.no_quotation = data.no_quotation || ''
+    quotation.status = data.status || ''
+    quotation.notes = data.notes || ''
+
+    // Set customer properties
+    quotation.customer.companyName = data.customer?.companyName || ''
+    quotation.customer.address = data.customer?.address || ''
+    quotation.customer.city = data.customer?.city || ''
+    quotation.customer.province = data.customer?.province || ''
+    quotation.customer.office = data.customer?.office || ''
+    quotation.customer.urban = data.customer?.urban || ''
+    quotation.customer.subdistrict = data.customer?.subdistrict || ''
+    quotation.customer.postalCode = data.customer?.postalCode || ''
+
+    // Set project properties
+    quotation.project.noQuotation = data.project?.noQuotation || ''
+    quotation.project.type = data.project?.type || ''
+
+    // Set price properties
+    quotation.price.subtotal = data.price?.subtotal || 0
+    quotation.price.ppn = data.price?.ppn || 0
+    quotation.price.grandTotal = data.price?.grandTotal || 0
+
+    // Set spareparts array with proper mapping
+    quotation.spareparts = (data.spareparts || []).map(sparepart => ({
+      partName: sparepart.partName || '',
+      partNumber: sparepart.partNumber || '',
+      quantity: sparepart.quantity || 0,
+      unitPrice: sparepart.unitPrice || 0,
+      totalPrice: sparepart.totalPrice || 0,
+      stock: sparepart.stock || ''
+    }))
   }
 
   async function getAllQuotation (param) {
-    console.log('FETCH QUOTATION BY DATE', param)
-    const response = await quotationApi.getAllQuotations(param)
-    console.log("RES", response)
-    quotations.value = response
+    console.log('FETCH QUOTATION', param)
+    const { data } = await quotationApi.getAllQuotations(param)
+    console.log("RES", data)
+    quotations.value = data.data
+    paginationData.value = data
   }
 
-  async function getAllQuotationReview (month, year) {
-    console.log('FETCH REVIEW QUOTATION BY DATE', month, year)
-    // const response = await getAllReviewQuotations({ month, year })
-    // quotationReviews.value = response.body
+  async function getAllQuotationReview (param) {
+    console.log('FETCH REVIEW QUOTATION BY DATE', param)
+    const { data } = await quotationApi.getAllReviewQuotations(param)
+    console.log("RES", data)
+    quotationReviews.value = data.data
+    paginationData.value = data
   }
 
   async function addQuotation () {
     console.log('ADD QUOTATION')
     $resetQuotation()
     // if requestPriceChange === true, add to request review,, do not add quotation
-    // const response = await addQuotationApi(quotation)
+    const { data } = await quotationApi.addQuotation(quotation)
+    console.log('SUCCESS ADD', data)
   }
 
   async function updateQuotation () {
@@ -213,14 +178,22 @@ export const useQuotationStore = defineStore('quotation', () => {
   }
 
   async function getQuotation (id) {
-    const response = await quotationApi.getQuotationyId(id)
-    console.log('GET QUOTATION', response)
-    // const { data } = await quotationApi.getQuotationyId(id)
-    setQuotation(response)
+    console.log('slug', quotation.slug, 'id', id)
+    if(quotation.slug !== id) $resetQuotation()
+    const { data } = await quotationApi.getQuotationyId(id)
+    console.log('GET QUOTATION', data)
+    setQuotation(data)
   }
 
   async function processQuotation(id) {
     // const response = await quotationApi.processQuotation(id)
+  }
+
+  async function getSpareparts (param) {
+    console.log('SEARCH SPAREPART', param)
+    const { data } = await getAllSparepart(param)
+    searchedSpareparts.value = data.data
+    console.log("List Sparepart", data.data)
   }
 
   return {
@@ -229,6 +202,7 @@ export const useQuotationStore = defineStore('quotation', () => {
     quotationReview,
     quotationReviews,
     paginationData,
+    searchedSpareparts,
     $resetQuotation,
     setQuotation,
     getAllQuotation,
@@ -236,6 +210,7 @@ export const useQuotationStore = defineStore('quotation', () => {
     addQuotation,
     updateQuotation,
     getQuotation,
+    getSpareparts,
     processQuotation
   }
 })
