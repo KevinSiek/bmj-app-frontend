@@ -49,10 +49,16 @@ const visiblePage = computed(() => {
 })
 
 const onClickPrevious = () => {
-  if (currentPage.value > 1) currentPage.value--
+  if (currentPage.value > 1) {
+    currentPage.value--
+    updateQuery(router, route, { page: currentPage.value })
+  }
 }
 const onClickNext = () => {
-  if (currentPage.value < props.lastPage) currentPage.value++
+  if (currentPage.value < props.lastPage) {
+    currentPage.value++
+    updateQuery(router, route, { page: currentPage.value })
+  }
 }
 const onClickPage = (page) => {
   currentPage.value = page
