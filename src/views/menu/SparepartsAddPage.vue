@@ -17,7 +17,8 @@
           <div class="right">
             <div class="input form-group col-12">
               <label for="">Part Number</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.partNumber" placeholder="Part Number">
+              <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
+                placeholder="Sparepart Number">
             </div>
             <div class="input form-group col-12">
               <label for="">Selling Price</label><br>

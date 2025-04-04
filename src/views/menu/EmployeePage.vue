@@ -38,7 +38,7 @@ const { employees, paginationData } = storeToRefs(employeeStore)
 
 onMounted(async () => {
   // Handle first load
-  if (!route.query.page) {
+  if (!route.query.page || !route.query.month || !route.query.year) {
     updateQuery(router, route, { ...route.query, page: 1 })
     return
   }

@@ -143,10 +143,17 @@
 <script setup>
 import { useBackOrderStore } from '@/stores/back-order'
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const backOrderStore = useBackOrderStore()
 
 const { backOrder } = storeToRefs(backOrderStore)
+
+onMounted(() => {
+  backOrderStore.getBackOrder(route.params.id)
+})
 
 </script>
 

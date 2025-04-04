@@ -182,14 +182,20 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoice'
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
 
+const route = useRoute()
 const router = useRouter()
 const invoiceStore = useInvoiceStore()
 
 const { invoice } = storeToRefs(invoiceStore)
+
+onMounted(() => {
+  invoiceStore.getInvoice(route.params.id)
+})
 
 const back = () => {
   router.back()

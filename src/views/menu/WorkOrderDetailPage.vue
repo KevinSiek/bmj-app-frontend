@@ -256,10 +256,17 @@
 <script setup>
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const workOrderStore = useWorkOrderStore()
 
 const { workOrder } = storeToRefs(workOrderStore)
+
+onMounted(() => {
+  workOrderStore.getWorkOrder(route.params.id)
+})
 
 const addUnit = () => {
   workOrder.value.units.push({

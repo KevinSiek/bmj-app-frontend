@@ -28,17 +28,19 @@ import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import { onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
+import { useDate } from '@/composeable/useDate'
 
 const route = useRoute()
 const router = useRouter()
 const proformaInvoiceStore = useProformaInvoiceStore()
+const { selectedMonth, selectedYear } = useDate()
 
 const { proformaInvoices, paginationData } = storeToRefs(proformaInvoiceStore)
 
 onMounted(async () => {
   // Handle first load
-  if (!route.query.page) {
-    updateQuery(router, route, { ...route.query, page: 1 })
+  if (!route.query.page || !route.query.month || !route.query.year) {
+    updateQuery(router, route, { ...route.query, page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchProformaInvoice()

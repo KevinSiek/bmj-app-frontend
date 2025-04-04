@@ -103,8 +103,8 @@
             <tbody class="table-group-divider">
               <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="index" class="align-middle">
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
-                <td class="table-col table-part-number">{{ sparepart.partName }}</td>
-                <td class="table-col table-name">{{ sparepart.partNumber }}</td>
+                <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
+                <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit }}</td>
                 <td class="table-col table-name">{{ sparepart.unitPrice }}</td>
@@ -208,11 +208,17 @@
 <script setup>
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const purchaseOrderStore = usePurchaseOrderStore()
 
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
+onMounted(() => {
+  purchaseOrderStore.getPurchaseOrder(route.params.id)
+})
 </script>
 
 <style lang="scss" scoped>

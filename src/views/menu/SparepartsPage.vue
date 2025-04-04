@@ -13,7 +13,8 @@
     <div class="lower paginate shadow">
       <div class="list">
         <ItemComponent v-for="(sparepart, index) in spareparts" :key="index" :number="index + paginationData.from"
-          :item="sparepart" first-section-key="name" second-section-key="no_sparepart" @click="goToDetail(sparepart)" />
+          :item="sparepart" first-section-key="name" second-section-key="sparepart_number"
+          @click="goToDetail(sparepart)" />
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -40,7 +41,7 @@ const { spareparts, paginationData } = storeToRefs(sparepartStore)
 
 onMounted(async () => {
   // Handle first load
-  if (!route.query.page) {
+  if (!route.query.page || !route.query.month || !route.query.year) {
     updateQuery(router, route, { ...route.query, page: 1 })
     return
   }

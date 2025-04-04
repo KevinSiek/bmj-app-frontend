@@ -9,7 +9,7 @@
               <tr class="align-middle">
                 <th scope="col-1" class="table-number">No</th>
                 <th scope="col" class="table-name">Sparepart Name</th>
-                <th scope="col" class="table-part-number">Part Number</th>
+                <th scope="col" class="table-part-number">Sparepart Number</th>
                 <th scope="col" class="table-name">Quantity</th>
                 <th scope="col" class="table-name">Unit Price</th>
                 <th scope="col" class="table-name">Total Price</th>
@@ -18,8 +18,8 @@
             <tbody class="table-group-divider">
               <tr v-for="(sparepart, index) in purchase.spareparts" :key="index" class="align-middle">
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
-                <td class="table-col table-part-number">{{ sparepart.partName }}</td>
-                <td class="table-col table-part-number">{{ sparepart.partNumber }}</td>
+                <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
+                <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unitPrice }}</td>
                 <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
@@ -52,11 +52,17 @@
 import { common } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const purchaseStore = usePurchaseStore()
 
 const { purchase } = storeToRefs(purchaseStore)
 
+onMounted(() => {
+  purchaseStore.getPurchase(route.params.id)
+})
 </script>
 
 <style lang="scss" scoped>

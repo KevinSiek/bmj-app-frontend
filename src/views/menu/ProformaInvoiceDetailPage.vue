@@ -198,10 +198,17 @@
 <script setup>
 import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const proformaInvoiceStore = useProformaInvoiceStore()
 
 const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
+
+onMounted(() => {
+  proformaInvoiceStore.getProformaInvoice(route.params.id)
+})
 
 </script>
 

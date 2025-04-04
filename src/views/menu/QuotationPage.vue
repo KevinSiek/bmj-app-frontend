@@ -17,7 +17,7 @@
       <SelectDate />
       <div class="list">
         <ItemComponent v-for="(quotation, index) in quotations" :key="index" :number="index + paginationData.from"
-          :item="quotation" first-section-key="no_quotation" @click="goToDetail(quotation)" />
+          :item="quotation" first-section-key="quotation_number" @click="goToDetail(quotation)" />
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -36,17 +36,19 @@ import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import { onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
+import { useDate } from '@/composeable/useDate'
 
 const router = useRouter()
 const route = useRoute()
 const quotationStore = useQuotationStore()
+const { selectedMonth, selectedYear } = useDate()
 
 const { quotations, paginationData } = storeToRefs(quotationStore)
 
 onMounted(async () => {
   // Handle first load
-  if (!route.query.page) {
-    updateQuery(router, route, { ...route.query, page: 1 })
+  if (!route.query.page || !route.query.month || !route.query.year) {
+    updateQuery(router, route, { ...route.query, page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchQuotation()

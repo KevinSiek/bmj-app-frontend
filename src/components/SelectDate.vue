@@ -2,7 +2,7 @@
   <div class="date m-1">
     <div class="month m-3">
       <select class="form-select" v-model="selectedMonth" @change="selectMonth()">
-        <option v-for="(month, index) in months" :key="index" :value="index">
+        <option v-for="(month) in months" :key="month" :value="month">
           {{ month }}
         </option>
       </select>
@@ -18,32 +18,17 @@
 </template>
 
 <script setup>
+import { useDate } from '@/composeable/useDate'
 import { updateQuery } from '@/utils/route-util'
-import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
-
-const date = new Date()
-const months = [
-  'January', 'February', 'March', 'April',
-  'May', 'June', 'July', 'August',
-  'September', 'October', 'November', 'December'
-]
-
-const currentYear = ref(date.getFullYear())
-const selectedMonth = ref(date.getMonth())
-const selectedYear = ref(date.getFullYear())
-const yearRange = computed(() => {
-  const startYear = 2020;
-  const endYear = currentYear;
-  return Array.from({ length: endYear.value - startYear + 1 }, (_, i) => startYear + i);
-})
+const { selectedMonth, selectedYear, yearRange, months } = useDate()
 
 const selectMonth = () => {
-  console.log('Select month', months[selectedMonth.value])
-  updateQuery(router, route, { month: months[selectedMonth.value].toLowerCase() })
+  console.log('Select month', selectedMonth.value)
+  updateQuery(router, route, { month: selectedMonth.value })
 }
 const selectYear = () => {
   console.log('Select year', selectedYear.value)

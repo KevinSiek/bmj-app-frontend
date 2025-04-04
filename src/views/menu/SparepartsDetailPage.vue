@@ -17,7 +17,8 @@
           <div class="right">
             <div class="input form-group col-12">
               <label for="">Part Number</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.partNumber" placeholder="Part Number">
+              <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
+                placeholder="Part Number">
             </div>
             <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
@@ -55,14 +56,20 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
 
+const route = useRoute()
 const router = useRouter()
 const sparepartStore = useSparepartStore()
 
 const { sparepart } = storeToRefs(sparepartStore)
+
+onMounted(() => {
+  sparepartStore.getSparepart(route.params.id)
+})
 
 const back = () => {
   router.back()
