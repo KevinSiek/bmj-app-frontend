@@ -68,8 +68,12 @@ const menuMapping = {
     path: '/proforma-invoice'
   },
   proforma_invoice_detail: {
-    name: 'Detail PI',
+    name: 'Detail Proforma Invoice',
     path: '/proforma-invoice/:id'
+  },
+  proforma_invoice_edit: {
+    name: 'Edit Proforma Invoice',
+    path: '/proforma-invoice/:id/edit'
   },
   invoice: {
     name: 'Invoice',
@@ -154,18 +158,32 @@ const common = {
     },
     po: {
       release: 'Release',
-      prepare: 'Prepare'
+      prepare: 'Prepare',
+      paid: 'Paid',
+      ready: 'Ready',
+      finished: 'Finished'
     },
     work_order: {
       sparepart_ready: 'Sparepart Ready',
       on_progress: 'On Progress'
+    },
+    purchase: {
+      waitReview: 'Wait for Review',
+      rejected: 'Rejected',
+      approved: 'Approved'
     }
   },
   modal: {
     success: 'Success',
     failed: 'Failed'
   },
-
+  role: {
+    director: 'Director',
+    marketing: 'Marketing',
+    finance: 'Finance',
+    inventory: 'Inventory',
+    service: 'Service'
+  }
 }
 
 const api = {
