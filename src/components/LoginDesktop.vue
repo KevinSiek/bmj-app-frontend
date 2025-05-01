@@ -44,7 +44,7 @@
             </div>
           </div>
           <div class="button">
-            <button type="button" class="btn btn-signin" @click="login()">
+            <button type="button" class="btn btn-signin" @click="login()" @keyup="handleKeyup">
               Login
             </button>
           </div>
@@ -55,7 +55,13 @@
 </template>
 
 <script setup>
-defineProps(['user', 'login', 'showHide', 'isPassShow'])
+const props = defineProps(['user', 'login', 'showHide', 'isPassShow'])
+
+const handleKeyup = (event) => {
+  if (event.key === 'Enter') {
+    props.login()
+  }
+}
 
 </script>
 
