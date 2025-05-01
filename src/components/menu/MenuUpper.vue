@@ -1,7 +1,7 @@
 <template>
   <div class="upper-bar">
     <div class="upper-bar__item company-name">
-      <router-link :to="menuMapping.menu.name" class="nav-link">
+      <router-link :to="menuMapping.menu.path" class="nav-link">
         PT. BMJ
       </router-link>
     </div>
