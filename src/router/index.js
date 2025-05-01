@@ -29,6 +29,7 @@ const PurchaseAddPage = () => import('@/views/menu/PurchaseAddPage.vue')
 const PurchaseDetailPage = () => import('@/views/menu/PurchaseDetailPage.vue')
 const ProformaInvoicePage = () => import('@/views/menu/ProformaInvoicePage.vue')
 const ProformaInvoiceDetailPage = () => import('@/views/menu/ProformaInvoiceDetailPage.vue')
+const ProformaInvoiceEditPage = () => import('@/views/menu/ProformaInvoiceEditPage.vue')
 const PurchaseOrderPage = () => import('@/views/menu/PurchaseOrderPage.vue')
 const PurchaseOrderDetailPage = () => import('@/views/menu/PurchaseOrderDetailPage.vue')
 const WorkOrderPage = () => import('@/views/menu/WorkOrderPage.vue')
@@ -313,6 +314,14 @@ const router = createRouter({
               meta: {
                 useBack: true,
                 useTrack: true
+              }
+            },
+            {
+              path: menuConfig.proforma_invoice_edit.path,
+              name: menuConfig.proforma_invoice_edit.name,
+              component: ProformaInvoiceEditPage,
+              meta: {
+                useBack: true
               }
             },
           ]
