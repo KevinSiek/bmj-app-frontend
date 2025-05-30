@@ -9,7 +9,7 @@
       <SelectDate />
       <div class="list">
         <ItemComponent v-for="(workOrder, index) in workOrders" :key="index" :number="index + paginationData.from"
-          :item="workOrder" bigRow first-section-key="no_wo" second-section-key="start_date"
+          :item="workOrder" bigRow :first-section="workOrder.serviceOrder.no" :second-section="workOrder.date.start"
           @click="goToDetail(workOrder)" />
       </div>
     </div>
@@ -70,7 +70,8 @@ const handleUpdateSearch = () => {
   debounce(searchWorkOrder, 1000, 'search-workOrder')
 }
 
-const goToDetail = (workOrder) => {
+const goToDetail = async (workOrder) => {
+  await workOrderStore.setWorkOrder(workOrder)
   router.push(`${menuConfig.work_order.path}/${workOrder.id}`)
 }
 

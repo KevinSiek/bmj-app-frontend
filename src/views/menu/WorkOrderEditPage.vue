@@ -8,24 +8,22 @@
             <div class="input form-group col-12">
               <label for="">Company Name</label><br>
               <input type="text" class="form-control mt-2" v-model="workOrder.customer.companyName"
-                placeholder="Company Name" disabled>
+                placeholder="Company Name">
             </div>
             <div class="input form-group col-12">
               <label for="">Address</label><br>
-              <input type="text" class="form-control mt-2" v-model="workOrder.customer.address" placeholder="Address"
-                disabled>
+              <input type="text" class="form-control mt-2" v-model="workOrder.customer.address" placeholder="Address">
             </div>
             <div class="input form-group col-12">
               <div class="row">
                 <div class="col-6">
                   <label for="">City</label><br>
-                  <input type="text" class="form-control mt-2" v-model="workOrder.customer.city" placeholder="City"
-                    disabled>
+                  <input type="text" class="form-control mt-2" v-model="workOrder.customer.city" placeholder="City">
                 </div>
                 <div class="col-6">
                   <label for="">Province</label><br>
                   <input type="text" class="form-control mt-2" v-model="workOrder.customer.province"
-                    placeholder="Province" disabled>
+                    placeholder="Province">
                 </div>
               </div>
             </div>
@@ -33,27 +31,25 @@
           <div class="right">
             <div class="input form-group col-12">
               <label for="">Office</label><br>
-              <input type="text" class="form-control mt-2" v-model="workOrder.customer.office" placeholder="Office"
-                disabled>
+              <input type="text" class="form-control mt-2" v-model="workOrder.customer.office" placeholder="Office">
             </div>
             <div class="input form-group col-12">
               <div class="row">
                 <div class="col-6">
                   <label for="">Urban</label><br>
-                  <input type="text" class="form-control mt-2" v-model="workOrder.customer.urban" placeholder="Urban"
-                    disabled>
+                  <input type="text" class="form-control mt-2" v-model="workOrder.customer.urban" placeholder="Urban">
                 </div>
                 <div class="col-6">
                   <label for="">Subdistrict</label><br>
                   <input type="text" class="form-control mt-2" v-model="workOrder.customer.subdistrict"
-                    placeholder="Subdistrict" disabled>
+                    placeholder="Subdistrict">
                 </div>
               </div>
             </div>
             <div class="input form-group col-12">
               <label for="">Postal Code</label><br>
               <input type="text" class="form-control mt-2" v-model="workOrder.customer.postalCode"
-                placeholder="Postal Code" disabled>
+                placeholder="Postal Code">
             </div>
           </div>
         </div>
@@ -64,41 +60,40 @@
           <div class="input form-group col-12">
             <label for="">No</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.proformaInvoice.proformaInvoiceNumber"
-              placeholder="No" disabled>
+              placeholder="No">
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.proformaInvoice.proformaInvoiceDate"
-              placeholder="Date" disabled>
+              placeholder="Date">
           </div>
         </div>
         <div class="right">
           <div class="title">Service Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.no" placeholder="No" disabled>
+            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.no" placeholder="No">
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.date" placeholder="Date"
-              disabled>
+            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.date" placeholder="Date">
           </div>
           <div class="input form-group col-12">
             <label for="">Received by</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.receivedBy"
-              placeholder="Payment Due" disabled>
+              placeholder="Payment Due">
           </div>
           <div class="input form-group col-12">
             <div class="row">
               <div class="col-6">
                 <label for="">Expected Start Date</label><br>
                 <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.startDate"
-                  placeholder="Expected Start Date" disabled>
+                  placeholder="Expected Start Date">
               </div>
               <div class="col-6">
                 <label for="">Expected End Date</label><br>
                 <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.endDate"
-                  placeholder="Expected End Date" disabled>
+                  placeholder="Expected End Date">
               </div>
             </div>
           </div>
@@ -156,8 +151,7 @@
           </div>
           <div class="input form-group col-12 mt-4">
             <label for="">Compiled By (Admin CSO)</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.poc.compiled" placeholder="Compiled by"
-              disabled>
+            <input type="text" class="form-control mt-2" v-model="workOrder.poc.compiled" placeholder="Compiled by">
           </div>
           <div class="input form-group col-12">
             <label for="">Authorized by</label><br>
@@ -165,12 +159,11 @@
               <div class="col-6">
                 <label for="">Dept Head Service</label><br>
                 <input type="text" class="form-control mt-2" v-model="workOrder.poc.headOfService"
-                  placeholder="Dept Head Service" disabled>
+                  placeholder="Dept Head Service">
               </div>
               <div class="col-6">
                 <label for="">Director</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.poc.director" placeholder="Director"
-                  disabled>
+                <input type="text" class="form-control mt-2" v-model="workOrder.poc.director" placeholder="Director">
               </div>
             </div>
           </div>
@@ -179,25 +172,22 @@
             <div class="row px-3">
               <div class="col-6">
                 <label for="">Start Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.start" placeholder="Start Date"
-                  disabled>
+                <input type="text" class="form-control mt-2" v-model="workOrder.date.start" placeholder="Start Date">
               </div>
               <div class="col-6">
                 <label for="">End Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.end" placeholder="End Date"
-                  disabled>
+                <input type="text" class="form-control mt-2" v-model="workOrder.date.end" placeholder="End Date">
               </div>
             </div>
           </div>
           <div class="input form-group col-12">
             <label for="">Work Performed by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.description" placeholder="Work Performed by"
-              disabled>
+            <input type="text" class="form-control mt-2" v-model="workOrder.description"
+              placeholder="Work Performed by">
           </div>
           <div class="input form-group col-12">
             <label for="">Approved by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.poc.approver" placeholder="Approved by"
-              disabled>
+            <input type="text" class="form-control mt-2" v-model="workOrder.poc.approver" placeholder="Approved by">
           </div>
         </div>
         <div class="right">
@@ -205,24 +195,23 @@
           <div class="input form-group col-12">
             <label for="">List sparepart replaced</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.additional.spareparts"
-              placeholder="List sparepart replaced" disabled>
+              placeholder="List sparepart replaced">
           </div>
           <div class="input form-group col-12">
             <label for="">List backup sparepart</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.additional.backupSparepart"
-              placeholder="List backup sparepart" disabled>
+              placeholder="List backup sparepart">
           </div>
           <div class="input form-group col-12">
             <div class="row">
               <div class="col-6">
                 <label for="">Scope of Work</label><br>
                 <input type="text" class="form-control mt-2" v-model="workOrder.additional.scope"
-                  placeholder="Scope of Work" disabled>
+                  placeholder="Scope of Work">
               </div>
               <div class="col-6">
                 <label for="">APD</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.additional.apd" placeholder="APD"
-                  disabled>
+                <input type="text" class="form-control mt-2" v-model="workOrder.additional.apd" placeholder="APD">
               </div>
             </div>
           </div>
@@ -231,19 +220,19 @@
               <div class="col-6">
                 <label for="">Vaccine</label><br>
                 <input type="text" class="form-control mt-2" v-model="workOrder.additional.vaccine"
-                  placeholder="Vaccine" disabled>
+                  placeholder="Vaccine">
               </div>
               <div class="col-6">
                 <label for="">Peduli Lindungi</label><br>
                 <input type="text" class="form-control mt-2" v-model="workOrder.additional.peduliLindungi"
-                  placeholder="Peduli Lindungi" disabled>
+                  placeholder="Peduli Lindungi">
               </div>
             </div>
           </div>
           <div class="input form-group col-12">
             <label for="">Execution Time</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.additional.executionTime"
-              placeholder="Execution Time" disabled>
+              placeholder="Execution Time">
           </div>
         </div>
       </div>
@@ -251,7 +240,7 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="workOrder.notes" disabled></textarea>
+            v-model="workOrder.notes"></textarea>
         </div>
       </div>
     </form>
@@ -267,7 +256,6 @@
 </template>
 
 <script setup>
-import { useTrackStore } from '@/stores/track'
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
@@ -275,13 +263,11 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const workOrderStore = useWorkOrderStore()
-const trackStore = useTrackStore()
 
 const { workOrder } = storeToRefs(workOrderStore)
 
 onMounted(() => {
   workOrderStore.getWorkOrder(route.params.id)
-  trackStore.setTrackData(workOrder)
 })
 
 const addUnit = () => {
