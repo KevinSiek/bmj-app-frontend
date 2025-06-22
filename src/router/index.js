@@ -33,13 +33,17 @@ const ProformaInvoiceEditPage = () => import('@/views/menu/ProformaInvoiceEditPa
 const PurchaseOrderPage = () => import('@/views/menu/PurchaseOrderPage.vue')
 const PurchaseOrderDetailPage = () => import('@/views/menu/PurchaseOrderDetailPage.vue')
 const WorkOrderPage = () => import('@/views/menu/WorkOrderPage.vue')
+const WorkOrderAddPage = () => import('@/views/menu/WorkOrderAddPage.vue')
 const WorkOrderDetailPage = () => import('@/views/menu/WorkOrderDetailPage.vue')
 const SparepartsPage = () => import('@/views/menu/SparepartsPage.vue')
 const SparepartsAddPage = () => import('@/views/menu/SparepartsAddPage.vue')
 const SparepartsDetailPage = () => import('@/views/menu/SparepartsDetailPage.vue')
+const SparepartsEditPage = () => import('@/views/menu/SparepartsEditPage.vue')
 const EmployeePage = () => import('@/views/menu/EmployeePage.vue')
 const EmployeeAddPage = () => import('@/views/menu/EmployeeAddPage.vue')
 const EmployeeDetailPage = () => import('@/views/menu/EmployeeDetailPage.vue')
+const EmployeeEditPage = () => import('@/views/menu/EmployeeEditPage.vue')
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -245,6 +249,11 @@ const router = createRouter({
                 useTrack: true
               }
             },
+            {
+              path: menuConfig.work_order_add.path,
+              name: menuConfig.work_order_add.name,
+              component: WorkOrderAddPage
+            },
           ]
         },
         {
@@ -267,6 +276,14 @@ const router = createRouter({
               path: menuConfig.spareparts_detail.path,
               name: menuConfig.spareparts_detail.name,
               component: SparepartsDetailPage,
+              meta: {
+                useBack: true
+              }
+            },
+            {
+              path: menuConfig.spareparts_edit.path,
+              name: menuConfig.spareparts_edit.name,
+              component: SparepartsEditPage,
               meta: {
                 useBack: true
               }
@@ -293,6 +310,14 @@ const router = createRouter({
               path: menuConfig.employee_detail.path,
               name: menuConfig.employee_detail.name,
               component: EmployeeDetailPage,
+              meta: {
+                useBack: true
+              }
+            },
+            {
+              path: menuConfig.employee_edit.path,
+              name: menuConfig.employee_edit.name,
+              component: EmployeeEditPage,
               meta: {
                 useBack: true
               }
