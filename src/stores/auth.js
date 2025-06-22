@@ -51,7 +51,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 		try {
       axios.defaults.headers.common.Authorization = `Bearer ${getToken('token-bmj')}`
 			const response = await axios.get('/api/user')
-      user.value = response.data
+      user.value = response.data.user
       authenticated.value = true
 		} catch (error) {
       user.value = null

@@ -64,11 +64,16 @@ const deleteBackOrder = (id) => {
   return httpApi.deleteDataViaApi(`${api.back_order}/${id}`)
 }
 
+const processBackOrder = (id) => {
+  return httpApi.postDataViaApi(`${api.back_order}/process/${id}`)
+}
+
 
 export default {
 	getAllBackOrder,
   addBackOrder,
   getBackOrderById,
   updateBackOrder,
-  deleteBackOrder
+  deleteBackOrder,
+  processBackOrder
 }
