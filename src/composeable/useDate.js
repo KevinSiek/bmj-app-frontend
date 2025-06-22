@@ -8,11 +8,11 @@ export function useDate() {
   const date = new Date()
 
   const months = [
-    'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL',
-    'MAY', 'JUNE', 'JULY', 'AUGUST',
-    'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'
+    'january', 'february', 'march', 'april',
+    'may', 'june', 'july', 'august',
+    'september', 'october', 'november', 'december'
   ]
-  const initMonth = (route.query.month)?.toUpperCase() || months[date.getMonth()]
+  const initMonth = (route.query.month)?.toLowerCase() || months[date.getMonth()]
   const initYear = route.query.year || date.getFullYear()
 
   const currentYear = ref(date.getFullYear())
