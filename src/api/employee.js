@@ -1,6 +1,15 @@
 import httpApi from '@/utils/http-api'
 import { api } from '@/config'
 
+// const employee = {
+//   id: 'id',
+//   fullname: 'fullname',
+//   username: 'username',
+//   email: 'email',
+//   role: 'Director',
+//   password: 'password'
+// }
+
 const getAllEmployee = async (param) => {
   return httpApi.getDataViaApi(api.employee, param)
 }
