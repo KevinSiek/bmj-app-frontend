@@ -1,8 +1,8 @@
 <template>
   <div class="search-bar">
     <div class="input-group">
-      <input type="text" class="form-control input-search" v-model="search" @change="handleInputSearch"
-        @keyup="handleInputSearch" placeholder="Search">
+      <input type="text" class="form-control input-search" v-model="search" @keyup="handleInputSearch"
+        placeholder="Search">
     </div>
   </div>
 </template>
