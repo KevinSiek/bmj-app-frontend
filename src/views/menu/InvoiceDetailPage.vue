@@ -8,22 +8,24 @@
             <div class="input form-group col-12">
               <label for="">Company Name</label><br>
               <input type="text" class="form-control mt-2" v-model="invoice.customer.companyName"
-                placeholder="Company Name">
+                placeholder="Company Name" disabled>
             </div>
             <div class="input form-group col-12">
               <label for="">Address</label><br>
-              <input type="text" class="form-control mt-2" v-model="invoice.customer.address" placeholder="Address">
+              <input type="text" class="form-control mt-2" v-model="invoice.customer.address" placeholder="Address"
+                disabled>
             </div>
             <div class="input form-group col-12">
               <div class="row">
                 <div class="col-6">
                   <label for="">City</label><br>
-                  <input type="text" class="form-control mt-2" v-model="invoice.customer.city" placeholder="City">
+                  <input type="text" class="form-control mt-2" v-model="invoice.customer.city" placeholder="City"
+                    disabled>
                 </div>
                 <div class="col-6">
                   <label for="">Province</label><br>
                   <input type="text" class="form-control mt-2" v-model="invoice.customer.province"
-                    placeholder="Province">
+                    placeholder="Province" disabled>
                 </div>
               </div>
             </div>
@@ -31,25 +33,27 @@
           <div class="right">
             <div class="input form-group col-12">
               <label for="">Office</label><br>
-              <input type="text" class="form-control mt-2" v-model="invoice.customer.office" placeholder="Office">
+              <input type="text" class="form-control mt-2" v-model="invoice.customer.office" placeholder="Office"
+                disabled>
             </div>
             <div class="input form-group col-12">
               <div class="row">
                 <div class="col-6">
                   <label for="">Urban</label><br>
-                  <input type="text" class="form-control mt-2" v-model="invoice.customer.urban" placeholder="Urban">
+                  <input type="text" class="form-control mt-2" v-model="invoice.customer.urban" placeholder="Urban"
+                    disabled>
                 </div>
                 <div class="col-6">
                   <label for="">Subdistrict</label><br>
                   <input type="text" class="form-control mt-2" v-model="invoice.customer.subdistrict"
-                    placeholder="Subdistrict">
+                    placeholder="Subdistrict" disabled>
                 </div>
               </div>
             </div>
             <div class="input form-group col-12">
               <label for="">Postal Code</label><br>
               <input type="text" class="form-control mt-2" v-model="invoice.customer.postalCode"
-                placeholder="Postal Code">
+                placeholder="Postal Code" disabled>
             </div>
           </div>
         </div>
@@ -59,45 +63,50 @@
           <div class="title">Invoice</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.no" placeholder="No">
+            <input type="text" class="form-control mt-2" v-model="invoice.invoice.invoiceNumber" placeholder="No"
+              disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.date" placeholder="Date">
+            <input type="text" class="form-control mt-2" v-model="invoice.invoice.date" placeholder="Date" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Term of Payment</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.invoice.termOfPayment"
-              placeholder="Term of Payment">
+              placeholder="Term of Payment" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Sub Total</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.subTotal" placeholder="Sub Total">
+            <input type="text" class="form-control mt-2" v-model="invoice.invoice.subTotal" placeholder="Sub Total"
+              disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Grand Total</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.grandTotal" placeholder="Grand Total">
+            <input type="text" class="form-control mt-2" v-model="invoice.invoice.grandTotal" placeholder="Grand Total"
+              disabled>
           </div>
         </div>
         <div class="right">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
             <label for="name">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.no" placeholder="No">
+            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.purchaseOrderNumber"
+              placeholder="No" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.date" placeholder="Date">
+            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.purchaseOrderDate"
+              placeholder="Date" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Payment Due</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.paymentDue"
-              placeholder="Payment Due">
+              placeholder="Payment Due" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Discount</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.discount"
-              placeholder="Discount">
+            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.discount" placeholder="Discount"
+              disabled>
           </div>
         </div>
       </div>
@@ -120,11 +129,11 @@
             <tbody class="table-group-divider">
               <tr v-for="(sparepart, index) in invoice.spareparts" :key="index" class="align-middle">
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
-                <td class="table-col table-part-number">{{ sparepart.partName }}</td>
-                <td class="table-col table-name">{{ sparepart.partNumber }}</td>
+                <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
+                <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit }}</td>
-                <td class="table-col table-name">{{ sparepart.unitPrice }}</td>
+                <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
                 <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
                 <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
@@ -166,7 +175,7 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="invoice.notes"></textarea>
+            v-model="invoice.notes" disabled></textarea>
         </div>
       </div>
     </form>
@@ -176,7 +185,7 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process">Print</button>
+      <button type="button" class="btn btn-process" @click="print">Print</button>
     </div>
   </div>
 </template>
@@ -186,21 +195,26 @@ import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoice'
 import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
+import { useTrackStore } from '@/stores/track'
 
 const route = useRoute()
 const router = useRouter()
 const invoiceStore = useInvoiceStore()
+const trackStore = useTrackStore()
 
 const { invoice } = storeToRefs(invoiceStore)
 
 onMounted(() => {
   invoiceStore.getInvoice(route.params.id)
+  trackStore.setTrackData(invoice)
 })
 
 const back = () => {
   router.back()
 }
+const print = () => {
 
+}
 </script>
 
 <style lang="scss" scoped>

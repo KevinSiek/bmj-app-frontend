@@ -7,9 +7,23 @@
     </div>
     <div class="lower paginate shadow">
       <SelectDate />
-      <div class="list">
-        <ItemComponent v-for="(invoice, index) in invoices" :key="index" :number="index + paginationData.from"
-          :item="invoice" first-section-key="no_invoice" @click="goToDetail(invoice)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="invoices.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <ItemComponent v-for="(invoice, index) in invoices" :key="index" :number="index + paginationData.from"
+            :item="invoice" :first-section="invoice.invoice.invoiceNumber" :second-section="invoice.invoice.date"
+            :current-status="invoice.currentStatus" :third-section="invoice.invoice.type"
+            @click="goToDetail(invoice)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -35,12 +49,12 @@ const router = useRouter()
 const invoiceStore = useInvoiceStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { invoices, paginationData } = storeToRefs(invoiceStore)
+const { invoices, paginationData, isLoading } = storeToRefs(invoiceStore)
 
 onMounted(async () => {
   // Handle first load
   if (!route.query.page || !route.query.month || !route.query.year) {
-    updateQuery(router, route, { ...route.query, page: 1, month: selectedMonth.value, year: selectedYear.value })
+    updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchPurchase()
@@ -61,15 +75,16 @@ const fetchPurchase = async () => {
   invoiceStore.getAllInvoices({ page, search, month, year })
 }
 
-const searchInvoice = () => {
-  console.log('SEARCH INVOICE')
+const searchInvoice = (search) => {
+  updateQuery(router, route, { ...route.query, search })
 }
 
-const handleUpdateSearch = () => {
-  debounce(searchInvoice, 1000, 'search-invoice')
+const handleUpdateSearch = (search) => {
+  debounce(() => searchInvoice(search), 1000, 'search-invoice')
 }
 
-const goToDetail = (invoice) => {
+const goToDetail = async (invoice) => {
+  await invoiceStore.setInvoice(invoice)
   router.push(`${menuConfig.invoice.path}/${invoice.id}`)
 }
 
