@@ -2,86 +2,12 @@
   <div class="contain background shadow">
     <form class="row form">
       <div class="upper my-2">
-        <div class="title">Customer</div>
-        <div class="data">
-          <div class="left">
-            <div class="input form-group col-12">
-              <label for="">Company Name</label><br>
-              <input type="text" class="form-control mt-2" v-model="workOrder.customer.companyName"
-                placeholder="Company Name">
-            </div>
-            <div class="input form-group col-12">
-              <label for="">Address</label><br>
-              <input type="text" class="form-control mt-2" v-model="workOrder.customer.address" placeholder="Address">
-            </div>
-            <div class="input form-group col-12">
-              <div class="row">
-                <div class="col-6">
-                  <label for="">City</label><br>
-                  <input type="text" class="form-control mt-2" v-model="workOrder.customer.city" placeholder="City">
-                </div>
-                <div class="col-6">
-                  <label for="">Province</label><br>
-                  <input type="text" class="form-control mt-2" v-model="workOrder.customer.province"
-                    placeholder="Province">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="right">
-            <div class="input form-group col-12">
-              <label for="">Office</label><br>
-              <input type="text" class="form-control mt-2" v-model="workOrder.customer.office" placeholder="Office">
-            </div>
-            <div class="input form-group col-12">
-              <div class="row">
-                <div class="col-6">
-                  <label for="">Urban</label><br>
-                  <input type="text" class="form-control mt-2" v-model="workOrder.customer.urban" placeholder="Urban">
-                </div>
-                <div class="col-6">
-                  <label for="">Subdistrict</label><br>
-                  <input type="text" class="form-control mt-2" v-model="workOrder.customer.subdistrict"
-                    placeholder="Subdistrict">
-                </div>
-              </div>
-            </div>
-            <div class="input form-group col-12">
-              <label for="">Postal Code</label><br>
-              <input type="text" class="form-control mt-2" v-model="workOrder.customer.postalCode"
-                placeholder="Postal Code">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="lower my-2">
         <div class="left">
-          <div class="title">Proforma Invoice</div>
-          <div class="input form-group col-12">
-            <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.proformaInvoice.proformaInvoiceNumber"
-              placeholder="No">
-          </div>
-          <div class="input form-group col-12">
-            <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.proformaInvoice.proformaInvoiceDate"
-              placeholder="Date">
-          </div>
-        </div>
-        <div class="right">
           <div class="title">Service Order</div>
-          <div class="input form-group col-12">
-            <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.no" placeholder="No">
-          </div>
-          <div class="input form-group col-12">
-            <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.date" placeholder="Date">
-          </div>
           <div class="input form-group col-12">
             <label for="">Received by</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.receivedBy"
-              placeholder="Payment Due">
+              placeholder="Received by">
           </div>
           <div class="input form-group col-12">
             <div class="row">
@@ -98,9 +24,7 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="lower my-2">
-        <div class="left">
+        <div class="right">
           <div class="title">Work Description</div>
           <div class="input form-group col-12">
             <div class="row">
@@ -127,7 +51,7 @@
               <div class="col-11">
                 <div class="row">
                   <div class="col-4">
-                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescription">
+                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions">
                   </div>
                   <div class="col-5">
                     <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType">
@@ -172,26 +96,28 @@
             <div class="row px-3">
               <div class="col-6">
                 <label for="">Start Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.start" placeholder="Start Date">
+                <input type="text" class="form-control mt-2" v-model="workOrder.date.startDate"
+                  placeholder="Start Date">
               </div>
               <div class="col-6">
                 <label for="">End Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.end" placeholder="End Date">
+                <input type="text" class="form-control mt-2" v-model="workOrder.date.endDate" placeholder="End Date">
               </div>
             </div>
           </div>
           <div class="input form-group col-12">
             <label for="">Work Performed by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.description"
-              placeholder="Work Performed by">
+            <input type="text" class="form-control mt-2" v-model="workOrder.poc.worker" placeholder="Work Performed by">
           </div>
           <div class="input form-group col-12">
             <label for="">Approved by</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.poc.approver" placeholder="Approved by">
           </div>
         </div>
-        <div class="right">
-          <div class="title">Additional Comments</div>
+      </div>
+      <div class="lower my-2">
+        <div class="title">Additional Comments</div>
+        <div class="data">
           <div class="input form-group col-12">
             <label for="">List sparepart replaced</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.additional.spareparts"
@@ -240,45 +166,68 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="workOrder.notes"></textarea>
+            v-model="workOrder.description"></textarea>
         </div>
       </div>
     </form>
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit">Kembali</button>
+      <button type="button" class="btn btn-edit" @click="back">Kembali</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process">Print</button>
+      <button type="button" class="btn btn-process" @click="doReleaseConfirmation">Release</button>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useModalStore } from '@/stores/modal'
+import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { onBeforeMount, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { common, menuMapping as menuConfig } from '@/config'
+import { useEmployeeStore } from '@/stores/employee'
 
 const route = useRoute()
+const router = useRouter()
 const workOrderStore = useWorkOrderStore()
+const purchaseOrderStore = usePurchaseOrderStore()
+const modalStore = useModalStore()
 
 const { workOrder } = storeToRefs(workOrderStore)
+const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
+onBeforeMount(() => {
+  if (!workOrder.value) workOrderStore.$resetWorkOrder()
+})
 onMounted(() => {
-  workOrderStore.getWorkOrder(route.params.id)
+  // workOrderStore.getWorkOrder(route.params.id)
 })
 
 const addUnit = () => {
   workOrder.value.units.push({
-    jobDescription: '',
+    jobDescriptions: '',
     unitType: '',
     quantity: 0
   })
 }
 const removeUnit = (index) => {
   workOrder.value.units.splice(index, 1)
+}
+
+const doRelease = async () => {
+  try {
+    await purchaseOrderStore.release(route.params.id, workOrder.value)
+    router.push(menuConfig.work_order.path)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+const doReleaseConfirmation = () => {
+  modalStore.openConfirmationModal('to release this Purchase Order?', 'Releasing', doRelease)
 }
 
 </script>
@@ -313,10 +262,8 @@ $secondary-color: rgb(98, 98, 98);
   }
 
   .upper {
-    .data {
-      display: flex;
-      justify-content: space-between;
-    }
+    display: flex;
+    justify-content: space-between;
 
     .left,
     .right {
@@ -325,8 +272,14 @@ $secondary-color: rgb(98, 98, 98);
   }
 
   .lower {
-    display: flex;
-    justify-content: space-between;
+    .input {
+      margin: 0.5% 0%;
+    }
+
+    .data {
+      display: flex;
+      flex-direction: column;
+    }
 
     .left,
     .right {

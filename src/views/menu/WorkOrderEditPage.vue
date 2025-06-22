@@ -127,7 +127,7 @@
               <div class="col-11">
                 <div class="row">
                   <div class="col-4">
-                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescription">
+                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions">
                   </div>
                   <div class="col-5">
                     <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType">
@@ -172,18 +172,18 @@
             <div class="row px-3">
               <div class="col-6">
                 <label for="">Start Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.start" placeholder="Start Date">
+                <input type="text" class="form-control mt-2" v-model="workOrder.date.startDate"
+                  placeholder="Start Date">
               </div>
               <div class="col-6">
                 <label for="">End Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.end" placeholder="End Date">
+                <input type="text" class="form-control mt-2" v-model="workOrder.date.endDate" placeholder="End Date">
               </div>
             </div>
           </div>
           <div class="input form-group col-12">
             <label for="">Work Performed by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.description"
-              placeholder="Work Performed by">
+            <input type="text" class="form-control mt-2" v-model="workOrder.poc.worker" placeholder="Work Performed by">
           </div>
           <div class="input form-group col-12">
             <label for="">Approved by</label><br>
@@ -240,7 +240,7 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="workOrder.notes"></textarea>
+            v-model="workOrder.description"></textarea>
         </div>
       </div>
     </form>
@@ -272,7 +272,7 @@ onMounted(() => {
 
 const addUnit = () => {
   workOrder.value.units.push({
-    jobDescription: '',
+    jobDescriptions: '',
     unitType: '',
     quantity: 0
   })

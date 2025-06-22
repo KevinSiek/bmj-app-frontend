@@ -86,7 +86,7 @@
           <div class="input form-group col-12">
             <label for="">Received by</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.receivedBy"
-              placeholder="Payment Due" disabled>
+              placeholder="Received by" disabled>
           </div>
           <div class="input form-group col-12">
             <div class="row">
@@ -132,7 +132,7 @@
               <div class="col-11">
                 <div class="row">
                   <div class="col-4">
-                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescription">
+                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions">
                   </div>
                   <div class="col-5">
                     <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType">
@@ -179,19 +179,19 @@
             <div class="row px-3">
               <div class="col-6">
                 <label for="">Start Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.start" placeholder="Start Date"
+                <input type="text" class="form-control mt-2" v-model="workOrder.date.startDate" placeholder="Start Date"
                   disabled>
               </div>
               <div class="col-6">
                 <label for="">End Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.end" placeholder="End Date"
+                <input type="text" class="form-control mt-2" v-model="workOrder.date.endDate" placeholder="End Date"
                   disabled>
               </div>
             </div>
           </div>
           <div class="input form-group col-12">
             <label for="">Work Performed by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.description" placeholder="Work Performed by"
+            <input type="text" class="form-control mt-2" v-model="workOrder.poc.worker" placeholder="Work Performed by"
               disabled>
           </div>
           <div class="input form-group col-12">
@@ -251,7 +251,7 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="workOrder.notes" disabled></textarea>
+            v-model="workOrder.description" disabled></textarea>
         </div>
       </div>
     </form>
@@ -270,7 +270,7 @@
 import { useTrackStore } from '@/stores/track'
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -279,6 +279,9 @@ const trackStore = useTrackStore()
 
 const { workOrder } = storeToRefs(workOrderStore)
 
+onBeforeMount(() => {
+  if (!workOrder.value) workOrderStore.$resetWorkOrder()
+})
 onMounted(() => {
   workOrderStore.getWorkOrder(route.params.id)
   trackStore.setTrackData(workOrder)
@@ -286,7 +289,7 @@ onMounted(() => {
 
 const addUnit = () => {
   workOrder.value.units.push({
-    jobDescription: '',
+    jobDescriptions: '',
     unitType: '',
     quantity: 0
   })
