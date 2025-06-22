@@ -183,83 +183,56 @@
       Advance Payment:
     </div>
     <div class="value">
-      {{ proformaInvoice.downPayment }} %
+      <input type="text" class="form-control" v-model="proformaInvoice.downPayment" placeholder="Advance Payment">
+      %
     </div>
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
+      <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button v-if="isShowDPPaid" type="button" class="btn btn-process mx-4" @click="paidDpConfirmation">DP
-        Paid</button>
-      <button type="button" class="btn btn-process" @click="createInvoiceConfirmation">Create Invoice</button>
+      <button type="button" class="btn btn-process" @click="updatePiConfirmation">Save</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useRole } from '@/composeable/useRole'
-import { common, menuMapping as menuConfig } from '@/config'
+import { menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
-import { useTrackStore } from '@/stores/track'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
 const proformaInvoiceStore = useProformaInvoiceStore()
 const modalStore = useModalStore()
-const trackStore = useTrackStore()
 
 const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
 
-const { isRoleDirector, isRoleMarketing, isRoleInventory, isRoleFinance, isRoleService } = useRole()
-
-const isShowDPPaid = computed(() =>
-  (isRoleFinance.value || isRoleDirector.value) &&
-  !proformaInvoice.value.status.some(item => item.state === common.track.dpPaid)
-)
-
-const fetchData = async () => {
-  await proformaInvoiceStore.getProformaInvoice(route.params.id)
-  await trackStore.setTrackData(proformaInvoice.value.status)
-}
 onBeforeMount(() => {
   if (!proformaInvoice.value) proformaInvoiceStore.$resetProformaInvoice()
 })
-onMounted(async () => {
-  await fetchData()
+onMounted(() => {
+  proformaInvoiceStore.getProformaInvoice(route.params.id)
 })
 
-const goToEdit = () => {
-  router.push(`${menuConfig.proforma_invoice.path}/${route.params.id}/edit`)
+const back = () => {
+  router.back()
 }
 
-const paidDp = async () => {
+const updatePi = async () => {
   try {
-    await proformaInvoiceStore.dpPaid(route.params.id)
-    await fetchData()
+    await proformaInvoiceStore.updateProformaInvoice()
+    router.push(`${menuConfig.proforma_invoice.path}/${route.params.id}`)
   } catch (error) {
     throw error.data.error || error.data.message
   }
 }
-const paidDpConfirmation = () => {
-  modalStore.openConfirmationModal('to Paid DP ?', 'Paid DP Success', paidDp)
-}
-
-const createInvoice = async () => {
-  try {
-    await proformaInvoiceStore.processToInvoice(route.params.id)
-  } catch (error) {
-    throw error.data.error || error.data.message
-  }
-}
-
-const createInvoiceConfirmation = () => {
-  modalStore.openConfirmationModal('to Create Invoice ?', 'Create Invoice Success', createInvoice)
+const updatePiConfirmation = () => {
+  modalStore.openConfirmationModal('to Update Proforma Invoice', 'Update PI Success', updatePi)
 }
 </script>
 
@@ -310,6 +283,11 @@ $secondary-color: rgb(98, 98, 98);
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  .value {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .button {

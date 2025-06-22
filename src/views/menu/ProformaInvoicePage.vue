@@ -7,9 +7,22 @@
     </div>
     <div class="lower paginate shadow">
       <SelectDate />
-      <div class="list">
-        <ItemComponent v-for="(pi, index) in proformaInvoices" :key="index" :number="index + paginationData.from"
-          :item="pi" first-section-key="no_pi" @click="goToDetail(pi)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="proformaInvoices.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <ItemComponent v-for="(pi, index) in proformaInvoices" :key="index" :number="index + paginationData.from"
+            :item="pi" :first-section="pi.project.proformaInvoiceNumber" :second-section="pi.project.date"
+            :third-section="pi.project.type" :current-status="pi.currentStatus" @click="goToDetail(pi)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -35,12 +48,12 @@ const router = useRouter()
 const proformaInvoiceStore = useProformaInvoiceStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { proformaInvoices, paginationData } = storeToRefs(proformaInvoiceStore)
+const { proformaInvoices, paginationData, isLoading } = storeToRefs(proformaInvoiceStore)
 
 onMounted(async () => {
   // Handle first load
   if (!route.query.page || !route.query.month || !route.query.year) {
-    updateQuery(router, route, { ...route.query, page: 1, month: selectedMonth.value, year: selectedYear.value })
+    updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchProformaInvoice()
@@ -61,15 +74,16 @@ const fetchProformaInvoice = async () => {
   proformaInvoiceStore.getAllProformaInvoices({ page, search, month, year })
 }
 
-const searchProformaInvoice = () => {
-  console.log('SEARCH PROFORMA INVOICE')
+const searchProformaInvoice = (search) => {
+  updateQuery(router, route, { ...route.query, search })
 }
 
-const handleUpdateSearch = () => {
-  debounce(searchProformaInvoice, 1000, 'search-proformaInvoice')
+const handleUpdateSearch = (search) => {
+  debounce(() => searchProformaInvoice(search), 1000, 'search-proformaInvoice')
 }
 
-const goToDetail = (pi) => {
+const goToDetail = async (pi) => {
+  await proformaInvoiceStore.setProformaInvoice(pi)
   router.push(`${menuConfig.proforma_invoice.path}/${pi.id}`)
 }
 
