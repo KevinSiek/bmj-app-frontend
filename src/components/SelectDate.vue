@@ -28,11 +28,11 @@ const { selectedMonth, selectedYear, yearRange, months } = useDate()
 
 const selectMonth = () => {
   console.log('Select month', selectedMonth.value)
-  updateQuery(router, route, { month: selectedMonth.value })
+  updateQuery(router, route, { page: 1, month: selectedMonth.value })
 }
 const selectYear = () => {
   console.log('Select year', selectedYear.value)
-  updateQuery(router, route, { year: selectedYear.value })
+  updateQuery(router, route, { page: 1, year: selectedYear.value })
 }
 </script>
 
