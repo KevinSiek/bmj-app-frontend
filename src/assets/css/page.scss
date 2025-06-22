@@ -41,6 +41,13 @@ $primary-color: black;
     overflow:auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    .loading-text, .no-data-text{
+      height: 50vh;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
   .paginate {
     height: 66vh;
