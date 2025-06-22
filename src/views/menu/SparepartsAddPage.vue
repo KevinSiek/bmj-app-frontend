@@ -93,8 +93,7 @@ const addSparepart = async () => {
     await sparepartStore.addSparepart()
     router.push(menuConfig.spareparts)
   } catch (error) {
-    console.log('ERROR PAGE', error)
-    throw error.data.error
+    throw error.data.error || error.data.message
   }
 }
 

@@ -11,10 +11,22 @@
       </div>
     </div>
     <div class="lower paginate shadow">
-      <div class="list">
-        <ItemComponent v-for="(sparepart, index) in spareparts" :key="index" :number="index + paginationData.from"
-          :item="sparepart" :first-section="sparepart.sparepartName" :second-section="sparepart.sparepartNumber"
-          @click="goToDetail(sparepart)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="spareparts.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <ItemComponent v-for="(sparepart, index) in spareparts" :key="index" :number="index + paginationData.from"
+            :item="sparepart" :first-section="sparepart.sparepartName" :second-section="sparepart.sparepartNumber"
+            @click="goToDetail(sparepart)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -37,12 +49,12 @@ const route = useRoute()
 const router = useRouter()
 const sparepartStore = useSparepartStore()
 
-const { spareparts, paginationData } = storeToRefs(sparepartStore)
+const { spareparts, paginationData, isLoading } = storeToRefs(sparepartStore)
 
 onMounted(async () => {
   // Handle first load
   if (!route.query.page) {
-    updateQuery(router, route, { ...route.query, page: 1 })
+    updateQuery(router, route, { page: 1 })
     return
   }
   fetchSpareparts()
@@ -86,5 +98,15 @@ const goToDetail = async (sparepart) => {
 
 .list {
   margin: 3.5% 0%;
+}
+
+.contain {
+  .lower {
+
+    .loading-text,
+    .no-data-text {
+      height: 65vh;
+    }
+  }
 }
 </style>
