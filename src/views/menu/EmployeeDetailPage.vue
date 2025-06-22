@@ -5,16 +5,20 @@
     </div>
     <form @submit.prevent="action()" class="row form">
       <div class="input form-group col-12">
-        <label for="name">Full Name</label><br>
-        <input type="text" class="form-control mt-2" v-model="employee.fullname" placeholder="Full name">
+        <label for="name">FullName</label><br>
+        <input type="text" class="form-control mt-2" v-model="employee.fullname" placeholder="Fullname" disabled>
+      </div>
+      <div class="input form-group col-12">
+        <label for="username">Username</label><br>
+        <input type="text" class="form-control mt-2" v-model="employee.username" placeholder="Username" disabled>
       </div>
       <div class="input form-group col-12">
         <label for="email">Email</label><br>
-        <input type="email" class="form-control mt-2" v-model="employee.email" placeholder="Email">
+        <input type="email" class="form-control mt-2" v-model="employee.email" placeholder="Email" disabled>
       </div>
       <div class="input form-group col-12">
         <label for="role">Role</label><br>
-        <select class="form-select mt-2" id="role" v-model="employee.role">
+        <select class="form-select mt-2" id="role" v-model="employee.role" disabled>
           <option v-for="(role, index) in roles" :key="index" :value="role">
             {{ role }}
           </option>
@@ -86,19 +90,19 @@
         Reset Password
       </button>
     </div>
-    <button type="submit" class="btn btn-update" @click="updateEmployeeConfirmation">
-      Update Employee
+    <button type="submit" class="btn btn-update" @click="goToEdit">
+      Edit Employee
     </button>
   </div>
 </template>
 
 <script setup>
-import { menuMapping } from '@/config'
+import { menuMapping as menuConfig, common } from '@/config'
 import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
 import { validatePassword } from '@/utils/form-util'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -111,13 +115,16 @@ const isPassShow = ref(false)
 const isConfPassShow = ref(false)
 
 const roles = [
-  'Director',
-  'Marketing',
-  'Finance',
-  'Inventory',
-  'Service'
+  common.role.director,
+  common.role.marketing,
+  common.role.finance,
+  common.role.inventory,
+  common.role.service
 ]
 
+onBeforeMount(() => {
+  if (!employee.value) employeeStore.$resetEmployee()
+})
 onMounted(() => {
   employeeStore.getEmployee(route.params.id)
 })
@@ -132,28 +139,21 @@ const showHideConfPass = () => {
   isConfPassShow.value = !isConfPassShow.value
 }
 
-const updateEmployee = async () => {
-  if (validatePassword(employee.value.password, employee.value.password_confirmation)) {
-    employeeStore.updateEmployee()
-  }
-  else {
-    throw new Error('Confirm Password is not Match')
-  }
+const goToEdit = async () => {
+  router.push(`${menuConfig.employee.path}/${employee.id}/edit`)
 }
-const updateEmployeeConfirmation = () => {
-  modalStore.openConfirmationModal('Are you sure to Update this Employee ?', 'Update Employee Success', updateEmployee)
-}
+
 const deleteEmployee = async () => {
   if (validatePassword(employee.value.password, employee.value.password_confirmation)) {
     await employeeStore.deleteEmployee(employee.value.id)
-    router.push(menuMapping.employee.path)
+    router.push(menuConfig.employee.path)
   }
   else {
     throw new Error('Confirm Password is not Match')
   }
 }
 const deleteEmployeeConfirmation = () => {
-  modalStore.openConfirmationModal('Are you sure to Delete this Employee ?', 'Delete Employee Success', deleteEmployee)
+  modalStore.openConfirmationModal('to Delete this Employee ?', 'Delete Employee Success', deleteEmployee)
 }
 
 </script>

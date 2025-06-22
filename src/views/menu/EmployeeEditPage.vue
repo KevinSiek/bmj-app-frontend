@@ -24,8 +24,8 @@
     </form>
   </div>
   <div class="button">
-    <button type="submit" class="btn btn-update" @click="addEmployeeConfirmation">
-      Add Employee
+    <button type="submit" class="btn btn-update" @click="updateEmployeeConfirmation">
+      Edit Employee
     </button>
   </div>
 </template>
@@ -57,11 +57,12 @@ onBeforeMount(() => {
   if (!employee.value) employeeStore.$resetEmployee()
 })
 
-const addEmployee = async () => {
+const updateEmployee = async () => {
   try {
-    await employeeStore.addEmployee()
-    router.push(menuConfig.employee.path)
+    await employeeStore.updateEmployee()
+    router.push(`${menuConfig.employee.path}/${employee.id}`)
   } catch (error) {
+    console.log('ERROR PAGE', error)
     throw error.data.error || error.data.message
   }
   // if (validatePassword(employee.value.password, employee.value.password_confirmation)) {
@@ -71,8 +72,8 @@ const addEmployee = async () => {
   // }
 }
 
-const addEmployeeConfirmation = () => {
-  modalStore.openConfirmationModal('to Add this Employee ?', 'Add Employee Success', addEmployee)
+const updateEmployeeConfirmation = () => {
+  modalStore.openConfirmationModal('to Update this Employee ?', 'Update Employee Success', updateEmployee)
 }
 
 </script>

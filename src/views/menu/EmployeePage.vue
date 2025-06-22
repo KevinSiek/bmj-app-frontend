@@ -9,9 +9,22 @@
       </div>
     </div>
     <div class="lower paginate shadow">
-      <div class="list">
-        <ItemComponent v-for="(employee, index) in employees" :key="index" :number="index + paginationData.from"
-          :item="employee" first-section-key="fullname" @click="goToDetail(employee)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="employees.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <ItemComponent v-for="(employee, index) in employees" :key="index" :number="index + paginationData.from"
+            :item="employee" :first-section="employee.username" :second-section="employee.role"
+            @click="goToDetail(employee)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -34,12 +47,12 @@ const route = useRoute()
 const router = useRouter()
 const employeeStore = useEmployeeStore()
 
-const { employees, paginationData } = storeToRefs(employeeStore)
+const { employees, paginationData, isLoading } = storeToRefs(employeeStore)
 
 onMounted(async () => {
   // Handle first load
-  if (!route.query.page || !route.query.month || !route.query.year) {
-    updateQuery(router, route, { ...route.query, page: 1 })
+  if (!route.query.page) {
+    updateQuery(router, route, { page: 1 })
     return
   }
   fetchEmployees()
@@ -59,12 +72,12 @@ const fetchEmployees = async () => {
   employeeStore.getAllEmployee({ page, search })
 }
 
-const searchEmployee = () => {
-  console.log('SEARCH EMPLOYEE')
+const searchEmployee = (search) => {
+  updateQuery(router, route, { ...route.query, search })
 }
 
-const handleUpdateSearch = () => {
-  debounce(searchEmployee, 1000, 'search-employee')
+const handleUpdateSearch = (search) => {
+  debounce(() => searchEmployee(search), 1000, 'search-employee')
 }
 
 const goToAdd = () => {
@@ -83,5 +96,15 @@ const goToDetail = async (employee) => {
 
 .list {
   margin: 3.5% 0%;
+}
+
+.contain {
+  .lower {
+
+    .loading-text,
+    .no-data-text {
+      height: 65vh;
+    }
+  }
 }
 </style>
