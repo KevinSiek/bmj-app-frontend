@@ -5,13 +5,16 @@
         <SearchBar @searched="handleUpdateSearch" />
       </div>
     </div>
-    <div class="lower shadow">
+    <div class="lower paginate shadow">
       <SelectDate />
       <div class="list">
         <ItemComponent v-for="(quotation, index) in quotationReviews" :key="index" :number="index + paginationData.from"
-          :item="quotation" @click="goToDetail(quotation)" />
+          :item="quotation" :first-section="quotation.project.quotationNumber" :second-section="quotation.project.date"
+          :third-section="quotation.project.type" :current-status="quotation.currentStatus"
+          @click="goToDetail(quotation)" />
       </div>
     </div>
+    <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
   </div>
 </template>
 
@@ -20,23 +23,26 @@ import { menuMapping as menuConfig } from '@/config'
 import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
+import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import { onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
+import { useDate } from '@/composeable/useDate'
 
 const route = useRoute()
 const router = useRouter()
 const quotationStore = useQuotationStore()
+const { selectedMonth, selectedYear } = useDate()
 
-const { quotationReviews } = storeToRefs(quotationStore)
+const { quotationReviews, paginationData } = storeToRefs(quotationStore)
 
 onMounted(async () => {
   // Handle first load
-  if (!route.query.page) {
-    updateQuery(router, route, { ...route.query, page: 1 })
+  if (!route.query.page || !route.query.month || !route.query.year) {
+    updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchQuotationReview()
@@ -67,6 +73,8 @@ const handleUpdateSearch = (search) => {
 }
 
 const goToDetail = (quotation) => {
+  quotationStore.$resetQuotationReview()
+  quotationStore.setQuotationReview(quotation)
   router.push(`${menuConfig.quotation_review.path}/${quotation.slug}`)
 }
 
