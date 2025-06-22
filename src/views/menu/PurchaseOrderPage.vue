@@ -7,9 +7,23 @@
     </div>
     <div class="lower paginate shadow">
       <SelectDate />
-      <div class="list">
-        <ItemComponent v-for="(po, index) in purchaseOrders" :key="index" :number="index + paginationData.from"
-          :item="po" first-section-key="no_po" second-section-key="date" @click="goToDetail(po)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="purchaseOrders.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <ItemComponent v-for="(po, index) in purchaseOrders" :key="index" :number="index + paginationData.from"
+            :item="po" :first-section="po.purchaseOrder.purchaseOrderNumber"
+            :second-section="po.purchaseOrder.purchaseOrderDate" :third-section="po.purchaseOrder.type" wideRow
+            :current-status="paymentStatus(po)" @click="goToDetail(po)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -35,12 +49,12 @@ const router = useRouter()
 const purchaseOrderStore = usePurchaseOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { purchaseOrders, paginationData } = storeToRefs(purchaseOrderStore)
+const { purchaseOrders, paginationData, isLoading } = storeToRefs(purchaseOrderStore)
 
 onMounted(async () => {
   // Handle first load
   if (!route.query.page || !route.query.month || !route.query.year) {
-    updateQuery(router, route, { ...route.query, page: 1, month: selectedMonth.value, year: selectedYear.value })
+    updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchPurchaseOrder()
@@ -55,17 +69,26 @@ watch(() => route.query, (before, after) => {
   }
 })
 
+const paymentStatus = (item) => {
+  if (item?.proformaInvoice) {
+    const pi = item.proformaInvoice
+    if (pi.isFullPaid) return item.currentStatus + ' (Full Paid)'
+    else if (pi.isDpPaid) return item.currentStatus + ' (DP Paid)'
+    else return item.currentStatus + ' (Unpaid)'
+  }
+  return item.currentStatus
+}
 const fetchPurchaseOrder = async () => {
   const { page, search, month, year } = route.query
   purchaseOrderStore.getAllPurchaseOrders({ page, search, month, year })
 }
 
-const searchPurchaseOrder = () => {
-  console.log('SEARCH PURCHASE ORDER')
+const searchPurchaseOrder = (search) => {
+  updateQuery(router, route, { ...route.query, search })
 }
 
-const handleUpdateSearch = () => {
-  debounce(searchPurchaseOrder, 1000, 'search-purchaseOrder')
+const handleUpdateSearch = (search) => {
+  debounce(() => searchPurchaseOrder(search), 1000, 'search-purchaseOrder')
 }
 
 const goToDetail = async (po) => {

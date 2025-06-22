@@ -6,28 +6,31 @@
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.no" placeholder="No">
+            <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderNumber"
+              placeholder="No" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.date" placeholder="Date">
+            <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderDate"
+              placeholder="Date" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Project Type</label><br>
             <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.type"
-              placeholder="Project Type">
+              placeholder="Project Type" disabled>
           </div>
         </div>
         <div class="right">
           <div class="title">Proforma Invoice</div>
           <div class="input form-group col-12">
             <label for="name">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="purchaseOrder.proformaInvoice.no" placeholder="No">
+            <input type="text" class="form-control mt-2" v-model="purchaseOrder.proformaInvoice.proformaInvoiceNumber"
+              placeholder="No" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="purchaseOrder.proformaInvoice.date"
-              placeholder="Date">
+            <input type="text" class="form-control mt-2" v-model="purchaseOrder.proformaInvoice.proformaInvoiceDate"
+              placeholder="Date" disabled>
           </div>
         </div>
       </div>
@@ -38,23 +41,24 @@
             <div class="input form-group col-12">
               <label for="">Company Name</label><br>
               <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.companyName"
-                placeholder="Company Name">
+                placeholder="Company Name" disabled>
             </div>
             <div class="input form-group col-12">
               <label for="">Address</label><br>
               <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.address"
-                placeholder="Address">
+                placeholder="Address" disabled>
             </div>
             <div class="input form-group col-12">
               <div class="row">
                 <div class="col-6">
                   <label for="">City</label><br>
-                  <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.city" placeholder="City">
+                  <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.city" placeholder="City"
+                    disabled>
                 </div>
                 <div class="col-6">
                   <label for="">Province</label><br>
                   <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.province"
-                    placeholder="Province">
+                    placeholder="Province" disabled>
                 </div>
               </div>
             </div>
@@ -62,26 +66,27 @@
           <div class="right">
             <div class="input form-group col-12">
               <label for="">Office</label><br>
-              <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.office" placeholder="Office">
+              <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.office" placeholder="Office"
+                disabled>
             </div>
             <div class="input form-group col-12">
               <div class="row">
                 <div class="col-6">
                   <label for="">Urban</label><br>
                   <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.urban"
-                    placeholder="Urban">
+                    placeholder="Urban" disabled>
                 </div>
                 <div class="col-6">
                   <label for="">Subdistrict</label><br>
                   <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.subdistrict"
-                    placeholder="Subdistrict">
+                    placeholder="Subdistrict" disabled>
                 </div>
               </div>
             </div>
             <div class="input form-group col-12">
               <label for="">Postal Code</label><br>
               <input type="text" class="form-control mt-2" v-model="purchaseOrder.customer.postalCode"
-                placeholder="Postal Code">
+                placeholder="Postal Code" disabled>
             </div>
           </div>
         </div>
@@ -107,7 +112,7 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit }}</td>
-                <td class="table-col table-name">{{ sparepart.unitPrice }}</td>
+                <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
                 <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
                 <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
@@ -182,7 +187,7 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="purchaseOrder.notes"></textarea>
+            v-model="purchaseOrder.notes" disabled></textarea>
         </div>
       </div>
     </form>
@@ -192,7 +197,7 @@
       Advance Payment:
     </div>
     <div class="value">
-      {{ purchaseOrder.downPayment }}
+      {{ purchaseOrder.downPayment }} %
     </div>
   </div>
   <div class="button">
@@ -200,7 +205,15 @@
       <!-- <button type="button" class="btn btn-edit">Edit</button> -->
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process">Process</button>
+      <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation">Full
+        Paid</button>
+      <button v-if="isShowReady" type="button" class="btn btn-process mx-3" @click="setToReadyConfirmation">Sparepart
+        Ready</button>
+      <button v-if="isShowCreatePi" type="button" class="btn btn-process mx-3" @click="createPiConfirmation">Create
+        PI</button>
+      <button v-if="isShowRelease" type="button" class="btn btn-process mx-3" @click="doRelease">Release</button>
+      <button v-if="isShowFinished" type="button" class="btn btn-process mx-3"
+        @click="setToFinishConfirmation">Finish</button>
     </div>
   </div>
 </template>
@@ -208,17 +221,104 @@
 <script setup>
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onBeforeMount, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { common, menuMapping as menuConfig } from '@/config'
+import { useRole } from '@/composeable/useRole'
+import { useModalStore } from '@/stores/modal'
+import { useTrackStore } from '@/stores/track'
 
+const router = useRouter()
 const route = useRoute()
+const { isRoleDirector, isRoleMarketing, isRoleInventory, isRoleFinance, isRoleService } = useRole()
 const purchaseOrderStore = usePurchaseOrderStore()
+const modalStore = useModalStore()
+const trackStore = useTrackStore()
 
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
-onMounted(() => {
-  purchaseOrderStore.getPurchaseOrder(route.params.id)
+const isStatus = (status) => computed(() => purchaseOrder.value.currentStatus == status)
+const isCurrentPrepare = isStatus(common.status.po.prepare)
+const isCurrentRelease = isStatus(common.status.po.release)
+const isCurrentPaid = isStatus(common.status.po.dpPaid)
+
+const isShowFullPaid = computed(() =>
+  (isRoleFinance.value || isRoleDirector.value) &&
+  purchaseOrder.value.proformaInvoice.isDpPaid == true &&
+  purchaseOrder.value.proformaInvoice.isFullPaid !== true
+)
+const isShowReady = computed(() => (isRoleInventory.value || isRoleDirector.value) && isCurrentPrepare.value)
+const isShowCreatePi = computed(() =>
+  (isRoleFinance.value || isRoleDirector.value) &&
+  isCurrentPrepare.value &&
+  !purchaseOrder.value.status.some(item => item.state === common.track.pi)
+)
+const isShowRelease = computed(() =>
+  (isRoleMarketing.value || isRoleMarketing.value || isRoleDirector.value) &&
+  isCurrentPaid.value &
+  !purchaseOrder.value.status.some(item => item.state === common.track.release)
+)
+const isShowFinished = computed(() => (isRoleMarketing.value || isRoleDirector.value) && isCurrentRelease.value)
+
+const fetchData = async () => {
+  await purchaseOrderStore.getPurchaseOrder(route.params.id)
+  await trackStore.setTrackData(purchaseOrder.value.status)
+}
+onBeforeMount(() => {
+  if (!purchaseOrder.value) purchaseOrderStore.$resetPurchaseOrder()
 })
+onMounted(async () => {
+  await fetchData()
+})
+
+const fullPaid = async () => {
+  try {
+    await purchaseOrderStore.fullPaid(route.params.id)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+const setFullPaidConfirmation = () => {
+  modalStore.openConfirmationModal('Purchase Order has been Paid ?', 'Purchase Order has been paid', fullPaid)
+}
+const setToReady = async () => {
+  try {
+    await purchaseOrderStore.updateStatus(route.params.id, common.status.po.ready)
+    fetchData()
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+const setToReadyConfirmation = () => {
+  modalStore.openConfirmationModal('Sparepart is Ready ?', 'Spareparts are Ready', setToReady)
+}
+
+const createProformaInvoice = async () => {
+  try {
+    await purchaseOrderStore.processToProformaInvoice(route.params.id)
+    await router.push(`${menuConfig.proforma_invoice.path}`)
+  } catch (error) {
+    throw error.data.error
+  }
+}
+const createPiConfirmation = () => {
+  modalStore.openConfirmationModal('to create Proforma Invoice ?', 'PI Created', createProformaInvoice)
+}
+
+const doRelease = async () => {
+  await router.push(`${menuConfig.work_order.path}/add/${route.params.id}`)
+}
+
+const setToFinish = async () => {
+  try {
+    await purchaseOrderStore.updateStatus(route.params.id, common.status.po.finished)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+const setToFinishConfirmation = () => {
+  modalStore.openConfirmationModal('Purchase Order has been Finished ?', 'Purchase Order Finished', setToFinish)
+}
 </script>
 
 <style lang="scss" scoped>
