@@ -1,206 +1,115 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import workOrderApi from '@/api/work-order'
 
 export const useWorkOrderStore = defineStore('work-order', () => {
-  const workOrder = reactive({
-    id: '',
-    no_wo: '',
-    serviceOrder: {
-      no: '',
-      date: '',
-      receivedBy: '',
-      startDate: '',
-      endDate: ''
-    },
-    proformaInvoice: {
-      no: '',
-      date: ''
-    },
-    customer: {
-      companyName: '',
-      address: '',
-      city: '',
-      province: '',
-      office: '',
-      urban: '',
-      subdistrict: '',
-      postalCode: ''
-    },
-    units: [
-      {
-        jobDescription: '',
-        unitType: '',
-        quantity: 0
-      }
-    ],
-    poc: {
-      compiled: '',
-      headOfService: '',
-      director: '',
-      worker: [],
-      approver: ''
-    },
-    date: {
-      start: '',
-      end: ''
-    },
-    description: '',
-    additional: {
-      spareparts: '',
-      backupSparepart: '',
-      scope: '',
-      vaccine: '',
-      apd: '',
-      peduliLindungi: '',
-      executionTime: ''
-    }
-  })
+  const workOrder = ref(null)
   const workOrders = ref([])
   const paginationData = ref({})
+  const isLoading = ref(false)
 
-  function $resetWorkOrder () {
-    // Reset basic properties
-    workOrder.id = ''
-    workOrder.no_wo = ''
-    workOrder.description = ''
-
-    // Reset serviceOrder properties
-    workOrder.serviceOrder.no = ''
-    workOrder.serviceOrder.date = ''
-    workOrder.serviceOrder.receivedBy = ''
-    workOrder.serviceOrder.startDate = ''
-    workOrder.serviceOrder.endDate = ''
-
-    // Reset proformaInvoice properties
-    workOrder.proformaInvoice.no = ''
-    workOrder.proformaInvoice.date = ''
-
-    // Reset customer properties
-    workOrder.customer.companyName = ''
-    workOrder.customer.address = ''
-    workOrder.customer.city = ''
-    workOrder.customer.province = ''
-    workOrder.customer.office = ''
-    workOrder.customer.urban = ''
-    workOrder.customer.subdistrict = ''
-    workOrder.customer.postalCode = ''
-
-    // Reset units array
-    workOrder.units = []
-
-    // Reset poc properties
-    workOrder.poc.compiled = ''
-    workOrder.poc.headOfService = ''
-    workOrder.poc.director = ''
-    workOrder.poc.worker = []
-    workOrder.poc.approver = ''
-
-    // Reset date properties
-    workOrder.date.start = ''
-    workOrder.date.end = ''
-
-    // Reset additional properties
-    workOrder.additional.spareparts = ''
-    workOrder.additional.backupSparepart = ''
-    workOrder.additional.scope = ''
-    workOrder.additional.vaccine = ''
-    workOrder.additional.apd = ''
-    workOrder.additional.peduliLindungi = ''
-    workOrder.additional.executionTime = ''
-  }
-
-  function setWorkOrder (data) {
-    // Set basic properties with fallback values
-    workOrder.id = data.id || ''
-    workOrder.no_wo = data.no_wo || ''
-    workOrder.description = data.description || ''
-
-    // Set serviceOrder properties
-    workOrder.serviceOrder.no = data.serviceOrder?.no || ''
-    workOrder.serviceOrder.date = data.serviceOrder?.date || ''
-    workOrder.serviceOrder.receivedBy = data.serviceOrder?.receivedBy || ''
-    workOrder.serviceOrder.startDate = data.serviceOrder?.startDate || ''
-    workOrder.serviceOrder.endDate = data.serviceOrder?.endDate || ''
-
-    // Set proformaInvoice properties
-    workOrder.proformaInvoice.no = data.proformaInvoice?.no || ''
-    workOrder.proformaInvoice.date = data.proformaInvoice?.date || ''
-
-    // Set customer properties
-    workOrder.customer.companyName = data.customer?.companyName || ''
-    workOrder.customer.address = data.customer?.address || ''
-    workOrder.customer.city = data.customer?.city || ''
-    workOrder.customer.province = data.customer?.province || ''
-    workOrder.customer.office = data.customer?.office || ''
-    workOrder.customer.urban = data.customer?.urban || ''
-    workOrder.customer.subdistrict = data.customer?.subdistrict || ''
-    workOrder.customer.postalCode = data.customer?.postalCode || ''
-
-    // Set units array with proper mapping
-    workOrder.units = (data.units || []).map(unit => ({
-      jobDescription: unit.jobDescription || '',
-      unitType: unit.unitType || '',
-      quantity: unit.quantity || 0
-    }))
-
-    // Set poc properties
-    workOrder.poc.compiled = data.poc?.compiled || ''
-    workOrder.poc.headOfService = data.poc?.headOfService || ''
-    workOrder.poc.director = data.poc?.director || ''
-    workOrder.poc.worker = data.poc?.worker || []
-    workOrder.poc.approver = data.poc?.approver || ''
-
-    // Set date properties
-    workOrder.date.start = data.date?.start || ''
-    workOrder.date.end = data.date?.end || ''
-
-    // Set additional properties
-    workOrder.additional.spareparts = data.additional?.spareparts || ''
-    workOrder.additional.backupSparepart = data.additional?.backupSparepart || ''
-    workOrder.additional.scope = data.additional?.scope || ''
-    workOrder.additional.vaccine = data.additional?.vaccine || ''
-    workOrder.additional.apd = data.additional?.apd || ''
-    workOrder.additional.peduliLindungi = data.additional?.peduliLindungi || ''
-    workOrder.additional.executionTime = data.additional?.executionTime || ''
+  function mapWorkOrder (data) {
+    return {
+      id: data?.id || '',
+      workOrderNumber: data?.work_order_number || '',
+      serviceOrder: {
+        no: data?.service_order?.no || '',
+        date: data?.service_order?.date || '',
+        receivedBy: data?.service_order?.received_by || '',
+        startDate: data?.service_order?.start_date || '',
+        endDate: data?.service_order?.end_date || ''
+      },
+      currentStatus: data?.current_status || '',
+      proformaInvoice: {
+        proformaInvoiceNumber: data?.proforma_invoice?.proforma_invoice_number || '',
+        proformaInvoiceDate: data?.proforma_invoice?.proforma_invoice_date || ''
+      },
+      customer: {
+        companyName: data?.customer?.company_name || '',
+        address: data?.customer?.address || '',
+        city: data?.customer?.city || '',
+        province: data?.customer?.province || '',
+        office: data?.customer?.office || '',
+        urban: data?.customer?.urban || '',
+        subdistrict: data?.customer?.subdistrict || '',
+        postalCode: data?.customer?.postal_code || ''
+      },
+      units: (data?.units || []).map(unit => ({
+        jobDescriptions: unit?.job_descriptions || '',
+        unitType: unit?.unit_type || '',
+        quantity: unit?.quantity || 0
+      })),
+      poc: {
+        compiled: data?.poc?.compiled || '',
+        headOfService: data?.poc?.head_of_service || '',
+        director: data?.poc?.director || '',
+        worker: data?.poc?.worker || [],
+        approver: data?.poc?.approver || ''
+      },
+      date: {
+        startDate: data?.date?.start_date || '',
+        endDate: data?.date?.end_date || ''
+      },
+      description: data?.description || '',
+      additional: {
+        spareparts: data?.additional?.spareparts || '',
+        backupSparepart: data?.additional?.backup_sparepart || '',
+        scope: data?.additional?.scope || '',
+        vaccine: data?.additional?.vaccine || '',
+        apd: data?.additional?.apd || '',
+        peduliLindungi: data?.additional?.peduli_lindungi || '',
+        executionTime: data?.additional?.execution_time || ''
+      }
+    }
   }
 
   async function getAllWorkOrders(param) {
+    isLoading.value = true
     const { data } = await workOrderApi.getAllWorkOrder(param)
-    workOrders.value = data.data
+    workOrders.value = data.data.map(mapWorkOrder)
+    console.log(workOrders.value)
     paginationData.value = data
-    console.log('FETCH WORK ORDER', data)
+    isLoading.value = false
   }
 
   async function getWorkOrder(id) {
     const { data } = await workOrderApi.getWorkOrderById(id)
-    setWorkOrder(data)
+    workOrder.value = mapWorkOrder(data)
+    console.log(workOrder.value)
   }
 
   async function addWorkOrder() {
+    console.log(workOrder.value)
     await workOrderApi.addWorkOrder(workOrder)
-    $resetWorkOrder()
+  }
+
+  async function setWorkOrder (selectedWorkOrder) {
+    workOrder.value = selectedWorkOrder
   }
 
   async function updateWorkOrder() {
-    const { data } = await workOrderApi.updateWorkOrder(workOrder.id, workOrder)
-    setWorkOrder(data)
+    const { data } = await workOrderApi.updateWorkOrder(workOrder.value.id, workOrder)
   }
 
   async function deleteWorkOrder(id) {
     await workOrderApi.deleteWorkOrder(id)
   }
 
+  async function $resetWorkOrder () {
+    workOrder.value = mapWorkOrder()
+  }
+
   return {
     workOrder,
     workOrders,
     paginationData,
-    $resetWorkOrder,
+    isLoading,
     getAllWorkOrders,
     getWorkOrder,
-    setWorkOrder,
     updateWorkOrder,
+    setWorkOrder,
     deleteWorkOrder,
-    addWorkOrder
+    addWorkOrder,
+    $resetWorkOrder
   }
 })

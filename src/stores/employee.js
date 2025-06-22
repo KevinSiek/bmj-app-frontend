@@ -1,75 +1,69 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import employeeApi from '@/api/employee'
 
 export const useEmployeeStore = defineStore('employee', () => {
-  const employee = reactive({
-    id: '',
-    fullname: '',
-    email: '',
-    role: '',
-    password: '',
-    password_confirmation: ''
-  })
+  const employee = ref(null)
   const employees = ref([])
   const paginationData = ref({})
+  const isLoading = ref(false)
 
-  function $resetEmployee () {
-    // Reset basic properties
-    employee.id = ''
-    employee.fullname = ''
-    employee.email = ''
-    employee.role = ''
-    employee.password = ''
-    employee.password_confirmation = ''
-  }
-
-  function setEmployee (data) {
-    // Set basic properties with fallback values
-    employee.id = data.id || ''
-    employee.fullname = data.fullname || ''
-    employee.email = data.email || ''
-    employee.role = data.role || ''
-    employee.password = data.password || ''
-    employee.password_confirmation = ''
+  function mapEmployee (data) {
+    return {
+      id: data?.id || '',
+      fullname: data?.fullname || '',
+      username: data?.username || '',
+      email: data?.email || '',
+      role: data?.role || '',
+      password: data?.password || '',
+      passwordConfirmation: data?.password_confirmation || ''
+    }
   }
 
   async function getAllEmployee (param) {
+    isLoading.value = true
     const { data } = await employeeApi.getAllEmployee(param)
-    employees.value = data.data
+    employees.value = data.data.map(mapEmployee)
     paginationData.value = data
-    console.log('FETCH EMPLOYEE', data)
+    isLoading.value = false
   }
 
   async function getEmployee (id) {
     const { data } = await employeeApi.getEmployeeById(id)
-    setEmployee(data)
+    employee.value = mapEmployee(data)
   }
 
   async function addEmployee () {
-    await employeeApi.addEmployee(employee)
-    $resetEmployee()
+    const data = await employeeApi.addEmployee(employee.value)
+  }
+
+  async function setEmployee (selectedEmployee) {
+    employee.value = selectedEmployee
   }
 
   async function updateEmployee () {
-    const { data } = await employeeApi.updateEmployee(employee.id, employee)
-    setEmployee(data)
+    const { data } = await employeeApi.updateEmployee(employee.value.id, employee.value)
   }
 
   async function deleteEmployee (id) {
     await employeeApi.deleteEmployee(id)
   }
 
+  async function $resetEmployee () {
+    employee.value = mapEmployee()
+  }
+
   return {
     employee,
     employees,
     paginationData,
-    $resetEmployee,
+    isLoading,
     getAllEmployee,
     getEmployee,
-    setEmployee,
     updateEmployee,
     deleteEmployee,
-    addEmployee
+    addEmployee,
+    $resetEmployee,
+    setEmployee
   }
 })

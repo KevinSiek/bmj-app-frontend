@@ -1,152 +1,110 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import proformaInvoiceApi from '@/api/pi'
 
 export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
-  const proformaInvoice = reactive({
-    id: '',
-    no_pi: '',
-    project: {
-      noProformaInvoice: '',
-      type: ''
-    },
-    customer: {
-      companyName: '',
-      address: '',
-      city: '',
-      province: '',
-      office: '',
-      urban: '',
-      subdistrict: '',
-      postalCode: ''
-    },
-    price: {
-      amount: 0,
-      discount: 0,
-      subtotal: 0,
-      advancePayment: 0,
-      total: 0,
-      vat: 0,
-      totalAmount: 0
-    },
-    downPayment: 0,
-    notes: '',
-    spareparts: []
-  })
+  const proformaInvoice = ref(null)
   const proformaInvoices = ref([])
   const paginationData = ref({})
+  const isLoading = ref(false)
 
-  function $resetProformaInvoice () {
-    // Reset basic properties
-    proformaInvoice.id = ''
-    proformaInvoice.no_pi = ''
-    proformaInvoice.notes = ''
-    proformaInvoice.downPayment = 0
-
-    // Reset project properties
-    proformaInvoice.project.noProformaInvoice = ''
-    proformaInvoice.project.type = ''
-
-    // Reset customer properties
-    proformaInvoice.customer.companyName = ''
-    proformaInvoice.customer.address = ''
-    proformaInvoice.customer.city = ''
-    proformaInvoice.customer.province = ''
-    proformaInvoice.customer.office = ''
-    proformaInvoice.customer.urban = ''
-    proformaInvoice.customer.subdistrict = ''
-    proformaInvoice.customer.postalCode = ''
-
-    // Reset price properties
-    proformaInvoice.price.amount = 0
-    proformaInvoice.price.discount = 0
-    proformaInvoice.price.subtotal = 0
-    proformaInvoice.price.advancePayment = 0
-    proformaInvoice.price.total = 0
-    proformaInvoice.price.vat = 0
-    proformaInvoice.price.totalAmount = 0
-
-    // Reset spareparts array
-    proformaInvoice.spareparts = []
-  }
-
-  function setProformaInvoice (data) {
-    // Set basic properties with fallback values
-    proformaInvoice.id = data.id || ''
-    proformaInvoice.no_pi = data.no_pi || ''
-    proformaInvoice.notes = data.notes || ''
-    proformaInvoice.downPayment = data.downPayment || 0
-
-    // Set project properties
-    proformaInvoice.project.noProformaInvoice = data.project?.noProformaInvoice || ''
-    proformaInvoice.project.type = data.project?.type || ''
-
-    // Set customer properties
-    proformaInvoice.customer.companyName = data.customer?.companyName || ''
-    proformaInvoice.customer.address = data.customer?.address || ''
-    proformaInvoice.customer.city = data.customer?.city || ''
-    proformaInvoice.customer.province = data.customer?.province || ''
-    proformaInvoice.customer.office = data.customer?.office || ''
-    proformaInvoice.customer.urban = data.customer?.urban || ''
-    proformaInvoice.customer.subdistrict = data.customer?.subdistrict || ''
-    proformaInvoice.customer.postalCode = data.customer?.postalCode || ''
-
-    // Set price properties
-    proformaInvoice.price.amount = data.price?.amount || 0
-    proformaInvoice.price.discount = data.price?.discount || 0
-    proformaInvoice.price.subtotal = data.price?.subtotal || 0
-    proformaInvoice.price.advancePayment = data.price?.advancePayment || 0
-    proformaInvoice.price.total = data.price?.total || 0
-    proformaInvoice.price.vat = data.price?.vat || 0
-    proformaInvoice.price.totalAmount = data.price?.totalAmount || 0
-
-    // Set spareparts array with proper mapping
-    proformaInvoice.spareparts = (data.spareparts || []).map(sparepart => ({
-      partName: sparepart.partName || '',
-      partNumber: sparepart.partNumber || '',
-      quantity: sparepart.quantity || 0,
-      unit: sparepart.unit || '',
-      unitPrice: sparepart.unitPrice || 0,
-      amount: sparepart.amount || 0
-    }))
+  function mapProformaInvoice (data) {
+    return {
+      id: data?.id || '',
+      status: data?.status || [],
+      currentStatus: data?.current_status || '',
+      project: {
+        proformaInvoiceNumber: data?.project?.proforma_invoice_number || '',
+        date: data?.project?.date || '',
+        type: data?.project?.type || ''
+      },
+      customer: {
+        companyName: data?.customer?.company_name || '',
+        address: data?.customer?.address || '',
+        city: data?.customer?.city || '',
+        province: data?.customer?.province || '',
+        office: data?.customer?.office || '',
+        urban: data?.customer?.urban || '',
+        subdistrict: data?.customer?.subdistrict || '',
+        postalCode: data?.customer?.postal_code || ''
+      },
+      price: {
+        amount: data?.price?.amount || 0,
+        discount: data?.price?.discount || 0,
+        subtotal: data?.price?.subtotal || 0,
+        advancePayment: data?.price?.advance_payment || 0,
+        total: data?.price?.total || 0,
+        vat: data?.price?.vat || 0,
+        totalAmount: data?.price?.total_amount || 0
+      },
+      downPayment: data?.down_payment || 0,
+      notes: data?.notes || '',
+      spareparts: (data?.spareparts || []).map(sparepart => ({
+        sparepartName: sparepart?.sparepart_name || '',
+        sparepartNumber: sparepart?.sparepart_number || '',
+        quantity: sparepart?.quantity || 0,
+        unitPriceSell: sparepart?.unit_price_sell || 0,
+        totalPrice: sparepart?.total_price || 0,
+        stock: sparepart?.stock || ''
+      }))
+    }
   }
 
   async function getAllProformaInvoices(param) {
+    isLoading.value = true
     const { data } = await proformaInvoiceApi.getAllProformaInvoice(param)
-    proformaInvoices.value = data.data
+    proformaInvoices.value = data.data.map(mapProformaInvoice)
     paginationData.value = data
-    console.log('FETCH PROFORMA INVOICE', data)
+    isLoading.value = false
   }
 
   async function getProformaInvoice(id) {
     const { data } = await proformaInvoiceApi.getProformaInvoiceById(id)
-    setProformaInvoice(data)
+    proformaInvoice.value = mapProformaInvoice(data)
   }
 
   async function addProformaInvoice() {
-    await proformaInvoiceApi.addProformaInvoice(proformaInvoice)
-    $resetProformaInvoice()
+    await proformaInvoiceApi.addProformaInvoice(proformaInvoice.value)
+  }
+
+  async function setProformaInvoice (selectedProformaInvoice) {
+    proformaInvoice.value = selectedProformaInvoice
   }
 
   async function updateProformaInvoice() {
-    const { data } = await proformaInvoiceApi.updateProformaInvoice(proformaInvoice.id, proformaInvoice)
-    setProformaInvoice(data)
+    console.log(proformaInvoice.value)
+    const { data } = await proformaInvoiceApi.updateProformaInvoice(proformaInvoice.value.id, proformaInvoice.value)
   }
 
   async function deleteProformaInvoice(id) {
     await proformaInvoiceApi.deleteProformaInvoice(id)
   }
 
+  async function processToInvoice (id) {
+    const response = await proformaInvoiceApi.processToInvoice(id)
+  }
+
+  async function dpPaid (id) {
+    const response = await proformaInvoiceApi.dpPaid(id)
+  }
+
+  async function $resetProformaInvoice () {
+    proformaInvoice.value = mapProformaInvoice()
+  }
+
   return {
     proformaInvoice,
     proformaInvoices,
     paginationData,
-    $resetProformaInvoice,
+    isLoading,
     getAllProformaInvoices,
     getProformaInvoice,
-    setProformaInvoice,
     updateProformaInvoice,
     deleteProformaInvoice,
-    addProformaInvoice
+    addProformaInvoice,
+    setProformaInvoice,
+    processToInvoice,
+    dpPaid,
+    $resetProformaInvoice
   }
 })

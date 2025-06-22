@@ -1,216 +1,222 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import quotationApi from '@/api/quotation'
 import { getAllSparepart } from '@/api/sparepart'
 
 export const useQuotationStore = defineStore('quotation', () => {
-  const quotation = reactive({
-    id: '',
-    slug: '',
-    no_quotation: '',
-    customer: {
-      companyName: '',
-      address: '',
-      city: '',
-      province: '',
-      office: '',
-      urban: '',
-      subdistrict: '',
-      postalCode: ''
-    },
-    project: {
-      noQuotation: '',
-      type: ''
-    },
-    price: {
-      subtotal: 0,
-      ppn: 0,
-      grandTotal: 0
-    },
-    status: '',
-    notes: '',
-    spareparts: [
-      {
-        partName: '',
-        partNumber: '',
-        quantity: 0,
-        unitPrice: 0,
-        totalPrice: 0,
-        stock: ''
-      }
-    ]
-  })
+  const quotation = ref(null)
   const quotations = ref([])
-  const quotationReview = reactive({
-    customer: {
-      companyName: '',
-      address: '',
-      city: '',
-      province: '',
-      office: '',
-      urban: '',
-      subdistrict: '',
-      postalCode: ''
-    },
-    project: {
-      noQuotation: '',
-      type: ''
-    },
-    price: {
-      subtotal: 0,
-      ppn: 0,
-      grandTotal: 0
-    },
-    status: '',
-    notes: '',
-    spareparts: [
-      {
-        partName: '',
-        partNumber: '',
-        quantity: 0,
-        unitPrice: 0,
-        totalPrice: 0,
-        stock: ''
-      }
-    ]
-  })
+  const quotationReview = ref(null)
   const quotationReviews = ref([])
   const paginationData = ref({})
   const searchedSpareparts = ref([])
+  const isLoading = ref(false)
 
-  function $resetQuotation () {
-    // Reset basic properties
-    quotation.id = ''
-    quotation.slug = ''
-    quotation.no_quotation = ''
-    quotation.status = ''
-    quotation.notes = ''
-
-    // Reset customer properties
-    quotation.customer.companyName = ''
-    quotation.customer.address = ''
-    quotation.customer.city = ''
-    quotation.customer.province = ''
-    quotation.customer.office = ''
-    quotation.customer.urban = ''
-    quotation.customer.subdistrict = ''
-    quotation.customer.postalCode = ''
-
-    // Reset project properties
-    quotation.project.noQuotation = ''
-    quotation.project.type = ''
-
-    // Reset price properties
-    quotation.price.subtotal = 0
-    quotation.price.ppn = 0
-    quotation.price.grandTotal = 0
-
-    // Reset spareparts array
-    quotation.spareparts = []
+  function mapQuotation (data) {
+    return {
+      id: data?.id || '',
+      slug: data?.slug || '',
+      version: data?.version || '',
+      customer: {
+        companyName: data?.customer.company_name || '',
+        address: data?.customer.address || '',
+        city: data?.customer.city || '',
+        province: data?.customer.province || '',
+        office: data?.customer.office || '',
+        urban: data?.customer.urban || '',
+        subdistrict: data?.customer?.subdistrict || '',
+        postalCode: data?.customer?.postal_code || ''
+      },
+      project: {
+        quotationNumber: data?.project?.quotation_number || '',
+        type: data?.project?.type || '',
+        date: data?.project?.date || '',
+      },
+      price: {
+        amount: data?.price.amount || 0,
+        discount: data?.price.discount || 0,
+        subtotal: data?.price?.subtotal || 0,
+        ppn: data?.price?.ppn || 0,
+        grandTotal: data?.price?.grand_total || 0
+      },
+      currentStatus: data?.current_status || '',
+      status: data?.status || [],
+      notes: data?.notes || '',
+      spareparts: (data?.spareparts || []).map(sparepart => ({
+        sparepartId: sparepart?.sparepart_id || sparepart?.id || '',
+        sparepartName: sparepart?.sparepart_name || '',
+        sparepartNumber: sparepart?.sparepart_number || '',
+        quantity: sparepart?.quantity || 0,
+        unitPriceSell: sparepart?.unit_price_sell || 0,
+        totalPrice: sparepart?.total_price || 0,
+        stock: sparepart?.stock || ''
+      }))
+    }
   }
 
-  function setQuotation (data) {
-    // Set basic properties
-    quotation.id = data.id || ''
-    quotation.slug = data.slug || ''
-    quotation.no_quotation = data.no_quotation || ''
-    quotation.status = data.status || ''
-    quotation.notes = data.notes || ''
-
-    // Set customer properties
-    quotation.customer.companyName = data.customer?.companyName || ''
-    quotation.customer.address = data.customer?.address || ''
-    quotation.customer.city = data.customer?.city || ''
-    quotation.customer.province = data.customer?.province || ''
-    quotation.customer.office = data.customer?.office || ''
-    quotation.customer.urban = data.customer?.urban || ''
-    quotation.customer.subdistrict = data.customer?.subdistrict || ''
-    quotation.customer.postalCode = data.customer?.postalCode || ''
-
-    // Set project properties
-    quotation.project.noQuotation = data.project?.noQuotation || ''
-    quotation.project.type = data.project?.type || ''
-
-    // Set price properties
-    quotation.price.subtotal = data.price?.subtotal || 0
-    quotation.price.ppn = data.price?.ppn || 0
-    quotation.price.grandTotal = data.price?.grandTotal || 0
-
-    // Set spareparts array with proper mapping
-    quotation.spareparts = (data.spareparts || []).map(sparepart => ({
-      partName: sparepart.partName || '',
-      partNumber: sparepart.partNumber || '',
-      quantity: sparepart.quantity || 0,
-      unitPrice: sparepart.unitPrice || 0,
-      totalPrice: sparepart.totalPrice || 0,
-      stock: sparepart.stock || ''
-    }))
+  function mapQuotations (data) {
+    return {
+      quotationNumber: data?.quotation_number || '',
+      versions: (data?.versions || []).map(mapQuotation)
+    }
   }
+
+  function mapSparepart (data) {
+    return {
+      sparepartId: data?.sparepart_id || data?.id || '',
+      slug: data?.slug || '',
+      sparepartNumber: data?.sparepart_number || '',
+      sparepartName: data?.sparepart_name || '',
+      totalUnit: data?.total_unit || 0,
+      unitPriceSell: data?.unit_price_sell || 0,
+      unitPriceBuy: (data?.unit_price_buy || []).map(buy => ({
+        seller: buy?.seller || '',
+        price: buy?.price || 0
+      }))
+    }
+  }
+
+  // function setQuotation (data) {
+  //   // Set basic properties
+  //   quotation.id = data.id || ''
+  //   quotation.slug = data.slug || ''
+  //   quotation.quotation_number = data.quotation_number || ''
+  //   quotation.status = data.status || ''
+  //   quotation.notes = data.notes || ''
+
+  //   // Set customer properties
+  //   quotation.customer.companyName = data.customer?.companyName || ''
+  //   quotation.customer.address = data.customer?.address || ''
+  //   quotation.customer.city = data.customer?.city || ''
+  //   quotation.customer.province = data.customer?.province || ''
+  //   quotation.customer.office = data.customer?.office || ''
+  //   quotation.customer.urban = data.customer?.urban || ''
+  //   quotation.customer.subdistrict = data.customer?.subdistrict || ''
+  //   quotation.customer.postalCode = data.customer?.postalCode || ''
+
+  //   // Set project properties
+  //   quotation.project.noQuotation = data.project?.noQuotation || ''
+  //   quotation.project.type = data.project?.type || ''
+
+  //   // Set price properties
+  //   quotation.price.subtotal = data.price?.subtotal || 0
+  //   quotation.price.ppn = data.price?.ppn || 0
+  //   quotation.price.grandTotal = data.price?.grandTotal || 0
+
+  //   // Set spareparts array with proper mapping
+  //   quotation.spareparts = (data.spareparts || []).map(sparepart => ({
+  //     partName: sparepart.partName || '',
+  //     sparepart_number: sparepart.sparepart_number || '',
+  //     quantity: sparepart.quantity || 0,
+  //     unitPrice: sparepart.unitPrice || 0,
+  //     totalPrice: sparepart.totalPrice || 0,
+  //     stock: sparepart.stock || ''
+  //   }))
+  // }
 
   async function getAllQuotation (param) {
-    console.log('FETCH QUOTATION', param)
+    isLoading.value = true
     const { data } = await quotationApi.getAllQuotations(param)
-    console.log("RES", data)
-    quotations.value = data.data
+    quotations.value = data.data.map(mapQuotations)
     paginationData.value = data
-  }
-
-  async function getAllQuotationReview (param) {
-    console.log('FETCH REVIEW QUOTATION BY DATE', param)
-    const { data } = await quotationApi.getAllReviewQuotations(param)
-    console.log("RES", data)
-    quotationReviews.value = data.data
-    paginationData.value = data
-  }
-
-  async function addQuotation () {
-    console.log('ADD QUOTATION')
-    $resetQuotation()
-    // if requestPriceChange === true, add to request review,, do not add quotation
-    const { data } = await quotationApi.addQuotation(quotation)
-    console.log('SUCCESS ADD', data)
-  }
-
-  async function updateQuotation () {
-    console.log('UPDATE QUOTATION')
-    // const { data } = await quotationApi.updateQuotation(quotation.id, quotation)
-    // setQuotation(data)
+    isLoading.value = false
   }
 
   async function getQuotation (id) {
-    console.log('slug', quotation.slug, 'id', id)
-    if(quotation.slug !== id) $resetQuotation()
     const { data } = await quotationApi.getQuotationyId(id)
-    console.log('GET QUOTATION', data)
-    setQuotation(data)
+    quotation.value = mapQuotation(data)
   }
 
-  async function processQuotation(id) {
-    // const response = await quotationApi.processQuotation(id)
+  async function getQuotationReview (id) {
+    const { data } = await quotationApi.getQuotationyId(id)
+    console.log('GET QUOTATION', data)
+    quotationReview.value = mapQuotation(data)
+  }
+
+async function getAllQuotationReview (param) {
+    isLoading.value = true
+    console.log('FETCH REVIEW QUOTATION BY DATE', param)
+    const { data } = await quotationApi.getAllReviewQuotations(param)
+    console.log("RES", data)
+    quotationReviews.value = data.data.map(mapQuotations)
+    paginationData.value = data
+    isLoading.value = false
+  }
+
+  async function addQuotation () {
+    const data = await quotationApi.addQuotation(quotation.value)
+    // if requestPriceChange === true, add to request review,, do not add quotation
+  }
+
+  async function setQuotation (selectedQuotation) {
+    quotation.value = selectedQuotation
+  }
+
+  async function setQuotationReview (selectedQuotation) {
+    quotationReview.value = selectedQuotation
+  }
+
+  async function editQuotation () {
+    console.log('UPDATE QUOTATION')
+    console.log('data', quotation.value)
+    await quotationApi.updateQuotation(quotation.value.slug, quotation.value)
+  }
+
+  async function processQuotation (id) {
+    console.log('ID', id)
+    const response = await quotationApi.processQuotation(id)
+    console.log('RES', response)
+  }
+
+  async function approveQuotation (id) {
+    console.log('APPROVE QUOTATION')
+    await quotationApi.approveQuotation(id)
+  }
+
+  async function rejectQuotation (id) {
+    await quotationApi.rejectQuotation(id)
   }
 
   async function getSpareparts (param) {
     console.log('SEARCH SPAREPART', param)
     const { data } = await getAllSparepart(param)
-    searchedSpareparts.value = data.data
-    console.log("List Sparepart", data.data)
+    console.log('RETURN SPAREPARTS', data)
+    searchedSpareparts.value = data.data.map(mapSparepart)
+    console.log("List Sparepart", searchedSpareparts.value)
+  }
+
+  async function $resetQuotation () {
+    quotation.value = mapQuotation()
+    console.log('DATA', quotation.value)
+  }
+
+  async function $resetQuotationReview () {
+    console.log('RESET QUOTATION REVIEW')
+    quotationReview.value = mapQuotation()
+    console.log('DATA', quotationReview.value)
   }
 
   return {
     quotation,
+    isLoading,
     quotations,
     quotationReview,
     quotationReviews,
     paginationData,
     searchedSpareparts,
     $resetQuotation,
-    setQuotation,
+    $resetQuotationReview,
     getAllQuotation,
     getAllQuotationReview,
     addQuotation,
-    updateQuotation,
+    setQuotation,
+    setQuotationReview,
+    editQuotation,
     getQuotation,
+    getQuotationReview,
     getSpareparts,
-    processQuotation
+    processQuotation,
+    approveQuotation,
+    rejectQuotation
   }
 })

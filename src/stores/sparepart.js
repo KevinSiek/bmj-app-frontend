@@ -1,84 +1,72 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import sparepartApi from '@/api/sparepart'
 
 export const useSparepartStore = defineStore('sparepart', () => {
-  const sparepart = reactive({
-    id: '',
-    no_sparepart: '',
-    sparepartName: '',
-    stock: 0,
-    partNumber: '',
-    sellingPrice: 0,
-    purchasesPrice: []
-  })
+  const sparepart = ref(null)
   const spareparts = ref([])
   const paginationData = ref({})
+  const isLoading = ref(false)
 
-  function $resetSparepart () {
-    // Reset basic properties
-    sparepart.id = ''
-    sparepart.no_sparepart = ''
-    sparepart.sparepartName = ''
-    sparepart.stock = 0
-    sparepart.partNumber = ''
-    sparepart.sellingPrice = 0
-
-    // Reset purchasesPrice array
-    sparepart.purchasesPrice = []
-  }
-
-  function setSparepart (data) {
-    // Set basic properties with fallback values
-    sparepart.id = data.id || ''
-    sparepart.no_sparepart = data.no_sparepart || ''
-    sparepart.sparepartName = data.sparepartName || ''
-    sparepart.stock = data.stock || 0
-    sparepart.partNumber = data.partNumber || ''
-    sparepart.sellingPrice = data.sellingPrice || 0
-
-    // Set purchasesPrice array with proper mapping
-    sparepart.purchasesPrice = (data.purchasesPrice || []).map(price => ({
-      seller: price.seller || '',
-      price: price.price || 0
-    }))
+  function mapSparepart (data) {
+    return {
+      sparepartId: data?.id || '',
+      slug: data?.slug || '',
+      sparepartNumber: data?.sparepart_number || '',
+      sparepartName: data?.sparepart_name || '',
+      totalUnit: data?.total_unit || 0,
+      unitPriceSell: data?.unit_price_sell || 0,
+      unitPriceBuy: (data?.unit_price_buy || []).map(buy => ({
+        seller: buy?.seller || '',
+        price: buy?.price || 0
+      }))
+    }
   }
 
   async function getAllSpareparts(param) {
+    isLoading.value = true
     const { data } = await sparepartApi.getAllSparepart(param)
-    spareparts.value = data.data
+    spareparts.value = data.data.map(mapSparepart)
     paginationData.value = data
+    isLoading.value = false
   }
 
   async function getSparepart(id) {
     const { data } = await sparepartApi.getSparepartById(id)
-    setSparepart(data)
+    sparepart.value = mapSparepart(data)
   }
 
   async function addSparepart() {
-    await sparepartApi.addSparepart(sparepart)
-    $resetSparepart()
+    const data = await sparepartApi.addSparepart(sparepart)
+  }
+
+  async function setSparepart (selectedSparepart) {
+    sparepart.value = selectedSparepart
   }
 
   async function updateSparepart() {
-    const { data } = await sparepartApi.updateSparepart(sparepart.id, sparepart)
-    setSparepart(data)
+    const { data } = await sparepartApi.updateSparepart(sparepart.value.id, sparepart)
   }
 
   async function deleteSparepart(id) {
     await sparepartApi.deleteSparepart(id)
   }
 
+  async function $resetSparepart () {
+    sparepart.value = mapSparepart()
+  }
+
   return {
     sparepart,
     spareparts,
     paginationData,
-    $resetSparepart,
+    isLoading,
     getAllSpareparts,
     getSparepart,
     setSparepart,
     updateSparepart,
     deleteSparepart,
-    addSparepart
+    addSparepart,
+    $resetSparepart
   }
 })

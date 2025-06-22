@@ -1,168 +1,103 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import invoiceApi from '@/api/invoice'
 
 export const useInvoiceStore = defineStore('invoice', () => {
-  const invoice = reactive({
-    id: '',
-    no_invoice: '',
-    purchaseOrder: {
-      no: '',
-      date: '',
-      type: '',
-      paymentDue: '',
-      discount: ''
-    },
-    invoice:{
-      no: '',
-      date: '',
-      termOfPayment: '',
-      subTotal: '',
-      grandTotal: ''
-    },
-    customer: {
-      companyName: '',
-      address: '',
-      city: '',
-      province: '',
-      office: '',
-      urban: '',
-      subdistrict: '',
-      postalCode: ''
-    },
-    notes: '',
-    price: {
-      subtotal: 0,
-      ppn: 0,
-      grandTotal: 0
-    },
-    spareparts: []
-  })
+  const invoice = ref(null)
   const invoices = ref([])
   const paginationData = ref({})
+  const isLoading = ref(false)
 
-  function $resetInvoice () {
-    // Reset basic properties
-    invoice.id = ''
-    invoice.no_invoice = ''
-    invoice.notes = ''
-
-    // Reset purchaseOrder properties
-    invoice.purchaseOrder.no = ''
-    invoice.purchaseOrder.date = ''
-    invoice.purchaseOrder.type = ''
-    invoice.purchaseOrder.paymentDue = ''
-    invoice.purchaseOrder.discount = ''
-
-    // Reset invoice properties
-    invoice.invoice.no = ''
-    invoice.invoice.date = ''
-    invoice.invoice.termOfPayment = ''
-    invoice.invoice.subTotal = ''
-    invoice.invoice.grandTotal = ''
-
-    // Reset customer properties
-    invoice.customer.companyName = ''
-    invoice.customer.address = ''
-    invoice.customer.city = ''
-    invoice.customer.province = ''
-    invoice.customer.office = ''
-    invoice.customer.urban = ''
-    invoice.customer.subdistrict = ''
-    invoice.customer.postalCode = ''
-
-    // Reset price properties
-    invoice.price.subtotal = 0
-    invoice.price.ppn = 0
-    invoice.price.grandTotal = 0
-
-    // Reset spareparts array
-    invoice.spareparts = []
-  }
-
-  function setInvoice (data) {
-    // Set basic properties with fallback values
-    invoice.id = data.id || ''
-    invoice.no_invoice = data.no_invoice || ''
-    invoice.notes = data.notes || ''
-
-    // Set purchaseOrder properties
-    invoice.purchaseOrder.no = data.purchaseOrder?.no || ''
-    invoice.purchaseOrder.date = data.purchaseOrder?.date || ''
-    invoice.purchaseOrder.type = data.purchaseOrder?.type || ''
-    invoice.purchaseOrder.paymentDue = data.purchaseOrder?.paymentDue || ''
-    invoice.purchaseOrder.discount = data.purchaseOrder?.discount || ''
-
-    // Set invoice properties
-    invoice.invoice.no = data.invoice?.no || ''
-    invoice.invoice.date = data.invoice?.date || ''
-    invoice.invoice.termOfPayment = data.invoice?.termOfPayment || ''
-    invoice.invoice.subTotal = data.invoice?.subTotal || ''
-    invoice.invoice.grandTotal = data.invoice?.grandTotal || ''
-
-    // Set customer properties
-    invoice.customer.companyName = data.customer?.companyName || ''
-    invoice.customer.address = data.customer?.address || ''
-    invoice.customer.city = data.customer?.city || ''
-    invoice.customer.province = data.customer?.province || ''
-    invoice.customer.office = data.customer?.office || ''
-    invoice.customer.urban = data.customer?.urban || ''
-    invoice.customer.subdistrict = data.customer?.subdistrict || ''
-    invoice.customer.postalCode = data.customer?.postalCode || ''
-
-    // Set price properties
-    invoice.price.subtotal = data.price?.subtotal || 0
-    invoice.price.ppn = data.price?.ppn || 0
-    invoice.price.grandTotal = data.price?.grandTotal || 0
-
-    // Set spareparts array with proper mapping
-    invoice.spareparts = (data.spareparts || []).map(sparepart => ({
-      partName: sparepart.partName || '',
-      partNumber: sparepart.partNumber || '',
-      quantity: sparepart.quantity || 0,
-      unit: sparepart.unit || '',
-      unitPrice: sparepart.unitPrice || 0,
-      totalPrice: sparepart.totalPrice || 0,
-      stock: sparepart.stock || 0
-    }))
+  function mapInvoice (data) {
+    return {
+      id: data?.id || '',
+      currentStatus: data?.current_status || '',
+      purchaseOrder: {
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
+        purchaseOrderType: data?.purchase_order?.purchase_order_type || '',
+        paymentDue: data?.purchase_order?.payment_due || '',
+        discount: data?.purchase_order?.discount || ''
+      },
+      invoice: {
+        invoiceNumber: data?.invoice?.invoice_number || '',
+        type: data?.invoice?.type || '',
+        date: data?.invoice?.date || '',
+        termOfPayment: data?.invoice?.term_of_payment || '',
+        subTotal: data?.invoice?.sub_total || '',
+        grandTotal: data?.invoice?.grand_total || ''
+      },
+      customer: {
+        companyName: data?.customer?.company_name || '',
+        address: data?.customer?.address || '',
+        city: data?.customer?.city || '',
+        province: data?.customer?.province || '',
+        office: data?.customer?.office || '',
+        urban: data?.customer?.urban || '',
+        subdistrict: data?.customer?.subdistrict || '',
+        postalCode: data?.customer?.postal_code || ''
+      },
+      notes: data?.notes || '',
+      price: {
+        subtotal: data?.price?.subtotal || 0,
+        ppn: data?.price?.ppn || 0,
+        grandTotal: data?.price?.grand_total || 0
+      },
+      spareparts: (data?.spareparts || []).map(sparepart => ({
+        sparepartName: sparepart?.sparepart_name || '',
+        sparepartNumber: sparepart?.sparepart_number || '',
+        quantity: sparepart?.quantity || 0,
+        unitPriceSell: sparepart?.unit_price_sell || 0,
+        totalPrice: sparepart?.total_price || 0,
+        stock: sparepart?.stock || ''
+      }))
+    }
   }
 
   async function getAllInvoices(param) {
+    isLoading.value = true
     const { data } = await invoiceApi.getAllInvoice(param)
-    invoices.value = data.data
+    invoices.value = data.data.map(mapInvoice)
     paginationData.value = data
-    console.log('FETCH INVOICE', data)
+    isLoading.value = false
   }
 
   async function getInvoice(id) {
     const { data } = await invoiceApi.getInvoiceById(id)
-    setInvoice(data)
+    invoice.value = mapInvoice(data)
   }
 
   async function addInvoice() {
     await invoiceApi.addInvoice(invoice)
-    $resetInvoice()
+  }
+
+  async function setInvoice (selectedInvoice) {
+    invoice.value = selectedInvoice
   }
 
   async function updateInvoice() {
-    const { data } = await invoiceApi.updateInvoice(invoice.id, invoice)
-    setInvoice(data)
+    const { data } = await invoiceApi.updateInvoice(invoice.value.id, invoice)
   }
 
   async function deleteInvoice(id) {
     await invoiceApi.deleteInvoice(id)
   }
 
+  async function $resetInvoice () {
+    invoice.value = mapInvoice()
+  }
+
   return {
     invoice,
     invoices,
     paginationData,
-    $resetInvoice,
+    isLoading,
     getAllInvoices,
     getInvoice,
     setInvoice,
     updateInvoice,
     deleteInvoice,
-    addInvoice
+    addInvoice,
+    $resetInvoice
   }
 })

@@ -14,7 +14,7 @@
             {{ router.currentRoute.value.name }}
           </div>
           <div v-if="router.currentRoute.value.meta.useTrack" class="track">
-            <button type="button" class="btn">Track</button>
+            <button type="button" class="btn" @click="trackStore.openTrackModal()">Track</button>
           </div>
         </div>
         <div class="profile-bar">
@@ -25,11 +25,12 @@
         <router-view />
       </div>
     </div>
-    <!-- <ModalMessage v-if="isShow"/> -->
   </div>
+  <TrackNav ref="popup" />
 </template>
 
 <script setup>
+import { defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import NavBarDesktopComponent from '@/components/NavbarDesktop.vue'
@@ -37,17 +38,15 @@ import NavBarMobileComponent from '@/components/NavbarMobile.vue'
 import ProfileComponent from '@/components/ProfileBar.vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '@/stores/main'
-// import ModalMessage from '@/components/ModalMessage.vue'
-// import { useInfoStore } from '@/stores/info'
+import { useTrackStore } from '@/stores/track'
+
+const TrackNav = defineAsyncComponent(() => import('@/components/TrackNav.vue'))
 
 const authStore = useAuthStore()
 const mainStore = useMainStore()
 const router = useRouter()
-const { user } = storeToRefs(authStore)
+const trackStore = useTrackStore()
 const { isMobile } = storeToRefs(mainStore)
-
-// const infoStore = useInfoStore()
-// const { isShow, messages } = storeToRefs(infoStore)
 
 const goBack = () => {
   if (router) router.back()

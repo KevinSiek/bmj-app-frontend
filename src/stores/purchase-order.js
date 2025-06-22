@@ -1,167 +1,126 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import purchaseOrderApi from '@/api/purchase-order'
 
 export const usePurchaseOrderStore = defineStore('purchase-order', () => {
-  const purchaseOrder = reactive({
-    id: '',
-    no_po: '',
-    purchaseOrder: {
-      no: '',
-      date: '',
-      type: ''
-    },
-    proformaInvoice: {
-      no: '',
-      date: ''
-    },
-    customer: {
-      companyName: '',
-      address: '',
-      city: '',
-      province: '',
-      office: '',
-      urban: '',
-      subdistrict: '',
-      postalCode: ''
-    },
-    price: {
-      amount: 0,
-      discount: 0,
-      subtotal: 0,
-      advancePayment: 0,
-      total: 0,
-      vat: 0,
-      totalAmount: 0
-    },
-    notes: '',
-    downPayment: 0,
-    spareparts: []
-  })
+  const purchaseOrder = ref(null)
   const purchaseOrders = ref([])
   const paginationData = ref({})
+  const isLoading = ref(false)
 
-  function $resetPurchaseOrder () {
-    // Reset basic properties
-    purchaseOrder.id = ''
-    purchaseOrder.no_po = ''
-    purchaseOrder.notes = ''
-    purchaseOrder.downPayment = 0
-
-    // Reset purchaseOrder properties
-    purchaseOrder.purchaseOrder.no = ''
-    purchaseOrder.purchaseOrder.date = ''
-    purchaseOrder.purchaseOrder.type = ''
-
-    // Reset proformaInvoice properties
-    purchaseOrder.proformaInvoice.no = ''
-    purchaseOrder.proformaInvoice.date = ''
-
-    // Reset customer properties
-    purchaseOrder.customer.companyName = ''
-    purchaseOrder.customer.address = ''
-    purchaseOrder.customer.city = ''
-    purchaseOrder.customer.province = ''
-    purchaseOrder.customer.office = ''
-    purchaseOrder.customer.urban = ''
-    purchaseOrder.customer.subdistrict = ''
-    purchaseOrder.customer.postalCode = ''
-
-    // Reset price properties
-    purchaseOrder.price.amount = 0
-    purchaseOrder.price.discount = 0
-    purchaseOrder.price.subtotal = 0
-    purchaseOrder.price.advancePayment = 0
-    purchaseOrder.price.total = 0
-    purchaseOrder.price.vat = 0
-    purchaseOrder.price.totalAmount = 0
-
-    // Reset spareparts array
-    purchaseOrder.spareparts = []
-  }
-
-  function setPurchaseOrder (data) {
-    // Set basic properties with fallback values
-    purchaseOrder.id = data.id || ''
-    purchaseOrder.no_po = data.no_po || ''
-    purchaseOrder.notes = data.notes || ''
-    purchaseOrder.downPayment = data.downPayment || 0
-
-    // Set purchaseOrder properties
-    purchaseOrder.purchaseOrder.no = data.purchaseOrder?.no || ''
-    purchaseOrder.purchaseOrder.date = data.purchaseOrder?.date || ''
-    purchaseOrder.purchaseOrder.type = data.purchaseOrder?.type || ''
-
-    // Set proformaInvoice properties
-    purchaseOrder.proformaInvoice.no = data.proformaInvoice?.no || ''
-    purchaseOrder.proformaInvoice.date = data.proformaInvoice?.date || ''
-
-    // Set customer properties
-    purchaseOrder.customer.companyName = data.customer?.companyName || ''
-    purchaseOrder.customer.address = data.customer?.address || ''
-    purchaseOrder.customer.city = data.customer?.city || ''
-    purchaseOrder.customer.province = data.customer?.province || ''
-    purchaseOrder.customer.office = data.customer?.office || ''
-    purchaseOrder.customer.urban = data.customer?.urban || ''
-    purchaseOrder.customer.subdistrict = data.customer?.subdistrict || ''
-    purchaseOrder.customer.postalCode = data.customer?.postalCode || ''
-
-    // Set price properties
-    purchaseOrder.price.amount = data.price?.amount || 0
-    purchaseOrder.price.discount = data.price?.discount || 0
-    purchaseOrder.price.subtotal = data.price?.subtotal || 0
-    purchaseOrder.price.advancePayment = data.price?.advancePayment || 0
-    purchaseOrder.price.total = data.price?.total || 0
-    purchaseOrder.price.vat = data.price?.vat || 0
-    purchaseOrder.price.totalAmount = data.price?.totalAmount || 0
-
-    // Set spareparts array with proper mapping
-    purchaseOrder.spareparts = (data.spareparts || []).map(sparepart => ({
-      partName: sparepart.partName || '',
-      partNumber: sparepart.partNumber || '',
-      quantity: sparepart.quantity || 0,
-      unit: sparepart.unit || '',
-      unitPrice: sparepart.unitPrice || 0,
-      amount: sparepart.amount || 0
-    }))
+  function mapPurchaseOrder (data) {
+    return {
+      id: data?.id || '',
+      status: data?.status || [],
+      currentStatus: data?.current_status || '',
+      purchaseOrder: {
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
+        type: data?.purchase_order?.type || ''
+      },
+      proformaInvoice: {
+        proformaInvoiceNumber: data?.proforma_invoice?.proforma_invoice_number || '',
+        proformaInvoiceDate: data?.proforma_invoice?.proforma_invoice_date || '',
+        isDpPaid: data?.proforma_invoice?.is_dp_paid || false,
+        isFullPaid: data?.proforma_invoice?.is_full_paid || false
+      },
+      customer: {
+        companyName: data?.customer?.company_name || '',
+        address: data?.customer?.address || '',
+        city: data?.customer?.city || '',
+        province: data?.customer?.province || '',
+        office: data?.customer?.office || '',
+        urban: data?.customer?.urban || '',
+        subdistrict: data?.customer?.subdistrict || '',
+        postalCode: data?.customer?.postal_code || ''
+      },
+      price: {
+        amount: data?.price?.amount || 0,
+        discount: data?.price?.discount || 0,
+        subtotal: data?.price?.subtotal || 0,
+        advancePayment: data?.price?.advance_payment || 0,
+        total: data?.price?.total || 0,
+        vat: data?.price?.vat || 0,
+        totalAmount: data?.price?.total_amount || 0
+      },
+      notes: data?.notes || '',
+      downPayment: data?.down_payment || 0,
+      spareparts: (data?.spareparts || []).map(sparepart => ({
+        sparepartName: sparepart?.sparepart_name || '',
+        sparepartNumber: sparepart?.sparepart_number || '',
+        quantity: sparepart?.quantity || 0,
+        unitPriceSell: sparepart?.unit_price_sell || 0,
+        totalPrice: sparepart?.total_price || 0,
+        stock: sparepart?.stock || ''
+      }))
+    }
   }
 
   async function getAllPurchaseOrders(param) {
+    isLoading.value = true
     const { data } = await purchaseOrderApi.getAllPurchaseOrder(param)
-    purchaseOrders.value = data.data
+    purchaseOrders.value = data.data.map(mapPurchaseOrder)
     paginationData.value = data
-    console.log('FETCH PURCHASE ORDER', data)
+    isLoading.value = false
   }
 
   async function getPurchaseOrder(id) {
     const { data } = await purchaseOrderApi.getPurchaseOrderById(id)
-    setPurchaseOrder(data)
+    console.log(data)
+    purchaseOrder.value = mapPurchaseOrder(data)
   }
 
   async function addPurchaseOrder() {
     await purchaseOrderApi.addPurchaseOrder(purchaseOrder)
-    $resetPurchaseOrder()
+  }
+
+  async function setPurchaseOrder (selectedPurchaseOrder) {
+    purchaseOrder.value = selectedPurchaseOrder
   }
 
   async function updatePurchaseOrder() {
-    const { data } = await purchaseOrderApi.updatePurchaseOrder(purchaseOrder.id, purchaseOrder)
-    setPurchaseOrder(data)
+    const { data } = await purchaseOrderApi.updatePurchaseOrder(purchaseOrder.value.id, purchaseOrder)
   }
 
   async function deletePurchaseOrder(id) {
     await purchaseOrderApi.deletePurchaseOrder(id)
   }
 
+  async function processToProformaInvoice (id) {
+    const response = await purchaseOrderApi.processToProformaInvoice(id)
+  }
+
+  async function updateStatus (id, status) {
+    const response = await purchaseOrderApi.updateStatusPurchaseOrder(id, { status })
+  }
+
+  async function $resetPurchaseOrder () {
+    purchaseOrder.value = mapPurchaseOrder()
+  }
+
+  async function fullPaid (id) {
+    const response = await purchaseOrderApi.fullPaid(id)
+  }
+
+  async function release (id, workOrder) {
+    const response = await purchaseOrderApi.release(id, workOrder)
+  }
+
   return {
     purchaseOrder,
     purchaseOrders,
     paginationData,
-    $resetPurchaseOrder,
+    isLoading,
     getAllPurchaseOrders,
     getPurchaseOrder,
-    setPurchaseOrder,
     updatePurchaseOrder,
     deletePurchaseOrder,
-    addPurchaseOrder
+    addPurchaseOrder,
+    setPurchaseOrder,
+    processToProformaInvoice,
+    updateStatus,
+    fullPaid,
+    release,
+    $resetPurchaseOrder
   }
 })

@@ -2,91 +2,97 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import purchaseApi from '@/api/purchase'
+import { getAllSparepart } from '@/api/sparepart'
 
 export const usePurchaseStore = defineStore('purchase', () => {
-  const purchase = reactive({
-    id: '',
-    no_buy: '',
-    notes: '',
-    status: '',
-    totalPurchase: 0,
-    spareparts: [
-      {
-        partName: '',
-        partNumber: '',
-        quantity: 0,
-        unitPrice: 0,
-        totalPrice: 0,
-      }
-    ]
-  })
+  const purchase = ref(null)
   const purchases = ref([])
   const paginationData = ref({})
+  const searchedSpareparts = ref([])
+  const isLoading = ref(false)
 
-  function $resetPurchase () {
-    // Reset basic properties
-    purchase.id = ''
-    purchase.no_buy = ''
-    purchase.notes = ''
-    purchase.status = ''
-    purchase.totalPurchase = 0
-
-    // Reset spareparts array
-    purchase.spareparts = []
+  function mapPurchase (data) {
+    return {
+      id: data?.id || '',
+      buyNumber: data?.buy_number || '',
+      notes: data?.notes || '',
+      currentStatus: data?.current_status || '',
+      status: data?.status || [],
+      totalAmount: data?.total_amount || 0,
+      spareparts: (data?.spareparts || []).map(sparepart => ({
+        sparepartId: sparepart?.sparepart_id || sparepart?.id || '',
+        sparepartName: sparepart?.sparepart_name || '',
+        sparepartNumber: sparepart?.sparepart_number || '',
+        quantity: sparepart?.quantity || 0,
+        unitPriceSell: sparepart?.unit_price_sell || 0,
+        totalPrice: sparepart?.total_price || 0,
+        stock: sparepart?.stock || ''
+      }))
+    }
   }
 
-  function setPurchase (data) {
-    // Set basic properties with fallback values
-    purchase.id = data.id || ''
-    purchase.no_buy = data.no_buy || ''
-    purchase.notes = data.notes || ''
-    purchase.status = data.status || ''
-    purchase.totalPurchase = data.totalPurchase || 0
-
-    // Set spareparts array with proper mapping
-    purchase.spareparts = (data.spareparts || []).map(sparepart => ({
-      partName: sparepart.partName || '',
-      partNumber: sparepart.partNumber || '',
-      quantity: sparepart.quantity || 0,
-      unitPrice: sparepart.unitPrice || 0,
-      totalPrice: sparepart.totalPrice || 0
-    }))
+  function mapSparepart (data) {
+    return {
+      sparepartId: data?.sparepart_id || data?.id || '',
+      slug: data?.slug || '',
+      sparepartNumber: data?.sparepart_number || '',
+      sparepartName: data?.sparepart_name || '',
+      totalUnit: data?.total_unit || 0,
+      unitPriceSell: data?.unit_price_sell || 0,
+      unitPriceBuy: (data?.unit_price_buy || []).map(buy => ({
+        seller: buy?.seller || '',
+        price: buy?.price || 0
+      }))
+    }
   }
 
   async function getAllPurchase (param) {
-    console.log('FETCH PURCHASE', param)
+    isLoading.value = true
     const { data } = await purchaseApi.getAllPurchase(param)
-    purchases.value = data.data
+    purchases.value = data.data.map(mapPurchase)
     paginationData.value = data
-    console.log('PURCHASE', purchases.value)
-  }
-
-  async function addPurchase () {
-    console.log('ADD PURCHASES', purchase)
-    await purchaseApi.addPurchase(purchase)
-    $resetPurchase()
-  }
-
-  async function updatePurchase () {
-    console.log('UPDATE PURCHASE')
-    const { data } = await purchaseApi.updatePurchase(purchase.id)
-    setPurchase(data)
+    isLoading.value = false
   }
 
   async function getPurchase (id) {
     const { data } = await purchaseApi.getPurchaseById(id)
-    console.log('GET PURCHASE', data)
-    setPurchase(data)
+    purchase.value = mapPurchase(data)
+  }
+
+  async function addPurchase () {
+    await purchaseApi.addPurchase(purchase.value)
+  }
+
+  async function setPurchase (selectedPurchase) {
+    purchase.value = selectedPurchase
+  }
+
+  async function updatePurchase () {
+    console.log('UPDATE PURCHASE')
+    const { data } = await purchaseApi.updatePurchase(purchase.value.id)
+  }
+
+  async function getSpareparts (param) {
+    const { data } = await getAllSparepart(param)
+    searchedSpareparts.value = data.data.map(mapSparepart)
+  }
+
+  async function $resetPurchase () {
+    purchase.value = mapPurchase()
   }
 
   return {
     purchase,
     purchases,
     paginationData,
-    $resetPurchase,
+    searchedSpareparts,
+    isLoading,
     getAllPurchase,
     addPurchase,
     updatePurchase,
-    getPurchase
+    setPurchase,
+    getPurchase,
+    getSpareparts,
+    $resetPurchase
   }
 })

@@ -1,152 +1,104 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import backOrderApi from '@/api/back-order'
 
 export const useBackOrderStore = defineStore('back-order', () => {
-  const backOrder = reactive({
-    id: '',
-    no_bo: '',
-    status: '',
-    purchaseOrder: {
-      no: '',
-      date: '',
-      orderType: ''
-    },
-    deliveryOrder: {
-      no: '',
-      date: '',
-      shipMode: ''
-    },
-    customer: {
-      companyName: '',
-      address: '',
-      city: '',
-      province: '',
-      office: '',
-      urban: '',
-      subdistrict: '',
-      postalCode: '',
-      npwp: '',
-      delivery: ''
-    },
-    notes: '',
-    spareparts: [{
-      partName: '',
-      partNumber: '',
-      order: 0,
-      deliveryOrder: 0,
-      backOrder: 0
-    }]
-  })
+  const backOrder = ref(null)
   const backOrders = ref([])
   const paginationData = ref({})
+  const isLoading = ref(false)
 
-  function $resetBackOrder () {
-    // Reset basic properties
-    backOrder.id = ''
-    backOrder.no_bo = ''
-    backOrder.status = ''
-    backOrder.notes = ''
-
-    // Reset purchaseOrder properties
-    backOrder.purchaseOrder.no = ''
-    backOrder.purchaseOrder.date = ''
-    backOrder.purchaseOrder.orderType = ''
-
-    // Reset deliveryOrder properties
-    backOrder.deliveryOrder.no = ''
-    backOrder.deliveryOrder.date = ''
-    backOrder.deliveryOrder.shipMode = ''
-
-    // Reset customer properties
-    backOrder.customer.companyName = ''
-    backOrder.customer.address = ''
-    backOrder.customer.city = ''
-    backOrder.customer.province = ''
-    backOrder.customer.office = ''
-    backOrder.customer.urban = ''
-    backOrder.customer.subdistrict = ''
-    backOrder.customer.postalCode = ''
-    backOrder.customer.npwp = ''
-    backOrder.customer.delivery = ''
-
-    // Reset spareparts array
-    backOrder.spareparts = []
-  }
-
-  function setBackOrder (data) {
-    // Set basic properties
-    backOrder.id = data.id || ''
-    backOrder.no_bo = data.no_bo || ''
-    backOrder.status = data.status || ''
-    backOrder.notes = data.notes || ''
-
-    // Set purchaseOrder properties
-    backOrder.purchaseOrder.no = data.purchaseOrder?.no || ''
-    backOrder.purchaseOrder.date = data.purchaseOrder?.date || ''
-    backOrder.purchaseOrder.orderType = data.purchaseOrder?.orderType || ''
-
-    // Set deliveryOrder properties
-    backOrder.deliveryOrder.no = data.deliveryOrder?.no || ''
-    backOrder.deliveryOrder.date = data.deliveryOrder?.date || ''
-    backOrder.deliveryOrder.shipMode = data.deliveryOrder?.shipMode || ''
-
-    // Set customer properties
-    backOrder.customer.companyName = data.customer?.companyName || ''
-    backOrder.customer.address = data.customer?.address || ''
-    backOrder.customer.city = data.customer?.city || ''
-    backOrder.customer.province = data.customer?.province || ''
-    backOrder.customer.office = data.customer?.office || ''
-    backOrder.customer.urban = data.customer?.urban || ''
-    backOrder.customer.subdistrict = data.customer?.subdistrict || ''
-    backOrder.customer.postalCode = data.customer?.postalCode || ''
-    backOrder.customer.npwp = data.customer?.npwp || ''
-    backOrder.customer.delivery = data.customer?.delivery || ''
-
-    // Set spareparts array with proper mapping
-    backOrder.spareparts = (data.spareparts || []).map(sparepart => ({
-      partName: sparepart.partName || '',
-      partNumber: sparepart.partNumber || '',
-      order: sparepart.order || 0,
-      deliveryOrder: sparepart.deliveryOrder || 0,
-      backOrder: sparepart.backOrder || 0
-    }))
+  function mapBackOrder (data) {
+    return {
+      id: data?.id || '',
+      date: data?.date || '',
+      currentStatus: data?.current_status || '',
+      backOrderNumber: data?.back_order_number || '',
+      status: data?.status || [],
+      purchaseOrder: {
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
+        orderType: data?.purchase_order?.order_type || ''
+      },
+      deliveryOrder: {
+        no: data?.delivery_order?.delivery_order_number || '',
+        date: data?.delivery_order?.delivery_order_date || '',
+        shipMode: data?.delivery_order?.ship_mode || ''
+      },
+      customer: {
+        companyName: data?.customer?.company_name || '',
+        address: data?.customer?.address || '',
+        city: data?.customer?.city || '',
+        province: data?.customer?.province || '',
+        office: data?.customer?.office || '',
+        urban: data?.customer?.urban || 'x',
+        subdistrict: data?.customer?.subdistrict || '',
+        postalCode: data?.customer?.postal_code || '',
+        npwp: data?.customer?.npwp || '',
+        delivery: data?.customer?.delivery || ''
+      },
+      notes: data?.notes || '',
+      spareparts: (data?.spareparts || []).map(sparepart => ({
+        sparepartName: sparepart?.sparepart_name || '',
+        sparepartNumber: sparepart?.sparepart_number || '',
+        unitPriceSell: sparepart?.unit_price_sell || 0,
+        totalPrice: sparepart?.total_price || 0,
+        totalUnit: sparepart?.total_unit || '',
+        order: sparepart?.order || 0,
+        deliveryOrder: sparepart?.delivery_order || 0,
+        backOrder: sparepart?.back_order || 0
+      }))
+    }
   }
 
   async function getAllBackOrder (param) {
+    isLoading.value = true
     console.log('FETCH BACK ORDER BY DATE', param)
     const { data } = await backOrderApi.getAllBackOrder(param)
-    backOrders.value = data.data
+    backOrders.value = data.data.map(mapBackOrder)
     paginationData.value = data
+    isLoading.value = false
     console.log(data)
-  }
-
-  async function addBackOrder () {
-    console.log('ADD BACK ORDER', backOrder)
-    const response = await backOrderApi.addBackOrder(backOrder)
-    $resetBackOrder()
-  }
-
-  async function updateBackOrder () {
-    console.log('UPDATE BACK ORDER')
-    const { data } = await backOrderApi.updateBackOrder(backOrder.id)
-    setBackOrder(data)
   }
 
   async function getBackOrder (id) {
     const { data } = await backOrderApi.getBackOrderById(id)
-    console.log('GET BACK ORDER', data)
-    setBackOrder(data)
+    console.log(data)
+    backOrder.value = mapBackOrder(data)
+    console.log(backOrder.value)
+  }
+
+  async function setBackOrder(selectedBackOrder) {
+    backOrder.value = selectedBackOrder
+  }
+
+  async function addBackOrder () {
+    const response = await backOrderApi.addBackOrder(backOrder)
+  }
+
+  async function updateBackOrder () {
+    const { data } = await backOrderApi.updateBackOrder(backOrder.value.id)
+  }
+
+  async function processBackOrder (id) {
+    const response = await backOrderApi.processBackOrder(id)
+  }
+
+  async function $resetBackOrder () {
+    backOrder.value = mapBackOrder()
   }
 
   return {
     backOrder,
     backOrders,
     paginationData,
-    $resetBackOrder,
+    isLoading,
     getAllBackOrder,
     addBackOrder,
+    setBackOrder,
     updateBackOrder,
-    getBackOrder
+    getBackOrder,
+    processBackOrder,
+    $resetBackOrder
   }
 })
