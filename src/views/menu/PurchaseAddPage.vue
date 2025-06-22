@@ -30,47 +30,48 @@
           </div>
         </div>
         <div class="input form-group col-12 mx-3">
-          <div v-for="(purchase, purchaseIndex) in purchase.spareparts" :key="purchaseIndex" class="list row">
+          <div v-for="(sparepart, sparepartIndex) in purchase.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
                 <div class="col-4">
-                  <input type="text" class="form-control mt-2" v-model="purchase.partName" placeholder="Part Name"
-                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch"
-                    @keyup="handleInputSearch">
+                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
+                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
+                    @keyup="handleInputSearch(sparepart.sparepartName)">
                   <ul class="dropdown-menu">
-                    <li v-for="(sparepart, index) in searchedSparepart" :key="index" class="dropdown-item"
-                      @click="selectItem(purchaseIndex, purchase, sparepart)">
-                      {{ sparepart.partName }}
+                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
+                      @click="selectItem(sparepartIndex, sparepart, item)">
+                      {{ item.sparepartName }}
                     </li>
                   </ul>
                 </div>
                 <div class="col-2">
-                  <input type="text" class="form-control mt-2" v-model="purchase.partNumber" placeholder="Part Number"
-                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch"
-                    @keyup="handleInputSearch">
+                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
+                    placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
+                    @change="handleInputSearch(sparepart.sparepartNumber)"
+                    @keyup="handleInputSearch(sparepart.sparepartNumber)">
                   <ul class="dropdown-menu">
-                    <li v-for="(sparepart, index) in searchedSparepart" :key="index" class="dropdown-item"
-                      @click="selectItem(purchaseIndex, purchase, sparepart)">
-                      {{ sparepart.partNumber }}
+                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
+                      @click="selectItem(sparepartIndex, sparepart, item)">
+                      {{ item.sparepartNumber }}
                     </li>
                   </ul>
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="purchase.quantity"
-                    @input="selectItem(purchaseIndex, purchase, sparepart)">
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
+                    @input="selectItem(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Unit Price" v-model="purchase.unitPrice"
-                    disabled>
+                  <input type="number" class="form-control mt-2" placeholder="Unit Price"
+                    v-model="sparepart.unitPriceSell" @change="selectItem(sparepartIndex, sparepart)" disabled>
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Total Price" v-model="purchase.totalPrice"
-                    disabled>
+                  <input type="number" class="form-control mt-2" placeholder="Total Price"
+                    v-model="sparepart.totalPrice" disabled>
                 </div>
               </div>
             </div>
             <div class="col-1">
-              <button type="button" class="btn btn-outline-danger" @click="removeSparepart(purchaseIndex)"><i
+              <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
                   class="bi bi-trash3"></i></button>
             </div>
           </div>
@@ -101,42 +102,33 @@
 </template>
 
 <script setup>
-import { common } from '@/config'
+import { menuMapping as menuConfig } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
+import { formatCurrency } from '@/utils/form-util'
+import { useRouter } from 'vue-router'
 
 const purchaseStore = usePurchaseStore()
 const modalStore = useModalStore()
+const router = useRouter()
 
-const { purchase } = storeToRefs(purchaseStore)
-
-const searchedSparepart = ref([{
-  partName: 'NEW BEARING SET, CON ROD',
-  partNumber: '30L19-342289',
-  unitPrice: 500000
-},
-{
-  partName: 'BEARING SET, CON ROD',
-  partNumber: '30L19-342289',
-  unitPrice: 494000
-},
-])
+const { purchase, searchedSpareparts } = storeToRefs(purchaseStore)
 
 const totalPurchase = computed(() => purchase.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
 
-onMounted(() => {
-  addSparepart()
+onBeforeMount(() => {
+  if (!purchase.value) purchaseStore.$resetPurchase()
 })
 
-const searchSparepart = () => {
-  console.log('SEARCH SPAREPART')
+const searchSparepart = (search) => {
+  if (search !== '') purchaseStore.getSpareparts({ page: 1, search })
 }
 
-const handleInputSearch = () => {
-  debounce(searchSparepart, 500, 'search-purchase-sparepart')
+const handleInputSearch = (search) => {
+  debounce(() => searchSparepart(search), 500, 'search-purchase-sparepart')
 }
 
 const selectItem = (index, purchaseData, sparepartData) => {
@@ -144,36 +136,37 @@ const selectItem = (index, purchaseData, sparepartData) => {
     ...purchaseData,
     ...sparepartData
   }
-  data.totalPrice = data.quantity * data.unitPrice
+  data.totalPrice = data.quantity * data.unitPriceSell
   purchase.value.spareparts.splice(index, 1, data)
-}
-
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR"
-  }).format(value)
 }
 
 const addSparepart = () => {
   purchase.value.spareparts.push({
-    partName: '',
-    partNumber: '',
+    sparepartId: '',
+    sparepartName: '',
+    sparepartNumber: '',
     quantity: 0,
-    unitPrice: 0,
-    totalPrice: 0
+    unitPriceSell: 0,
+    unitPriceBuy: 0,
+    totalPrice: 0,
+    stock: ''
   })
 }
 const removeSparepart = (index) => {
   purchase.value.spareparts.splice(index, 1)
 }
 const doPurchase = async () => {
-  await purchaseStore.addPurchase()
+  try {
+    await purchaseStore.addPurchase()
+    router.push(menuConfig.purchase.path)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
 }
 
 const doPurchaseConfirmation = () => {
   purchase.value.spareparts = purchase.value.spareparts.filter((item) => item.quantity > 0)
-  modalStore.openConfirmationModal(`You want to Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Success', doPurchase)
+  modalStore.openConfirmationModal(`to Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Success', doPurchase)
 }
 
 </script>

@@ -10,9 +10,22 @@
     </div>
     <div class="lower paginate shadow">
       <SelectDate />
-      <div class="list">
-        <ItemComponent v-for="(purchase, index) in purchases" :key="index" :number="index + paginationData.from"
-          :item="purchase" first-section-key="no_buy" @click="goToDetail(purchase)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="purchases.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <ItemComponent v-for="(purchase, index) in purchases" :key="index" :number="index + paginationData.from"
+            :item="purchase" :first-section="purchase.buyNumber" :second-section="purchase.date" bigRow
+            :current-status="purchase.currentStatus" @click="goToDetail(purchase)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -38,12 +51,12 @@ const router = useRouter()
 const purchaseStore = usePurchaseStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { purchases, paginationData } = storeToRefs(purchaseStore)
+const { purchases, paginationData, isLoading } = storeToRefs(purchaseStore)
 
 onMounted(async () => {
   // Handle first load
   if (!route.query.page || !route.query.month || !route.query.year) {
-    updateQuery(router, route, { ...route.query, page: 1, month: selectedMonth.value, year: selectedYear.value })
+    updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchPurchase()
@@ -64,17 +77,20 @@ const fetchPurchase = async () => {
   purchaseStore.getAllPurchase({ page, search, month, year })
 }
 
-const searchPurchase = () => {
-  console.log('SEARCH PURCHASE')
+const searchPurchase = (search) => {
+  updateQuery(router, route, { ...route.query, search })
 }
 
-const handleUpdateSearch = () => {
-  debounce(searchPurchase, 1000, 'search-purchase')
+const handleUpdateSearch = (search) => {
+  debounce(() => searchPurchase(search), 1000, 'search-purchase')
 }
 const goToAdd = () => {
+  purchaseStore.$resetPurchase()
   router.push(menuConfig.purchase_add.path)
 }
-const goToDetail = (purchase) => {
+const goToDetail = async (purchase) => {
+  purchaseStore.$resetPurchase()
+  purchaseStore.setPurchase(purchase)
   router.push(`${menuConfig.purchase.path}/${purchase.no_buy}`)
 }
 
