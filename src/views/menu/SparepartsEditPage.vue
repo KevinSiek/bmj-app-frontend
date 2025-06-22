@@ -7,24 +7,24 @@
           <div class="left">
             <div class="input form-group col-12">
               <label for="">Sparepart Name</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Company Name"
-                disabled>
+              <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName"
+                placeholder="Sparepart Name">
             </div>
             <div class="input form-group col-12">
               <label for="">Stock</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.totalUnit" placeholder="Stock" disabled>
+              <input type="text" class="form-control mt-2" v-model="sparepart.totalUnit" placeholder="Stock">
             </div>
           </div>
           <div class="right">
             <div class="input form-group col-12">
-              <label for="">Sparepart Number</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber" placeholder="Part Number"
-                disabled>
+              <label for="">Part Number</label><br>
+              <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
+                placeholder="Sparepart Number">
             </div>
             <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceSell" placeholder="Selling Price"
-                disabled>
+              <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceSell"
+                placeholder="Selling Price">
             </div>
           </div>
         </div>
@@ -35,38 +35,44 @@
           <div class="lists" v-for="(list, index) in sparepart.unitPriceBuy" :key="index">
             <div class="input form-group col-6">
               <label for="">Seller</label><br>
-              <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller" disabled>
+              <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller">
             </div>
             <div class="input form-group col-3">
               <label for="">Puchase Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price" disabled>
+              <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price">
             </div>
           </div>
         </div>
+      </div>
+      <div class="add-btn mt-3">
+        <button type="button" class="btn btn-outline-dark" @click="addSeller">
+          <i class="bi bi-plus-lg"></i>
+          <span class="mx-2">Add Seller</span>
+        </button>
       </div>
     </form>
   </div>
   <div class="button">
     <div class="left">
       <button type="button" class="btn btn-edit" @click="back">Back</button>
-      <button type="button" class="btn btn-danger mx-5">Delete</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="goToEdit">Edit</button>
+      <button type="button" class="btn btn-process" @click="editSparepartConfirmation">Edit</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { menuMapping as menuConfig } from '@/config'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { useModalStore } from '@/stores/modal'
+import { onBeforeMount } from 'vue'
 
-const route = useRoute()
 const router = useRouter()
 const sparepartStore = useSparepartStore()
+const modalStore = useModalStore()
 
 const { sparepart } = storeToRefs(sparepartStore)
 
@@ -74,16 +80,31 @@ onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()
   console.log(sparepart.value)
 })
-onMounted(() => {
-  sparepartStore.getSparepart(route.params.id)
-})
 
-const goToEdit = async () => {
-  router.push(`${menuConfig.spareparts.path}/${sparepart.id}/edit`)
+const addSeller = () => {
+  sparepart.value.unitPriceBuy.push({
+    seller: '',
+    price: 0
+  })
+}
+
+const addSparepart = async () => {
+  try {
+    await sparepartStore.addSparepart()
+    router.push(menuConfig.spareparts)
+  } catch (error) {
+    console.log('ERROR PAGE', error)
+    throw error.data.error
+  }
+}
+
+const editSparepartConfirmation = () => {
+  modalStore.openConfirmationModal('to Add this Sparepart ?', 'Add Sparepart Success', addSparepart)
 }
 const back = () => {
   router.back()
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -129,6 +150,11 @@ $secondary-color: rgb(98, 98, 98);
       }
     }
   }
+}
+
+.add-btn {
+  display: flex;
+  justify-content: center;
 }
 
 .button {

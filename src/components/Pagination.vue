@@ -28,13 +28,16 @@ const router = useRouter()
 const route = useRoute()
 
 const props = defineProps({
-  firstPage: Number,
+  firstPage: {
+    type: Number,
+    default: 1
+  },
   lastPage: {
     type: Number,
     default: 1
   }
 })
-const currentPage = ref(1)
+const currentPage = computed(() => route.query.page)
 const maxVisiblePages = 3
 const visiblePage = computed(() => {
   let start = Math.max(1, currentPage.value - 1);

@@ -5,7 +5,7 @@
         <SearchBar @searched="handleUpdateSearch" />
       </div>
       <div class="btn-add">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPriceListModal" @click="goToAdd">
+        <button class="btn btn-primary" @click="goToAdd">
           Add Sparepart
         </button>
       </div>
@@ -13,7 +13,7 @@
     <div class="lower paginate shadow">
       <div class="list">
         <ItemComponent v-for="(sparepart, index) in spareparts" :key="index" :number="index + paginationData.from"
-          :item="sparepart" first-section-key="name" second-section-key="sparepart_number"
+          :item="sparepart" :first-section="sparepart.sparepartName" :second-section="sparepart.sparepartNumber"
           @click="goToDetail(sparepart)" />
       </div>
     </div>
@@ -41,7 +41,7 @@ const { spareparts, paginationData } = storeToRefs(sparepartStore)
 
 onMounted(async () => {
   // Handle first load
-  if (!route.query.page || !route.query.month || !route.query.year) {
+  if (!route.query.page) {
     updateQuery(router, route, { ...route.query, page: 1 })
     return
   }
@@ -63,19 +63,21 @@ const fetchSpareparts = async () => {
   sparepartStore.getAllSpareparts({ page, search })
 }
 
-const searchSparepart = () => {
-  console.log('SEARCH SPAREPART')
+const searchSparepart = (search) => {
+  updateQuery(router, route, { ...route.query, search })
 }
 
-const handleUpdateSearch = () => {
-  debounce(searchSparepart, 1000, 'search-sparepart')
+const handleUpdateSearch = (search) => {
+  debounce(() => searchSparepart(search), 1000, 'search-sparepart')
 }
 
 const goToAdd = () => {
+  sparepartStore.$resetSparepart()
   router.push(menuConfig.spareparts_add.path)
 }
-const goToDetail = (sparepart) => {
-  router.push(`${menuConfig.spareparts.path}/${sparepart.id}`)
+const goToDetail = async (sparepart) => {
+  await sparepartStore.setSparepart(sparepart)
+  router.push(`${menuConfig.spareparts.path}/${sparepart.sparepartId}`)
 }
 </script>
 
