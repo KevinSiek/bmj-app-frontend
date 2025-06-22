@@ -95,6 +95,10 @@ const menuMapping = {
     name: 'Detail Spareparts',
     path: '/spareparts/:id'
   },
+  spareparts_edit: {
+    name: 'Edit Spareparts',
+    path: '/spareparts/:id/edit'
+  },
   back_order: {
     name: 'Back Order',
     path: '/back-order'
@@ -127,9 +131,17 @@ const menuMapping = {
     name: 'Detail Employee',
     path: '/employee/:id'
   },
+  employee_edit: {
+    name: 'Edit Employee',
+    path: '/employee/:id/edit'
+  },
   work_order: {
     name: 'Work Order',
     path: '/work-order'
+  },
+  work_order_add: {
+    name: 'Add Work Order',
+    path: '/work-order/add/:id'
   },
   work_order_detail: {
     name: 'Detail Work Order',
@@ -138,6 +150,10 @@ const menuMapping = {
 }
 
 const common = {
+  type: {
+    sparepart: 'Spareparts',
+    service: 'Service'
+  },
   form: {
     type: {
       edit: 'Edit',
@@ -159,9 +175,10 @@ const common = {
     po: {
       release: 'Release',
       prepare: 'Prepare',
-      paid: 'Paid',
+      dpPaid: 'DP Paid',
       ready: 'Ready',
-      finished: 'Finished'
+      finished: 'Finished',
+      bo: 'BO'
     },
     work_order: {
       sparepart_ready: 'Sparepart Ready',
@@ -183,6 +200,14 @@ const common = {
     finance: 'Finance',
     inventory: 'Inventory',
     service: 'Service'
+  },
+  track: {
+    po: 'Po',
+    pi: 'Pi',
+    dpPaid: 'DP Paid',
+    release: 'Release',
+    done: 'Done',
+    return: 'Return'
   }
 }
 
