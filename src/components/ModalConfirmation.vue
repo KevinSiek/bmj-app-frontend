@@ -37,8 +37,7 @@ const event = async () => {
     await modalStore.action()
     modalStore.openMessageModal(common.modal.success, modalStore.messages)
   } catch (error) {
-    console.log(error)
-    modalStore.openMessageModal(common.modal.failed, error.message)
+    modalStore.openMessageModal(common.modal.failed, error)
   }
 }
 </script>
