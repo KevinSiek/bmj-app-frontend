@@ -11,7 +11,7 @@
         <div class="title mb-4">
           Login
         </div>
-        <form>
+        <form @submit.prevent="login()">
           <div class="form form-group mb-3">
             <label for="email">Email</label><br>
             <input type="email" class="input form-control mt-2" v-model="user.email" placeholder="Email">
@@ -44,7 +44,7 @@
             </div>
           </div>
           <div class="button">
-            <button type="button" class="btn btn-signin" @click="login()" @keyup="handleKeyup">
+            <button type="submit" class="btn btn-signin">
               Login
             </button>
           </div>
@@ -55,13 +55,7 @@
 </template>
 
 <script setup>
-const props = defineProps(['user', 'login', 'showHide', 'isPassShow'])
-
-const handleKeyup = (event) => {
-  if (event.key === 'Enter') {
-    props.login()
-  }
-}
+defineProps(['user', 'login', 'showHide', 'isPassShow'])
 
 </script>
 
