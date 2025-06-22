@@ -15,9 +15,44 @@
     </div>
     <div class="lower paginate shadow">
       <SelectDate />
-      <div class="list">
-        <ItemComponent v-for="(quotation, index) in quotations" :key="index" :number="index + paginationData.from"
-          :item="quotation" first-section-key="quotation_number" @click="goToDetail(quotation)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="quotations.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <div v-for="(allQuotation, index) in quotations" :key="index">
+            <template v-if="allQuotation.versions.length > 1">
+              <ItemComponent :number="index + paginationData.from"
+                :item="allQuotation.versions[allQuotation.versions.length - 1]"
+                :first-section="allQuotation.versions[allQuotation.versions.length - 1].project.quotationNumber"
+                :second-section="allQuotation.versions[allQuotation.versions.length - 1].project.date"
+                :third-section="allQuotation.versions[allQuotation.versions.length - 1].project.type"
+                :current-status="allQuotation.versions[allQuotation.versions.length - 1].currentStatus"
+                data-bs-toggle="collapse" :data-bs-target="'#collapsChild' + index" />
+              <div class="collapse" :id="'collapsChild' + index">
+                <div v-for="(quotation, versionIndex) in allQuotation.versions" :key="versionIndex">
+                  <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)" :item="quotation"
+                    :first-section="quotation.project.quotationNumber" :second-section="quotation.project.date"
+                    :third-section="quotation.project.type" :current-status="quotation.currentStatus" class="item-child"
+                    @click="goToDetail(quotation)"
+                    :class="{ disabled: versionIndex != (allQuotation.versions.length - 1) }" />
+                </div>
+              </div>
+            </template>
+            <ItemComponent v-else :number="index + paginationData.from" :item="allQuotation.versions[0]"
+              :first-section="allQuotation.versions[0].project.quotationNumber"
+              :second-section="allQuotation.versions[0].project.date"
+              :third-section="allQuotation.versions[0].project.type"
+              :current-status="allQuotation.versions[0].currentStatus" @click="goToDetail(allQuotation.versions[0])" />
+          </div>
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -43,12 +78,12 @@ const route = useRoute()
 const quotationStore = useQuotationStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { quotations, paginationData } = storeToRefs(quotationStore)
+const { quotations, paginationData, isLoading } = storeToRefs(quotationStore)
 
 onMounted(async () => {
   // Handle first load
   if (!route.query.page || !route.query.month || !route.query.year) {
-    updateQuery(router, route, { ...route.query, page: 1, month: selectedMonth.value, year: selectedYear.value })
+    updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchQuotation()
@@ -60,7 +95,6 @@ watch(() => route.query, (before, after) => {
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
     fetchQuotation()
-    console.log("REFETCH QUOTATION")
   }
 })
 
@@ -70,7 +104,6 @@ const fetchQuotation = async () => {
 }
 
 const searchQuotation = (search) => {
-  console.log('SEARCH QUOTATION', search)
   updateQuery(router, route, { ...route.query, search })
 }
 
@@ -79,6 +112,8 @@ const handleUpdateSearch = (search) => {
 }
 
 const goToDetail = (quotation) => {
+  quotationStore.$resetQuotation()
+  quotationStore.setQuotation(quotation)
   router.push(`${menuConfig.quotation.path}/${quotation.slug}`)
 }
 const goToAdd = () => {
@@ -89,4 +124,14 @@ const goToAdd = () => {
 
 <style lang="scss" scoped>
 @use '@/assets/css/page.scss';
+
+.item-child {
+  margin-left: 10%;
+
+}
+
+.disabled {
+  background-color: rgb(219, 219, 219);
+  border-color: transparent;
+}
 </style>

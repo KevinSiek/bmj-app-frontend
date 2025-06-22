@@ -13,20 +13,28 @@
 </template>
 
 <script setup>
-import { common } from '@/config'
-import QuotationForm from '@/components/quotation/QuotationForm.vue'
+import { common, menuMapping as menuConfig } from '@/config'
 import { useQuotationStore } from '@/stores/quotation'
 import { useModalStore } from '@/stores/modal'
+import { defineAsyncComponent } from 'vue'
+import { useRouter } from 'vue-router'
+const QuotationForm = defineAsyncComponent(() => import('@/components/quotation/QuotationForm.vue'))
 
+const router = useRouter()
 const modalStore = useModalStore()
 const quotationStore = useQuotationStore()
 
-const addQuotation = () => {
-  return quotationStore.addQuotation()
+const addQuotation = async () => {
+  try {
+    await quotationStore.addQuotation()
+    router.push(menuConfig.quotation.path)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
 }
 
 const addQuotationConfirmation = () => {
-  modalStore.openConfirmationModal('Are you sure to Add this Quotation ?', 'Add Quotation Success', addQuotation)
+  modalStore.openConfirmationModal('to Add this Quotation ?', 'Add Quotation Success', addQuotation)
 }
 
 </script>

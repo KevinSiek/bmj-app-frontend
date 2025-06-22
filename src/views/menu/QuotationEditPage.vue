@@ -13,22 +13,36 @@
 </template>
 
 <script setup>
-import { common } from '@/config'
-import { useRouter } from 'vue-router'
-import QuotationForm from '@/components/quotation/QuotationForm.vue'
+import { common, menuMapping as menuConfig } from '@/config'
+import { useRoute, useRouter } from 'vue-router'
 import { useQuotationStore } from '@/stores/quotation'
 import { useModalStore } from '@/stores/modal'
+import { defineAsyncComponent, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+const QuotationForm = defineAsyncComponent(() => import('@/components/quotation/QuotationForm.vue'))
 
+const route = useRoute()
 const router = useRouter()
 const modalStore = useModalStore()
 const quotationStore = useQuotationStore()
 
+const { quotation } = storeToRefs(quotationStore)
+
+onMounted(() => {
+  quotationStore.getQuotation(route.params.id)
+})
+
 const editQuotation = async () => {
-  await quotationStore.editQuotation()
+  try {
+    await quotationStore.editQuotation()
+    router.push(`${menuConfig.quotation.path}/${quotation.value.slug}`)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
 }
 
 const editQuotationConfirmation = () => {
-  modalStore.openConfirmationModal('You want to Edit this Quotation', 'Edit Quotation Success', editQuotation)
+  modalStore.openConfirmationModal('to Edit this Quotation', 'Edit Quotation Success', editQuotation)
 }
 
 const back = () => {

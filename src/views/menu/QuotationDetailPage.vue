@@ -7,31 +7,52 @@
       <button type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="process">Process</button>
+      <button type="button" class="btn btn-process" @click="processQuotationConfirmation">Create PO</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { menuMapping as menuConfig, common } from '@/config'
-import QuotationForm from '@/components/quotation/QuotationForm.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { onMounted } from 'vue'
+import { defineAsyncComponent, onBeforeMount, onMounted } from 'vue'
 import { useQuotationStore } from '@/stores/quotation'
+import { storeToRefs } from 'pinia'
+import { useTrackStore } from '@/stores/track'
+import { useModalStore } from '@/stores/modal'
+const QuotationForm = defineAsyncComponent(() => import('@/components/quotation/QuotationForm.vue'))
 
 const route = useRoute()
 const router = useRouter()
 const quotationStore = useQuotationStore()
+const trackStore = useTrackStore()
+const modalStore = useModalStore()
 
-onMounted(() => {
-  quotationStore.getQuotation(route.params.id)
+const { quotation } = storeToRefs(quotationStore)
+
+onBeforeMount(() => {
+  if (!quotation.value) quotationStore.$resetQuotation()
+})
+onMounted(async () => {
+  await quotationStore.getQuotation(route.params.id)
+  await trackStore.setTrackData(quotation.value.status)
 })
 
 const goToEdit = () => {
-  router.push(menuConfig.quotation_edit.path)
+  router.push(`${menuConfig.quotation.path}/${quotation.value.slug}/edit`)
 }
-const process = () => {
-  quotationStore.processQuotation(route.params.id)
+
+const processQuotation = async () => {
+  try {
+    await quotationStore.processQuotation(route.params.id)
+    router.push(menuConfig.purchase_order)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+
+const processQuotationConfirmation = () => {
+  modalStore.openConfirmationModal('to process this Quotation to Purchase Order ?', `Purchase Order Created with quotation ${route.params.id}`, processQuotation)
 }
 </script>
 
