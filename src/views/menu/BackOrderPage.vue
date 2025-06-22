@@ -7,9 +7,22 @@
     </div>
     <div class="lower paginate shadow">
       <SelectDate />
-      <div class="list">
-        <ItemComponent v-for="(backOrder, index) in backOrders" :key="index" :number="index + paginationData.from"
-          :item="backOrder" first-section-key="no_bo" @click="goToDetail(backOrder)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="backOrders.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <ItemComponent v-for="(backOrder, index) in backOrders" :key="index" :number="index + paginationData.from"
+            :item="backOrder" :first-section="backOrder.backOrderNumber" :second-section="backOrder.date"
+            :current-status="backOrder.currentStatus" @click="goToDetail(backOrder)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
@@ -35,12 +48,12 @@ const router = useRouter()
 const backOrderStore = useBackOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { backOrders, paginationData } = storeToRefs(backOrderStore)
+const { backOrders, paginationData, isLoading } = storeToRefs(backOrderStore)
 
 onMounted(async () => {
   // Handle first load
   if (!route.query.page || !route.query.month || !route.query.year) {
-    updateQuery(router, route, { ...route.query, page: 1, month: selectedMonth.value, year: selectedYear.value })
+    updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
   fetchBackOrder()
@@ -62,15 +75,16 @@ const fetchBackOrder = async () => {
   backOrderStore.getAllBackOrder({ page, search, month, year })
 }
 
-const searchBackOrder = () => {
-  console.log('SEARCH BACK ORDER')
+const searchBackOrder = (search) => {
+  updateQuery(router, route, { ...route.query, search })
 }
 
-const handleUpdateSearch = () => {
-  debounce(searchBackOrder, 1000, 'search-backOrder')
+const handleUpdateSearch = (search) => {
+  debounce(() => searchBackOrder(search), 1000, 'search-backOrder')
 }
 
-const goToDetail = (backOrder) => {
+const goToDetail = async (backOrder) => {
+  await backOrderStore.setBackOrder(backOrder)
   router.push(`${menuConfig.back_order.path}/${backOrder.id}`)
 }
 
