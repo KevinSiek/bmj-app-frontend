@@ -1,24 +1,24 @@
-<template>
-  <div class="item">
-    <div class="number">
-      {{ number }}
+  <template>
+    <div class="item">
+      <div class="number">
+        {{ number }}
+      </div>
+      <div class="content">
+        <div class="first-section">
+          {{ props.firstSection }}
+        </div>
+        <div v-if="hasSecondSection" class="second-section">
+          {{ props.secondSection }}
+        </div>
+        <div v-if="hasThirdSection" class="third-section">
+          {{ props.thirdSection }}
+        </div>
+        <div v-if="hasStatus" class="status-default" :class="classStatus">
+          {{ props.currentStatus }}
+        </div>
+      </div>
     </div>
-    <div class="content">
-      <div class="first-section">
-        {{ firstSection }}
-      </div>
-      <div v-if="hasSecondSection" class="second-section">
-        {{ secondSection }}
-      </div>
-      <div v-if="hasThirdSection" class="third-section">
-        {{ thirdSection }}
-      </div>
-      <div v-if="hasStatus" class="status-default" :class="classStatus">
-        {{ item.status }}
-      </div>
-    </div>
-  </div>
-</template>
+  </template>
 
 <script setup>
 import { computed } from 'vue'
@@ -28,40 +28,41 @@ import { common } from '@/config'
 
 const props = defineProps({
   number: Number,
+  firstSection: String || Number,
+  secondSection: String || Number,
+  thirdSection: String || Number,
   firstSectionKey: String,
   secondSectionKey: String,
   thirdSectionKey: String,
   item: Object,
   bigRow: Boolean,
-  color: String
+  wideRow: Boolean,
+  color: String,
+  currentStatus: String
 })
 
 const mainStore = useMainStore()
 
 const { isMobile } = storeToRefs(mainStore)
 
-const firstSection = computed(() => props.item[props.firstSectionKey])
-const secondSection = computed(() => props.item[props.secondSectionKey] || props.item?.date || props.item?.partNumber)
-const thirdSection = computed(() => props.item?.type || props.item?.role)
-
-const hasSecondSection = computed(() => (!!secondSection.value && !isMobile.value) || (!hasStatus.value && isMobile.value))
-const hasThirdSection = computed(() => !!thirdSection.value && !isMobile.value)
-const hasStatus = computed(() => !!props.item?.status)
+const hasSecondSection = computed(() => (!!props.secondSection && !isMobile.value) || (!hasStatus.value && isMobile.value))
+const hasThirdSection = computed(() => !!props.thirdSection && !isMobile.value)
+const hasStatus = computed(() => !!props.currentStatus)
 
 const { status } = common
 
 const statusColour = {
-  green: [status.quotation.po, status.po.release, status.work_order.on_progress],
-  red: [status.quotation.cancelled],
-  blue: [status.quotation.on_review, status.po.prepare, status.work_order.sparepart_ready]
+  green: [status.quotation.po, status.po.release, status.work_order.on_progress, status.purchase.approved],
+  red: [status.quotation.cancelled, status.purchase.rejected],
+  blue: [status.quotation.on_review, status.po.prepare, status.work_order.sparepart_ready, status.purchase.waitReview]
 }
 
 const classStatus = computed(() => ({
-  'status-default': !props.bigRow,
   'status-big': props.bigRow,
-  'red': statusColour.red.includes(props.item.status),
-  'blue': statusColour.blue.includes(props.item.status),
-  'green': statusColour.green.includes(props.item.status),
+  'status-wide': props.wideRow,
+  'red': statusColour.red.some(status => props.currentStatus.includes(status)),
+  'blue': statusColour.blue.some(status => props.currentStatus.includes(status)),
+  'green': statusColour.green.some(status => props.currentStatus.includes(status))
 }))
 
 </script>
@@ -99,6 +100,7 @@ $primary-color: black;
     }
 
     .third-section {
+      // text-align: center;
       width: 15%;
     }
 
@@ -109,16 +111,16 @@ $primary-color: black;
       color: white;
       border-radius: 5px;
       padding: 1% 5%;
-
     }
 
     .status-big {
       width: 25%;
-      text-align: center;
-      background-color: $primary-color;
-      color: white;
-      border-radius: 5px;
-      padding: 1% 5%;
+      justify-self: flex-end;
+    }
+
+    .status-wide {
+      width: 25%;
+      padding: 1% 1%;
       justify-self: flex-end;
     }
 
