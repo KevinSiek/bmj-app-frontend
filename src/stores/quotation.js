@@ -138,7 +138,7 @@ async function getAllQuotationReview (param) {
     console.log('FETCH REVIEW QUOTATION BY DATE', param)
     const { data } = await quotationApi.getAllReviewQuotations(param)
     console.log("RES", data)
-    quotationReviews.value = data.data.map(mapQuotations)
+    quotationReviews.value = data.data.map(mapQuotation)
     paginationData.value = data
     isLoading.value = false
   }

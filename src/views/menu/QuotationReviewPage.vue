@@ -7,11 +7,23 @@
     </div>
     <div class="lower paginate shadow">
       <SelectDate />
-      <div class="list">
-        <ItemComponent v-for="(quotation, index) in quotationReviews" :key="index" :number="index + paginationData.from"
-          :item="quotation" :first-section="quotation.project.quotationNumber" :second-section="quotation.project.date"
-          :third-section="quotation.project.type" :current-status="quotation.currentStatus"
-          @click="goToDetail(quotation)" />
+      <div v-if="isLoading">
+        <div class="loading-text">
+          Loading...
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="quotationReviews.length == 0">
+          <div class="no-data-text">
+            No Data
+          </div>
+        </div>
+        <div v-else class="list">
+          <ItemComponent v-for="(quotation, index) in quotationReviews" :key="index"
+            :number="index + paginationData.from" :item="quotation" :first-section="quotation.project.quotationNumber"
+            :second-section="quotation.project.date" :third-section="quotation.project.type"
+            :current-status="quotation.currentStatus" @click="goToDetail(quotation)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />
