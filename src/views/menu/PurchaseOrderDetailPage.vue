@@ -244,10 +244,12 @@ const isCurrentPaid = isStatus(common.status.po.dpPaid)
 
 const isShowFullPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
-  purchaseOrder.value.proformaInvoice.isDpPaid == true &&
-  purchaseOrder.value.proformaInvoice.isFullPaid !== true
+  purchaseOrder.value.proformaInvoice.isDpPaid &&
+  !purchaseOrder.value.proformaInvoice.isFullPaid
 )
-const isShowReady = computed(() => (isRoleInventory.value || isRoleDirector.value) && isCurrentPrepare.value)
+const isShowReady = computed(() => (isRoleInventory.value || isRoleDirector.value) &&
+  !purchaseOrder.value.status.some(item => item.state === common.track.ready)
+)
 const isShowCreatePi = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
   isCurrentPrepare.value &&
@@ -283,7 +285,7 @@ const setFullPaidConfirmation = () => {
 }
 const setToReady = async () => {
   try {
-    await purchaseOrderStore.updateStatus(route.params.id, common.status.po.ready)
+    await purchaseOrderStore.ready(route.params.id)
     fetchData()
   } catch (error) {
     throw error.data.error || error.data.message

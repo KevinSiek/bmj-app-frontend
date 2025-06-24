@@ -74,6 +74,9 @@ const processToProformaInvoice = (id) => {
 const updateStatusPurchaseOrder = (id, status) => {
   return httpApi.postDataViaApi(`${api.purchase_order}/status/${id}`, status)
 }
+const ready = (id) => {
+  return httpApi.postDataViaApi(`${api.purchase_order}/ready/${id}`)
+}
 const fullPaid = (id) => {
   return httpApi.postDataViaApi(`${api.proforma_invoice}/fullPaid/${id}`)
 }
@@ -91,5 +94,6 @@ export default {
   processToProformaInvoice,
   updateStatusPurchaseOrder,
   fullPaid,
+  ready,
   release
 }
