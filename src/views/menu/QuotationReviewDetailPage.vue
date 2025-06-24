@@ -201,7 +201,6 @@ const needChangeQuotation = async () => {
     await quotationStore.needChangeQuotation(route.params.id)
     // router.push(menuConfig.quotation.path)
   } catch (error) {
-    console.log('ERROR PAGE', error)
     throw error.data.error || error.data.message
   }
 }

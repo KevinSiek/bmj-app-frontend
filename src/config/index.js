@@ -205,6 +205,7 @@ const common = {
     po: 'Po',
     pi: 'Pi',
     dpPaid: 'DP Paid',
+    ready: 'Ready',
     release: 'Release',
     done: 'Done',
     return: 'Return'

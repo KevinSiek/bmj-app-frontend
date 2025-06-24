@@ -39,7 +39,7 @@ const { isShowTrack } = storeToRefs(trackStore)
 
 .popup {
   background-color: white;
-  width: 30%;
+  width: 33%;
   height: 100%;
   padding: 20px;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);

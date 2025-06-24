@@ -6,18 +6,18 @@
           <div class="step first" :class="{ active: !!track.active }">
             <i class="awesome bi bi-check-lg"></i>
           </div>
-          <p class="label" :class="{ active: !!track.active }">{{ track.state }}</p>
-          <div class="info" :class="{ active: !!track.active }">
+          <p class="label" :class="{ active: !!track?.active }">{{ track.state }}</p>
+          <div class="info" :class="{ active: !!track?.active }">
             <div class="employee">{{ track.employee }}</div>
             <div class="date">{{ formatDateAndTime(track.timestamp) }}</div>
           </div>
         </template>
         <template v-else>
-          <div class="step" :class="{ active: !!track.active }">
+          <div class="step" :class="{ active: !!track?.active }">
             <i class="awesome bi bi-check-lg"></i>
           </div>
-          <p class="label" :class="{ active: !!track.active }">{{ track.state }}</p>
-          <div class="info" :class="{ active: !!track.active }">
+          <p class="label" :class="{ active: !!track?.active }">{{ track.state }}</p>
+          <div class="info" :class="{ active: !!track?.active }">
             <div class="employee">{{ track.employee }}</div>
             <div class="date">{{ formatDateAndTime(track.timestamp) }}</div>
           </div>
@@ -42,21 +42,34 @@ const progressSteps = [
   common.track.po,
   common.track.pi,
   common.track.dpPaid,
+  common.track.ready,
   common.track.release,
   common.track.done,
   common.track.return
 ]
 
 const trackProgress = computed(() => {
-  return progressSteps.map((step) => {
+  console.log(trackData.value)
+  const activeSteps = trackData.value.map((step) => ({
+    state: step.state?.toUpperCase() ?? null,
+    employee: step?.employee ?? null,
+    timestamp: step?.timestamp ?? null,
+    active: true
+  }))
+
+  progressSteps.forEach((step) => {
     const found = trackData.value?.find(item => item.state === step)
-    return {
-      state: step?.toUpperCase(),
-      employee: found?.employee ?? null,
-      timestamp: found?.timestamp ?? null,
-      active: !!found
+    if (!found) {
+      activeSteps.push({
+        state: step?.toUpperCase(),
+        employee: null,
+        timestamp: null,
+        active: false
+      })
     }
   })
+  console.log(activeSteps)
+  return activeSteps
 })
 
 </script>
@@ -86,7 +99,7 @@ ul {
 }
 
 ul li {
-  height: 40px;
+  height: 28px;
   list-style: none;
   display: flex;
   flex-direction: row;
@@ -109,7 +122,7 @@ ul li {
   }
 
   .info {
-    width: 150px;
+    width: 200px;
   }
 }
 
@@ -130,7 +143,7 @@ ul li .step {
   content: "";
   position: absolute;
   width: 3.5px;
-  height: 60px;
+  height: 48px;
   background-color: #d7d7c3;
   bottom: 30px;
   left: 50%;

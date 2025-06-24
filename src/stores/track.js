@@ -11,7 +11,6 @@ export const useTrackStore = defineStore('track', () => {
 
   const closeModal = () => {
     isShowTrack.value = false
-    trackData.value = null
   }
 
   const setTrackData = async (data) => {
