@@ -173,6 +173,10 @@ async function getAllQuotationReview (param) {
     await quotationApi.approveQuotation(id)
   }
 
+  async function needChangeQuotation (id) {
+    await quotationApi.needChangeQuotation(id)
+  }
+
   async function rejectQuotation (id) {
     await quotationApi.rejectQuotation(id)
   }
@@ -217,6 +221,7 @@ async function getAllQuotationReview (param) {
     getSpareparts,
     processQuotation,
     approveQuotation,
+    needChangeQuotation,
     rejectQuotation
   }
 })

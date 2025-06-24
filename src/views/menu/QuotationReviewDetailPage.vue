@@ -152,7 +152,10 @@
       <button type="button" class="btn btn-danger" @click="rejectQuotationConfirmation">Reject</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-approve" @click="approveQuotationConfirmation">Approve</button>
+      <button type="button" class="btn btn-approve" @click="needChangeQuotationConfirmation">Need Change</button>
+    </div>
+    <div class="right">
+      <button type="button" class="btn btn-success" @click="approveQuotationConfirmation">Approve</button>
     </div>
   </div>
 </template>
@@ -193,9 +196,21 @@ const approveQuotation = async () => {
 const approveQuotationConfirmation = () => {
   modalStore.openConfirmationModal('to Approve this Quotation ?', `Quotation ${route.params.id} Approved`, approveQuotation)
 }
+const needChangeQuotation = async () => {
+  try {
+    await quotationStore.needChangeQuotation(route.params.id)
+    // router.push(menuConfig.quotation.path)
+  } catch (error) {
+    console.log('ERROR PAGE', error)
+    throw error.data.error || error.data.message
+  }
+}
+const needChangeQuotationConfirmation = () => {
+  modalStore.openConfirmationModal('to review this Quotation ?', `Quotation ${route.params.id} Reviewed`, needChangeQuotation)
+}
 const rejectQuotation = async () => {
   try {
-    await quotationStore.approveQuotation(route.params.id)
+    await quotationStore.rejectQuotation(route.params.id)
     // router.push(menuConfig.quotation.path)
   } catch (error) {
     console.log('ERROR PAGE', error)

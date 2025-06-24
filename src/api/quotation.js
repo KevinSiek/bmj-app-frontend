@@ -74,6 +74,9 @@ const approveQuotation = (id) => {
 const rejectQuotation = (id) => {
   return httpApi.postDataViaApi(`${api.quotation}/reject/${id}`)
 }
+const needChangeQuotation = (id) => {
+  return httpApi.postDataViaApi(`${api.quotation}/needChange/${id}`)
+}
 
 
 export default {
@@ -85,5 +88,6 @@ export default {
   deleteQuotation,
   processQuotation,
   approveQuotation,
+  needChangeQuotation,
   rejectQuotation
 }
