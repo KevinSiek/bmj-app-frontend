@@ -257,7 +257,6 @@
   </div>
   <div class="button">
     <div class="left">
-      <!-- <button type="button" class="btn btn-edit">Edit</button> -->
     </div>
     <div class="right">
       <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation">Full
@@ -293,9 +292,7 @@ const trackStore = useTrackStore()
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
 const isStatus = (status) => computed(() => purchaseOrder.value.currentStatus == status)
-const isCurrentPrepare = isStatus(common.status.po.prepare)
 const isCurrentRelease = isStatus(common.status.po.release)
-const isCurrentPaid = isStatus(common.status.po.dpPaid)
 
 const isShowFullPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
@@ -310,9 +307,9 @@ const isShowCreatePi = computed(() =>
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
 const isShowRelease = computed(() =>
-  (isRoleMarketing.value || isRoleMarketing.value || isRoleDirector.value) &&
+  (isRoleService.value || isRoleInventory.value || isRoleDirector.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
-  purchaseOrder.value.status.some(item => item.state === common.track.dpPaid) &&
+  purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.release)
 )
 const isShowFinished = computed(() => (isRoleMarketing.value || isRoleDirector.value) && isCurrentRelease.value)

@@ -41,7 +41,7 @@ const { trackData } = storeToRefs(trackStore)
 const progressSteps = [
   common.track.po,
   common.track.pi,
-  common.track.dpPaid,
+  common.track.dp_paid,
   common.track.ready,
   common.track.release,
   common.track.done,

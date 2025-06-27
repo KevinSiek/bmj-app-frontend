@@ -181,11 +181,12 @@ const common = {
       bo: 'BO'
     },
     work_order: {
-      sparepart_ready: 'Sparepart Ready',
-      on_progress: 'On Progress'
+      ready: 'Sparepart Ready',
+      on_progress: 'On Progress',
+      done: 'Done'
     },
     purchase: {
-      waitReview: 'Wait for Review',
+      wait_review: 'Wait for Review',
       rejected: 'Rejected',
       approved: 'Approved'
     }
@@ -204,7 +205,7 @@ const common = {
   track: {
     po: 'Po',
     pi: 'Pi',
-    dpPaid: 'DP Paid',
+    dp_paid: 'DP Paid',
     ready: 'Ready',
     release: 'Release',
     done: 'Done',

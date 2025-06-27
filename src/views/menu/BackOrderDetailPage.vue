@@ -141,11 +141,8 @@
     </form>
   </div>
   <div class="button">
-    <!-- <div class="left">
-      <button type="button" class="btn btn-edit">Edit</button>
-    </div> -->
     <div class="right">
-      <button type="button" class="btn btn-process" @click="processBackOrderConfirmation">Process</button>
+      <button type="button" class="btn btn-process" @click="processBackOrderConfirmation">Ready</button>
     </div>
   </div>
 </template>

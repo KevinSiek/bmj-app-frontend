@@ -54,7 +54,7 @@ const { status } = common
 const statusColour = {
   green: [status.quotation.po, status.po.release, status.work_order.on_progress, status.purchase.approved],
   red: [status.quotation.cancelled, status.purchase.rejected],
-  blue: [status.quotation.on_review, status.po.prepare, status.work_order.sparepart_ready, status.purchase.waitReview]
+  blue: [status.quotation.on_review, status.po.prepare, status.work_order.sparepart_ready, status.purchase.wait_review]
 }
 
 const classStatus = computed(() => ({

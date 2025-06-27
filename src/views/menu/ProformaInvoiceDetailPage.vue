@@ -247,7 +247,7 @@ const { isRoleDirector, isRoleMarketing, isRoleInventory, isRoleFinance, isRoleS
 
 const isShowDPPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
-  !proformaInvoice.value.status.some(item => item.state === common.track.dpPaid)
+  !proformaInvoice.value.status.some(item => item.state === common.track.dp_paid)
 )
 
 const fetchData = async () => {
