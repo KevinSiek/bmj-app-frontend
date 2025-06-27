@@ -109,7 +109,7 @@
           <div class="title">Work Description</div>
           <div class="input form-group col-12">
             <div class="row">
-              <div class="col-11">
+              <div class="col-12">
                 <div class="row">
                   <div class="col-4">
                     <label for="">Job Desc</label>
@@ -122,36 +122,26 @@
                   </div>
                 </div>
               </div>
-              <div class="col-1">
-                <div class="button-placeholder"></div>
-              </div>
             </div>
           </div>
           <div class="input form-group col-12">
             <div v-for="(unit, unitIndex) in workOrder.units" :key="unitIndex" class="list row">
-              <div class="col-11">
+              <div class="col-12">
                 <div class="row">
                   <div class="col-4">
-                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions">
+                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions"
+                      disabled>
                   </div>
                   <div class="col-5">
-                    <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType">
+                    <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType"
+                      disabled>
                   </div>
                   <div class="col-3">
-                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity">
+                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity"
+                      disabled>
                   </div>
                 </div>
               </div>
-              <div class="col-1">
-                <button type="button" class="btn btn-outline-danger" @click="removeUnit(unitIndex)"><i
-                    class="bi bi-trash3"></i></button>
-              </div>
-            </div>
-            <div class="add-btn mt-3">
-              <button type="button" class="btn btn-outline-dark" @click="addUnit">
-                <i class="bi bi-plus-lg"></i>
-                <span class="mx-2">Add Unit</span>
-              </button>
             </div>
           </div>
           <div class="input form-group col-12 mt-4">
@@ -286,17 +276,6 @@ onMounted(() => {
   workOrderStore.getWorkOrder(route.params.id)
   trackStore.setTrackData(workOrder)
 })
-
-const addUnit = () => {
-  workOrder.value.units.push({
-    jobDescriptions: '',
-    unitType: '',
-    quantity: 0
-  })
-}
-const removeUnit = (index) => {
-  workOrder.value.units.splice(index, 1)
-}
 
 </script>
 
