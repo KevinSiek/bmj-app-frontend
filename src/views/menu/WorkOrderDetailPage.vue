@@ -248,36 +248,69 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit">Kembali</button>
+      <button type="button" class="btn btn-edit" @click="back">Kembali</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process">Print</button>
+      <button type="button" class="btn btn-process mx-3">Print</button>
+      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation">Done</button>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useRole } from '@/composeable/useRole'
+import { common, menuMapping as menuConfig } from '@/config'
+import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onBeforeMount, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 const workOrderStore = useWorkOrderStore()
 const trackStore = useTrackStore()
+const modalStore = useModalStore()
 
 const { workOrder } = storeToRefs(workOrderStore)
+const { isRoleDirector, isRoleInventory, isRoleService } = useRole()
+
+const isShowDone = computed(() =>
+  (isRoleInventory.value || isRoleService.value || isRoleDirector.value) &&
+  workOrder.value.currentStatus !== common.status.work_order.done
+  // !workOrder.value.status.some(item => item.state === common.status.work_order.done)
+)
 
 onBeforeMount(() => {
   if (!workOrder.value) workOrderStore.$resetWorkOrder()
 })
-onMounted(() => {
-  workOrderStore.getWorkOrder(route.params.id)
-  trackStore.setTrackData(workOrder)
+onMounted(async () => {
+  await fetchData()
 })
 
+
+const fetchData = async () => {
+  await workOrderStore.getWorkOrder(route.params.id)
+  await trackStore.setTrackData(workOrder)
+}
+
+const done = async () => {
+  try {
+    await workOrderStore.process(route.params.id)
+    await fetchData()
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+const setDoneConfirmation = () => {
+  modalStore.openConfirmationModal('to this Puchase Order is Done ?', 'Purchase Order Done', done)
+}
+const back = () => {
+  router.push(menuConfig.work_order.path)
+}
 </script>
+
 
 <style lang="scss" scoped>
 @use '@/assets/css/background-page.scss';

@@ -95,6 +95,10 @@ export const useWorkOrderStore = defineStore('work-order', () => {
     await workOrderApi.deleteWorkOrder(id)
   }
 
+  async function process(id) {
+    const response = await workOrderApi.process(id)
+  }
+
   async function $resetWorkOrder () {
     workOrder.value = mapWorkOrder()
   }
@@ -110,6 +114,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
     setWorkOrder,
     deleteWorkOrder,
     addWorkOrder,
+    process,
     $resetWorkOrder
   }
 })

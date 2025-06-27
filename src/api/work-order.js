@@ -78,11 +78,16 @@ const deleteWorkOrder = (id) => {
   return httpApi.deleteDataViaApi(`${api.work_order}/${id}`)
 }
 
+const process = (id) => {
+  return httpApi.postDataViaApi(`${api.work_order}/process/${id}`)
+}
+
 
 export default {
 	getAllWorkOrder,
   addWorkOrder,
   getWorkOrderById,
   updateWorkOrder,
-  deleteWorkOrder
+  deleteWorkOrder,
+  process
 }
