@@ -99,6 +99,7 @@
               <tr class="align-middle">
                 <th scope="col-1" class="table-number">NO</th>
                 <th scope="col" class="table-name">DESCRIPTION</th>
+                <th scope="col" class="table-name">PART NUMBER</th>
                 <th scope="col" class="table-name">QUANTITY</th>
                 <th scope="col" class="table-name">UNIT</th>
                 <th scope="col" class="table-name">UNIT PRICE</th>
