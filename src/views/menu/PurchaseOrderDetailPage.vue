@@ -252,7 +252,6 @@ const isShowReady = computed(() => (isRoleInventory.value || isRoleDirector.valu
 )
 const isShowCreatePi = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
-  isCurrentPrepare.value &&
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
 const isShowRelease = computed(() =>
