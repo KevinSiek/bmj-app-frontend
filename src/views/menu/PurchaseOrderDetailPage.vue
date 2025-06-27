@@ -108,16 +108,62 @@
               </tr>
             </thead>
             <tbody class="table-group-divider">
-              <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="index" class="align-middle">
-                <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
-                <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
-                <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
-                <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name">{{ sparepart.unit }}</td>
-                <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
-                <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
-                <td class="table-col table-name">{{ sparepart.stock }}</td>
+              <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="index" class="align-middle borderless">
+                <td scope="row" class="table-col table-number">
+                  <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
+                    {{ index + 1 }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
+                    {{ sparepart.sparepartName }}
+                  </div>
+                </td>
+                <td class="table-col table-part-number">
+                  <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
+                    {{ sparepart.sparepartNumber }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
+                    {{ sparepart.quantity }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
+                    {{ sparepart.unit || 'pcs' }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
+                    {{ sparepart.unitPriceSell }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
+                    {{ sparepart.totalPrice }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
+                    {{ sparepart.stock }}
+                  </div>
+                </td>
               </tr>
+            </tbody>
+            <tbody>
+              <tr class="align-middle">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+            <tbody>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>
                 <td class="table-col table-part-number">Amount</td>
@@ -125,6 +171,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name">{{ purchaseOrder.price.amount }}</td>
+                <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -135,6 +182,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name">{{ purchaseOrder.price.discount }}</td>
                 <td class="table-col table-name"></td>
+                <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">3</td>
@@ -143,6 +191,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name">{{ purchaseOrder.price.subtotal }}</td>
+                <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -153,6 +202,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name">{{ purchaseOrder.price.advancePayment }}</td>
                 <td class="table-col table-name"></td>
+                <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">5</td>
@@ -161,6 +211,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name">{{ purchaseOrder.price.total }}</td>
+                <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -171,6 +222,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name">{{ purchaseOrder.price.vat }}</td>
                 <td class="table-col table-name"></td>
+                <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">7</td>
@@ -179,6 +231,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name">{{ purchaseOrder.price.totalAmount }}</td>
+                <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
             </tbody>
@@ -258,7 +311,8 @@ const isShowCreatePi = computed(() =>
 )
 const isShowRelease = computed(() =>
   (isRoleMarketing.value || isRoleMarketing.value || isRoleDirector.value) &&
-  isCurrentPaid.value &
+  purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
+  purchaseOrder.value.status.some(item => item.state === common.track.dpPaid) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.release)
 )
 const isShowFinished = computed(() => (isRoleMarketing.value || isRoleDirector.value) && isCurrentRelease.value)
@@ -370,6 +424,15 @@ $secondary-color: rgb(98, 98, 98);
     border: 2px solid $primary-color;
     border-radius: 20px;
     overflow: auto;
+
+    .space {
+      min-height: 100px;
+    }
+
+    .borderless th,
+    .borderless td {
+      border: none !important;
+    }
   }
 }
 
