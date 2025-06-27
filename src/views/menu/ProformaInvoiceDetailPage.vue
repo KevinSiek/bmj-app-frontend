@@ -94,13 +94,12 @@
             <tbody class="table-group-divider">
               <tr v-for="(sparepart, index) in proformaInvoice.spareparts" :key="index" class="align-middle">
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
-                <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
-                <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
+                <td class="table-col table-part-number">{{ sparepart.sparepartName }} {{ sparepart.sparepartNumber }}
+                </td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name">{{ sparepart.unit }}</td>
+                <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
                 <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
                 <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
-                <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>

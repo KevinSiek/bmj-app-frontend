@@ -104,6 +104,7 @@
                 <th scope="col" class="table-name">UNIT</th>
                 <th scope="col" class="table-name">UNIT PRICE</th>
                 <th scope="col" class="table-name">AMOUNT</th>
+                <th scope="col" class="table-name">STATUS</th>
               </tr>
             </thead>
             <tbody class="table-group-divider">
