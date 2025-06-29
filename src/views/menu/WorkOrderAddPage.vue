@@ -173,7 +173,7 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit" @click="back">Kembali</button>
+      <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
       <button type="button" class="btn btn-process" @click="doReleaseConfirmation">Release</button>

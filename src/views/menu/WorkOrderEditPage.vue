@@ -247,7 +247,7 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit">Kembali</button>
+      <button type="button" class="btn btn-edit">Back</button>
     </div>
     <div class="right">
       <button type="button" class="btn btn-process">Print</button>
