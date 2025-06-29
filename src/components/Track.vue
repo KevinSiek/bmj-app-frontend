@@ -51,7 +51,7 @@ const progressSteps = [
 
 const trackProgress = computed(() => {
   console.log(trackData.value)
-  if (trackData.value === null || trackData.value.length === 0) {
+  if (trackData.value === null || trackData.value?.length === 0) {
     return progressSteps.map(step => ({
       state: step.toUpperCase(),
       employee: null,

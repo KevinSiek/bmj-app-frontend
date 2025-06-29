@@ -16,7 +16,7 @@
         </div>
       </div>
       <div v-else>
-        <div v-if="purchases.length == 0">
+        <div v-if="purchases?.length == 0">
           <div class="no-data-text">
             No Data
           </div>

@@ -149,7 +149,7 @@ const menuMapping = {
   },
   delivery_order: {
     name: 'Delivery Order',
-    path: '/delivery-order/:id'
+    path: '/delivery-order'
   },
   delivery_order_detail: {
     name: 'Detail Delivery Order',
