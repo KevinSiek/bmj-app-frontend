@@ -86,7 +86,7 @@ const goToAdd = () => {
 
 const goToDetail = async (employee) => {
   await employeeStore.setEmployee(employee)
-  router.push(`${menuConfig.employee.path}/${employee.id}`)
+  router.push(`${menuConfig.employee.path}/${employee.slug}`)
 }
 
 </script>

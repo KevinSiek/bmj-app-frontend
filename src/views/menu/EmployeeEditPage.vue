@@ -36,9 +36,9 @@ import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount } from 'vue'
-import { useRouter } from 'vue-router'
-import { validatePassword } from '@/utils/form-util'
+import { useRoute, useRouter } from 'vue-router'
 
+const route = useRoute()
 const router = useRouter()
 const modalStore = useModalStore()
 const employeeStore = useEmployeeStore()
@@ -59,17 +59,11 @@ onBeforeMount(() => {
 
 const updateEmployee = async () => {
   try {
-    await employeeStore.updateEmployee()
-    router.push(`${menuConfig.employee.path}/${employee.id}`)
+    await employeeStore.updateEmployee(route.params.id)
+    router.push(`${menuConfig.employee.path}/${route.params.id}`)
   } catch (error) {
-    console.log('ERROR PAGE', error)
     throw error.data.error || error.data.message
   }
-  // if (validatePassword(employee.value.password, employee.value.password_confirmation)) {
-  // }
-  // else {
-  //   throw new Error('Confirm Password is not Match')
-  // }
 }
 
 const updateEmployeeConfirmation = () => {

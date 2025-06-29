@@ -83,10 +83,10 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-danger mx-3" @click="deleteEmployeeConfirmation">
+      <button type="button" class="btn btn-danger mx-3" data-bs-toggle="modal" data-bs-target="#deleteModal">
         Delete Employee
       </button>
-      <button type="button" class="btn btn-secondary mx-3" @click="resetPassword">
+      <button type="button" class="btn btn-secondary mx-3" @click="resetPasswordConfirmation">
         Reset Password
       </button>
     </div>
@@ -94,13 +94,30 @@
       Edit Employee
     </button>
   </div>
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Confirmation</h5>
+        </div>
+        <div class="modal-body">
+          <p>Type 'DELETE' to delete the employee</p>
+          <input type="text" class="form-control mt-2" v-model="deleteConfirmation" placeholder="">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+            @click="deleteEmployeeConfirmation">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { menuMapping as menuConfig, common } from '@/config'
 import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
-import { validatePassword } from '@/utils/form-util'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -113,6 +130,7 @@ const employeeStore = useEmployeeStore()
 const { employee } = storeToRefs(employeeStore)
 const isPassShow = ref(false)
 const isConfPassShow = ref(false)
+const deleteConfirmation = ref('')
 
 const roles = [
   common.role.director,
@@ -129,9 +147,6 @@ onMounted(() => {
   employeeStore.getEmployee(route.params.id)
 })
 
-const resetPassword = () => {
-}
-
 const showHidePass = () => {
   isPassShow.value = !isPassShow.value
 }
@@ -140,19 +155,32 @@ const showHideConfPass = () => {
 }
 
 const goToEdit = async () => {
-  router.push(`${menuConfig.employee.path}/${employee.id}/edit`)
+  router.push(`${menuConfig.employee.path}/${route.params.id}/edit`)
+}
+
+const resetPassword = async () => {
+  try {
+    await employeeStore.resetPassword(route.params.id)
+    employeeStore.getEmployee(route.params.id)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+
+const resetPasswordConfirmation = () => {
+  modalStore.openConfirmationModal('to Reset Password ?', 'Reset Password Success', resetPassword)
 }
 
 const deleteEmployee = async () => {
-  if (validatePassword(employee.value.password, employee.value.password_confirmation)) {
-    await employeeStore.deleteEmployee(employee.value.id)
-    router.push(menuConfig.employee.path)
-  }
-  else {
-    throw new Error('Confirm Password is not Match')
-  }
+  // await employeeStore.deleteEmployee(employee.value.id)
+  modalStore.closeModal()
+  router.push(menuConfig.employee.path)
 }
 const deleteEmployeeConfirmation = () => {
+  if (deleteConfirmation.value !== 'DELETE') {
+    modalStore.openMessageModal(common.modal.failed, 'Type "DELETE" to confirm deletion')
+    return
+  }
   modalStore.openConfirmationModal('to Delete this Employee ?', 'Delete Employee Success', deleteEmployee)
 }
 

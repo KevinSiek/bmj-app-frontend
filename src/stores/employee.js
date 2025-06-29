@@ -11,6 +11,7 @@ export const useEmployeeStore = defineStore('employee', () => {
   function mapEmployee (data) {
     return {
       id: data?.id || '',
+      slug: data?.slug || '',
       fullname: data?.fullname || '',
       username: data?.username || '',
       email: data?.email || '',
@@ -23,6 +24,7 @@ export const useEmployeeStore = defineStore('employee', () => {
   async function getAllEmployee (param) {
     isLoading.value = true
     const { data } = await employeeApi.getAllEmployee(param)
+    console.log('getEmployee', data)
     employees.value = data.data.map(mapEmployee)
     paginationData.value = data
     isLoading.value = false
@@ -41,12 +43,16 @@ export const useEmployeeStore = defineStore('employee', () => {
     employee.value = selectedEmployee
   }
 
-  async function updateEmployee () {
-    const { data } = await employeeApi.updateEmployee(employee.value.id, employee.value)
+  async function updateEmployee (id) {
+    const { data } = await employeeApi.updateEmployee(id, employee.value)
   }
 
   async function deleteEmployee (id) {
     await employeeApi.deleteEmployee(id)
+  }
+
+  async function resetPassword(id) {
+    await employeeApi.resetPassword(id)
   }
 
   async function $resetEmployee () {
@@ -64,6 +70,7 @@ export const useEmployeeStore = defineStore('employee', () => {
     deleteEmployee,
     addEmployee,
     $resetEmployee,
-    setEmployee
+    setEmployee,
+    resetPassword
   }
 })

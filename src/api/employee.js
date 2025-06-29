@@ -30,11 +30,15 @@ const deleteEmployee = (id) => {
   return httpApi.deleteDataViaApi(`${api.employee}/${id}`)
 }
 
+const resetPassword = (id) => {
+  return httpApi.postDataViaApi(`${api.employee}/reset-password/${id}`)
+}
 
 export default {
 	getAllEmployee,
   addEmployee,
   getEmployeeById,
   updateEmployee,
-  deleteEmployee
+  deleteEmployee,
+  resetPassword
 }
