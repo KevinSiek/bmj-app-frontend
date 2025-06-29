@@ -33,6 +33,7 @@
         </div>
       </div>
     </div>
+    <div class="modal-backdrop fade show" @click.self="closeModal"></div>
   </div>
 </template>
 
@@ -41,10 +42,18 @@ import { common } from '@/config'
 import { useModalStore } from '@/stores/modal'
 
 const modalStore = useModalStore()
+
+const closeModal = () => {
+  modalStore.closeModal()
+}
 </script>
 
 <style lang="scss" scoped>
 $primary-color: black;
+
+.modal-dialog {
+  z-index: 1050;
+}
 
 .modal-body {
   margin-top: 5%;
@@ -77,6 +86,10 @@ $primary-color: black;
     //   color: white;
     // }
   }
+}
+
+.modal-backdrop {
+  z-index: 1040;
 }
 
 @media only screen and (max-width: 768px) {

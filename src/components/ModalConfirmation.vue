@@ -23,6 +23,7 @@
         </div>
       </div>
     </div>
+    <div class="modal-backdrop fade show" @click.self="closeModal"></div>
   </div>
 </template>
 
@@ -40,9 +41,16 @@ const event = async () => {
     modalStore.openMessageModal(common.modal.failed, error)
   }
 }
+const closeModal = () => {
+  modalStore.closeModal()
+}
 </script>
 
 <style lang="scss" scoped>
+.modal-dialog {
+  z-index: 1050;
+}
+
 .modal-body {
   margin-top: 5%;
   display: flex;
@@ -72,6 +80,10 @@ const event = async () => {
 .modal-footer {
   display: flex;
   justify-content: center;
+}
+
+.modal-backdrop {
+  z-index: 1000;
 }
 
 @media only screen and (max-width: 768px) {
