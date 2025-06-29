@@ -13,16 +13,16 @@
         </div>
       </div>
       <div v-else>
-        <div v-if="workOrders.length == 0">
+        <div v-if="deliveryOrder.length == 0">
           <div class="no-data-text">
             No Data
           </div>
         </div>
         <div v-else class="list">
-          <ItemComponent v-for="(workOrder, index) in workOrders" :key="index" :number="index + paginationData.from"
-            :item="workOrder" bigRow :first-section="workOrder.serviceOrder.no"
-            :second-section="workOrder.date.startDate" :current-status="workOrder.currentStatus"
-            @click="goToDetail(workOrder)" />
+          <ItemComponent v-for="(deliveryOrder, index) in deliveryOrders" :key="index"
+            :number="index + paginationData.from" :item="deliveryOrder" bigRow :first-section="deliveryOrder.project.no"
+            :second-section="deliveryOrder.date.startDate" :current-status="deliveryOrder.currentStatus"
+            @click="goToDetail(deliveryOrder)" />
         </div>
       </div>
     </div>
@@ -37,19 +37,19 @@ import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
 import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import { onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
+import { useDeliveryOrderStore } from '@/stores/delivery-order'
 
 const route = useRoute()
 const router = useRouter()
-const workOrderStore = useWorkOrderStore()
+const deliveryOrderStore = useDeliveryOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { workOrders, paginationData, isLoading } = storeToRefs(workOrderStore)
+const { deliveryOrders, paginationData, isLoading } = storeToRefs(deliveryOrderStore)
 
 onMounted(async () => {
   // Handle first load
@@ -57,7 +57,7 @@ onMounted(async () => {
     updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
-  fetchWorkOrder()
+  fetchDeliveryOrder()
 })
 
 watch(() => route.query, (before, after) => {
@@ -65,27 +65,26 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchWorkOrder()
-    console.log("REFETCH WORK ORDER")
+    fetchDeliveryOrder()
   }
 })
 
-const fetchWorkOrder = async () => {
+const fetchDeliveryOrder = async () => {
   const { page, search, month, year } = route.query
-  workOrderStore.getAllWorkOrders({ page, search, month, year })
+  deliveryOrderStore.getAllDeliveryOrders({ page, search, month, year })
 }
 
-const searchWorkOrder = (search) => {
+const searchDeliveryOrder = (search) => {
   updateQuery(router, route, { ...route.query, search })
 }
 
 const handleUpdateSearch = (search) => {
-  debounce(() => searchWorkOrder(search), 1000, 'search-workOrder')
+  debounce(() => searchDeliveryOrder(search), 1000, 'search-deliveryOrder')
 }
 
-const goToDetail = async (workOrder) => {
-  await workOrderStore.setWorkOrder(workOrder)
-  router.push(`${menuConfig.work_order.path}/${workOrder.id}`)
+const goToDetail = async (deliveryOrder) => {
+  await deliveryOrderStore.setDeliveryOrder(deliveryOrder)
+  router.push(`${menuConfig.delivery_order.path}/${deliveryOrder.id}`)
 }
 
 </script>

@@ -11,18 +11,21 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
   function mapDeliveryOrder (data) {
     return {
       id: data?.id || '',
-      deliveryOrderNumber: data?.work_order_number || '',
-      serviceOrder: {
-        no: data?.service_order?.no || '',
-        date: data?.service_order?.date || '',
-        receivedBy: data?.service_order?.received_by || '',
-        startDate: data?.service_order?.start_date || '',
-        endDate: data?.service_order?.end_date || ''
-      },
       currentStatus: data?.current_status || '',
-      proformaInvoice: {
-        proformaInvoiceNumber: data?.proforma_invoice?.proforma_invoice_number || '',
-        proformaInvoiceDate: data?.proforma_invoice?.proforma_invoice_date || ''
+      deliveryOrder: {
+        deliveryOrderNumber: data?.work_order_number || '',
+        deliveryOrderDate: data?.delivery_order?.delivery_order_date || '',
+        receivedBy: data?.delivery_order?.received_by || '',
+        pickedBy: data?.delivery_order?.picked_by || '',
+        shipMode: data?.delivery_order?.ship_mode || '',
+        orderType: data?.delivery_order?.order_type || '',
+        delivery: data?.delivery_order?.delivery || '',
+        npwp: data?.delivery_order?.npp || ''
+      },
+      purchaseOrder: {
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
+        type: data?.purchase_order?.type || ''
       },
       customer: {
         companyName: data?.customer?.company_name || '',
@@ -32,34 +35,17 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
         office: data?.customer?.office || '',
         urban: data?.customer?.urban || '',
         subdistrict: data?.customer?.subdistrict || '',
-        postalCode: data?.customer?.postal_code || ''
+        postalCode: data?.customer?.postal_code || '',
       },
-      units: (data?.units || []).map(unit => ({
-        jobDescriptions: unit?.job_descriptions || '',
-        unitType: unit?.unit_type || '',
-        quantity: unit?.quantity || 0
-      })),
-      poc: {
-        compiled: data?.poc?.compiled || '',
-        headOfService: data?.poc?.head_of_service || '',
-        director: data?.poc?.director || '',
-        worker: data?.poc?.worker || [],
-        approver: data?.poc?.approver || ''
-      },
-      date: {
-        startDate: data?.date?.start_date || '',
-        endDate: data?.date?.end_date || ''
-      },
-      description: data?.description || '',
-      additional: {
-        spareparts: data?.additional?.spareparts || '',
-        backupSparepart: data?.additional?.backup_sparepart || '',
-        scope: data?.additional?.scope || '',
-        vaccine: data?.additional?.vaccine || '',
-        apd: data?.additional?.apd || '',
-        peduliLindungi: data?.additional?.peduli_lindungi || '',
-        executionTime: data?.additional?.execution_time || ''
-      }
+      notes: data?.notes || '',
+      spareparts: (data?.spareparts || []).map(sparepart => ({
+        sparepartName: sparepart?.sparepart_name || '',
+        sparepartNumber: sparepart?.sparepart_number || '',
+        quantity: sparepart?.quantity || 0,
+        unitPriceSell: sparepart?.unit_price_sell || 0,
+        totalPrice: sparepart?.total_price || 0,
+        stock: sparepart?.stock || ''
+      }))
     }
   }
 
