@@ -17,6 +17,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
         deliveryOrderDate: data?.delivery_order?.delivery_order_date || '',
         receivedBy: data?.delivery_order?.received_by || '',
         pickedBy: data?.delivery_order?.picked_by || '',
+        preparedBy: data?.delivery_order?.prepared_by || '',
         shipMode: data?.delivery_order?.ship_mode || '',
         orderType: data?.delivery_order?.order_type || '',
         delivery: data?.delivery_order?.delivery || '',
