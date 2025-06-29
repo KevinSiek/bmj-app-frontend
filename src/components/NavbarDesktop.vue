@@ -44,7 +44,8 @@ const iconMap = {
   back_order: 'cart-plus',
   purchase: 'cart',
   employee: 'person-fill-gear',
-  work_order: 'person-workspace'
+  work_order: 'person-workspace',
+  delivery_order: 'truck'
 }
 
 const menus = [
@@ -61,7 +62,8 @@ const menus = [
       'back_order',
       'purchase',
       'employee',
-      'work_order'
+      'work_order',
+      'delivery_order'
     ]
   },
   // {
