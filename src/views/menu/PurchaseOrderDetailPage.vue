@@ -328,7 +328,7 @@ onMounted(async () => {
 
 const fullPaid = async () => {
   try {
-    await purchaseOrderStore.fullPaid(purchaseOrder.value)
+    await purchaseOrderStore.fullPaid(route.params.id)
     fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
