@@ -115,20 +115,22 @@
       <div class="upper my-2">
         <div class="title">Purchase Order</div>
         <div class="data">
-          <div class="input form-group col-12">
-            <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.purchaseOrderNumber"
-              placeholder="No" disabled>
-          </div>
-          <div class="input form-group col-12">
-            <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.purchaseOrderDate"
-              placeholder="Date" disabled>
-          </div>
-          <div class="input form-group col-12">
-            <label for="">Type</label><br>
-            <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.type" placeholder="Type"
-              disabled>
+          <div class="left">
+            <div class="input form-group col-12">
+              <label for="">No</label><br>
+              <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.purchaseOrderNumber"
+                placeholder="No" disabled>
+            </div>
+            <div class="input form-group col-12">
+              <label for="">Date</label><br>
+              <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.purchaseOrderDate"
+                placeholder="Date" disabled>
+            </div>
+            <div class="input form-group col-12">
+              <label for="">Type</label><br>
+              <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.type" placeholder="Type"
+                disabled>
+            </div>
           </div>
         </div>
       </div>
@@ -204,7 +206,7 @@ const isShowDone = computed(() =>
 )
 
 onBeforeMount(() => {
-  if (!deliveryOrder.value) deliveryOrderStore.$resetWorkOrder()
+  if (!deliveryOrder.value) deliveryOrderStore.$resetDeliveryOrder()
 })
 onMounted(async () => {
   await fetchData()
