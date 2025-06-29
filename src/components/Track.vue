@@ -44,13 +44,22 @@ const progressSteps = [
   common.track.dp_paid,
   common.track.ready,
   common.track.release,
+  common.track.full_paid,
   common.track.done,
-  common.track.return
+  // common.track.return
 ]
 
 const trackProgress = computed(() => {
   console.log(trackData.value)
-  const activeSteps = trackData.value.map((step) => ({
+  if (trackData.value === null || trackData.value.length === 0) {
+    return progressSteps.map(step => ({
+      state: step.toUpperCase(),
+      employee: null,
+      timestamp: null,
+      active: false
+    }))
+  }
+  const activeSteps = trackData.value?.map((step) => ({
     state: step.state?.toUpperCase() ?? null,
     employee: step?.employee ?? null,
     timestamp: step?.timestamp ?? null,
@@ -85,7 +94,7 @@ $primary-color: black;
 
 .main {
   width: 100%;
-  height: 100vh;
+  min-height: 70vh;
   display: flex;
   justify-content: center;
   align-items: center;

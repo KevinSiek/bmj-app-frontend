@@ -28,10 +28,10 @@ const { isShowTrack } = storeToRefs(trackStore)
 <style lang="scss" scoped>
 .overlay {
   position: fixed;
-  top: 10%;
+  top: 5%;
   left: 0;
   right: 0;
-  bottom: 10%;
+  bottom: 5%;
   display: flex;
   justify-content: flex-end;
   z-index: 1000;
