@@ -109,6 +109,9 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   async function release (id, workOrder) {
     const response = await purchaseOrderApi.release(id, workOrder)
   }
+  async function done (id) {
+    const response = await purchaseOrderApi.done(id)
+  }
 
   return {
     purchaseOrder,
@@ -126,6 +129,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     fullPaid,
     ready,
     release,
+    done,
     $resetPurchaseOrder
   }
 })

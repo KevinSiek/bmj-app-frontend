@@ -83,6 +83,9 @@ const fullPaid = (id) => {
 const release = (id, workOrder) => {
   return httpApi.postDataViaApi(`${api.purchase_order}/release/${id}`, workOrder)
 }
+const done = (id) => {
+  return httpApi.postDataViaApi(`${api.purchase_order}/done/${id}`)
+}
 
 
 export default {
@@ -95,5 +98,6 @@ export default {
   updateStatusPurchaseOrder,
   fullPaid,
   ready,
-  release
+  release,
+  done
 }

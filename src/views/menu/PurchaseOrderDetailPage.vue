@@ -266,8 +266,7 @@
       <button v-if="isShowCreatePi" type="button" class="btn btn-process mx-3" @click="createPiConfirmation">Create
         PI</button>
       <button v-if="isShowRelease" type="button" class="btn btn-process mx-3" @click="doRelease">Release</button>
-      <button v-if="isShowFinished" type="button" class="btn btn-process mx-3"
-        @click="setToFinishConfirmation">Finish</button>
+      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setToDoneConfirmation">Done</button>
     </div>
   </div>
 </template>
@@ -292,7 +291,6 @@ const trackStore = useTrackStore()
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
 const isStatus = (status) => computed(() => purchaseOrder.value.currentStatus == status)
-const isCurrentRelease = isStatus(common.status.po.release)
 
 const isShowFullPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
@@ -312,7 +310,10 @@ const isShowRelease = computed(() =>
   purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.release)
 )
-const isShowFinished = computed(() => (isRoleMarketing.value || isRoleDirector.value) && isCurrentRelease.value)
+const isShowDone = computed(() =>
+  (isRoleMarketing.value || isRoleDirector.value) &&
+  !purchaseOrder.value.status.some(item => item.state === common.track.done)
+)
 
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
@@ -327,7 +328,8 @@ onMounted(async () => {
 
 const fullPaid = async () => {
   try {
-    await purchaseOrderStore.fullPaid(route.params.id)
+    await purchaseOrderStore.fullPaid(purchaseOrder.value)
+    fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
   }
@@ -363,15 +365,16 @@ const doRelease = async () => {
   await router.push(`${menuConfig.work_order.path}/add/${route.params.id}`)
 }
 
-const setToFinish = async () => {
+const setToDone = async () => {
   try {
-    await purchaseOrderStore.updateStatus(route.params.id, common.status.po.finished)
+    await purchaseOrderStore.done(route.params.id)
+    fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
   }
 }
-const setToFinishConfirmation = () => {
-  modalStore.openConfirmationModal('Purchase Order has been Finished ?', 'Purchase Order Finished', setToFinish)
+const setToDoneConfirmation = () => {
+  modalStore.openConfirmationModal('Purchase Order has been Done ?', 'Purchase Order Done', setToDone)
 }
 </script>
 
