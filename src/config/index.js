@@ -146,6 +146,14 @@ const menuMapping = {
   work_order_detail: {
     name: 'Detail Work Order',
     path: '/work-order/:id'
+  },
+  delivery_order: {
+    name: 'Delivery Order',
+    path: '/delivery-order/:id'
+  },
+  delivery_order_detail: {
+    name: 'Detail Delivery Order',
+    path: '/delivery-order/:id'
   }
 }
 
@@ -177,7 +185,7 @@ const common = {
       prepare: 'Prepare',
       dpPaid: 'DP Paid',
       ready: 'Ready',
-      finished: 'Finished',
+      done: 'done',
       bo: 'BO'
     },
     work_order: {
@@ -206,6 +214,7 @@ const common = {
     po: 'Po',
     pi: 'Pi',
     dp_paid: 'DP Paid',
+    full_paid: 'Full Paid',
     ready: 'Ready',
     release: 'Release',
     done: 'Done',
@@ -222,7 +231,8 @@ const api = {
   sparepart: '/api/sparepart',
   work_order: '/api/work-order',
   employee: '/api/employee',
-  purchase: '/api/buy'
+  purchase: '/api/buy',
+  delivery_order: '/api/delivery-order'
 }
 
 export {

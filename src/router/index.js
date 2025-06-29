@@ -43,6 +43,10 @@ const EmployeePage = () => import('@/views/menu/EmployeePage.vue')
 const EmployeeAddPage = () => import('@/views/menu/EmployeeAddPage.vue')
 const EmployeeDetailPage = () => import('@/views/menu/EmployeeDetailPage.vue')
 const EmployeeEditPage = () => import('@/views/menu/EmployeeEditPage.vue')
+const DeliveryOrderPage = () => import('@/views/menu/DeliveryOrderPage.vue')
+const DeliveryOrderDetailPage = () => import('@/views/menu/DeliveryOrderDetailPage.vue')
+
+
 
 
 const router = createRouter({
@@ -227,7 +231,7 @@ const router = createRouter({
               component: PurchaseDetailPage,
               meta: {
                 useBack: true,
-                useTrack: true
+                useTrack: false
               }
             },
           ]
@@ -363,6 +367,25 @@ const router = createRouter({
               path: menuConfig.purchase_order_detail.path,
               name: menuConfig.purchase_order_detail.name,
               component: PurchaseOrderDetailPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            }
+          ]
+        },
+        {
+          path: menuConfig.delivery_order.path,
+          children: [
+            {
+              path: '',
+              name: menuConfig.delivery_order.name,
+              component: DeliveryOrderPage
+            },
+            {
+              path: menuConfig.delivery_order_detail.path,
+              name: menuConfig.delivery_order_detail.name,
+              component: DeliveryOrderDetailPage,
               meta: {
                 useBack: true,
                 useTrack: true
