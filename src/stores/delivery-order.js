@@ -52,7 +52,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
 
   async function getAllDeliveryOrders(param) {
     isLoading.value = true
-    const { data } = await deliveryOrderApi.getAllWorkOrder(param)
+    const { data } = await deliveryOrderApi.getAllDeliveryOrder(param)
     deliveryOrders.value = data.data.map(mapDeliveryOrder)
     console.log(deliveryOrders.value)
     paginationData.value = data
@@ -60,14 +60,14 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
   }
 
   async function getDeliveryOrder(id) {
-    const { data } = await deliveryOrderApi.getWorkOrderById(id)
+    const { data } = await deliveryOrderApi.getDeliveryOrderById(id)
     deliveryOrder.value = mapDeliveryOrder(data)
     console.log(deliveryOrder.value)
   }
 
   async function addDeliveryOrder() {
     console.log(deliveryOrder.value)
-    await delive.addWorkOrder(deliveryOrder)
+    await deliveryOrderApi.addDeliveryOrder(deliveryOrder)
   }
 
   async function setDeliveryOrder (selectedDeliveryOrder) {
@@ -75,11 +75,11 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
   }
 
   async function updateDeliveryOrder() {
-    const { data } = await deliveryOrderApi.updateWorkOrder(deliveryOrder.value.id, deliveryOrder)
+    const { data } = await deliveryOrderApi.updateDeliveryOrder(deliveryOrder.value.id, deliveryOrder)
   }
 
   async function deleteDeliveryOrder(id) {
-    await deliveryOrderApi.deleteWorkOrder(id)
+    await deliveryOrderApi.deleteDeliveryOrder(id)
   }
 
   async function process(id) {
