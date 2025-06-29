@@ -17,7 +17,6 @@ export function useRole() {
   const isRoleInventory = isRole(common.role.inventory)
   const isRoleService = isRole(common.role.service)
 
-  console.log(user.value)
   return {
     user,
     isRoleDirector,
