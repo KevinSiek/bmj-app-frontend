@@ -1,8 +1,8 @@
 <template>
   <div id="bmjApp">
     <RouterView />
-    <ModalMessage v-if="modalStore.isShowMessage" />
-    <ModalConfirmation v-if="modalStore.isShowConfirmation" />
+    <ModalMessage v-show="modalStore.isShowMessage" />
+    <ModalConfirmation v-show="modalStore.isShowConfirmation" />
   </div>
 </template>
 
