@@ -127,7 +127,6 @@ const goToAdd = () => {
 
 .item-child {
   margin-left: 10%;
-
 }
 
 .disabled {

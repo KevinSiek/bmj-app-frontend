@@ -174,7 +174,7 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process mx-3">Print</button>
+      <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
       <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation">Done</button>
     </div>
   </div>
@@ -189,6 +189,7 @@ import { useTrackStore } from '@/stores/track'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { createPdf } from '@/utils/delivery-note'
 
 const route = useRoute()
 const router = useRouter()
@@ -227,6 +228,9 @@ const done = async () => {
 }
 const setDoneConfirmation = () => {
   modalStore.openConfirmationModal('to this Puchase Order is Done ?', 'Purchase Order Done', done)
+}
+const download = () => {
+  createPdf(deliveryOrder.value)
 }
 const back = () => {
   router.push(menuConfig.delivery_order.path)
