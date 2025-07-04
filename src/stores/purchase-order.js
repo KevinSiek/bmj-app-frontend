@@ -123,7 +123,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   }
 
   async function returnPurchaseOrder (id) {
-    const response = await purchaseOrderApi.return(id)
+    const response = await purchaseOrderApi.returnPurchaseOrder(id)
   }
 
   async function approveReturn (id) {
