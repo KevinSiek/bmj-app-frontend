@@ -5,6 +5,7 @@ import purchaseOrderApi from '@/api/purchase-order'
 export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   const purchaseOrder = ref(null)
   const purchaseOrders = ref([])
+  const returnPurchaseOrders = ref([])
   const paginationData = ref({})
   const isLoading = ref(false)
 
@@ -63,6 +64,13 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     paginationData.value = data
     isLoading.value = false
   }
+  async function getAllReturnPurchaseOrders(param) {
+    isLoading.value = true
+    const { data } = await purchaseOrderApi.getAllReturnPurchaseOrder(param)
+    returnPurchaseOrders.value = data.data.map(mapPurchaseOrder)
+    paginationData.value = data
+    isLoading.value = false
+  }
 
   async function getPurchaseOrder(id) {
     const { data } = await purchaseOrderApi.getPurchaseOrderById(id)
@@ -109,16 +117,31 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   async function release (id, workOrder) {
     const response = await purchaseOrderApi.release(id, workOrder)
   }
+
   async function done (id) {
     const response = await purchaseOrderApi.done(id)
+  }
+
+  async function returnPurchaseOrder (id) {
+    const response = await purchaseOrderApi.return(id)
+  }
+
+  async function approveReturn (id) {
+    const response = await purchaseOrderApi.approveReturn(id)
+  }
+
+  async function rejectReturn (id) {
+    const response = await purchaseOrderApi.rejectReturn(id)
   }
 
   return {
     purchaseOrder,
     purchaseOrders,
+    returnPurchaseOrders,
     paginationData,
     isLoading,
     getAllPurchaseOrders,
+    getAllReturnPurchaseOrders,
     getPurchaseOrder,
     updatePurchaseOrder,
     deletePurchaseOrder,
@@ -130,6 +153,9 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     ready,
     release,
     done,
+    returnPurchaseOrder,
+    approveReturn,
+    rejectReturn,
     $resetPurchaseOrder
   }
 })

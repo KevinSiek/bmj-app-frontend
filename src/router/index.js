@@ -45,9 +45,8 @@ const EmployeeDetailPage = () => import('@/views/menu/EmployeeDetailPage.vue')
 const EmployeeEditPage = () => import('@/views/menu/EmployeeEditPage.vue')
 const DeliveryOrderPage = () => import('@/views/menu/DeliveryOrderPage.vue')
 const DeliveryOrderDetailPage = () => import('@/views/menu/DeliveryOrderDetailPage.vue')
-
-
-
+const ReturnPage = () => import('@/views/menu/ReturnPage.vue')
+const ReturnDetailPage = () => import('@/views/menu/ReturnDetailPage.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -119,6 +118,7 @@ const router = createRouter({
           name: menuConfig.dashboard.name,
           component: DashboardPage
         },
+        // Quotation
         {
           path: menuConfig.quotation.path,
           children: [
@@ -170,6 +170,7 @@ const router = createRouter({
             },
           ]
         },
+        // Invoice
         {
           path: menuConfig.invoice.path,
           children: [
@@ -189,6 +190,7 @@ const router = createRouter({
             },
           ]
         },
+        // Back Order
         {
           path: menuConfig.back_order.path,
           children: [
@@ -208,6 +210,7 @@ const router = createRouter({
             },
           ]
         },
+        // Purchase
         {
           path: menuConfig.purchase.path,
           children: [
@@ -236,6 +239,7 @@ const router = createRouter({
             },
           ]
         },
+        // Work Order
         {
           path: menuConfig.work_order.path,
           children: [
@@ -260,6 +264,7 @@ const router = createRouter({
             },
           ]
         },
+        // Spareparts
         {
           path: menuConfig.spareparts.path,
           children: [
@@ -294,6 +299,7 @@ const router = createRouter({
             }
           ]
         },
+        // Employee
         {
           path: menuConfig.employee.path,
           children: [
@@ -328,6 +334,7 @@ const router = createRouter({
             },
           ]
         },
+        // Proforma Invoice
         {
           path: menuConfig.proforma_invoice.path,
           children: [
@@ -355,6 +362,7 @@ const router = createRouter({
             },
           ]
         },
+        // Purchase Order
         {
           path: menuConfig.purchase_order.path,
           children: [
@@ -374,6 +382,27 @@ const router = createRouter({
             }
           ]
         },
+        // Return
+        {
+          path: menuConfig.return.path,
+          children: [
+            {
+              path: '',
+              name: menuConfig.return.name,
+              component: ReturnPage
+            },
+            {
+              path: menuConfig.return_detail.path,
+              name: menuConfig.return_detail.name,
+              component: ReturnDetailPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            }
+          ]
+        },
+        // Delivery Order
         {
           path: menuConfig.delivery_order.path,
           children: [

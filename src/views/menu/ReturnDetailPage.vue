@@ -3,6 +3,7 @@
     <form class="row form">
       <div class="upper my-2">
         <div class="left">
+          TESTING
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
@@ -256,19 +257,11 @@
     </div>
   </div>
   <div class="button">
-    <div class="left">
+    <div class="right">
+      <button type="button" class="btn btn-danger" @click="rejectConfirmation">Reject</button>
     </div>
     <div class="right">
-      <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation">Full
-        Paid</button>
-      <button v-if="isShowReady" type="button" class="btn btn-process mx-3" @click="setToReadyConfirmation">Sparepart
-        Ready</button>
-      <button v-if="isShowCreatePi" type="button" class="btn btn-process mx-3" @click="createPiConfirmation">Create
-        PI</button>
-      <button v-if="isShowRelease" type="button" class="btn btn-process mx-3" @click="doRelease">Release</button>
-      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setToDoneConfirmation">Done</button>
-      <button v-if="isShowReturn" type="button" class="btn btn-process mx-3"
-        @click="setToReturnConfirmation">Return</button>
+      <button type="button" class="btn btn-success" @click="approveConfirmation">Approve</button>
     </div>
   </div>
 </template>
@@ -285,41 +278,11 @@ import { useTrackStore } from '@/stores/track'
 
 const router = useRouter()
 const route = useRoute()
-const { isRoleDirector, isRoleMarketing, isRoleInventory, isRoleFinance, isRoleService } = useRole()
 const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
 
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
-
-const isShowFullPaid = computed(() =>
-  (isRoleFinance.value || isRoleDirector.value) &&
-  purchaseOrder.value.proformaInvoice.isDpPaid &&
-  !purchaseOrder.value.proformaInvoice.isFullPaid
-)
-const isShowReady = computed(() => (isRoleInventory.value || isRoleDirector.value) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.ready)
-)
-const isShowCreatePi = computed(() =>
-  (isRoleFinance.value || isRoleDirector.value) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.pi)
-)
-const isShowRelease = computed(() =>
-  (isRoleService.value || isRoleInventory.value || isRoleDirector.value) &&
-  purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
-  purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.release)
-)
-const isShowDone = computed(() =>
-  (isRoleMarketing.value || isRoleDirector.value) &&
-  purchaseOrder.value.status.some(item => item.state === common.track.release) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.done)
-)
-const isShowReturn = computed(() =>
-  (isRoleMarketing.value || isRoleDirector.value) &&
-  purchaseOrder.value.status.some(item => item.state === common.track.done) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.return)
-)
 
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
@@ -332,7 +295,7 @@ onMounted(async () => {
   await fetchData()
 })
 
-const fullPaid = async () => {
+const reject = async () => {
   try {
     await purchaseOrderStore.fullPaid(route.params.id)
     fetchData()
@@ -340,10 +303,10 @@ const fullPaid = async () => {
     throw error.data.error || error.data.message
   }
 }
-const setFullPaidConfirmation = () => {
-  modalStore.openConfirmationModal('Purchase Order has been Paid ?', 'Purchase Order has been paid', fullPaid)
+const rejectConfirmation = () => {
+  modalStore.openConfirmationModal('reject this return ?', 'Return has been Rejected', reject)
 }
-const setToReady = async () => {
+const approve = async () => {
   try {
     await purchaseOrderStore.ready(route.params.id)
     fetchData()
@@ -351,47 +314,8 @@ const setToReady = async () => {
     throw error.data.error || error.data.message
   }
 }
-const setToReadyConfirmation = () => {
-  modalStore.openConfirmationModal('Sparepart is Ready ?', 'Spareparts are Ready', setToReady)
-}
-
-const createProformaInvoice = async () => {
-  try {
-    await purchaseOrderStore.processToProformaInvoice(route.params.id)
-    await router.push(`${menuConfig.proforma_invoice.path}`)
-  } catch (error) {
-    throw error.data.error
-  }
-}
-const createPiConfirmation = () => {
-  modalStore.openConfirmationModal('to create Proforma Invoice ?', 'PI Created', createProformaInvoice)
-}
-
-const doRelease = async () => {
-  await router.push(`${menuConfig.work_order.path}/add/${route.params.id}`)
-}
-
-const setToDone = async () => {
-  try {
-    await purchaseOrderStore.done(route.params.id)
-    fetchData()
-  } catch (error) {
-    throw error.data.error || error.data.message
-  }
-}
-const setToDoneConfirmation = () => {
-  modalStore.openConfirmationModal('Purchase Order has been Done ?', 'Purchase Order Done', setToDone)
-}
-const setToReturn = async () => {
-  try {
-    await purchaseOrderStore.returnPurchaseOrder(route.params.id)
-    fetchData()
-  } catch (error) {
-    throw error.data.error || error.data.message
-  }
-}
-const setToReturnConfirmation = () => {
-  modalStore.openConfirmationModal('to return Purchase Order ?', 'Purchase Order Returned', setToReturn)
+const approveConfirmation = () => {
+  modalStore.openConfirmationModal('approve this return ?', 'Return has been Approved', approve)
 }
 </script>
 

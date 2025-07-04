@@ -71,25 +71,48 @@ const deletePurchaseOrder = (id) => {
 const processToProformaInvoice = (id) => {
   return httpApi.postDataViaApi(`${api.purchase_order}/moveToPi/${id}`)
 }
+
 const updateStatusPurchaseOrder = (id, status) => {
   return httpApi.postDataViaApi(`${api.purchase_order}/status/${id}`, status)
 }
+
 const ready = (id) => {
   return httpApi.postDataViaApi(`${api.purchase_order}/ready/${id}`)
 }
+
 const fullPaid = (id) => {
   return httpApi.postDataViaApi(`${api.proforma_invoice}/fullPaid/${id}`)
 }
+
 const release = (id, workOrder) => {
   return httpApi.postDataViaApi(`${api.purchase_order}/release/${id}`, workOrder)
 }
+
 const done = (id) => {
   return httpApi.postDataViaApi(`${api.purchase_order}/done/${id}`)
 }
 
 
+// Return Purchase Order
+const getAllReturnPurchaseOrder = async (param) => {
+  return httpApi.getDataViaApi(`${api.quotation}/return/1`, param)
+}
+
+const returnPurchaseOrder = (id) => {
+  return httpApi.postDataViaApi(`${api.quotation}/return/${id}`)
+}
+
+const approveReturn = (id) => {
+  return httpApi.postDataViaApi(`${api.quotation}/approveReturn/${id}`)
+}
+
+const rejectReturn = (id) => {
+  return httpApi.postDataViaApi(`${api.quotation}/rejectReturn/${id}`)
+}
+
 export default {
 	getAllPurchaseOrder,
+  getAllReturnPurchaseOrder,
   addPurchaseOrder,
   getPurchaseOrderById,
   updatePurchaseOrder,
@@ -99,5 +122,8 @@ export default {
   fullPaid,
   ready,
   release,
-  done
+  done,
+  returnPurchaseOrder,
+  approveReturn,
+  rejectReturn
 }

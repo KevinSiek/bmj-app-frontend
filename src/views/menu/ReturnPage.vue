@@ -4,7 +4,7 @@
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
         <div class="return">
-          <router-link :to="menuConfig.return.path" class="nav-link">
+          <router-link :to="menuConfig.quotation_review.path" class="nav-link">
             <button class="btn btn-primary">Return</button>
           </router-link>
         </div>
@@ -18,13 +18,13 @@
         </div>
       </div>
       <div v-else>
-        <div v-if="purchaseOrders?.length == 0">
+        <div v-if="returnPurchaseOrders?.length == 0">
           <div class="no-data-text">
             No Data
           </div>
         </div>
         <div v-else class="list">
-          <ItemComponent v-for="(po, index) in purchaseOrders" :key="index" :number="index + paginationData.from"
+          <ItemComponent v-for="(po, index) in returnPurchaseOrders" :key="index" :number="index + paginationData.from"
             :item="po" :first-section="po.purchaseOrder.purchaseOrderNumber"
             :second-section="po.purchaseOrder.purchaseOrderDate" :third-section="po.purchaseOrder.type" wideRow
             :current-status="paymentStatus(po)" @click="goToDetail(po)" />
@@ -54,7 +54,7 @@ const router = useRouter()
 const purchaseOrderStore = usePurchaseOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { purchaseOrders, paginationData, isLoading } = storeToRefs(purchaseOrderStore)
+const { returnPurchaseOrders, paginationData, isLoading } = storeToRefs(purchaseOrderStore)
 
 onMounted(async () => {
   // Handle first load
@@ -85,7 +85,7 @@ const paymentStatus = (item) => {
 }
 const fetchPurchaseOrder = async () => {
   const { page, search, month, year } = route.query
-  purchaseOrderStore.getAllPurchaseOrders({ page, search, month, year })
+  purchaseOrderStore.getAllReturnPurchaseOrders({ page, search, month, year })
 }
 
 const searchPurchaseOrder = (search) => {
