@@ -102,7 +102,7 @@
               <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
               <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
               <td class="table-col table-name">{{ sparepart.quantity }}</td>
-              <td class="table-col table-name">{{ sparepart.unit }}</td>
+              <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
               <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
               <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
               <td class="table-col table-name">{{ sparepart.stock }}</td>
@@ -276,7 +276,7 @@ onBeforeMount(() => {
   if (!quotation.value) quotationStore.$resetQuotation()
 })
 
-const subtotal = computed(() => quotation.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
+const amount = computed(() => quotation.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
 
 const searchSparepart = (search) => {
   if (search !== '') quotationStore.getSpareparts({ page: 1, search })
@@ -294,10 +294,11 @@ const selectItem = (index, purchaseData, sparepartData) => {
   data.totalPrice = data.quantity * data.unitPriceSell
 
   quotation.value.spareparts.splice(index, 1, data)
-  quotation.value.price.subtotal = subtotal.value
-  const ppn = subtotal.value * 11 / 100
+  quotation.value.price.amount = amount.value
+  quotation.value.price.subtotal = amount.value - quotation.value.price.discount
+  const ppn = quotation.value.price.subtotal * 11 / 100
   quotation.value.price.ppn = ppn
-  quotation.value.price.grandTotal = subtotal.value + ppn
+  quotation.value.price.grandTotal = quotation.value.price.subtotal + ppn
 }
 
 const addSparepart = () => {
