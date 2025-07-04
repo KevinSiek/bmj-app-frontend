@@ -269,10 +269,9 @@
 <script setup>
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { common, menuMapping as menuConfig } from '@/config'
-import { useRole } from '@/composeable/useRole'
+import { menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
 
@@ -297,8 +296,8 @@ onMounted(async () => {
 
 const reject = async () => {
   try {
-    await purchaseOrderStore.fullPaid(route.params.id)
-    fetchData()
+    await purchaseOrderStore.rejectReturn(route.params.id)
+    router.push(menuConfig.return.path)
   } catch (error) {
     throw error.data.error || error.data.message
   }
@@ -308,8 +307,8 @@ const rejectConfirmation = () => {
 }
 const approve = async () => {
   try {
-    await purchaseOrderStore.ready(route.params.id)
-    fetchData()
+    await purchaseOrderStore.approveReturn(route.params.id)
+    router.push(menuConfig.return.path)
   } catch (error) {
     throw error.data.error || error.data.message
   }
