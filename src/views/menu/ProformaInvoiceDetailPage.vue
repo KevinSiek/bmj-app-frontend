@@ -216,6 +216,7 @@
   <div class="button">
     <div class="left">
       <button v-if="isDPPaid" type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
+      <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
     <div class="right">
       <button v-if="isDPPaid" type="button" class="btn btn-process mx-4" @click="paidDpConfirmation">DP
@@ -231,6 +232,7 @@ import { common, menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
 import { useTrackStore } from '@/stores/track'
+import { createPdf } from '@/utils/pdf/proforma-invoice'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -287,6 +289,10 @@ const createInvoice = async () => {
 
 const createInvoiceConfirmation = () => {
   modalStore.openConfirmationModal('to Create Invoice ?', 'Create Invoice Success', createInvoice)
+}
+
+const download = () => {
+  createPdf(proformaInvoice.value)
 }
 </script>
 
