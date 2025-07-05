@@ -368,6 +368,10 @@ const createPiConfirmation = () => {
 }
 
 const doRelease = async () => {
+  if (purchaseOrder.value.purchaseOrder.type === common.type.sparepart) {
+    await router.push(`${menuConfig.delivery_order.path}/add/${route.params.id}`)
+    return
+  }
   await router.push(`${menuConfig.work_order.path}/add/${route.params.id}`)
 }
 
