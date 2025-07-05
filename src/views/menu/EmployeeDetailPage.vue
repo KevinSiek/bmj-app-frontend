@@ -186,7 +186,7 @@ const closeDeleteModal = () => {
   deleteConfirmation.value = ''
 }
 const deleteEmployee = async () => {
-  // await employeeStore.deleteEmployee(employee.value.id)
+  await employeeStore.deleteEmployee(employee.value.id)
   modalStore.closeModal()
   router.push(menuConfig.employee.path)
 }
