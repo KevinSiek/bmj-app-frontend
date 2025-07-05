@@ -226,18 +226,20 @@
       <div class="amount">
         Total Amount: {{ formatCurrency(quotation.price.amount) }}
       </div>
-      <div class="discount">
-        Discount: {{ formatCurrency(quotation.price.discount) }}
-      </div>
-      <div class="subtotal">
-        Subtotal: {{ formatCurrency(quotation.price.subtotal) }}
-      </div>
-      <div class="ppn">
-        PPN: {{ formatCurrency(quotation.price.ppn) }}
-      </div>
-      <div class="grand-total">
-        Grand Total: {{ formatCurrency(quotation.price.grandTotal) }}
-      </div>
+      <template v-if="!isTypeAdd">
+        <div class="discount">
+          Discount: {{ formatCurrency(quotation.price.discount) }}
+        </div>
+        <div class="subtotal">
+          Subtotal: {{ formatCurrency(quotation.price.subtotal) }}
+        </div>
+        <div class="ppn">
+          PPN: {{ formatCurrency(quotation.price.ppn) }}
+        </div>
+        <div class="grand-total">
+          Grand Total: {{ formatCurrency(quotation.price.grandTotal) }}
+        </div>
+      </template>
     </div>
     <div class="notes my-2">
       <div class="title">Notes</div>
@@ -269,6 +271,7 @@ const props = defineProps({
 })
 
 const isTypeEdit = props.type == common.form.type.view
+const isTypeAdd = props.type == common.form.type.add
 const disabled = computed(() => isTypeEdit ? true : false)
 
 onBeforeMount(() => {
