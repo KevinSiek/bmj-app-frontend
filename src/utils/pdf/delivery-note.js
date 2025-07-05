@@ -3,58 +3,58 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-const data = {
-  id: 'ID',
-  currentStatus: 'ready',
-  deliveryOrder: {
-    deliveryOrderNumber: 'DO_NUMBER',
-    deliveryOrderDate: '2023-10-01',
-    receivedBy: 'John Doe',
-    pickedBy: 'Jane Smith',
-    preparedBy: 'Alice Johnson',
-    shipMode: 'Air',
-    orderType: 'Standard',
-    delivery: 'Express',
-    npp: '1234567890'
-  },
-  purchaseOrder: {
-    purchaseOrderNumber: 'PO_NUMBER',
-    purchaseOrderDate: '2023-09-30',
-    type: 'Spareparts'
-  },
-  customer: {
-    companyName: 'BMJ Company',
-    address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
-    city: 'Jakarta',
-    province: 'DKI Jakarta',
-    office: 'Head Office',
-    urban: 'Central Jakarta',
-    subdistrict: 'Gambir',
-    postalCode: '10110'
-  },
-  notes: 'Please handle with care.',
-  sparepart: [
-    {
-      sparepartName: 'Sparepart A',
-      sparepartNumber: 'SP001',
-      quantity: 10,
-      unitPriceSell: 100000,
-      totalPrice: 1000000,
-      stock: 'In Stock'
-    },
-    {
-      sparepartName: 'Sparepart B',
-      sparepartNumber: 'SP002',
-      quantity: 5,
-      unitPriceSell: 200000,
-      totalPrice: 1000000,
-      stock: 'In Stock'
-    }
-  ]
-}
+// const data = {
+//   id: 'ID',
+//   currentStatus: 'ready',
+//   deliveryOrder: {
+//     deliveryOrderNumber: 'DO_NUMBER',
+//     deliveryOrderDate: '2023-10-01',
+//     receivedBy: 'John Doe',
+//     pickedBy: 'Jane Smith',
+//     preparedBy: 'Alice Johnson',
+//     shipMode: 'Air',
+//     orderType: 'Standard',
+//     delivery: 'Express',
+//     npp: '1234567890'
+//   },
+//   purchaseOrder: {
+//     purchaseOrderNumber: 'PO_NUMBER',
+//     purchaseOrderDate: '2023-09-30',
+//     type: 'Spareparts'
+//   },
+//   customer: {
+//     companyName: 'BMJ Company',
+//     address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
+//     city: 'Jakarta',
+//     province: 'DKI Jakarta',
+//     office: 'Head Office',
+//     urban: 'Central Jakarta',
+//     subdistrict: 'Gambir',
+//     postalCode: '10110'
+//   },
+//   notes: 'Please handle with care.',
+//   sparepart: [
+//     {
+//       sparepartName: 'Sparepart A',
+//       sparepartNumber: 'SP001',
+//       quantity: 10,
+//       unitPriceSell: 100000,
+//       totalPrice: 1000000,
+//       stock: 'In Stock'
+//     },
+//     {
+//       sparepartName: 'Sparepart B',
+//       sparepartNumber: 'SP002',
+//       quantity: 5,
+//       unitPriceSell: 200000,
+//       totalPrice: 1000000,
+//       stock: 'In Stock'
+//     }
+//   ]
+// }
 
-const createPdf = () => {
-  const { deliveryOrder, customer, sparepart, notes } = data
+const createPdf = (data) => {
+  const { deliveryOrder, customer, spareparts, notes } = data
 
   // Top Left
   const title = {
@@ -202,7 +202,7 @@ const createPdf = () => {
               { text: 'UNIT', style: 'tableHeader' },
               { text: 'REMARKS', style: 'tableHeader' }
             ],
-            ...sparepart.map((item, idx) => [
+            ...spareparts.map((item, idx) => [
               idx + 1,
               item.sparepartName,
               item.sparepartNumber,

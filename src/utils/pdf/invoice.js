@@ -4,62 +4,62 @@ import { formatCurrency } from '../form-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-const data = {
-  id: 'ID',
-  currentStatus: 'ready',
-  purchaseOrder: {
-    purchaseOrderNumber: 'PO_NUMBER',
-    purchaseOrderDate: '2023-09-30',
-    purchaseOrderType: 'Spareparts',
-    paymentDue: '2023-10-15',
-    discount: '10%'
-  },
-  invoice: {
-    invoiceNumber: 'INV_NUMBER',
-    date: '2023-10-01',
-    termOfPayment: 'CASH',
-    subTotal: '1000000',
-    grandTotal: '900000'
-  },
-  customer: {
-    companyName: 'BMJ Company',
-    address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
-    city: 'Jakarta',
-    province: 'DKI Jakarta',
-    office: 'Head Office',
-    urban: 'Central Jakarta',
-    subdistrict: 'Gambir',
-    postalCode: '10110'
-  },
-  notes: 'Please handle with care.',
-  price: {
-    subtotal: '1000000',
-    discount: '100000',
-    ppn: '100000',
-    grandTotal: '1100000',
-  },
-  sparepart: [
-    {
-      sparepartName: 'Sparepart A',
-      sparepartNumber: 'SP001',
-      quantity: 10,
-      unitPriceSell: 100000,
-      totalPrice: 1000000,
-      stock: 'In Stock'
-    },
-    {
-      sparepartName: 'Sparepart B',
-      sparepartNumber: 'SP002',
-      quantity: 5,
-      unitPriceSell: 200000,
-      totalPrice: 1000000,
-      stock: 'In Stock'
-    }
-  ]
-}
+// const data = {
+//   id: 'ID',
+//   currentStatus: 'ready',
+//   purchaseOrder: {
+//     purchaseOrderNumber: 'PO_NUMBER',
+//     purchaseOrderDate: '2023-09-30',
+//     purchaseOrderType: 'Spareparts',
+//     paymentDue: '2023-10-15',
+//     discount: '10%'
+//   },
+//   invoice: {
+//     invoiceNumber: 'INV_NUMBER',
+//     date: '2023-10-01',
+//     termOfPayment: 'CASH',
+//     subTotal: '1000000',
+//     grandTotal: '900000'
+//   },
+//   customer: {
+//     companyName: 'BMJ Company',
+//     address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
+//     city: 'Jakarta',
+//     province: 'DKI Jakarta',
+//     office: 'Head Office',
+//     urban: 'Central Jakarta',
+//     subdistrict: 'Gambir',
+//     postalCode: '10110'
+//   },
+//   notes: 'Please handle with care.',
+//   price: {
+//     subtotal: '1000000',
+//     discount: '100000',
+//     ppn: '100000',
+//     grandTotal: '1100000',
+//   },
+//   spareparts: [
+//     {
+//       sparepartName: 'Sparepart A',
+//       sparepartNumber: 'SP001',
+//       quantity: 10,
+//       unitPriceSell: 100000,
+//       totalPrice: 1000000,
+//       stock: 'In Stock'
+//     },
+//     {
+//       sparepartName: 'Sparepart B',
+//       sparepartNumber: 'SP002',
+//       quantity: 5,
+//       unitPriceSell: 200000,
+//       totalPrice: 1000000,
+//       stock: 'In Stock'
+//     }
+//   ]
+// }
 
-const createPdf = () => {
-  const { purchaseOrder, invoice, customer, price, sparepart } = data
+const createPdf = (data) => {
+  const { purchaseOrder, invoice, customer, price } = data
 
   // Top Left
   const customerInfo = {
