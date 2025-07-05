@@ -99,6 +99,10 @@ const doReleaseConfirmation = () => {
   modalStore.openConfirmationModal('to release this Purchase Order?', 'Releasing', doRelease)
 }
 
+const back = () => {
+  router.push(menuConfig.work_order.path)
+}
+
 </script>
 
 <style lang="scss" scoped>
