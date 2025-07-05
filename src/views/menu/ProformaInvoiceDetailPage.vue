@@ -215,10 +215,10 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
+      <button v-if="isDPPaid" type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
     </div>
     <div class="right">
-      <button v-if="isShowDPPaid" type="button" class="btn btn-process mx-4" @click="paidDpConfirmation">DP
+      <button v-if="isDPPaid" type="button" class="btn btn-process mx-4" @click="paidDpConfirmation">DP
         Paid</button>
       <button type="button" class="btn btn-process" @click="createInvoiceConfirmation">Create Invoice</button>
     </div>
@@ -245,7 +245,7 @@ const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
 
 const { isRoleDirector, isRoleMarketing, isRoleInventory, isRoleFinance, isRoleService } = useRole()
 
-const isShowDPPaid = computed(() =>
+const isDPPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
   !proformaInvoice.value.status.some(item => item.state === common.track.dp_paid)
 )
