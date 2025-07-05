@@ -185,7 +185,7 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="print">Print</button>
+      <button type="button" class="btn btn-process" @click="download">Download</button>
     </div>
   </div>
 </template>
@@ -194,8 +194,9 @@
 import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoice'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import { useTrackStore } from '@/stores/track'
+import { createPdf } from '@/utils/invoice'
 
 const route = useRoute()
 const router = useRouter()
@@ -204,6 +205,9 @@ const trackStore = useTrackStore()
 
 const { invoice } = storeToRefs(invoiceStore)
 
+onBeforeMount(() => {
+  if (!invoice.value) invoiceStore.$resetInvoice()
+})
 onMounted(() => {
   invoiceStore.getInvoice(route.params.id)
   trackStore.setTrackData(invoice)
@@ -212,8 +216,8 @@ onMounted(() => {
 const back = () => {
   router.back()
 }
-const print = () => {
-
+const download = () => {
+  createPdf(invoice.value)
 }
 </script>
 

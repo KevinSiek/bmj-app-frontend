@@ -21,7 +21,6 @@ export const useInvoiceStore = defineStore('invoice', () => {
       },
       invoice: {
         invoiceNumber: data?.invoice?.invoice_number || '',
-        type: data?.invoice?.type || '',
         date: data?.invoice?.date || '',
         termOfPayment: data?.invoice?.term_of_payment || '',
         subTotal: data?.invoice?.sub_total || '',
@@ -40,6 +39,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
       notes: data?.notes || '',
       price: {
         subtotal: data?.price?.subtotal || 0,
+        discount: data?.price?.discount || 0,
         ppn: data?.price?.ppn || 0,
         grandTotal: data?.price?.grand_total || 0
       },
