@@ -209,7 +209,7 @@
               </div>
             </div>
             <div class="col-1">
-              <button type="button" class="btn btn-outline-danger" @click="removeSparepart(quotationIndex)"><i
+              <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
                   class="bi bi-trash3"></i></button>
             </div>
           </div>
