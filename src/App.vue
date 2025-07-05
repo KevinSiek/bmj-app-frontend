@@ -1,8 +1,10 @@
 <template>
   <div id="bmjApp">
     <RouterView />
-    <ModalMessage v-show="modalStore.isShowMessage" />
-    <ModalConfirmation v-show="modalStore.isShowConfirmation" />
+    <ModalMessage v-if="modalStore.isShowMessage" />
+    <transition name="fade">
+      <ModalConfirmation v-if="modalStore.isShowConfirmation" />
+    </transition>
   </div>
 </template>
 
@@ -39,5 +41,15 @@ initPage()
 
 #bmjApp {
   font-family: 'poppins';
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -83,7 +83,7 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-danger mx-3" data-bs-toggle="modal" data-bs-target="#deleteModal">
+      <button type="button" class="btn btn-danger mx-3" @click="openDeleteModal">
         Delete Employee
       </button>
       <button type="button" class="btn btn-secondary mx-3" @click="resetPasswordConfirmation">
@@ -94,24 +94,29 @@
       Edit Employee
     </button>
   </div>
-  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Delete Confirmation</h5>
-        </div>
-        <div class="modal-body">
-          <p>Type 'DELETE' to delete the employee</p>
-          <input type="text" class="form-control mt-2" v-model="deleteConfirmation" placeholder="">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-            @click="deleteEmployeeConfirmation">Delete</button>
+  <transition name="fade">
+    <div v-if="isShowDeleteModal" class="modal fade show" style="display: block;" id="deleteModal" tabindex="-1"
+      aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete Confirmation</h5>
+          </div>
+          <div class="modal-body">
+            <p>Type 'DELETE' to delete the employee</p>
+            <input type="text" class="form-control mt-2" v-model="deleteConfirmation" placeholder="">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+              @click="closeDeleteModal">Close</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+              @click="deleteEmployeeConfirmation">Delete</button>
+          </div>
         </div>
       </div>
+      <div class="modal-backdrop fade show" @click.self="closeDeleteModal"></div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script setup>
@@ -130,6 +135,7 @@ const employeeStore = useEmployeeStore()
 const { employee } = storeToRefs(employeeStore)
 const isPassShow = ref(false)
 const isConfPassShow = ref(false)
+const isShowDeleteModal = ref(false)
 const deleteConfirmation = ref('')
 
 const roles = [
@@ -171,6 +177,14 @@ const resetPasswordConfirmation = () => {
   modalStore.openConfirmationModal('to Reset Password ?', 'Reset Password Success', resetPassword)
 }
 
+const openDeleteModal = () => {
+  isShowDeleteModal.value = true
+  deleteConfirmation.value = ''
+}
+const closeDeleteModal = () => {
+  isShowDeleteModal.value = false
+  deleteConfirmation.value = ''
+}
 const deleteEmployee = async () => {
   // await employeeStore.deleteEmployee(employee.value.id)
   modalStore.closeModal()
@@ -226,5 +240,23 @@ $primary-color: black;
   .btn-update {
     background-color: $primary-color;
   }
+}
+
+.modal-dialog {
+  z-index: 1050;
+}
+
+.modal-backdrop {
+  z-index: 1040;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
