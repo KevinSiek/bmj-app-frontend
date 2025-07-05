@@ -32,11 +32,11 @@ export const useQuotationStore = defineStore('quotation', () => {
         type: data?.project?.type || '',
         date: data?.project?.date || '',
       },
+      discount: data?.discount || 0,
+      ppn: data?.ppn || 0,
       price: {
-        amount: data?.price.amount || 0,
-        discount: data?.price.discount || 0,
+        amount: data?.price?.amount || 0,
         subtotal: data?.price?.subtotal || 0,
-        ppn: data?.price?.ppn || 0,
         grandTotal: data?.price?.grand_total || 0
       },
       currentStatus: data?.current_status || '',
@@ -124,6 +124,7 @@ export const useQuotationStore = defineStore('quotation', () => {
 
   async function getQuotation (id) {
     const { data } = await quotationApi.getQuotationyId(id)
+    console.log('GET QUOTATION', data)
     quotation.value = mapQuotation(data)
   }
 
