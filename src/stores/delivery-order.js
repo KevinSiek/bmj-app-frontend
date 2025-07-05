@@ -13,7 +13,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
       id: data?.id || '',
       currentStatus: data?.current_status || '',
       deliveryOrder: {
-        deliveryOrderNumber: data?.work_order_number || '',
+        deliveryOrderNumber: data?.delivery_order?.delivery_order_number || '',
         deliveryOrderDate: data?.delivery_order?.delivery_order_date || '',
         receivedBy: data?.delivery_order?.received_by || '',
         pickedBy: data?.delivery_order?.picked_by || '',
@@ -21,7 +21,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
         shipMode: data?.delivery_order?.ship_mode || '',
         orderType: data?.delivery_order?.order_type || '',
         delivery: data?.delivery_order?.delivery || '',
-        npwp: data?.delivery_order?.npp || ''
+        npwp: data?.delivery_order?.npwp || ''
       },
       purchaseOrder: {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
@@ -53,8 +53,8 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
   async function getAllDeliveryOrders(param) {
     isLoading.value = true
     const { data } = await deliveryOrderApi.getAllDeliveryOrder(param)
+    console.log(data)
     deliveryOrders.value = data.data.map(mapDeliveryOrder)
-    console.log(deliveryOrders.value)
     paginationData.value = data
     isLoading.value = false
   }

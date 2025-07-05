@@ -18,12 +18,13 @@
             No Data
           </div>
         </div>
-        <!-- <div v-else class="list">
+        <div v-else class="list">
           <ItemComponent v-for="(deliveryOrder, index) in deliveryOrders" :key="index"
-            :number="index + paginationData.from" :item="deliveryOrder" bigRow :first-section="deliveryOrder.project.no"
-            :second-section="deliveryOrder.date.startDate" :current-status="deliveryOrder.currentStatus"
-            @click="goToDetail(deliveryOrder)" />
-        </div> -->
+            :number="index + paginationData.from" :item="deliveryOrder" bigRow
+            :first-section="deliveryOrder.deliveryOrder.deliveryOrderNumber"
+            :second-section="deliveryOrder.deliveryOrder.deliveryOrderDate"
+            :current-status="deliveryOrder.currentStatus" @click="goToDetail(deliveryOrder)" />
+        </div>
       </div>
     </div>
     <Pagination :first-page="paginationData.from" :last-page="paginationData.last_page" />

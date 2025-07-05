@@ -44,6 +44,7 @@ const EmployeeAddPage = () => import('@/views/menu/EmployeeAddPage.vue')
 const EmployeeDetailPage = () => import('@/views/menu/EmployeeDetailPage.vue')
 const EmployeeEditPage = () => import('@/views/menu/EmployeeEditPage.vue')
 const DeliveryOrderPage = () => import('@/views/menu/DeliveryOrderPage.vue')
+const DeliveryOrderAddPage = () => import('@/views/menu/DeliveryOrderAddPage.vue')
 const DeliveryOrderDetailPage = () => import('@/views/menu/DeliveryOrderDetailPage.vue')
 const ReturnPage = () => import('@/views/menu/ReturnPage.vue')
 const ReturnDetailPage = () => import('@/views/menu/ReturnDetailPage.vue')
@@ -415,6 +416,15 @@ const router = createRouter({
               path: menuConfig.delivery_order_detail.path,
               name: menuConfig.delivery_order_detail.name,
               component: DeliveryOrderDetailPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            },
+            {
+              path: menuConfig.delivery_order_add.path,
+              name: menuConfig.delivery_order_add.name,
+              component: DeliveryOrderAddPage,
               meta: {
                 useBack: true,
                 useTrack: true
