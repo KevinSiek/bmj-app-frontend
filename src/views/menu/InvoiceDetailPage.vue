@@ -196,7 +196,7 @@ import { useInvoiceStore } from '@/stores/invoice'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted } from 'vue'
 import { useTrackStore } from '@/stores/track'
-import { createPdf } from '@/utils/invoice'
+import { createPdf } from '@/utils/pdf/invoice'
 
 const route = useRoute()
 const router = useRouter()

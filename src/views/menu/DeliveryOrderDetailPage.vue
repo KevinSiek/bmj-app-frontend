@@ -189,7 +189,7 @@ import { useTrackStore } from '@/stores/track'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { createPdf } from '@/utils/delivery-note'
+import { createPdf } from '@/utils/pdf/delivery-note'
 
 const route = useRoute()
 const router = useRouter()

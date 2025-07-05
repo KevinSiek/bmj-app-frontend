@@ -1,6 +1,6 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
-import { formatCurrency } from './form-util'
+import { formatCurrency } from '../form-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
