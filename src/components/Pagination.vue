@@ -1,17 +1,17 @@
 <template>
   <nav aria-label="page navigation">
     <ul class="pagination">
-      <li class="page-item" :class="{ disabled: currentPage === 1 }" @click="onClickPrevious()">
+      <li class="page-item" :class="{ disabled: currentPage == 1 }" @click="onClickPrevious()">
         <a class="page-link" href="#" aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
-      <li v-for="page in visiblePage" :key="page" class="page-item" :class="{ active: currentPage === page }"
+      <li v-for="page in visiblePage" :key="page" class="page-item" :class="{ active: currentPage == page }"
         @click="onClickPage(page)">
         <a class="page-link" href="#">{{ page }}</a>
       </li>
       <li class="page-item" @click="onClickNext()">
-        <a class="page-link" :class="{ disabled: currentPage === props.lastPage }" href="#" aria-label="Next">
+        <a class="page-link" :class="{ disabled: currentPage == props.lastPage }" href="#" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
         </a>
       </li>
@@ -37,7 +37,7 @@ const props = defineProps({
     default: 1
   }
 })
-const currentPage = computed(() => route.query.page)
+const currentPage = computed(() => Number(route.query.page))
 const maxVisiblePages = 3
 const visiblePage = computed(() => {
   let start = Math.max(1, currentPage.value - 1);
@@ -53,14 +53,14 @@ const visiblePage = computed(() => {
 
 const onClickPrevious = () => {
   if (currentPage.value > 1) {
-    currentPage.value--
-    updateQuery(router, route, { page: currentPage.value })
+    updateQuery(router, route, { page: currentPage.value - 1 })
+    console.log('CLICKED PREVIOUS', currentPage.value)
   }
 }
 const onClickNext = () => {
   if (currentPage.value < props.lastPage) {
-    currentPage.value++
-    updateQuery(router, route, { page: currentPage.value })
+    updateQuery(router, route, { page: currentPage.value + 1 })
+    console.log('CLICKED NEXT', currentPage.value)
   }
 }
 const onClickPage = (page) => {
