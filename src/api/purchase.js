@@ -43,6 +43,10 @@ const deletePurchase = (id) => {
   return httpApi.deleteDataViaApi(`${api.purchase}/${id}`)
 }
 
+const done = (id) => {
+  return httpApi.postDataViaApi(`${api.purchase}/done/${id}`)
+}
+
 const approvePurchase = (id) => {
   return httpApi.postDataViaApi(`${api.purchase}/approve/${id}`)
 }
@@ -58,6 +62,7 @@ export default {
   getPurchaseById,
   updatePurchase,
   deletePurchase,
+  done,
   approvePurchase,
   rejectPurchase
 }

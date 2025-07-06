@@ -43,13 +43,14 @@
   </div>
   <div class="button" v-if="purchase.status == common.status.approved">
     <div class="right">
-      <button type="button" class="btn btn-process">Receive</button>
+      <button type="button" class="btn btn-process" @click="receiveConfirmation">Receive</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { common } from '@/config'
+import { useModalStore } from '@/stores/modal'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted } from 'vue'
@@ -57,6 +58,7 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const purchaseStore = usePurchaseStore()
+const modalStore = useModalStore()
 
 const { purchase } = storeToRefs(purchaseStore)
 
@@ -66,6 +68,16 @@ onBeforeMount(() => {
 onMounted(() => {
   purchaseStore.getPurchase(route.params.id)
 })
+const receive = async () => {
+  try {
+    await purchaseStore.receive(route.params.id)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+const receiveConfirmation = () => {
+  modalStore.openConfirmationModal('receive this purchase ?', 'Purchase has been Received', receive)
+}
 </script>
 
 <style lang="scss" scoped>
