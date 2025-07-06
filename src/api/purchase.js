@@ -55,6 +55,10 @@ const rejectPurchase = (id) => {
   return httpApi.postDataViaApi(`${api.purchase}/reject/${id}`)
 }
 
+const needChangePurchase = (id) => {
+  return httpApi.postDataViaApi(`${api.purchase}/needChange/${id}`)
+}
+
 export default {
 	getAllPurchase,
   getAllPurchaseReview,
@@ -64,5 +68,6 @@ export default {
   deletePurchase,
   done,
   approvePurchase,
-  rejectPurchase
+  rejectPurchase,
+  needChangePurchase
 }

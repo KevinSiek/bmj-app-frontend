@@ -109,6 +109,10 @@ export const usePurchaseStore = defineStore('purchase', () => {
     return response
   }
 
+  async function needChangePurchase (id) {
+    const response = await purchaseApi.needChangePurchase(id)
+  }
+
   return {
     purchase,
     purchases,
@@ -126,6 +130,7 @@ export const usePurchaseStore = defineStore('purchase', () => {
     receive,
     $resetPurchase,
     approvePurchase,
-    rejectPurchase
+    rejectPurchase,
+    needChangePurchase
   }
 })

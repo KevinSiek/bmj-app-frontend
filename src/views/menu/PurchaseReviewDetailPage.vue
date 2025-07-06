@@ -46,6 +46,9 @@
       <button type="button" class="btn btn-danger" @click="rejectConfirmation">Reject</button>
     </div>
     <div class="right">
+      <button type="button" class="btn btn-approve" @click="needChangeConfirmation">Need Change</button>
+    </div>
+    <div class="right">
       <button type="button" class="btn btn-success" @click="approveConfirmation">Approve</button>
     </div>
   </div>
@@ -77,6 +80,16 @@ const reject = async () => {
 }
 const rejectConfirmation = () => {
   modalStore.openConfirmationModal('reject this purchase ?', 'Purchase has been Rejected', reject)
+}
+const needChange = async () => {
+  try {
+    await purchaseStore.needChangePurchase(route.params.id)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+const needChangeConfirmation = () => {
+  modalStore.openConfirmationModal('this purchase need change ?', 'Purchase need to be changed', needChange)
 }
 const approve = async () => {
   try {
