@@ -257,6 +257,7 @@
   </div>
   <div class="button">
     <div class="left">
+      <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
     <div class="right">
       <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation">Full
@@ -282,6 +283,7 @@ import { common, menuMapping as menuConfig } from '@/config'
 import { useRole } from '@/composeable/useRole'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
+import { createPdf } from '@/utils/pdf/purchase-order'
 
 const router = useRouter()
 const route = useRoute()
@@ -396,6 +398,10 @@ const setToReturn = async () => {
 }
 const setToReturnConfirmation = () => {
   modalStore.openConfirmationModal('to return Purchase Order ?', 'Purchase Order Returned', setToReturn)
+}
+
+const download = () => {
+  createPdf(purchaseOrder.value)
 }
 </script>
 
