@@ -5,6 +5,7 @@
   <div class="button">
     <div class="left">
       <button type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
+      <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
     <div class="right">
       <button type="button" class="btn btn-process" @click="processQuotationConfirmation">Create PO</button>
@@ -20,6 +21,7 @@ import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import { useTrackStore } from '@/stores/track'
 import { useModalStore } from '@/stores/modal'
+import { createPdf } from '@/utils/pdf/quotation'
 const QuotationForm = defineAsyncComponent(() => import('@/components/quotation/QuotationForm.vue'))
 
 const route = useRoute()
@@ -53,6 +55,10 @@ const processQuotation = async () => {
 
 const processQuotationConfirmation = () => {
   modalStore.openConfirmationModal('to process this Quotation to Purchase Order ?', `Purchase Order Created with quotation ${route.params.id}`, processQuotation)
+}
+
+const download = () => {
+  createPdf(quotation.value)
 }
 </script>
 

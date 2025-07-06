@@ -102,7 +102,7 @@ const createPdf = (data) => {
         ['Customer', ':', customer.companyName],
         ['Office', ':', customer.office],
         ['Address',':', customer.address],
-        ['', '', `${customer.city}, ${customer.province}`],
+        ['', '', `${customer.city} - ${customer.province}`],
         ['', '', `${customer.subdistrict} ${customer.urban} (${customer.postalCode})`],
       ]
     },
