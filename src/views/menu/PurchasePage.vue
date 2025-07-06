@@ -96,7 +96,7 @@ const goToAdd = () => {
 const goToDetail = async (purchase) => {
   purchaseStore.$resetPurchase()
   purchaseStore.setPurchase(purchase)
-  router.push(`${menuConfig.purchase.path}/${purchase.no_buy}`)
+  router.push(`${menuConfig.purchase.path}/${purchase.id}`)
 }
 
 </script>

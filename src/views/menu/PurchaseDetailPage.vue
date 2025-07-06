@@ -39,7 +39,7 @@
     </form>
   </div>
   <div class="status background">
-    Status: {{ purchase.status }}
+    Status: {{ purchase.currentStatus }}
   </div>
   <div class="button" v-if="purchase.status == common.status.approved">
     <div class="right">
@@ -52,7 +52,7 @@
 import { common } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
+import { onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -60,6 +60,9 @@ const purchaseStore = usePurchaseStore()
 
 const { purchase } = storeToRefs(purchaseStore)
 
+onBeforeMount(() => {
+  if (!purchase.value) purchaseStore.$resetPurchase()
+})
 onMounted(() => {
   purchaseStore.getPurchase(route.params.id)
 })

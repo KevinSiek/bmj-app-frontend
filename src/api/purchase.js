@@ -24,7 +24,7 @@ const getAllPurchase = async (param) => {
   return httpApi.getDataViaApi(api.purchase, param)
 }
 const getAllPurchaseReview = async (param) => {
-  return httpApi.getDataViaApi(`${api.purchase}/return`, param)
+  return httpApi.getDataViaApi(`${api.purchase}/review/1`, param)
 }
 
 const addPurchase = (purchase) => {
