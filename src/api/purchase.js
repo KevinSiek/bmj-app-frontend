@@ -23,6 +23,9 @@ import { api } from '@/config'
 const getAllPurchase = async (param) => {
   return httpApi.getDataViaApi(api.purchase, param)
 }
+const getAllPurchaseReview = async (param) => {
+  return httpApi.getDataViaApi(`${api.purchase}/return`, param)
+}
 
 const addPurchase = (purchase) => {
   return httpApi.postDataViaApi(api.purchase, purchase)
@@ -40,10 +43,21 @@ const deletePurchase = (id) => {
   return httpApi.deleteDataViaApi(`${api.purchase}/${id}`)
 }
 
+const approvePurchase = (id) => {
+  return httpApi.postDataViaApi(`${api.purchase}/approve/${id}`)
+}
+
+const rejectPurchase = (id) => {
+  return httpApi.postDataViaApi(`${api.purchase}/reject/${id}`)
+}
+
 export default {
 	getAllPurchase,
+  getAllPurchaseReview,
   addPurchase,
   getPurchaseById,
   updatePurchase,
-  deletePurchase
+  deletePurchase,
+  approvePurchase,
+  rejectPurchase
 }

@@ -3,6 +3,11 @@
     <div class="upper">
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
+        <div class="review">
+          <router-link :to="menuConfig.purchase_review.path" class="nav-link">
+            <button class="btn btn-primary">Review</button>
+          </router-link>
+        </div>
       </div>
       <div class="btn-add">
         <button class="btn btn-primary" @click="goToAdd">Add Purchase</button>

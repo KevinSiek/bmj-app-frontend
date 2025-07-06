@@ -115,6 +115,10 @@ const menuMapping = {
     name: 'Purchase',
     path: '/purchase'
   },
+  purchase_review: {
+    name: 'Purchase Review',
+    path: '/purchase/review'
+  },
   purchase_add: {
     name: 'Add Purchase',
     path: '/purchase/add'

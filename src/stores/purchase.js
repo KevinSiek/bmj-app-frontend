@@ -7,6 +7,7 @@ import { getAllSparepart } from '@/api/sparepart'
 export const usePurchaseStore = defineStore('purchase', () => {
   const purchase = ref(null)
   const purchases = ref([])
+  const purchaseReviews = ref([])
   const paginationData = ref({})
   const searchedSpareparts = ref([])
   const isLoading = ref(false)
@@ -54,6 +55,14 @@ export const usePurchaseStore = defineStore('purchase', () => {
     isLoading.value = false
   }
 
+  async function getAllPurchaseReview (param) {
+    isLoading.value = true
+    const { data } = await purchaseApi.getAllPurchaseReview(param)
+    purchaseReviews.value = data.data.map(mapPurchase)
+    paginationData.value = data
+    isLoading.value = false
+  }
+
   async function getPurchase (id) {
     const { data } = await purchaseApi.getPurchaseById(id)
     purchase.value = mapPurchase(data)
@@ -81,6 +90,16 @@ export const usePurchaseStore = defineStore('purchase', () => {
     purchase.value = mapPurchase()
   }
 
+  async function approvePurchase (id) {
+    const response = await purchaseApi.approvePurchase(id)
+    return response
+  }
+
+  async function rejectPurchase (id) {
+    const response = await purchaseApi.rejectPurchase(id)
+    return response
+  }
+
   return {
     purchase,
     purchases,
@@ -88,11 +107,14 @@ export const usePurchaseStore = defineStore('purchase', () => {
     searchedSpareparts,
     isLoading,
     getAllPurchase,
+    getAllPurchaseReview,
     addPurchase,
     updatePurchase,
     setPurchase,
     getPurchase,
     getSpareparts,
-    $resetPurchase
+    $resetPurchase,
+    approvePurchase,
+    rejectPurchase
   }
 })

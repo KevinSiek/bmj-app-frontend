@@ -12,6 +12,7 @@ export const useEmployeeStore = defineStore('employee', () => {
     return {
       id: data?.id || '',
       slug: data?.slug || '',
+      branch: data?.branch || '',
       fullname: data?.fullname || '',
       username: data?.username || '',
       email: data?.email || '',

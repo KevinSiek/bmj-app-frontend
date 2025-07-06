@@ -3,6 +3,11 @@
     <div class="upper">
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
+        <div class="review">
+          <router-link :to="menuConfig.purchase_review.path" class="nav-link">
+            <button class="btn btn-primary">Review</button>
+          </router-link>
+        </div>
       </div>
     </div>
     <div class="lower paginate shadow">
@@ -13,16 +18,15 @@
         </div>
       </div>
       <div v-else>
-        <div v-if="returnPurchaseOrders?.length == 0">
+        <div v-if="purchaseReviews?.length == 0">
           <div class="no-data-text">
             No Data
           </div>
         </div>
         <div v-else class="list">
-          <ItemComponent v-for="(po, index) in returnPurchaseOrders" :key="index" :number="index + paginationData.from"
-            :item="po" :first-section="po.purchaseOrder.purchaseOrderNumber"
-            :second-section="po.purchaseOrder.purchaseOrderDate" :third-section="po.purchaseOrder.type" wideRow
-            :current-status="paymentStatus(po)" @click="goToDetail(po)" />
+          <ItemComponent v-for="(purchase, index) in purchaseReviews" :key="index" :number="index + paginationData.from"
+            :item="purchase" :first-section="purchase.buyNumber" :second-section="purchase.date" bigRow
+            :current-status="purchase.currentStatus" @click="goToDetail(purchase)" />
         </div>
       </div>
     </div>
@@ -37,7 +41,7 @@ import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
 import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePurchaseOrderStore } from '@/stores/purchase-order'
+import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import { onMounted, watch } from 'vue'
@@ -46,10 +50,10 @@ import { useDate } from '@/composeable/useDate'
 
 const route = useRoute()
 const router = useRouter()
-const purchaseOrderStore = usePurchaseOrderStore()
+const purchaseStore = usePurchaseStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { returnPurchaseOrders, paginationData, isLoading } = storeToRefs(purchaseOrderStore)
+const { purchaseReviews, paginationData, isLoading } = storeToRefs(purchaseStore)
 
 onMounted(async () => {
   // Handle first load
@@ -57,7 +61,7 @@ onMounted(async () => {
     updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
-  fetchPurchaseOrder()
+  fetchPurchase()
 })
 
 watch(() => route.query, (before, after) => {
@@ -65,35 +69,27 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchPurchaseOrder()
+    fetchPurchase()
+    console.log("REFETCH PURCHASE")
   }
 })
 
-const paymentStatus = (item) => {
-  if (item?.proformaInvoice) {
-    const pi = item.proformaInvoice
-    if (pi.isFullPaid) return item.currentStatus + ' (Full Paid)'
-    else if (pi.isDpPaid) return item.currentStatus + ' (DP Paid)'
-    else return item.currentStatus + ' (Unpaid)'
-  }
-  return item.currentStatus
-}
-const fetchPurchaseOrder = async () => {
+const fetchPurchase = async () => {
   const { page, search, month, year } = route.query
-  purchaseOrderStore.getAllReturnPurchaseOrders({ page, search, month, year })
+  purchaseStore.getAllPurchaseReview({ page, search, month, year })
 }
 
-const searchPurchaseOrder = (search) => {
+const searchPurchase = (search) => {
   updateQuery(router, route, { ...route.query, search })
 }
 
 const handleUpdateSearch = (search) => {
-  debounce(() => searchPurchaseOrder(search), 1000, 'search-purchaseOrder')
+  debounce(() => searchPurchase(search), 1000, 'search-purchase')
 }
-
-const goToDetail = async (po) => {
-  await purchaseOrderStore.setPurchaseOrder(po)
-  router.push(`${menuConfig.purchase_order.path}/${po.id}`)
+const goToDetail = async (purchase) => {
+  purchaseStore.$resetPurchase()
+  purchaseStore.setPurchase(purchase)
+  router.push(`${menuConfig.purchase.path}/${purchase.no_buy}`)
 }
 
 </script>
