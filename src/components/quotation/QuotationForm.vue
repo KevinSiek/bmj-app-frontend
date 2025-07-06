@@ -3,7 +3,7 @@
     <div class="upper my-2">
       <div class="title">Project</div>
       <div class="data">
-        <div class="left">
+        <div v-if="!isTypeAdd" class="left">
           <div class="input form-group col-12">
             <label for="">No Quotation</label><br>
             <input type="text" class="form-control mt-2" v-model="quotation.project.quotationNumber"
