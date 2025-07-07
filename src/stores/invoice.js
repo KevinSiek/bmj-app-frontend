@@ -8,7 +8,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapInvoice (data) {
+  function mapInvoice(data) {
     return {
       id: data?.id || '',
       currentStatus: data?.current_status || '',
@@ -50,6 +50,12 @@ export const useInvoiceStore = defineStore('invoice', () => {
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
+      })),
+      services: (data?.services || []).map(service => ({
+        service: service?.service || '',
+        quantity: service?.quantity || 0,
+        unitPriceSell: service?.unit_price_sell || 0,
+        totalPrice: service?.total_price || 0
       }))
     }
   }
@@ -57,6 +63,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
   async function getAllInvoices(param) {
     isLoading.value = true
     const { data } = await invoiceApi.getAllInvoice(param)
+    console.log("data :", data)
     invoices.value = data.data.map(mapInvoice)
     paginationData.value = data
     isLoading.value = false
@@ -64,6 +71,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
 
   async function getInvoice(id) {
     const { data } = await invoiceApi.getInvoiceById(id)
+    console.log("data :", data)
     invoice.value = mapInvoice(data)
   }
 
@@ -71,7 +79,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     await invoiceApi.addInvoice(invoice)
   }
 
-  async function setInvoice (selectedInvoice) {
+  async function setInvoice(selectedInvoice) {
     invoice.value = selectedInvoice
   }
 
@@ -83,7 +91,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     await invoiceApi.deleteInvoice(id)
   }
 
-  async function $resetInvoice () {
+  async function $resetInvoice() {
     invoice.value = mapInvoice()
   }
 
