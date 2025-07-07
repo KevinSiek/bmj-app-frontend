@@ -289,10 +289,9 @@ onMounted(async () => {
   await fetchData()
 })
 
-
 const fetchData = async () => {
   await workOrderStore.getWorkOrder(route.params.id)
-  await trackStore.setTrackData(workOrder)
+  await trackStore.setTrackData(workOrder.value.status)
 }
 
 const done = async () => {
