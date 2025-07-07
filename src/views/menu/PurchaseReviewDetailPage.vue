@@ -43,13 +43,13 @@
   </div>
   <div class="button">
     <div class="right">
-      <button type="button" class="btn btn-danger" @click="rejectConfirmation">Reject</button>
+      <button type="button" class="btn btn-danger mx-3" @click="rejectConfirmation">Reject</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-approve" @click="needChangeConfirmation">Need Change</button>
+      <button type="button" class="btn btn-needChange mx-3" @click="needChangeConfirmation">Need Change</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-success" @click="approveConfirmation">Approve</button>
+      <button type="button" class="btn btn-success mx-3" @click="approveConfirmation">Approve</button>
     </div>
   </div>
 </template>
@@ -172,7 +172,7 @@ $secondary-color: rgb(98, 98, 98);
     background-color: $secondary-color;
   }
 
-  .btn-process {
+  .btn-needChange {
     background-color: $primary-color;
   }
 }

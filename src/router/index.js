@@ -27,6 +27,7 @@ const BackOrderDetailPage = () => import('@/views/menu/BackOrderDetailPage.vue')
 const PurchasePage = () => import('@/views/menu/PurchasePage.vue')
 const PurchaseAddPage = () => import('@/views/menu/PurchaseAddPage.vue')
 const PurchaseReviewPage = () => import('@/views/menu/PurchaseReviewPage.vue')
+const PurchaseReviewDetailPage = () => import('@/views/menu/PurchaseReviewDetailPage.vue')
 const PurchaseDetailPage = () => import('@/views/menu/PurchaseDetailPage.vue')
 const ProformaInvoicePage = () => import('@/views/menu/ProformaInvoicePage.vue')
 const ProformaInvoiceDetailPage = () => import('@/views/menu/ProformaInvoiceDetailPage.vue')
@@ -244,6 +245,15 @@ const router = createRouter({
               path: menuConfig.purchase_detail.path,
               name: menuConfig.purchase_detail.name,
               component: PurchaseDetailPage,
+              meta: {
+                useBack: true,
+                useTrack: false
+              }
+            },
+            {
+              path: menuConfig.purchase_review_detail.path,
+              name: menuConfig.purchase_review_detail.name,
+              component: PurchaseReviewDetailPage,
               meta: {
                 useBack: true,
                 useTrack: false
