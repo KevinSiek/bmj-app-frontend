@@ -8,7 +8,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapProformaInvoice (data) {
+  function mapProformaInvoice(data) {
     return {
       id: data?.id || '',
       status: data?.status || [],
@@ -48,6 +48,12 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
+      })),
+      services: (data?.services || []).map(service => ({
+        service: service?.service || '',
+        quantity: service?.quantity || 0,
+        unitPriceSell: service?.unit_price_sell || 0,
+        totalPrice: service?.total_price || 0
       }))
     }
   }
@@ -69,7 +75,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     await proformaInvoiceApi.addProformaInvoice(proformaInvoice.value)
   }
 
-  async function setProformaInvoice (selectedProformaInvoice) {
+  async function setProformaInvoice(selectedProformaInvoice) {
     proformaInvoice.value = selectedProformaInvoice
   }
 
@@ -82,15 +88,15 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     await proformaInvoiceApi.deleteProformaInvoice(id)
   }
 
-  async function processToInvoice (id) {
+  async function processToInvoice(id) {
     const response = await proformaInvoiceApi.processToInvoice(id)
   }
 
-  async function dpPaid (id) {
+  async function dpPaid(id) {
     const response = await proformaInvoiceApi.dpPaid(id)
   }
 
-  async function $resetProformaInvoice () {
+  async function $resetProformaInvoice() {
     proformaInvoice.value = mapProformaInvoice()
   }
 

@@ -12,7 +12,7 @@ export const useQuotationStore = defineStore('quotation', () => {
   const searchedSpareparts = ref([])
   const isLoading = ref(false)
 
-  function mapQuotation (data) {
+  function mapQuotation(data) {
     return {
       id: data?.id || '',
       slug: data?.slug || '',
@@ -52,18 +52,24 @@ export const useQuotationStore = defineStore('quotation', () => {
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
+      })),
+      services: (data?.services || []).map(service => ({
+        service: service?.service || '',
+        unitPriceSell: service?.unit_price_sell || '',
+        quantity: service?.quantity || 0,
+        totalPrice: service?.total_price || 0,
       }))
     }
   }
 
-  function mapQuotations (data) {
+  function mapQuotations(data) {
     return {
       quotationNumber: data?.quotation_number || '',
       versions: (data?.versions || []).map(mapQuotation)
     }
   }
 
-  function mapSparepart (data) {
+  function mapSparepart(data) {
     return {
       sparepartId: data?.sparepart_id || data?.id || '',
       slug: data?.slug || '',
@@ -116,7 +122,7 @@ export const useQuotationStore = defineStore('quotation', () => {
   //   }))
   // }
 
-  async function getAllQuotation (param) {
+  async function getAllQuotation(param) {
     isLoading.value = true
     const { data } = await quotationApi.getAllQuotations(param)
     quotations.value = data.data.map(mapQuotations)
@@ -124,19 +130,19 @@ export const useQuotationStore = defineStore('quotation', () => {
     isLoading.value = false
   }
 
-  async function getQuotation (id) {
+  async function getQuotation(id) {
     const { data } = await quotationApi.getQuotationyId(id)
     console.log('GET QUOTATION', data)
     quotation.value = mapQuotation(data)
   }
 
-  async function getQuotationReview (id) {
+  async function getQuotationReview(id) {
     const { data } = await quotationApi.getQuotationyId(id)
     console.log('GET QUOTATION', data)
     quotationReview.value = mapQuotation(data)
   }
 
-async function getAllQuotationReview (param) {
+  async function getAllQuotationReview(param) {
     isLoading.value = true
     console.log('FETCH REVIEW QUOTATION BY DATE', param)
     const { data } = await quotationApi.getAllReviewQuotations(param)
@@ -146,45 +152,45 @@ async function getAllQuotationReview (param) {
     isLoading.value = false
   }
 
-  async function addQuotation () {
+  async function addQuotation() {
     const data = await quotationApi.addQuotation(quotation.value)
     // if requestPriceChange === true, add to request review,, do not add quotation
   }
 
-  async function setQuotation (selectedQuotation) {
+  async function setQuotation(selectedQuotation) {
     quotation.value = selectedQuotation
   }
 
-  async function setQuotationReview (selectedQuotation) {
+  async function setQuotationReview(selectedQuotation) {
     quotationReview.value = selectedQuotation
   }
 
-  async function editQuotation () {
+  async function editQuotation() {
     console.log('UPDATE QUOTATION')
     console.log('data', quotation.value)
     await quotationApi.updateQuotation(quotation.value.slug, quotation.value)
   }
 
-  async function processQuotation (id) {
+  async function processQuotation(id) {
     console.log('ID', id)
     const response = await quotationApi.processQuotation(id)
     console.log('RES', response)
   }
 
-  async function approveQuotation (id) {
+  async function approveQuotation(id) {
     console.log('APPROVE QUOTATION')
     await quotationApi.approveQuotation(id)
   }
 
-  async function needChangeQuotation (id) {
+  async function needChangeQuotation(id) {
     await quotationApi.needChangeQuotation(id)
   }
 
-  async function rejectQuotation (id) {
+  async function rejectQuotation(id) {
     await quotationApi.rejectQuotation(id)
   }
 
-  async function getSpareparts (param) {
+  async function getSpareparts(param) {
     console.log('SEARCH SPAREPART', param)
     const { data } = await getAllSparepart(param)
     console.log('RETURN SPAREPARTS', data)
@@ -192,12 +198,12 @@ async function getAllQuotationReview (param) {
     console.log("List Sparepart", searchedSpareparts.value)
   }
 
-  async function $resetQuotation () {
+  async function $resetQuotation() {
     quotation.value = mapQuotation()
     console.log('DATA', quotation.value)
   }
 
-  async function $resetQuotationReview () {
+  async function $resetQuotationReview() {
     console.log('RESET QUOTATION REVIEW')
     quotationReview.value = mapQuotation()
     console.log('DATA', quotationReview.value)

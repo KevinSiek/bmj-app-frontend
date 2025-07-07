@@ -78,11 +78,11 @@
         </div>
       </div>
       <div class="my-2">
-        <div class="title">Sparepart</div>
+        <div class="title">{{ proformaInvoice.project.type }}</div>
         <div class="table-placeholder">
           <table class="table table-hover">
             <thead>
-              <tr class="align-middle">
+              <tr class="align-middle" v-if="proformaInvoice.project.type === 'Spareparts'">
                 <th scope="col-1" class="table-number">NO</th>
                 <th scope="col" class="table-name">DESCRIPTION</th>
                 <th scope="col" class="table-name">QUANTITY</th>
@@ -90,8 +90,15 @@
                 <th scope="col" class="table-name">UNIT PRICE</th>
                 <th scope="col" class="table-name">AMOUNT</th>
               </tr>
+              <tr class="align-middle" v-else>
+                <th scope="col-1" class="table-number">NO</th>
+                <th scope="col" class="table-name">SERVICE</th>
+                <th scope="col" class="table-name">QUANTITY</th>
+                <th scope="col" class="table-name">UNIT PRICE</th>
+                <th scope="col" class="table-name">TOTAL PRICE</th>
+              </tr>
             </thead>
-            <tbody class="table-group-divider">
+            <tbody class="table-group-divider" v-if="proformaInvoice.project.type === 'Spareparts'">
               <tr v-for="(sparepart, index) in proformaInvoice.spareparts" :key="index" class="align-middle borderless">
                 <td scope="row" class="table-col table-number">
                   <div :class="{ space: index === proformaInvoice.spareparts.length - 1 }">
@@ -125,14 +132,43 @@
                 </td>
               </tr>
             </tbody>
+            <tbody class="table-group-divider" v-else>
+              <tr v-for="(service, index) in proformaInvoice.services" :key="index" class="align-middle borderless">
+                <td scope="row" class="table-col table-number">
+                  <div :class="{ space: index === proformaInvoice.services.length - 1 }">
+                    {{ index + 1 }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === proformaInvoice.services.length - 1 }">
+                    {{ service.service }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === proformaInvoice.services.length - 1 }">
+                    {{ service.quantity }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === proformaInvoice.services.length - 1 }">
+                    {{ service.unitPriceSell }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === proformaInvoice.services.length - 1 }">
+                    {{ service.totalPrice }}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
             <tbody>
               <tr class="align-middle">
                 <td></td>
                 <td></td>
                 <td></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'"></td>
                 <td></td>
-                <td></td>
-                <td></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'"></td>
               </tr>
             </tbody>
             <tbody>
@@ -140,57 +176,64 @@
                 <td scope="row" class="table-col table-number">1</td>
                 <td class="table-col table-part-number">Amount</td>
                 <td class="table-col table-name"></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.amount }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.amount }}</td>
+                <td v-else class="table-col table-name">{{ proformaInvoice.price.amount }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">2</td>
                 <td class="table-col table-name">Less: Discount</td>
                 <td class="table-col table-name"></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.discount }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.discount }}</td>
+                <td v-else class="table-col table-name">{{ proformaInvoice.price.discount }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">3</td>
                 <td class="table-col table-name">Sub Total (1-2)</td>
                 <td class="table-col table-name"></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.subtotal }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.subtotal }}</td>
+                <td v-else class="table-col table-name">{{ proformaInvoice.price.subtotal }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">4</td>
                 <td class="table-col table-name">Less: Advance Payment</td>
                 <td class="table-col table-name"></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.advancePayment }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.advancePayment }}</td>
+                <td v-else class="table-col table-name">{{ proformaInvoice.price.advancePayment }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">5</td>
                 <td class="table-col table-name">Total (3-4)</td>
                 <td class="table-col table-name"></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.total }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.total }}</td>
+                <td v-else class="table-col table-name">{{ proformaInvoice.price.total }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">6</td>
                 <td class="table-col table-name">VAT</td>
                 <td class="table-col table-name"></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.vat }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.vat }}</td>
+                <td v-else class="table-col table-name">{{ proformaInvoice.price.vat }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">7</td>
                 <td class="table-col table-name">TOTAL AMOUNT(5+6)</td>
                 <td class="table-col table-name"></td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.totalAmount }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.totalAmount }}</td>
+                <td v-else class="table-col table-name">{{ proformaInvoice.price.totalAmount }}</td>
               </tr>
             </tbody>
           </table>

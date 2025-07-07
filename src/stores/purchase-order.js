@@ -9,7 +9,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapPurchaseOrder (data) {
+  function mapPurchaseOrder(data) {
     return {
       id: data?.id || '',
       status: data?.status || [],
@@ -53,6 +53,12 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
+      })),
+      services: (data?.services || []).map(service => ({
+        service: service?.service || '',
+        quantity: service?.quantity || 0,
+        unitPriceSell: service?.unit_price_sell || 0,
+        totalPrice: service?.total_price || 0
       }))
     }
   }
@@ -82,7 +88,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     await purchaseOrderApi.addPurchaseOrder(purchaseOrder)
   }
 
-  async function setPurchaseOrder (selectedPurchaseOrder) {
+  async function setPurchaseOrder(selectedPurchaseOrder) {
     purchaseOrder.value = selectedPurchaseOrder
   }
 
@@ -94,43 +100,43 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     await purchaseOrderApi.deletePurchaseOrder(id)
   }
 
-  async function processToProformaInvoice (id) {
+  async function processToProformaInvoice(id) {
     const response = await purchaseOrderApi.processToProformaInvoice(id)
   }
 
-  async function updateStatus (id, status) {
+  async function updateStatus(id, status) {
     const response = await purchaseOrderApi.updateStatusPurchaseOrder(id, { status })
   }
 
-  async function $resetPurchaseOrder () {
+  async function $resetPurchaseOrder() {
     purchaseOrder.value = mapPurchaseOrder()
   }
 
-  async function fullPaid (id) {
+  async function fullPaid(id) {
     const response = await purchaseOrderApi.fullPaid(id)
   }
 
-  async function ready (id) {
+  async function ready(id) {
     const response = await purchaseOrderApi.ready(id)
   }
 
-  async function release (id, workOrder) {
+  async function release(id, workOrder) {
     const response = await purchaseOrderApi.release(id, workOrder)
   }
 
-  async function done (id) {
+  async function done(id) {
     const response = await purchaseOrderApi.done(id)
   }
 
-  async function returnPurchaseOrder (id) {
+  async function returnPurchaseOrder(id) {
     const response = await purchaseOrderApi.returnPurchaseOrder(id)
   }
 
-  async function approveReturn (id) {
+  async function approveReturn(id) {
     const response = await purchaseOrderApi.approveReturn(id)
   }
 
-  async function rejectReturn (id) {
+  async function rejectReturn(id) {
     const response = await purchaseOrderApi.rejectReturn(id)
   }
 
