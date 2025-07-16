@@ -228,7 +228,7 @@ onBeforeMount(() => {
 })
 onMounted(() => {
   invoiceStore.getInvoice(route.params.id)
-  trackStore.setTrackData(invoice)
+  trackStore.setTrackData(invoice.value.status)
 })
 
 const back = () => {

@@ -181,7 +181,7 @@ onBeforeMount(() => {
 })
 onMounted(() => {
   quotationStore.getQuotationReview(route.params.id)
-  trackStore.setTrackData(quotationReview)
+  trackStore.setTrackData(quotationReview.value.status)
 })
 
 const approveQuotation = async () => {

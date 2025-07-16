@@ -215,7 +215,7 @@ onMounted(async () => {
 
 const fetchData = async () => {
   await deliveryOrderStore.getDeliveryOrder(route.params.id)
-  await trackStore.setTrackData(deliveryOrder)
+  await trackStore.setTrackData(deliveryOrder.value.status)
 }
 
 const done = async () => {
