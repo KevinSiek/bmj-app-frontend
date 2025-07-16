@@ -152,6 +152,7 @@ onMounted(async () => {
 const returnedSparepart = ref([])
 const listSparepart = computed(() => {
   return purchaseOrder.value.spareparts.map(sparepart => ({
+    id: sparepart.id,  // Add sparepart ID
     sparepartName: sparepart.sparepartName,
     sparepartNumber: sparepart.sparepartNumber,
     quantity: sparepart.quantity,
@@ -168,7 +169,11 @@ const addSparepart = (sparepart) => {
     modalStore.openMessageModal(common.modal.failed, 'Returned quantity cannot be greater than PO quantity')
     return
   }
-  returnedSparepart.value.push(sparepart)
+  if (sparepart.return <= 0) {
+    modalStore.openMessageModal(common.modal.failed, 'Returned quantity must be greater than zero')
+    return
+  }
+  returnedSparepart.value.push({...sparepart})
 }
 const removeSparepart = (index) => {
   returnedSparepart.value.splice(index, 1)
@@ -176,9 +181,15 @@ const removeSparepart = (index) => {
 
 const setToReturn = async () => {
   try {
-    console.log('setToReturn', returnedSparepart.value)
-    // await purchaseOrderStore.returnPurchaseOrder(route.params.id)
-    // fetchData()
+    // Map to API expected format: { sparepart_id, quantity }
+    const returnedItems = returnedSparepart.value.map(item => ({
+      sparepart_id: item.id,
+      quantity: item.return
+    }))
+
+    await purchaseOrderStore.returnPurchaseOrder(route.params.id, returnedItems)
+    router.push(menuConfig.purchase_order.path)
+    fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
   }

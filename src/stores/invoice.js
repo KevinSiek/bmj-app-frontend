@@ -12,6 +12,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     return {
       id: data?.id || '',
       currentStatus: data?.current_status || '',
+      versions: data?.versions || '',
       purchaseOrder: {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
@@ -63,8 +64,21 @@ export const useInvoiceStore = defineStore('invoice', () => {
   async function getAllInvoices(param) {
     isLoading.value = true
     const { data } = await invoiceApi.getAllInvoice(param)
-    console.log("data :", data)
-    invoices.value = data.data.map(mapInvoice)
+
+    // Group by invoice number
+    const grouped = {}
+    data.data.forEach(item => {
+      const key = item.invoice.invoice_number
+      if (!grouped[key]) {
+        grouped[key] = {
+          invoiceNumber: key,
+          versions: []
+        }
+      }
+      grouped[key].versions.push(mapInvoice(item))
+    })
+
+    invoices.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
   }

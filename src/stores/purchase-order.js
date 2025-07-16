@@ -46,7 +46,9 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
       },
       notes: data?.notes || '',
       downPayment: data?.down_payment || 0,
+      version: data?.version || 0,
       spareparts: (data?.spareparts || []).map(sparepart => ({
+        id: sparepart?.sparepart_id || '', // Add sparepart ID
         sparepartName: sparepart?.sparepart_name || '',
         sparepartNumber: sparepart?.sparepart_number || '',
         quantity: sparepart?.quantity || 0,
@@ -66,7 +68,21 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   async function getAllPurchaseOrders(param) {
     isLoading.value = true
     const { data } = await purchaseOrderApi.getAllPurchaseOrder(param)
-    purchaseOrders.value = data.data.map(mapPurchaseOrder)
+    // Group purchase orders by purchase order number
+    const grouped = data.data.reduce((acc, po) => {
+      const key = po.purchase_order.purchase_order_number
+      if (!acc[key]) {
+        acc[key] = []
+      }
+      acc[key].push(po)
+      return acc
+    }, {})
+
+    purchaseOrders.value = Object.entries(grouped).map(([purchaseOrderNumber, versions]) => ({
+      purchaseOrderNumber,
+      versions: versions.map(mapPurchaseOrder)
+    }))
+
     paginationData.value = data
     isLoading.value = false
   }
@@ -128,8 +144,8 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     const response = await purchaseOrderApi.done(id)
   }
 
-  async function returnPurchaseOrder(id) {
-    const response = await purchaseOrderApi.returnPurchaseOrder(id)
+  async function returnPurchaseOrder(id, returnedItems) {
+    const response = await purchaseOrderApi.returnPurchaseOrder(id, returnedItems)
   }
 
   async function approveReturn(id) {

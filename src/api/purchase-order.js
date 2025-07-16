@@ -98,8 +98,8 @@ const getAllReturnPurchaseOrder = async (param) => {
   return httpApi.getDataViaApi(`${api.quotation}/return/1`, param)
 }
 
-const returnPurchaseOrder = (id) => {
-  return httpApi.postDataViaApi(`${api.quotation}/return/${id}`)
+const returnPurchaseOrder = (id, returnedItems) => {
+  return httpApi.postDataViaApi(`${api.quotation}/return/${id}`, { returned: returnedItems })
 }
 
 const approveReturn = (id) => {
@@ -111,7 +111,7 @@ const rejectReturn = (id) => {
 }
 
 export default {
-	getAllPurchaseOrder,
+  getAllPurchaseOrder,
   getAllReturnPurchaseOrder,
   addPurchaseOrder,
   getPurchaseOrderById,

@@ -115,7 +115,7 @@
               </tr>
             </thead>
             <tbody class="table-group-divider" v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'">
-              <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="index" class="align-middle borderless">
+              <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="sparepart.id" class="align-middle borderless">
                 <td scope="row" class="table-col table-number">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
                     {{ index + 1 }}
@@ -319,7 +319,7 @@
       <button v-if="isShowRelease" type="button" class="btn btn-process mx-3" @click="doRelease">Release</button>
       <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setToDoneConfirmation">Done</button>
       <button v-if="isShowReturn" type="button" class="btn btn-process mx-3"
-        @click="setToReturnConfirmation">Return</button>
+        @click="doReturn">Return</button>
     </div>
   </div>
 </template>
@@ -427,6 +427,14 @@ const doRelease = async () => {
   await router.push(`${menuConfig.work_order.path}/add/${route.params.id}`)
 }
 
+const doReturn = async () => {
+  if (purchaseOrder.value.purchaseOrder.type === common.type.service) {
+    modalStore.openMessageModal(common.modal.failed, "Service quotations cannot be returned")
+    return
+  }
+  await router.push(`${menuConfig.purchase_order.path}/return/${route.params.id}`)
+}
+
 const setToDone = async () => {
   try {
     await purchaseOrderStore.done(route.params.id)
@@ -447,7 +455,7 @@ const setToReturn = async () => {
   }
 }
 const setToReturnConfirmation = () => {
-  modalStore.openConfirmationModal('to return Purchase Order ?', 'Purchase Order Returned', setToReturn)
+  modalStore.openConfirmationModal('to return Purchase Order ? 2', 'Purchase Order Returned', setToReturn)
 }
 
 const download = () => {

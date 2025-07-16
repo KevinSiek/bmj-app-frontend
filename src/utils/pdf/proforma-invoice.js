@@ -13,6 +13,7 @@ const toWords = new ToWords({
     ignoreZeroCurrency: false,
     doNotAddOnly: false,
     currencyOptions: {
+      // can be used to override defaults for the selected locale
       name: 'IDR',
       plural: 'Rupiahs',
       symbol: 'Rp.'
@@ -20,54 +21,102 @@ const toWords = new ToWords({
   }
 })
 
-const createPdf = (data) => {
-  const { project, customer, price, spareparts, services, notes, downPayment } = data
-
-  const currentDate = new Date().toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-
-  // Top Left: Customer Information
-  const customerInfo = {
-    table: {
-      widths: ['auto', '*'],
-      body: [
-        [
-          {
-            text: [`Kepada Yth `, { text: `${String(customer.companyName || '')}`, bold: true }],
-          },
-          ''
-        ],
-        [String(customer.office || ''), ''],
-        [String(customer.address || ''), ''],
-        [`${String(customer.city || '')} - ${String(customer.province || '')}`, ''],
-        [`${String(customer.subdistrict || '')} ${String(customer.urban || '')} (${String(customer.postalCode || '')})`, '']
-      ]
+const data = {
+  id: 'ID',
+  currentStatus: 'ready',
+  project: {
+    proformaInvoiceNumber: 'PROFORMA_INV_NUMBER',
+    purchaseOrderNumber: 'PO_NUMBER',
+    purchaseOrderDate: '2023-09-01',
+    date: '2023-09-30',
+    type: 'Spareparts'
+  },
+  customer: {
+    companyName: 'BMJ Company',
+    address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
+    city: 'Jakarta',
+    province: 'DKI Jakarta',
+    office: 'Head Office',
+    urban: 'Central Jakarta',
+    subdistrict: 'Gambir',
+    postalCode: '10110'
+  },
+  notes: 'Please handle with care.',
+  price: {
+    amount: '1000000',
+    discount: '100000',
+    subtotal: '900000',
+    advancePayment: '0',
+    total: '900000',
+    vat: '0',
+    totalAmount: '900000'
+  },
+  downPayment: '0',
+  spareparts: [
+    {
+      sparepartName: 'Sparepart A',
+      sparepartNumber: 'SP001',
+      quantity: 10,
+      unitPriceSell: 100000,
+      totalPrice: 1000000,
+      stock: 'In Stock'
     },
-    layout: {
-      hLineWidth: () => 0,
-      vLineWidth: () => 0,
-      paddingTop: () => 1,
-      paddingBottom: () => 1,
-      paddingLeft: () => 0,
-      paddingRight: () => 1
+    {
+      sparepartName: 'Sparepart B',
+      sparepartNumber: 'SP002',
+      quantity: 5,
+      unitPriceSell: 200000,
+      totalPrice: 1000000,
+      stock: 'In Stock'
     },
-    margin: [0, 10, 5, 5],
-    minHeight: 460
-  }
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+  ]
+}
 
-  // Top Right: Proforma Invoice and Purchase Order Information
-  const topRightInfo = {
+const createPdf = () => {
+  const { project, customer, price, downPayment, spareparts } = data
+
+  const totalAmountWord = toWords.convert(price.totalAmount)
+
+  // Top Left
+  const purchaseOrderInfo = {
     table: {
-      widths: ['auto', 'auto', '*'],
+      widths: ['auto', 'auto','*'],
       body: [
-        ['No', ':', project.proformaInvoiceNumber],
-        ['Date', ':', project.date],
         ['Purchase Order', ':', project.purchaseOrderNumber],
-        ['PO Date', ':', project.purchaseOrderDate],
-        ['Project', ':', project.type]
+        ['Date', ':', project.purchaseOrderDate],
+        ['Project', ':', project.type],
       ]
     },
     layout: {
@@ -78,254 +127,246 @@ const createPdf = (data) => {
       paddingLeft: () => 2,
       paddingRight: () => 2
     },
-    margin: [10, 5, 5, 5],
+    margin: [0, 10, 10, 10],
+  }
+  const topLeftSide = {
+    stack: [
+      purchaseOrderInfo
+    ],
+    width: '50%'
+  }
+  // Top Right
+  const proformaInvoiceInfo = {
+    table: {
+      widths: ['auto', 'auto','*'],
+      body: [
+        ['No', ':', project.proformaInvoiceNumber],
+        ['Date',':', project.date]
+      ]
+    },
+    layout: {
+      hLineWidth: () => 0,
+      vLineWidth: () => 0,
+      paddingTop: () => 2,
+      paddingBottom: () => 2,
+      paddingLeft: () => 2,
+      paddingRight: () => 2
+    },
+    margin: [40, 5, 0, 5],
+    minHeight: 460
   }
   const topRightSide = {
-    stack: [topRightInfo],
-    width: '40%',
-    alignment: 'right'
+    stack: [
+      proformaInvoiceInfo
+    ],
+    width: '50%'
   }
-
-  // Spareparts Table
-  const sparepartsTable = {
-    table: {
-      widths: [20, 100, 80, 20, 20, 80, 80, 40],
-      body: [
-        [
-          { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'PART NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'PART NO.', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'QTY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'UNIT', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'STOCK', style: 'tableHeader', alignment: 'center', fontSize: 8 }
-        ],
-        ...spareparts.filter(item =>
-          typeof item.sparepartName === 'string' &&
-          typeof item.sparepartNumber === 'string' &&
-          !isNaN(parseFloat(item.quantity)) &&
-          !isNaN(parseFloat(item.unitPriceSell)) &&
-          !isNaN(parseFloat(item.totalPrice))
-        ).map((item, idx) => [
-          { text: String(idx + 1), alignment: 'center', fontSize: 8 },
-          { text: String(item.sparepartName || ''), fontSize: 8 },
-          { text: String(item.sparepartNumber || ''), alignment: 'center', fontSize: 8 },
-          { text: String(parseFloat(item.quantity) || 0), alignment: 'center', fontSize: 8 },
-          { text: String(item.unit || 'pcs'), alignment: 'center', fontSize: 8 },
-          { text: formatCurrency(parseFloat(item.unitPriceSell) || 0), alignment: 'right', fontSize: 8 },
-          { text: formatCurrency(parseFloat(item.totalPrice) || 0), alignment: 'right', fontSize: 8 },
-          { text: String(item.stock || ''), alignment: 'left', fontSize: 8 }
-        ]),
-      ]
-    },
-    layout: {
-      hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
-      vLineWidth: () => 1,
-      paddingLeft: () => 5,
-      paddingRight: () => 5,
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-    },
-    margin: [0, 15, 0, 0]
-  }
-
-  // Services Table
-  const servicesTable = {
-    table: {
-      widths: [20, 180, 60, 80, 80],
-      body: [
-        [
-          { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'SERVICE NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'QUANTITY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 }
-        ],
-        ...services.filter(item =>
-          typeof item.service === 'string' &&
-          !isNaN(parseFloat(item.quantity)) &&
-          !isNaN(parseFloat(item.unitPriceSell)) &&
-          !isNaN(parseFloat(item.totalPrice))
-        ).map((item, idx) => [
-          { text: String(idx + 1), alignment: 'center', fontSize: 8 },
-          { text: String(item.service || ''), fontSize: 8 },
-          { text: String(parseFloat(item.quantity) || 0), alignment: 'center', fontSize: 8 },
-          { text: formatCurrency(parseFloat(item.unitPriceSell) || 0), alignment: 'right', fontSize: 8 },
-          { text: formatCurrency(parseFloat(item.totalPrice) || 0), alignment: 'right', fontSize: 8 }
-        ]),
-      ]
-    },
-    layout: {
-      hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
-      vLineWidth: () => 1,
-      paddingLeft: () => 5,
-      paddingRight: () => 5,
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-    },
-    margin: [0, 15, 0, 0]
-  }
-
-  // Summary Table
-  const summaryTable = {
-    table: {
-      widths: project.type === 'Spareparts' ? [20, 100, 80, 20, 20, 80, 80, 40] : [20, 180, 60, 80, 80],
-      body: [
-        [
-          '',
-          { text: 'Balance Payment ' + downPayment + '%', bold: true, italics: true },
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          '',
-          '',
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '1',
-          'Amount',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          '',
-          { text: formatCurrency(parseFloat(price.amount) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '2',
-          'Less: Discount',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          '',
-          { text: formatCurrency(parseFloat(price.discount) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '3',
-          'Sub Total (1-2)',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          '',
-          { text: formatCurrency(parseFloat(price.subtotal) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '4',
-          'Less: Advance Payment',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          '',
-          { text: formatCurrency(parseFloat(price.advancePayment) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '5',
-          'Total (3-4)',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          '',
-          { text: formatCurrency(parseFloat(price.total) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '6',
-          'VAT',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          '',
-          { text: formatCurrency(parseFloat(price.vat) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '7',
-          { text: 'TOTAL AMOUNT (5+6)', bold: true },
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          '',
-          { text: formatCurrency(parseFloat(price.totalAmount) || 0), alignment: 'right', bold: true, fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-      ]
-    },
-    layout: {
-      hLineWidth: (i) => (i === 0 || i === 1 ? 0 : 1),
-      vLineWidth: () => 1,
-      hLineColor: () => '#000000',
-      vLineColor: () => '#000000',
-      paddingLeft: () => 5,
-      paddingRight: () => 5,
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-    },
-    margin: [0, 0, 0, 0]
-  }
-
-  const totalAmountWord = toWords.convert(parseFloat(price.totalAmount) || 0)
 
   const docDefinition = {
+
     content: [
-      // Header
+      // Header details
       {
         text: 'PROFORMA INVOICE',
-        margin: [0, 0, 0, 40],
+        margin: [0, 0, 0, 0],
         alignment: 'center',
         bold: true,
-        fontSize: 18,
-        decoration: 'underline'
+        fontSize: 18
       },
       {
-        columns: [
-          {
-            width: '60%',
-            stack: [customerInfo]
-          },
-          topRightSide
-        ]
+        table: {
+          widths: ['auto', 'auto', '*'],
+          body: [
+            ['To', ':', customer.companyName],
+            ['Address', ':', customer.address],
+            ['City', ':',`${customer.city}, ${customer.province}`],
+            ['Postal', ':',`${customer.postalCode}`]
+          ]
+        },
+        layout: {
+          hLineWidth: () => 0,
+          vLineWidth: () => 0,
+        },
+        margin: [0, 20, 0, 10]
       },
       {
-        text: `Dengan Hormat,`,
-        margin: [0, 25, 0, 0]
+        table: {
+          widths: ['50%', '50%'],
+          body: [
+            [topLeftSide, topRightSide],
+          ]
+        },
+        layout: {
+          hLineWidth: () => 0,
+          vLineWidth: () => 0,
+          paddingTop: () => 0,
+          paddingBottom: () => 0,
+          paddingLeft: () => 0,
+          paddingRight: () => 0
+        }
+      },
+
+      // // Table
+      {
+        table: {
+          widths: [20, 200, 20, 20, 100, 100],
+          body: [
+            [
+              { text: 'No', style: 'tableHeader', alignment: 'center' },
+              { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
+              { text: 'QTY', style: 'tableHeader', alignment: 'center' },
+              { text: 'Unit', style: 'tableHeader', alignment: 'center' },
+              { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
+              { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+            ]
+          ]
+        },
+        layout: {
+          hLineWidth: () => 1,
+          vLineWidth: () => 1,
+          paddingLeft: () => 5,
+          paddingRight: () => 5,
+          paddingTop: () => 3,
+          paddingBottom: () => 3,
+        },
+        margin: [0, 5, 0, 0]
       },
       {
-        text: project.type === 'Spareparts'
-          ? `Berikut kami sampaikan Proforma Invoice untuk sparepart dengan rincian sebagai berikut:`
-          : `Berikut kami sampaikan Proforma Invoice untuk jasa dengan rincian sebagai berikut:`,
-        margin: [0, 15, 0, 0]
+        table: {
+          widths: [20, 200, 20, 20, 100, 100],
+          body: [
+            [
+              '',
+              { text: 'Balance Payment ' + downPayment + '%', bold: true, margin: [55, 0, 0, 0], italics: true },
+              '',
+              '',
+              '',
+              '',
+            ],
+            ...spareparts.map((item, idx) => [
+              { text: idx + 1, alignment: 'center' },
+              {
+                columns: [
+                  {
+                    text: item.sparepartName,
+                    width: '60%',
+                  },
+                  {
+                    text: item.sparepartNumber,
+                    width: '40%',
+                  },
+                ]
+              },
+              { text: item.quantity, alignment: 'center' },
+              { text: 'pcs', alignment: 'center' },
+              { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
+              { text: formatCurrency(item.totalPrice), alignment: 'right' }
+            ]),
+            [
+              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            ]
+          ]
+        },
+        layout: {
+          hLineWidth: () => 0,
+          vLineWidth: () => 1,
+          hLineColor: () => '#000000',
+          vLineColor: () => '#000000',
+          paddingLeft: () => 5,
+          paddingRight: () => 5,
+          paddingTop: () => 3,
+          paddingBottom: () => 3,
+        },
+        margin: [0, 0, 0, 0],
+        minHeight: 700
       },
-      // Conditionally include Spareparts or Services table
-      project.type === 'Spareparts' ? sparepartsTable : servicesTable,
-      summaryTable,
+      {
+        table: {
+          widths: [20, 200, 20, 20, 100, 100],
+          body: [
+            [
+              '1',
+              { text: 'Amount' },
+              '',
+              '',
+              '',
+              { text: formatCurrency(price.amount), alignment: 'right' }
+            ],
+            [
+              '2',
+              { text: 'Less: Discount' },
+              '',
+              '',
+              '',
+              { text: formatCurrency(price.discount), alignment: 'right' }
+            ],
+            [
+              '3',
+              { text: 'Sub Total ( 1-2 )' },
+              '',
+              '',
+              '',
+              { text: formatCurrency(price.subtotal), alignment: 'right' }
+            ],
+            [
+              '4',
+              { text: 'Less: Advance Payment' },
+              '',
+              '',
+              '',
+              { text: formatCurrency(price.advancePayment), alignment: 'right' }
+            ],
+            [
+              '5',
+              { text: 'Total ( 3-4 )' },
+              '',
+              '',
+              '',
+              { text: formatCurrency(price.total), alignment: 'right' }
+            ],
+            [
+              '6',
+              { text: 'VAT' },
+              '',
+              '',
+              '',
+              { text: formatCurrency(price.vat), alignment: 'right' }
+            ],
+            [
+              '7',
+              { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
+              '',
+              '',
+              '',
+              { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+            ],
+          ]
+        },
+        layout: {
+          hLineWidth: () => 1,
+          vLineWidth: () => 1,
+          hLineColor: () => '#000000',
+          vLineColor: () => '#000000',
+          paddingLeft: () => 5,
+          paddingRight: () => 5,
+          paddingTop: () => 3,
+          paddingBottom: () => 3,
+        },
+        margin: [0, 0, 0, 0]
+      },
+
       {
         text: '# ' + totalAmountWord + ' #',
         alignment: 'center',
         bold: true,
         margin: [0, 20, 0, 0]
       },
-      {
-        table: {
-          widths: ['auto', '*'],
-          body: [
-            ['Note:', ''],
-            [String(notes || ''), '']
-          ]
-        },
-        layout: {
-          hLineWidth: () => 0,
-          vLineWidth: () => 0,
-          hLineColor: () => '#000000',
-          vLineColor: () => '#000000',
-          paddingTop: () => 3,
-          paddingBottom: () => 3,
-          paddingLeft: () => 3,
-          paddingRight: () => 3
-        },
-        margin: [0, 30, 10, 5],
-        minHeight: 460,
-        width: '50%',
-      },
-      {
-        text: 'Demikian Proforma Invoice ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.',
-        margin: [0, 20, 0, 0]
-      },
+
       // Signature rows
       {
         columns: [
@@ -333,7 +374,7 @@ const createPdf = (data) => {
             table: {
               widths: ['auto'],
               body: [
-                [{ text: 'Payment by TT to Our Account:', bold: true, margin: [0, 0, 0, 0] }],
+                [{ text: 'Payment by TT to Our Account : ', bold: true, margin: [0, 0, 0, 0] }],
                 ['PT. Berkat Megah Jaya'],
                 ['A/C 009 - 8928009 (IDR)'],
                 ['BCA KCU Pemuda - Semarang (Jateng)']
@@ -350,6 +391,7 @@ const createPdf = (data) => {
               paddingRight: () => 3
             },
             margin: [10, 50, 10, 5],
+            minHeight: 460,
             width: '60%',
           },
           {
@@ -359,9 +401,9 @@ const createPdf = (data) => {
               { text: 'FINANCE', alignment: 'center' }
             ],
             margin: [0, 90, 0, 0]
-          }
+          },
         ]
-      }
+      },
     ],
     styles: {
       header: {
@@ -380,14 +422,8 @@ const createPdf = (data) => {
     pageMargins: [40, 60, 40, 60]
   }
 
-  // Log table body for debugging
-  if (project.type === 'Spareparts') {
-    console.log("Spareparts Table Body:", sparepartsTable.table.body)
-  } else {
-    console.log("Services Table Body:", servicesTable.table.body)
-  }
-
-  pdfMake.createPdf(docDefinition).download(`Proforma_Invoice_${String(data.id || 'unknown')}.pdf`)
+  pdfMake.createPdf(docDefinition).download(`Proforma_Invoice_${data.id}.pdf`)
 }
+
 
 export { createPdf }

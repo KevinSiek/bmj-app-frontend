@@ -13,6 +13,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
       id: data?.id || '',
       status: data?.status || [],
       currentStatus: data?.current_status || '',
+      version: data?.version || 0,
       project: {
         proformaInvoiceNumber: data?.project?.proforma_invoice_number || '',
         purchaseOrderNumber: data?.project?.purchase_order_number || '',
@@ -58,10 +59,29 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     }
   }
 
+  function mapProformaInvoices(data) {
+    return {
+      proformaInvoiceNumber: data?.project?.proforma_invoice_number || '',
+      versions: (data?.versions || []).map(mapProformaInvoice)
+    }
+  }
+
   async function getAllProformaInvoices(param) {
     isLoading.value = true
     const { data } = await proformaInvoiceApi.getAllProformaInvoice(param)
-    proformaInvoices.value = data.data.map(mapProformaInvoice)
+    // Group by proforma invoice number
+    const grouped = {}
+    data.data.forEach(item => {
+      const key = item.project.proforma_invoice_number
+      if (!grouped[key]) {
+        grouped[key] = {
+          proformaInvoiceNumber: key,
+          versions: []
+        }
+      }
+      grouped[key].versions.push(mapProformaInvoice(item))
+    })
+    proformaInvoices.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
   }
