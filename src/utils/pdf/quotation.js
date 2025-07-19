@@ -4,8 +4,87 @@ import { formatCurrency } from '../form-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-const createPdf = (data) => {
-  const { project, customer, price, spareparts, services, notes } = data
+const data = {
+  id: 'ID',
+  currentStatus: 'ready',
+  project: {
+    quotationNumber: 'Q123456',
+    type: 'Spareparts',
+    date: '2023-09-01'
+  },
+  customer: {
+    companyName: 'BMJ Company',
+    address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
+    city: 'Jakarta',
+    province: 'DKI Jakarta',
+    office: 'Head Office',
+    urban: 'Central Jakarta',
+    subdistrict: 'Gambir',
+    postalCode: '10110'
+  },
+  notes: 'Please handle with care.',
+  price: {
+    amount: '1000000',
+    discount: '100000',
+    subtotal: '900000',
+    total: '900000',
+    ppn: '0',
+    grandTotal: '900000'
+  },
+  spareparts: [
+    {
+      sparepartName: 'Sparepart A',
+      sparepartNumber: 'SP001',
+      quantity: 10,
+      unitPriceSell: 100000,
+      totalPrice: 1000000,
+      stock: 'In Stock'
+    },
+    {
+      sparepartName: 'Sparepart B',
+      sparepartNumber: 'SP002',
+      quantity: 5,
+      unitPriceSell: 200000,
+      totalPrice: 1000000,
+      stock: 'In Stock'
+    },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+  ]
+}
+
+const createPdf = () => {
+  const { project, customer, price, spareparts, notes } = data
 
   // Top Left
   const customerInfo = {
@@ -14,13 +93,13 @@ const createPdf = (data) => {
       body: [
         [
           {
-            text: [`Kepada Yth `, { text: `${String(customer.companyName || '')}`, bold: true }],
+            text: [ `Kepada Yth `, { text: `${customer.companyName}`, bold: true } ],
           },
           ''
         ],
-        [String(customer.office || ''), ''],
-        [String(customer.address || ''), ''],
-        [`${String(customer.city || '')} - ${String(customer.province || '')}`, '']
+        [customer.office, ''],
+        [customer.address, ''],
+        [`${customer.city} - ${customer.province}`, '']
       ]
     },
     layout: {
@@ -41,143 +120,6 @@ const createPdf = (data) => {
     year: 'numeric',
   })
 
-  // Define spareparts table with strict validation
-  const sparepartsTable = {
-    table: {
-      widths: [20, 100, 80, 20, 20, 80, 80, 40],
-      body: [
-        [
-          { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'PART NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'PART NO.', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'QTY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'UNIT', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'STOK', style: 'tableHeader', alignment: 'center', fontSize: 8 }
-        ],
-        ...spareparts.filter(item =>
-          typeof item.sparepartName === 'string' &&
-          typeof item.sparepartNumber === 'string' &&
-          !isNaN(parseFloat(item.quantity)) &&
-          !isNaN(parseFloat(item.unitPriceSell)) &&
-          !isNaN(parseFloat(item.totalPrice))
-        ).map((item, idx) => [
-          { text: String(idx + 1), alignment: 'center', fontSize: 8 },
-          { text: String(item.sparepartName || ''), fontSize: 8 },
-          { text: String(item.sparepartNumber || ''), alignment: 'center', fontSize: 8 },
-          { text: String(parseFloat(item.quantity) || 0), alignment: 'center', fontSize: 8 },
-          { text: String(item.unit || 'pcs'), alignment: 'center', fontSize: 8 },
-          { text: formatCurrency(parseFloat(item.unitPriceSell) || 0), alignment: 'right', fontSize: 8 },
-          { text: formatCurrency(parseFloat(item.totalPrice) || 0), alignment: 'right', fontSize: 8 },
-          { text: String(item.stock || ''), alignment: 'left', fontSize: 8 }
-        ]),
-      ]
-    },
-    layout: {
-      hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
-      vLineWidth: () => 1,
-      paddingLeft: () => 5,
-      paddingRight: () => 5,
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-    },
-    margin: [0, 15, 0, 0]
-  }
-
-  // Define services table with similar validation
-  const servicesTable = {
-    table: {
-      widths: [20, 180, 60, 80, 80],
-      body: [
-        [
-          { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'SERVICE NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'QUANTITY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-          { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 }
-        ],
-        ...services.filter(item =>
-          typeof item.service === 'string' &&
-          !isNaN(parseFloat(item.quantity)) &&
-          !isNaN(parseFloat(item.unitPriceSell)) &&
-          !isNaN(parseFloat(item.totalPrice))
-        ).map((item, idx) => [
-          { text: String(idx + 1), alignment: 'center', fontSize: 8 },
-          { text: String(item.service || ''), fontSize: 8 },
-          { text: String(parseFloat(item.quantity) || 0), alignment: 'center', fontSize: 8 },
-          { text: formatCurrency(parseFloat(item.unitPriceSell) || 0), alignment: 'right', fontSize: 8 },
-          { text: formatCurrency(parseFloat(item.totalPrice) || 0), alignment: 'right', fontSize: 8 }
-        ]),
-      ]
-    },
-    layout: {
-      hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
-      vLineWidth: () => 1,
-      paddingLeft: () => 5,
-      paddingRight: () => 5,
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-    },
-    margin: [0, 15, 0, 0]
-  }
-
-  // Summary table for subtotal, PPN, and grand total
-  const summaryTable = {
-    table: {
-      widths: project.type === 'Spareparts' ? [20, 100, 80, 20, 20, 80, 80, 40] : [20, 180, 60, 80, 80],
-      body: [
-        [
-          '',
-          '',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          { text: 'Discount', alignment: 'center', fontSize: 8 },
-          { text: formatCurrency(parseFloat(price.discount) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '',
-          '',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          { text: 'SubTotal', alignment: 'center', fontSize: 8 },
-          { text: formatCurrency(parseFloat(price.subtotal) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '',
-          '',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          { text: 'Ppn 11%', alignment: 'center', fontSize: 8 },
-          { text: formatCurrency(parseFloat(price.ppn) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-        [
-          '',
-          '',
-          '',
-          ...(project.type === 'Spareparts' ? ['', ''] : []),
-          { text: 'Grand Total', alignment: 'center', bold: true, fontSize: 8 },
-          { text: formatCurrency(parseFloat(price.grandTotal) || 0), alignment: 'right', fontSize: 8 },
-          ...(project.type === 'Spareparts' ? [''] : [])
-        ],
-      ]
-    },
-    layout: {
-      hLineWidth: (i) => (i === 0) ? 0 : 1,
-      vLineWidth: () => 1,
-      hLineColor: () => '#000000',
-      vLineColor: () => '#000000',
-      paddingLeft: () => 5,
-      paddingRight: () => 5,
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-    },
-    margin: [0, 0, 0, 0]
-  }
-
   const docDefinition = {
     content: [
       // Header details
@@ -187,7 +129,7 @@ const createPdf = (data) => {
       //   margin: [0, 10, 0, 0]
       // },
       {
-        text: `Quotation No : ${String(project.quotationNumber || '')}`,
+        text: `Quotation No : ${data.project.quotationNumber}`,
         margin: [0, 0, 0, 0],
       },
 
@@ -198,23 +140,105 @@ const createPdf = (data) => {
         margin: [0, 25, 0, 0]
       },
       {
-        text: project.type === 'Spareparts'
-          ? `Berikut kami sampaikan Penawaran harga sparepart Mesin Mitsubishi dengan rincian sebagai berikut:`
-          : `Berikut kami sampaikan Penawaran harga jasa dengan rincian sebagai berikut:`,
+        text: `Berikut kami sampaikan Penawaran harga sparepart Mesin Mitsubishi dengan rincian sebagain berikut:`,
         margin: [0, 15, 0, 0]
       },
 
-      // Conditionally include spareparts or services table
-      project.type === 'Spareparts' ? sparepartsTable : servicesTable,
-
-      summaryTable,
+      // // Table
+      {
+        table: {
+          widths: [20, 100, 80, 20, 20, 80, 80, 40],
+          body: [
+            [
+              { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+              { text: 'PART NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+              { text: 'PART NO.', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+              { text: 'QTY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+              { text: 'UNIT', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+              { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+              { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+              { text: 'STOK', style: 'tableHeader', alignment: 'center', fontSize: 8 }
+            ],
+            ...spareparts.map((item, idx) => [
+              { text: idx + 1, alignment: 'center', fontSize: 8 },
+              { text: item.sparepartName, fontSize: 8 },
+              { text: item.sparepartNumber, alignment: 'center', fontSize: 8 },
+              { text: item.quantity, alignment: 'center', fontSize: 8 },
+              { text: 'pcs', alignment: 'center', fontSize: 8 },
+              { text: formatCurrency(item.unitPriceSell), alignment: 'right', fontSize: 8 },
+              { text: formatCurrency(item.totalPrice), alignment: 'right', fontSize: 8 },
+              { text: item.stock, alignment: 'left', fontSize: 8 }
+            ]),
+          ]
+        },
+        layout: {
+          hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
+          // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
+          vLineWidth: (i, node) => 1,
+          paddingLeft: () => 5,
+          paddingRight: () => 5,
+          paddingTop: () => 3,
+          paddingBottom: () => 3,
+        },
+        margin: [0, 15, 0, 0]
+      },
+      {
+        table: {
+          widths: [20, 100, 80, 20, 20, 80, 80, 40],
+          body: [
+            [
+              '',
+              '',
+              '',
+              '',
+              '',
+              { text: 'SubTotal', alignment: 'center', fontSize: 8 },
+              { text: formatCurrency(price.subtotal), alignment: 'right', fontSize: 8 },
+              ''
+            ],
+            [
+              '',
+              '',
+              '',
+              '',
+              '',
+              { text: 'Ppn 11%', alignment: 'center', fontSize: 8 },
+              { text: formatCurrency(price.ppn), alignment: 'right', fontSize: 8 },
+              ''
+            ],
+            [
+              '',
+              '',
+              '',
+              '',
+              '',
+              { text: 'Grand Total', alignment: 'center', bold: true, fontSize: 8 },
+              { text: formatCurrency(price.grandTotal), alignment: 'right', fontSize: 8 },
+              ''
+            ],
+          ]
+        },
+        layout: {
+          hLineWidth: (i, node) => (i === 0) ? 0 : 1,
+          // hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
+          // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
+          vLineWidth: (i, node) => 1,
+          hLineColor: () => '#000000',
+          vLineColor: () => '#000000',
+          paddingLeft: () => 5,
+          paddingRight: () => 5,
+          paddingTop: () => 3,
+          paddingBottom: () => 3,
+        },
+        margin: [0, 0, 0, 0]
+      },
 
       {
         table: {
           widths: ['auto', '*'],
           body: [
             ['Note:', ''],
-            [String(notes || ''), '']
+            [notes, '']
           ]
         },
         layout: {
@@ -252,9 +276,9 @@ const createPdf = (data) => {
           {
             width: '50%',
             stack: [
-              { text: `Disetujui,` },
+              { text: `Desetujui,` },
               { text: '(                                               )', margin: [0, 55, 0, 0] },
-              { text: `${String(customer.companyName || '')}` }
+              { text: `${customer.companyName}` }
             ],
             margin: [0, 40, 0, 0]
           },
@@ -278,14 +302,8 @@ const createPdf = (data) => {
     pageMargins: [40, 60, 40, 60]
   }
 
-  // Log table body for debugging
-  if (project.type === 'Spareparts') {
-    console.log("Spareparts Table Body:", sparepartsTable.table.body)
-  } else {
-    console.log("Services Table Body:", servicesTable.table.body)
-  }
-
-  pdfMake.createPdf(docDefinition).download(`Quotation_${String(data.id || 'unknown')}.pdf`)
+  pdfMake.createPdf(docDefinition).download(`Quotation_${data.id}.pdf`)
 }
+
 
 export { createPdf }
