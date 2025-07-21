@@ -59,13 +59,6 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     }
   }
 
-  function mapProformaInvoices(data) {
-    return {
-      proformaInvoiceNumber: data?.project?.proforma_invoice_number || '',
-      versions: (data?.versions || []).map(mapProformaInvoice)
-    }
-  }
-
   async function getAllProformaInvoices(param) {
     isLoading.value = true
     const { data } = await proformaInvoiceApi.getAllProformaInvoice(param)

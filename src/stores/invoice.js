@@ -12,7 +12,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     return {
       id: data?.id || '',
       currentStatus: data?.current_status || '',
-      versions: data?.versions || '',
+      version: data?.version || 0,
       purchaseOrder: {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',

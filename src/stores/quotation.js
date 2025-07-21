@@ -16,7 +16,7 @@ export const useQuotationStore = defineStore('quotation', () => {
     return {
       id: data?.id || '',
       slug: data?.slug || '',
-      version: data?.version || '',
+      version: data?.version || 0,
       customer: {
         companyName: data?.customer.company_name || '',
         address: data?.customer.address || '',
