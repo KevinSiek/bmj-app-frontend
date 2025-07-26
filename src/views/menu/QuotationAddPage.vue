@@ -4,10 +4,12 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit" @click="quotationStore.$resetQuotation">Reset Value</button>
+      <button type="button" class="btn btn-edit" @click="quotationStore.$resetQuotation" :disabled="isLoading">Reset
+        Value</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="addQuotationConfirmation">Add Quotation</button>
+      <button type="button" class="btn btn-process" @click="addQuotationConfirmation" :disabled="isLoading">Add
+        Quotation</button>
     </div>
   </div>
 </template>
@@ -16,7 +18,7 @@
 import { common, menuMapping as menuConfig } from '@/config'
 import { useQuotationStore } from '@/stores/quotation'
 import { useModalStore } from '@/stores/modal'
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 const QuotationForm = defineAsyncComponent(() => import('@/components/quotation/QuotationForm.vue'))
 
@@ -24,12 +26,19 @@ const router = useRouter()
 const modalStore = useModalStore()
 const quotationStore = useQuotationStore()
 
+const isLoading = ref(false)
+
 const addQuotation = async () => {
+  if (isLoading.value) return
   try {
+    isLoading.value = true
     await quotationStore.addQuotation()
     router.push(menuConfig.quotation.path)
   } catch (error) {
     throw error.data.error || error.data.message
+  }
+  finally {
+    isLoading.value = false
   }
 }
 
