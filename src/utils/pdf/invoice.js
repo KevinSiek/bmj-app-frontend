@@ -1,64 +1,65 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
+import { common } from '@/config'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-// const data = {
-//   id: 'ID',
-//   currentStatus: 'ready',
-//   purchaseOrder: {
-//     purchaseOrderNumber: 'PO_NUMBER',
-//     purchaseOrderDate: '2023-09-30',
-//     purchaseOrderType: 'Spareparts',
-//     paymentDue: '2023-10-15',
-//     discount: '10%'
-//   },
-//   invoice: {
-//     invoiceNumber: 'INV_NUMBER',
-//     date: '2023-10-01',
-//     termOfPayment: 'CASH',
-//     subTotal: '1000000',
-//     grandTotal: '900000'
-//   },
-//   customer: {
-//     companyName: 'BMJ Company',
-//     address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
-//     city: 'Jakarta',
-//     province: 'DKI Jakarta',
-//     office: 'Head Office',
-//     urban: 'Central Jakarta',
-//     subdistrict: 'Gambir',
-//     postalCode: '10110'
-//   },
-//   notes: 'Please handle with care.',
-//   price: {
-//     subtotal: '1000000',
-//     discount: '100000',
-//     ppn: '100000',
-//     grandTotal: '1100000',
-//   },
-//   spareparts: [
-//     {
-//       sparepartName: 'Sparepart A',
-//       sparepartNumber: 'SP001',
-//       quantity: 10,
-//       unitPriceSell: 100000,
-//       totalPrice: 1000000,
-//       stock: 'In Stock'
-//     },
-//     {
-//       sparepartName: 'Sparepart B',
-//       sparepartNumber: 'SP002',
-//       quantity: 5,
-//       unitPriceSell: 200000,
-//       totalPrice: 1000000,
-//       stock: 'In Stock'
-//     }
-//   ]
-// }
+const data = {
+  id: 'ID',
+  currentStatus: 'ready',
+  purchaseOrder: {
+    purchaseOrderNumber: 'PO_NUMBER',
+    purchaseOrderDate: '2023-09-30',
+    purchaseOrderType: 'Spareparts',
+    paymentDue: '2023-10-15',
+    discount: '10%'
+  },
+  invoice: {
+    invoiceNumber: 'INV_NUMBER',
+    date: '2023-10-01',
+    termOfPayment: 'CASH',
+    subTotal: '1000000',
+    grandTotal: '900000'
+  },
+  customer: {
+    companyName: 'BMJ Company',
+    address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
+    city: 'Jakarta',
+    province: 'DKI Jakarta',
+    office: 'Head Office',
+    urban: 'Central Jakarta',
+    subdistrict: 'Gambir',
+    postalCode: '10110'
+  },
+  notes: 'Please handle with care.',
+  price: {
+    subtotal: '1000000',
+    discount: '100000',
+    ppn: '100000',
+    grandTotal: '1100000',
+  },
+  spareparts: [
+    {
+      sparepartName: 'Sparepart A',
+      sparepartNumber: 'SP001',
+      quantity: 10,
+      unitPriceSell: 100000,
+      totalPrice: 1000000,
+      stock: 'In Stock'
+    },
+    {
+      sparepartName: 'Sparepart B',
+      sparepartNumber: 'SP002',
+      quantity: 5,
+      unitPriceSell: 200000,
+      totalPrice: 1000000,
+      stock: 'In Stock'
+    }
+  ]
+}
 
-const createPdf = (data) => {
+const createPdf = () => {
   const { purchaseOrder, invoice, customer, price } = data
 
   // Top Left
@@ -150,6 +151,67 @@ const createPdf = (data) => {
     width: '50%'
   }
 
+  const sparepart = {
+    header: {
+      table: {
+        widths: [20, 20, 100, 100, 30, '*', '*'],
+        body: [
+          [
+            { text: 'No', style: 'tableHeader' },
+            { text: 'PRD', style: 'tableHeader' },
+            { text: 'ITEM NUMBER', style: 'tableHeader' },
+            { text: 'DESCRIPTION', style: 'tableHeader' },
+            { text: 'QTY', style: 'tableHeader' },
+            { text: 'UNIT PRICE', style: 'tableHeader' },
+            { text: 'SUB TOTAL', style: 'tableHeader' }
+          ]
+        ]
+      },
+      layout: {
+        hLineWidth: (i, node) => i === 1 ? 1 : 0.5,
+        vLineWidth: () => 0,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 5, 0, 0]
+    }
+  }
+
+  const service = {
+    header: {
+      table: {
+        widths: [20, 20, 100, 30, '*', '*'],
+        body: [
+          [
+            { text: 'No', style: 'tableHeader' },
+            { text: 'PRD', style: 'tableHeader' },
+            { text: 'DESCRIPTION', style: 'tableHeader' },
+            { text: 'QTY', style: 'tableHeader' },
+            { text: 'UNIT PRICE', style: 'tableHeader' },
+            { text: 'SUB TOTAL', style: 'tableHeader' }
+          ]
+        ]
+      },
+      layout: {
+        hLineWidth: (i, node) => i === 1 ? 1 : 0.5,
+        vLineWidth: () => 0,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 5, 0, 0]
+    }
+  }
+
+  const type = purchaseOrder.purchaseOrderType === common.type.sparepart ? 'SPAREPART' : 'SERVICE'
+
   const docDefinition = {
     content: [
       // Header details
@@ -185,33 +247,7 @@ const createPdf = (data) => {
       },
 
       // // Table
-      {
-        table: {
-          widths: [20, 20, 100, 100, 30, '*', '*'],
-          body: [
-            [
-              { text: 'No', style: 'tableHeader' },
-              { text: 'PRD', style: 'tableHeader' },
-              { text: 'ITEM NUMBER', style: 'tableHeader' },
-              { text: 'DESCRIPTION', style: 'tableHeader' },
-              { text: 'QTY', style: 'tableHeader' },
-              { text: 'UNIT PRICE', style: 'tableHeader' },
-              { text: 'SUB TOTAL', style: 'tableHeader' }
-            ]
-          ]
-        },
-        layout: {
-          hLineWidth: (i, node) => i === 1 ? 1 : 0.5,
-          vLineWidth: () => 0,
-          hLineColor: () => '#000000',
-          vLineColor: () => '#000000',
-          paddingLeft: () => 5,
-          paddingRight: () => 5,
-          paddingTop: () => 3,
-          paddingBottom: () => 3,
-        },
-        margin: [0, 5, 0, 0]
-      },
+      purchaseOrder.purchaseOrderType === common.type.sparepart ? sparepart.header : service.header,
       {
         table: {
           widths: ['10%', '*', '30%'],
@@ -223,7 +259,7 @@ const createPdf = (data) => {
             ],
             [
               { text: '1', margin: [8, 0, 0, 0] },
-              { text: `SPAREPART ATAS PO ${purchaseOrder.purchaseOrderNumber}`, margin: [8, 0, 0, 0] },
+              { text: `${type} ATAS PO ${purchaseOrder.purchaseOrderNumber}`, margin: [8, 0, 0, 0] },
               {
                 text: formatCurrency(price.subtotal),
                 margin: [0, 0, 30, 0],

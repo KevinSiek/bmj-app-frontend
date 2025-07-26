@@ -1,6 +1,7 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
+import { common } from '@/config'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -9,7 +10,7 @@ const data = {
   currentStatus: 'ready',
   project: {
     quotationNumber: 'Q123456',
-    type: 'Spareparts',
+    type: 'Service',
     date: '2023-09-01'
   },
   customer: {
@@ -35,6 +36,7 @@ const data = {
     {
       sparepartName: 'Sparepart A',
       sparepartNumber: 'SP001',
+      service: 'Service A',
       quantity: 10,
       unitPriceSell: 100000,
       totalPrice: 1000000,
@@ -43,6 +45,7 @@ const data = {
     {
       sparepartName: 'Sparepart B',
       sparepartNumber: 'SP002',
+      service: 'Service B',
       quantity: 5,
       unitPriceSell: 200000,
       totalPrice: 1000000,
@@ -120,70 +123,46 @@ const createPdf = () => {
     year: 'numeric',
   })
 
-  const docDefinition = {
-    content: [
-      // Header details
-      // {
-      //   image: 'data:image/png;base64,...', // your image in base64
-      //   width: 100, // or height: 50
-      //   margin: [0, 10, 0, 0]
-      // },
-      {
-        text: `Quotation No : ${data.project.quotationNumber}`,
-        margin: [0, 0, 0, 0],
+  const sparepartTable = {
+    header: {
+      table: {
+        widths: [20, 100, 80, 20, 20, 80, 80, 40],
+        body: [
+          [
+            { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'PART NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'PART NO.', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'QTY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'UNIT', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'STOK', style: 'tableHeader', alignment: 'center', fontSize: 8 }
+          ],
+          ...spareparts.map((item, idx) => [
+            { text: idx + 1, alignment: 'center', fontSize: 8 },
+            { text: item.sparepartName, fontSize: 8 },
+            { text: item.sparepartNumber, alignment: 'center', fontSize: 8 },
+            { text: item.quantity, alignment: 'center', fontSize: 8 },
+            { text: 'pcs', alignment: 'center', fontSize: 8 },
+            { text: formatCurrency(item.unitPriceSell), alignment: 'right', fontSize: 8 },
+            { text: formatCurrency(item.totalPrice), alignment: 'right', fontSize: 8 },
+            { text: item.stock, alignment: 'left', fontSize: 8 }
+          ]),
+        ]
       },
-
-      customerInfo,
-
-      {
-        text: `Dengan Hormat,`,
-        margin: [0, 25, 0, 0]
+      layout: {
+        hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
+        // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
+        vLineWidth: (i, node) => 1,
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
       },
-      {
-        text: `Berikut kami sampaikan Penawaran harga sparepart Mesin Mitsubishi dengan rincian sebagain berikut:`,
-        margin: [0, 15, 0, 0]
-      },
-
-      // // Table
-      {
-        table: {
-          widths: [20, 100, 80, 20, 20, 80, 80, 40],
-          body: [
-            [
-              { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-              { text: 'PART NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-              { text: 'PART NO.', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-              { text: 'QTY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-              { text: 'UNIT', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-              { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-              { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-              { text: 'STOK', style: 'tableHeader', alignment: 'center', fontSize: 8 }
-            ],
-            ...spareparts.map((item, idx) => [
-              { text: idx + 1, alignment: 'center', fontSize: 8 },
-              { text: item.sparepartName, fontSize: 8 },
-              { text: item.sparepartNumber, alignment: 'center', fontSize: 8 },
-              { text: item.quantity, alignment: 'center', fontSize: 8 },
-              { text: 'pcs', alignment: 'center', fontSize: 8 },
-              { text: formatCurrency(item.unitPriceSell), alignment: 'right', fontSize: 8 },
-              { text: formatCurrency(item.totalPrice), alignment: 'right', fontSize: 8 },
-              { text: item.stock, alignment: 'left', fontSize: 8 }
-            ]),
-          ]
-        },
-        layout: {
-          hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
-          // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
-          vLineWidth: (i, node) => 1,
-          paddingLeft: () => 5,
-          paddingRight: () => 5,
-          paddingTop: () => 3,
-          paddingBottom: () => 3,
-        },
-        margin: [0, 15, 0, 0]
-      },
-      {
-        table: {
+      margin: [0, 15, 0, 0]
+    },
+    footer: {
+      table: {
           widths: [20, 100, 80, 20, 20, 80, 80, 40],
           body: [
             [
@@ -217,6 +196,81 @@ const createPdf = () => {
               ''
             ],
           ]
+      },
+      layout: {
+        hLineWidth: (i, node) => (i === 0) ? 0 : 1,
+        // hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
+        // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
+        vLineWidth: (i, node) => 1,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 0, 0, 0]
+    }
+  }
+
+  const serviceTable = {
+    header: {
+      table: {
+        widths: [20, 200, 30, 100, 100],
+        body: [
+          [
+            { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'SERVICE NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'QTY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 }
+          ],
+          ...spareparts.map((item, idx) => [
+            { text: idx + 1, alignment: 'center', fontSize: 8 },
+            { text: item.service, fontSize: 8 },
+            { text: item.quantity, alignment: 'center', fontSize: 8 },
+            { text: formatCurrency(item.unitPriceSell), alignment: 'right', fontSize: 8 },
+            { text: formatCurrency(item.totalPrice), alignment: 'right', fontSize: 8 }
+          ]),
+        ]
+      },
+      layout: {
+        hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
+        // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
+        vLineWidth: (i, node) => 1,
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 15, 0, 0]
+    },
+    footer: {
+      table: {
+          widths: [20, 200, 30, 100, 100],
+          body: [
+            [
+              '',
+              '',
+              '',
+              { text: 'SubTotal', alignment: 'center', fontSize: 8 },
+              { text: formatCurrency(price.subtotal), alignment: 'right', fontSize: 8 },
+            ],
+            [
+              '',
+              '',
+              '',
+              { text: 'Ppn 11%', alignment: 'center', fontSize: 8 },
+              { text: formatCurrency(price.ppn), alignment: 'right', fontSize: 8 },
+            ],
+            [
+              '',
+              '',
+              '',
+              { text: 'Grand Total', alignment: 'center', bold: true, fontSize: 8 },
+              { text: formatCurrency(price.grandTotal), alignment: 'right', fontSize: 8 },
+            ],
+          ]
         },
         layout: {
           hLineWidth: (i, node) => (i === 0) ? 0 : 1,
@@ -231,7 +285,36 @@ const createPdf = () => {
           paddingBottom: () => 3,
         },
         margin: [0, 0, 0, 0]
+    }
+  }
+
+  const docDefinition = {
+    content: [
+      // Header details
+      // {
+      //   image: 'data:image/png;base64,...', // your image in base64
+      //   width: 100, // or height: 50
+      //   margin: [0, 10, 0, 0]
+      // },
+      {
+        text: `Quotation No : ${data.project.quotationNumber}`,
+        margin: [0, 0, 0, 0],
       },
+
+      customerInfo,
+
+      {
+        text: `Dengan Hormat,`,
+        margin: [0, 25, 0, 0]
+      },
+      {
+        text: `Berikut kami sampaikan Penawaran harga sparepart Mesin Mitsubishi dengan rincian sebagain berikut:`,
+        margin: [0, 15, 0, 0]
+      },
+
+      // Table
+      project.type === common.type.sparepart ? sparepartTable.header : serviceTable.header,
+      project.type === common.type.sparepart ? sparepartTable.footer : serviceTable.footer,
 
       {
         table: {

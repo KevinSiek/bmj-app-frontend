@@ -1,97 +1,100 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
+import { common } from '@/config'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-// const data = {
-//   id: 'ID',
-//   currentStatus: 'ready',
-//   purchaseOrder: {
-//     purchaseOrderNumber: 'PO123456',
-//     purchaseOrderDate: '2023-09-01',
-//     type: 'Spareparts'
-//   },
-//   proformaInvoice: {
-//     proformaInvoiceNumber: 'PI123456',
-//     proformaInvoiceDate: '2023-09-02',
-//     isDpPaid: false,
-//     isFullPaid: false
-//   },
-//   customer: {
-//     companyName: 'BMJ Company',
-//     address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
-//     city: 'Jakarta',
-//     province: 'DKI Jakarta',
-//     office: 'Head Office',
-//     urban: 'Central Jakarta',
-//     subdistrict: 'Gambir',
-//     postalCode: '10110'
-//   },
-//   notes: 'Please handle with care.',
-//   price: {
-//     amount: '1000000',
-//     discount: '100000',
-//     subtotal: '900000',
-//     advancePayment: '0',
-//     total: '900000',
-//     vat: '0',
-//     totalAmount: '900000'
-//   },
-//   downPayment: '0',
-//   spareparts: [
-//     {
-//       sparepartName: 'Sparepart A',
-//       sparepartNumber: 'SP001',
-//       quantity: 10,
-//       unitPriceSell: 100000,
-//       totalPrice: 1000000,
-//       stock: 'In Stock'
-//     },
-//     {
-//       sparepartName: 'Sparepart B',
-//       sparepartNumber: 'SP002',
-//       quantity: 5,
-//       unitPriceSell: 200000,
-//       totalPrice: 1000000,
-//       stock: 'In Stock'
-//     },
-//     // {
-//     //   sparepartName: 'Sparepart A',
-//     //   sparepartNumber: 'SP001',
-//     //   quantity: 10,
-//     //   unitPriceSell: 100000,
-//     //   totalPrice: 1000000,
-//     //   stock: 'In Stock'
-//     // },
-//     // {
-//     //   sparepartName: 'Sparepart A',
-//     //   sparepartNumber: 'SP001',
-//     //   quantity: 10,
-//     //   unitPriceSell: 100000,
-//     //   totalPrice: 1000000,
-//     //   stock: 'In Stock'
-//     // },
-//     // {
-//     //   sparepartName: 'Sparepart A',
-//     //   sparepartNumber: 'SP001',
-//     //   quantity: 10,
-//     //   unitPriceSell: 100000,
-//     //   totalPrice: 1000000,
-//     //   stock: 'In Stock'
-//     // },
-//     // {
-//     //   sparepartName: 'Sparepart A',
-//     //   sparepartNumber: 'SP001',
-//     //   quantity: 10,
-//     //   unitPriceSell: 100000,
-//     //   totalPrice: 1000000,
-//     //   stock: 'In Stock'
-//     // },
-//   ]
-// }
+const data = {
+  id: 'ID',
+  currentStatus: 'ready',
+  purchaseOrder: {
+    purchaseOrderNumber: 'PO123456',
+    purchaseOrderDate: '2023-09-01',
+    type: 'Spareparts'
+  },
+  proformaInvoice: {
+    proformaInvoiceNumber: 'PI123456',
+    proformaInvoiceDate: '2023-09-02',
+    isDpPaid: false,
+    isFullPaid: false
+  },
+  customer: {
+    companyName: 'BMJ Company',
+    address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
+    city: 'Jakarta',
+    province: 'DKI Jakarta',
+    office: 'Head Office',
+    urban: 'Central Jakarta',
+    subdistrict: 'Gambir',
+    postalCode: '10110'
+  },
+  notes: 'Please handle with care.',
+  price: {
+    amount: '1000000',
+    discount: '100000',
+    subtotal: '900000',
+    advancePayment: '0',
+    total: '900000',
+    vat: '0',
+    totalAmount: '900000'
+  },
+  downPayment: '0',
+  spareparts: [
+    {
+      sparepartName: 'Sparepart A',
+      sparepartNumber: 'SP001',
+      service: 'Service A',
+      quantity: 10,
+      unitPriceSell: 100000,
+      totalPrice: 1000000,
+      stock: 'In Stock'
+    },
+    {
+      sparepartName: 'Sparepart B',
+      sparepartNumber: 'SP002',
+      service: 'Service B',
+      quantity: 5,
+      unitPriceSell: 200000,
+      totalPrice: 1000000,
+      stock: 'In Stock'
+    },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+    // {
+    //   sparepartName: 'Sparepart A',
+    //   sparepartNumber: 'SP001',
+    //   quantity: 10,
+    //   unitPriceSell: 100000,
+    //   totalPrice: 1000000,
+    //   stock: 'In Stock'
+    // },
+  ]
+}
 
-const createPdf = (data) => {
+const createPdf = () => {
   const { purchaseOrder, customer, price, spareparts, notes } = data
 
   // Top Left
@@ -151,6 +154,83 @@ const createPdf = (data) => {
     width: '40%'
   }
 
+  const sparepartTable = {
+    table: {
+      widths: [20, 200, 20, 20, 100, 100],
+      body: [
+        [
+          { text: 'No', style: 'tableHeader', alignment: 'center' },
+          { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
+          { text: 'QTY', style: 'tableHeader', alignment: 'center' },
+          { text: 'Unit', style: 'tableHeader', alignment: 'center' },
+          { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
+          { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+        ],
+        ...spareparts.map((item, idx) => [
+          { text: idx + 1, alignment: 'center' },
+          {
+            columns: [
+              {
+                text: item.sparepartName,
+                width: '60%',
+              },
+              {
+                text: item.sparepartNumber,
+                width: '40%',
+              },
+            ]
+          },
+          { text: item.quantity, alignment: 'center' },
+          { text: 'pcs', alignment: 'center' },
+          { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
+          { text: formatCurrency(item.totalPrice), alignment: 'right' }
+        ]),
+      ]
+    },
+    layout: {
+      hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 0.5 : 0),
+      // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
+      vLineWidth: (i, node) => 0,
+      paddingLeft: () => 5,
+      paddingRight: () => 5,
+      paddingTop: () => 3,
+      paddingBottom: () => 3,
+    },
+    margin: [0, 10, 0, 0]
+  }
+
+  const serviceTable = {
+    table: {
+      widths: [20, 200, 20, 100, 100],
+      body: [
+        [
+          { text: 'No', style: 'tableHeader', alignment: 'center' },
+          { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
+          { text: 'QTY', style: 'tableHeader', alignment: 'center' },
+          { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
+          { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+        ],
+        ...spareparts.map((item, idx) => [
+          { text: idx + 1, alignment: 'center' },
+          { text: item.service, alignment: 'center' },
+          { text: item.quantity, alignment: 'center' },
+          { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
+          { text: formatCurrency(item.totalPrice), alignment: 'right' }
+        ]),
+      ]
+    },
+    layout: {
+      hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 0.5 : 0),
+      // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
+      vLineWidth: (i, node) => 0,
+      paddingLeft: () => 5,
+      paddingRight: () => 5,
+      paddingTop: () => 3,
+      paddingBottom: () => 3,
+    },
+    margin: [0, 10, 0, 0]
+  }
+
   const docDefinition = {
 
     content: [
@@ -185,51 +265,8 @@ const createPdf = (data) => {
         }
       },
 
-      // // Table
-      {
-        table: {
-          widths: [20, 200, 20, 20, 100, 100],
-          body: [
-            [
-              { text: 'No', style: 'tableHeader', alignment: 'center' },
-              { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
-              { text: 'QTY', style: 'tableHeader', alignment: 'center' },
-              { text: 'Unit', style: 'tableHeader', alignment: 'center' },
-              { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
-              { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
-            ],
-            ...spareparts.map((item, idx) => [
-              { text: idx + 1, alignment: 'center' },
-              {
-                columns: [
-                  {
-                    text: item.sparepartName,
-                    width: '60%',
-                  },
-                  {
-                    text: item.sparepartNumber,
-                    width: '40%',
-                  },
-                ]
-              },
-              { text: item.quantity, alignment: 'center' },
-              { text: 'pcs', alignment: 'center' },
-              { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
-              { text: formatCurrency(item.totalPrice), alignment: 'right' }
-            ]),
-          ]
-        },
-        layout: {
-          hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 0.5 : 0),
-          // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
-          vLineWidth: (i, node) => 0,
-          paddingLeft: () => 5,
-          paddingRight: () => 5,
-          paddingTop: () => 3,
-          paddingBottom: () => 3,
-        },
-        margin: [0, 10, 0, 0]
-      },
+      // Table
+      purchaseOrder.type === common.type.sparepart ? sparepartTable : serviceTable,
       {
         table: {
           widths: [20, 200, 20, 20, 100, 100],

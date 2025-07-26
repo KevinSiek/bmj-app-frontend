@@ -2,6 +2,7 @@ import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
 import { ToWords } from 'to-words'
+import { common } from '@/config'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -56,6 +57,7 @@ const data = {
     {
       sparepartName: 'Sparepart A',
       sparepartNumber: 'SP001',
+      service: 'Service A',
       quantity: 10,
       unitPriceSell: 100000,
       totalPrice: 1000000,
@@ -64,6 +66,7 @@ const data = {
     {
       sparepartName: 'Sparepart B',
       sparepartNumber: 'SP002',
+      service: 'Service B',
       quantity: 5,
       unitPriceSell: 200000,
       totalPrice: 1000000,
@@ -162,6 +165,154 @@ const createPdf = () => {
     width: '50%'
   }
 
+  const sparepart = {
+    header: {
+      table: {
+        widths: [20, 200, 20, 20, 100, 100],
+        body: [
+          [
+            { text: 'No', style: 'tableHeader', alignment: 'center' },
+            { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
+            { text: 'QTY', style: 'tableHeader', alignment: 'center' },
+            { text: 'Unit', style: 'tableHeader', alignment: 'center' },
+            { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
+            { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+          ]
+        ]
+      },
+      layout: {
+        hLineWidth: () => 1,
+        vLineWidth: () => 1,
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 5, 0, 0]
+    },
+    body: {
+      table: {
+        widths: [20, 200, 20, 20, 100, 100],
+        body: [
+          [
+            '',
+            { text: 'Balance Payment ' + downPayment + '%', bold: true, margin: [55, 0, 0, 0], italics: true },
+            '',
+            '',
+            '',
+            '',
+          ],
+          ...spareparts.map((item, idx) => [
+            { text: idx + 1, alignment: 'center' },
+            {
+              columns: [
+                {
+                  text: item.sparepartName,
+                  width: '60%',
+                },
+                {
+                  text: item.sparepartNumber,
+                  width: '40%',
+                },
+              ]
+            },
+            { text: item.quantity, alignment: 'center' },
+            { text: 'pcs', alignment: 'center' },
+            { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
+            { text: formatCurrency(item.totalPrice), alignment: 'right' }
+          ]),
+          [
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          ]
+        ]
+      },
+      layout: {
+        hLineWidth: () => 0,
+        vLineWidth: () => 1,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 0, 0, 0],
+      minHeight: 700
+    },
+  }
+
+  const service = {
+    header: {
+      table: {
+        widths: [20, 200, 20, 100, 100],
+        body: [
+          [
+            { text: 'No', style: 'tableHeader', alignment: 'center' },
+            { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
+            { text: 'QTY', style: 'tableHeader', alignment: 'center' },
+            { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
+            { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+          ]
+        ]
+      },
+      layout: {
+        hLineWidth: () => 1,
+        vLineWidth: () => 1,
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 5, 0, 0]
+    },
+    body: {
+      table: {
+        widths: [20, 200, 20, 100, 100],
+        body: [
+          [
+            '',
+            { text: 'Balance Payment ' + downPayment + '%', bold: true, margin: [55, 0, 0, 0], italics: true },
+            '',
+            '',
+            '',
+          ],
+          ...spareparts.map((item, idx) => [
+            { text: idx + 1, alignment: 'center' },
+            { text: item.service },
+            { text: item.quantity, alignment: 'center' },
+            { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
+            { text: formatCurrency(item.totalPrice), alignment: 'right' }
+          ]),
+          [
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+            { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          ]
+        ]
+      },
+      layout: {
+        hLineWidth: () => 0,
+        vLineWidth: () => 1,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 0, 0, 0],
+      minHeight: 700
+    },
+  }
+
+
   const docDefinition = {
 
     content: [
@@ -206,85 +357,87 @@ const createPdf = () => {
         }
       },
 
-      // // Table
-      {
-        table: {
-          widths: [20, 200, 20, 20, 100, 100],
-          body: [
-            [
-              { text: 'No', style: 'tableHeader', alignment: 'center' },
-              { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
-              { text: 'QTY', style: 'tableHeader', alignment: 'center' },
-              { text: 'Unit', style: 'tableHeader', alignment: 'center' },
-              { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
-              { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
-            ]
-          ]
-        },
-        layout: {
-          hLineWidth: () => 1,
-          vLineWidth: () => 1,
-          paddingLeft: () => 5,
-          paddingRight: () => 5,
-          paddingTop: () => 3,
-          paddingBottom: () => 3,
-        },
-        margin: [0, 5, 0, 0]
-      },
-      {
-        table: {
-          widths: [20, 200, 20, 20, 100, 100],
-          body: [
-            [
-              '',
-              { text: 'Balance Payment ' + downPayment + '%', bold: true, margin: [55, 0, 0, 0], italics: true },
-              '',
-              '',
-              '',
-              '',
-            ],
-            ...spareparts.map((item, idx) => [
-              { text: idx + 1, alignment: 'center' },
-              {
-                columns: [
-                  {
-                    text: item.sparepartName,
-                    width: '60%',
-                  },
-                  {
-                    text: item.sparepartNumber,
-                    width: '40%',
-                  },
-                ]
-              },
-              { text: item.quantity, alignment: 'center' },
-              { text: 'pcs', alignment: 'center' },
-              { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
-              { text: formatCurrency(item.totalPrice), alignment: 'right' }
-            ]),
-            [
-              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
-              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
-              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
-              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
-              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
-              { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
-            ]
-          ]
-        },
-        layout: {
-          hLineWidth: () => 0,
-          vLineWidth: () => 1,
-          hLineColor: () => '#000000',
-          vLineColor: () => '#000000',
-          paddingLeft: () => 5,
-          paddingRight: () => 5,
-          paddingTop: () => 3,
-          paddingBottom: () => 3,
-        },
-        margin: [0, 0, 0, 0],
-        minHeight: 700
-      },
+      // Table
+      project.type === common.type.sparepart ? sparepart.header : service.header,
+      project.type === common.type.sparepart ? sparepart.body : service.body,
+      // {
+      //   table: {
+      //     widths: [20, 200, 20, 20, 100, 100],
+      //     body: [
+      //       [
+      //         { text: 'No', style: 'tableHeader', alignment: 'center' },
+      //         { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
+      //         { text: 'QTY', style: 'tableHeader', alignment: 'center' },
+      //         { text: 'Unit', style: 'tableHeader', alignment: 'center' },
+      //         { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
+      //         { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
+      //       ]
+      //     ]
+      //   },
+      //   layout: {
+      //     hLineWidth: () => 1,
+      //     vLineWidth: () => 1,
+      //     paddingLeft: () => 5,
+      //     paddingRight: () => 5,
+      //     paddingTop: () => 3,
+      //     paddingBottom: () => 3,
+      //   },
+      //   margin: [0, 5, 0, 0]
+      // },
+      // {
+      //   table: {
+      //     widths: [20, 200, 20, 20, 100, 100],
+      //     body: [
+      //       [
+      //         '',
+      //         { text: 'Balance Payment ' + downPayment + '%', bold: true, margin: [55, 0, 0, 0], italics: true },
+      //         '',
+      //         '',
+      //         '',
+      //         '',
+      //       ],
+      //       ...spareparts.map((item, idx) => [
+      //         { text: idx + 1, alignment: 'center' },
+      //         {
+      //           columns: [
+      //             {
+      //               text: item.sparepartName,
+      //               width: '60%',
+      //             },
+      //             {
+      //               text: item.sparepartNumber,
+      //               width: '40%',
+      //             },
+      //           ]
+      //         },
+      //         { text: item.quantity, alignment: 'center' },
+      //         { text: 'pcs', alignment: 'center' },
+      //         { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
+      //         { text: formatCurrency(item.totalPrice), alignment: 'right' }
+      //       ]),
+      //       [
+      //         { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+      //         { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+      //         { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+      //         { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+      //         { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+      //         { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+      //       ]
+      //     ]
+      //   },
+      //   layout: {
+      //     hLineWidth: () => 0,
+      //     vLineWidth: () => 1,
+      //     hLineColor: () => '#000000',
+      //     vLineColor: () => '#000000',
+      //     paddingLeft: () => 5,
+      //     paddingRight: () => 5,
+      //     paddingTop: () => 3,
+      //     paddingBottom: () => 3,
+      //   },
+      //   margin: [0, 0, 0, 0],
+      //   minHeight: 700
+      // },
       {
         table: {
           widths: [20, 200, 20, 20, 100, 100],
