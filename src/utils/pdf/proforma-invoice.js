@@ -30,7 +30,7 @@ const data = {
     purchaseOrderNumber: 'PO_NUMBER',
     purchaseOrderDate: '2023-09-01',
     date: '2023-09-30',
-    type: 'Spareparts'
+    type: 'Service'
   },
   customer: {
     companyName: 'BMJ Company',
@@ -244,12 +244,86 @@ const createPdf = () => {
       margin: [0, 0, 0, 0],
       minHeight: 700
     },
+    footer: {
+      table: {
+        widths: [20, 200, 20, 20, 100, 100],
+        body: [
+          [
+            '1',
+            { text: 'Amount' },
+            '',
+            '',
+            '',
+            { text: formatCurrency(price.amount), alignment: 'right' }
+          ],
+          [
+            '2',
+            { text: 'Less: Discount' },
+            '',
+            '',
+            '',
+            { text: formatCurrency(price.discount), alignment: 'right' }
+          ],
+          [
+            '3',
+            { text: 'Sub Total ( 1-2 )' },
+            '',
+            '',
+            '',
+            { text: formatCurrency(price.subtotal), alignment: 'right' }
+          ],
+          [
+            '4',
+            { text: 'Less: Advance Payment' },
+            '',
+            '',
+            '',
+            { text: formatCurrency(price.advancePayment), alignment: 'right' }
+          ],
+          [
+            '5',
+            { text: 'Total ( 3-4 )' },
+            '',
+            '',
+            '',
+            { text: formatCurrency(price.total), alignment: 'right' }
+          ],
+          [
+            '6',
+            { text: 'VAT' },
+            '',
+            '',
+            '',
+            { text: formatCurrency(price.vat), alignment: 'right' }
+          ],
+          [
+            '7',
+            { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
+            '',
+            '',
+            '',
+            { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+          ],
+        ]
+      },
+      layout: {
+        hLineWidth: () => 1,
+        vLineWidth: () => 1,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 0, 0, 0]
+    },
   }
 
   const service = {
     header: {
       table: {
-        widths: [20, 200, 20, 100, 100],
+        widths: [20, 200, 20, 115, 115],
         body: [
           [
             { text: 'No', style: 'tableHeader', alignment: 'center' },
@@ -272,7 +346,7 @@ const createPdf = () => {
     },
     body: {
       table: {
-        widths: [20, 200, 20, 100, 100],
+        widths: [20, 200, 20, 115, 115],
         body: [
           [
             '',
@@ -309,6 +383,73 @@ const createPdf = () => {
       },
       margin: [0, 0, 0, 0],
       minHeight: 700
+    },
+    footer: {
+      table: {
+        widths: [20, 200, 20, 115, 115],
+        body: [
+          [
+            '1',
+            { text: 'Amount' },
+            '',
+            '',
+            { text: formatCurrency(price.amount), alignment: 'right' }
+          ],
+          [
+            '2',
+            { text: 'Less: Discount' },
+            '',
+            '',
+            { text: formatCurrency(price.discount), alignment: 'right' }
+          ],
+          [
+            '3',
+            { text: 'Sub Total ( 1-2 )' },
+            '',
+            '',
+            { text: formatCurrency(price.subtotal), alignment: 'right' }
+          ],
+          [
+            '4',
+            { text: 'Less: Advance Payment' },
+            '',
+            '',
+            { text: formatCurrency(price.advancePayment), alignment: 'right' }
+          ],
+          [
+            '5',
+            { text: 'Total ( 3-4 )' },
+            '',
+            '',
+            { text: formatCurrency(price.total), alignment: 'right' }
+          ],
+          [
+            '6',
+            { text: 'VAT' },
+            '',
+            '',
+            { text: formatCurrency(price.vat), alignment: 'right' }
+          ],
+          [
+            '7',
+            { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
+            '',
+            '',
+            { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+          ],
+        ]
+      },
+      layout: {
+        hLineWidth: () => 1,
+        vLineWidth: () => 1,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 0, 0, 0]
     },
   }
 
@@ -360,6 +501,7 @@ const createPdf = () => {
       // Table
       project.type === common.type.sparepart ? sparepart.header : service.header,
       project.type === common.type.sparepart ? sparepart.body : service.body,
+      project.type === common.type.sparepart ? sparepart.footer : service.footer,
       // {
       //   table: {
       //     widths: [20, 200, 20, 20, 100, 100],
@@ -438,80 +580,80 @@ const createPdf = () => {
       //   margin: [0, 0, 0, 0],
       //   minHeight: 700
       // },
-      {
-        table: {
-          widths: [20, 200, 20, 20, 100, 100],
-          body: [
-            [
-              '1',
-              { text: 'Amount' },
-              '',
-              '',
-              '',
-              { text: formatCurrency(price.amount), alignment: 'right' }
-            ],
-            [
-              '2',
-              { text: 'Less: Discount' },
-              '',
-              '',
-              '',
-              { text: formatCurrency(price.discount), alignment: 'right' }
-            ],
-            [
-              '3',
-              { text: 'Sub Total ( 1-2 )' },
-              '',
-              '',
-              '',
-              { text: formatCurrency(price.subtotal), alignment: 'right' }
-            ],
-            [
-              '4',
-              { text: 'Less: Advance Payment' },
-              '',
-              '',
-              '',
-              { text: formatCurrency(price.advancePayment), alignment: 'right' }
-            ],
-            [
-              '5',
-              { text: 'Total ( 3-4 )' },
-              '',
-              '',
-              '',
-              { text: formatCurrency(price.total), alignment: 'right' }
-            ],
-            [
-              '6',
-              { text: 'VAT' },
-              '',
-              '',
-              '',
-              { text: formatCurrency(price.vat), alignment: 'right' }
-            ],
-            [
-              '7',
-              { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
-              '',
-              '',
-              '',
-              { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
-            ],
-          ]
-        },
-        layout: {
-          hLineWidth: () => 1,
-          vLineWidth: () => 1,
-          hLineColor: () => '#000000',
-          vLineColor: () => '#000000',
-          paddingLeft: () => 5,
-          paddingRight: () => 5,
-          paddingTop: () => 3,
-          paddingBottom: () => 3,
-        },
-        margin: [0, 0, 0, 0]
-      },
+      // {
+      //   table: {
+      //     widths: [20, 200, 20, 20, 100, 100],
+      //     body: [
+      //       [
+      //         '1',
+      //         { text: 'Amount' },
+      //         '',
+      //         '',
+      //         '',
+      //         { text: formatCurrency(price.amount), alignment: 'right' }
+      //       ],
+      //       [
+      //         '2',
+      //         { text: 'Less: Discount' },
+      //         '',
+      //         '',
+      //         '',
+      //         { text: formatCurrency(price.discount), alignment: 'right' }
+      //       ],
+      //       [
+      //         '3',
+      //         { text: 'Sub Total ( 1-2 )' },
+      //         '',
+      //         '',
+      //         '',
+      //         { text: formatCurrency(price.subtotal), alignment: 'right' }
+      //       ],
+      //       [
+      //         '4',
+      //         { text: 'Less: Advance Payment' },
+      //         '',
+      //         '',
+      //         '',
+      //         { text: formatCurrency(price.advancePayment), alignment: 'right' }
+      //       ],
+      //       [
+      //         '5',
+      //         { text: 'Total ( 3-4 )' },
+      //         '',
+      //         '',
+      //         '',
+      //         { text: formatCurrency(price.total), alignment: 'right' }
+      //       ],
+      //       [
+      //         '6',
+      //         { text: 'VAT' },
+      //         '',
+      //         '',
+      //         '',
+      //         { text: formatCurrency(price.vat), alignment: 'right' }
+      //       ],
+      //       [
+      //         '7',
+      //         { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
+      //         '',
+      //         '',
+      //         '',
+      //         { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+      //       ],
+      //     ]
+      //   },
+      //   layout: {
+      //     hLineWidth: () => 1,
+      //     vLineWidth: () => 1,
+      //     hLineColor: () => '#000000',
+      //     vLineColor: () => '#000000',
+      //     paddingLeft: () => 5,
+      //     paddingRight: () => 5,
+      //     paddingTop: () => 3,
+      //     paddingBottom: () => 3,
+      //   },
+      //   margin: [0, 0, 0, 0]
+      // },
 
       {
         text: '# ' + totalAmountWord + ' #',

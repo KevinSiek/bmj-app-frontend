@@ -11,7 +11,7 @@ const data = {
   purchaseOrder: {
     purchaseOrderNumber: 'PO_NUMBER',
     purchaseOrderDate: '2023-09-30',
-    purchaseOrderType: 'Spareparts',
+    purchaseOrderType: 'Service',
     paymentDue: '2023-10-15',
     discount: '10%'
   },
@@ -184,12 +184,12 @@ const createPdf = () => {
   const service = {
     header: {
       table: {
-        widths: [20, 20, 100, 30, '*', '*'],
+        widths: [20, 20, 200, 30, '*', '*'],
         body: [
           [
             { text: 'No', style: 'tableHeader' },
             { text: 'PRD', style: 'tableHeader' },
-            { text: 'DESCRIPTION', style: 'tableHeader' },
+            { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
             { text: 'QTY', style: 'tableHeader' },
             { text: 'UNIT PRICE', style: 'tableHeader' },
             { text: 'SUB TOTAL', style: 'tableHeader' }
