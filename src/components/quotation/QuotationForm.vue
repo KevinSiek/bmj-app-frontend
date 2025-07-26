@@ -16,7 +16,7 @@
             <select class="form-select mt-2" aria-label="Project Type" v-model="quotation.project.type"
               :disabled="disabled">
               <option value="" disabled selected>Select Project Type</option>
-              <option value="Spareparts" selected>Spareparts</option>
+              <option value="Spareparts">Spareparts</option>
               <option value="Service">Service</option>
             </select>
           </div>
@@ -80,7 +80,7 @@
         </div>
       </div>
     </div>
-    <div class="sparepart my-2">
+    <div v-if="quotation.project.type === 'Spareparts'" class="sparepart my-2">
       <div class="title">Sparepart</div>
       <div v-if="isTypeEdit" class="table-placeholder">
         <table class="table table-hover">
@@ -208,7 +208,9 @@
                 </div>
               </div>
             </div>
-            <div class="col-1">
+            <div class="col-1
+
+">
               <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
                   class="bi bi-trash3"></i></button>
             </div>
@@ -217,6 +219,110 @@
             <button type="button" class="btn btn-outline-dark" @click="addSparepart">
               <i class="bi bi-plus-lg"></i>
               <span class="mx-2">Add Sparepart</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="quotation.project.type === 'Service'" class="service my-2">
+      <div class="title">Service</div>
+      <div v-if="isTypeEdit" class="table-placeholder">
+        <table class="table table-hover">
+          <thead>
+            <tr class="align-middle">
+              <th scope="col-1" class="table-number">NO</th>
+              <th scope="col" class="table-name">SERVICE NAME</th>
+              <th scope="col" class="table-name">QUANTITY</th>
+              <th scope="col" class="table-name">UNIT PRICE</th>
+              <th scope="col" class="table-name">TOTAL PRICE</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr v-for="(service, index) in quotation.services" :key="index" class="align-middle">
+              <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
+              <td class="table-col table-name">{{ service.service }}</td>
+              <td class="table-col table-name">{{ service.quantity }}</td>
+              <td class="table-col table-name">{{ service.unitPriceSell }}</td>
+              <td class="table-col table-name">{{ service.totalPrice }}</td>
+            </tr>
+            <tr class="align-middle">
+              <td scope="row" class="table-col table-number"></td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name">SubTotal</td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name">{{ quotation.price.subtotal }}</td>
+            </tr>
+            <tr class="align-middle">
+              <td scope="row" class="table-col table-number"></td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name">PPN 12%</td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name">{{ quotation.price.ppn }}</td>
+            </tr>
+            <tr class="align-middle">
+              <td scope="row" class="table-col table-number"></td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name">Grand Total</td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name">{{ quotation.price.grandTotal }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-else class="add-service">
+        <div class="form-group col-12 mx-3">
+          <div class="row">
+            <div class="col-11">
+              <div class="row">
+                <div class="col-4">
+                  <label for="">Service Name</label>
+                </div>
+                <div class="col-3">
+                  <label for="">Quantity</label>
+                </div>
+                <div class="col-3">
+                  <label for="">Unit Price</label>
+                </div>
+                <div class="col-2">
+                  <label for="">Total Price</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-1">
+              <div class="button-placeholder"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-12 mx-3">
+          <div v-for="(service, serviceIndex) in quotation.services" :key="serviceIndex" class="list row">
+            <div class="col-11">
+              <div class="row">
+                <div class="col-4">
+                  <input type="text" class="form-control mt-2" v-model="service.service" placeholder="Service Name">
+                </div>
+                <div class="col-3">
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="service.quantity"
+                    @input="selectService(serviceIndex, service)">
+                </div>
+                <div class="col-3">
+                  <input type="number" class="form-control mt-2" placeholder="Unit Price"
+                    v-model="service.unitPriceSell" @change="selectService(serviceIndex, service)">
+                </div>
+                <div class="col-2">
+                  <input type="number" class="form-control mt-2" placeholder="Total Price"
+                    v-model="service.totalPrice" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="col-1">
+              <button type="button" class="btn btn-outline-danger" @click="removeService(serviceIndex)"><i
+                  class="bi bi-trash3"></i></button>
+            </div>
+          </div>
+          <div class="add-btn mt-3">
+            <button type="button" class="btn btn-outline-dark" @click="addService">
+              <i class="bi bi-plus-lg"></i>
+              <span class="mx-2">Add Service</span>
             </button>
           </div>
         </div>
@@ -279,7 +385,13 @@ onBeforeMount(() => {
   if (!quotation.value) quotationStore.$resetQuotation()
 })
 
-const amount = computed(() => quotation.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
+const amount = computed(() => {
+  if (quotation.value.project.type === 'Spareparts') {
+    return quotation.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0)
+  } else {
+    return quotation.value.services.reduce((sum, item) => sum + item.totalPrice, 0)
+  }
+})
 
 const searchSparepart = (search) => {
   if (search !== '') quotationStore.getSpareparts({ page: 1, search })
@@ -297,6 +409,18 @@ const selectItem = (index, purchaseData, sparepartData) => {
   data.totalPrice = data.quantity * data.unitPriceSell
 
   quotation.value.spareparts.splice(index, 1, data)
+  updatePrice()
+}
+
+const selectService = (index, serviceData) => {
+  const data = { ...serviceData }
+  data.totalPrice = data.quantity * data.unitPriceSell
+
+  quotation.value.services.splice(index, 1, data)
+  updatePrice()
+}
+
+const updatePrice = () => {
   quotation.value.price.amount = amount.value
   quotation.value.price.subtotal = amount.value - quotation.value.price.discount
   const ppn = quotation.value.price.subtotal * 11 / 100
@@ -315,8 +439,24 @@ const addSparepart = () => {
     stock: ''
   })
 }
+
+const addService = () => {
+  quotation.value.services.push({
+    service: '',
+    quantity: 0,
+    unitPriceSell: 0,
+    totalPrice: 0
+  })
+}
+
 const removeSparepart = (index) => {
   quotation.value.spareparts.splice(index, 1)
+  updatePrice()
+}
+
+const removeService = (index) => {
+  quotation.value.services.splice(index, 1)
+  updatePrice()
 }
 </script>
 
@@ -336,7 +476,8 @@ $secondary-color: rgb(98, 98, 98);
   margin: 2% 0%;
 }
 
-.sparepart {
+.sparepart,
+.service {
   .list {
     display: flex;
     align-items: flex-end;
@@ -352,7 +493,6 @@ $secondary-color: rgb(98, 98, 98);
     color: white;
   }
 }
-
 
 .upper,
 .lower {

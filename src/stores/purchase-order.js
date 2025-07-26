@@ -9,7 +9,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapPurchaseOrder (data) {
+  function mapPurchaseOrder(data) {
     return {
       id: data?.id || '',
       status: data?.status || [],
@@ -46,13 +46,21 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
       },
       notes: data?.notes || '',
       downPayment: data?.down_payment || 0,
+      version: data?.version || 0,
       spareparts: (data?.spareparts || []).map(sparepart => ({
+        id: sparepart?.sparepart_id || '', // Add sparepart ID
         sparepartName: sparepart?.sparepart_name || '',
         sparepartNumber: sparepart?.sparepart_number || '',
         quantity: sparepart?.quantity || 0,
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
+      })),
+      services: (data?.services || []).map(service => ({
+        service: service?.service || '',
+        quantity: service?.quantity || 0,
+        unitPriceSell: service?.unit_price_sell || 0,
+        totalPrice: service?.total_price || 0
       }))
     }
   }
@@ -60,7 +68,21 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   async function getAllPurchaseOrders(param) {
     isLoading.value = true
     const { data } = await purchaseOrderApi.getAllPurchaseOrder(param)
-    purchaseOrders.value = data.data.map(mapPurchaseOrder)
+    // Group purchase orders by purchase order number
+    const grouped = data.data.reduce((acc, po) => {
+      const key = po.purchase_order.purchase_order_number
+      if (!acc[key]) {
+        acc[key] = []
+      }
+      acc[key].push(po)
+      return acc
+    }, {})
+
+    purchaseOrders.value = Object.entries(grouped).map(([purchaseOrderNumber, versions]) => ({
+      purchaseOrderNumber,
+      versions: versions.map(mapPurchaseOrder)
+    }))
+
     paginationData.value = data
     isLoading.value = false
   }
@@ -82,7 +104,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     await purchaseOrderApi.addPurchaseOrder(purchaseOrder)
   }
 
-  async function setPurchaseOrder (selectedPurchaseOrder) {
+  async function setPurchaseOrder(selectedPurchaseOrder) {
     purchaseOrder.value = selectedPurchaseOrder
   }
 
@@ -94,43 +116,43 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     await purchaseOrderApi.deletePurchaseOrder(id)
   }
 
-  async function processToProformaInvoice (id) {
+  async function processToProformaInvoice(id) {
     const response = await purchaseOrderApi.processToProformaInvoice(id)
   }
 
-  async function updateStatus (id, status) {
+  async function updateStatus(id, status) {
     const response = await purchaseOrderApi.updateStatusPurchaseOrder(id, { status })
   }
 
-  async function $resetPurchaseOrder () {
+  async function $resetPurchaseOrder() {
     purchaseOrder.value = mapPurchaseOrder()
   }
 
-  async function fullPaid (id) {
+  async function fullPaid(id) {
     const response = await purchaseOrderApi.fullPaid(id)
   }
 
-  async function ready (id) {
+  async function ready(id) {
     const response = await purchaseOrderApi.ready(id)
   }
 
-  async function release (id, workOrder) {
+  async function release(id, workOrder) {
     const response = await purchaseOrderApi.release(id, workOrder)
   }
 
-  async function done (id) {
+  async function done(id) {
     const response = await purchaseOrderApi.done(id)
   }
 
-  async function returnPurchaseOrder (id) {
-    const response = await purchaseOrderApi.returnPurchaseOrder(id)
+  async function returnPurchaseOrder(id, returnedItems) {
+    const response = await purchaseOrderApi.returnPurchaseOrder(id, returnedItems)
   }
 
-  async function approveReturn (id) {
+  async function approveReturn(id) {
     const response = await purchaseOrderApi.approveReturn(id)
   }
 
-  async function rejectReturn (id) {
+  async function rejectReturn(id) {
     const response = await purchaseOrderApi.rejectReturn(id)
   }
 

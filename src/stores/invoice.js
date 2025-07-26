@@ -8,10 +8,11 @@ export const useInvoiceStore = defineStore('invoice', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapInvoice (data) {
+  function mapInvoice(data) {
     return {
       id: data?.id || '',
       currentStatus: data?.current_status || '',
+      version: data?.version || 0,
       purchaseOrder: {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
@@ -50,6 +51,12 @@ export const useInvoiceStore = defineStore('invoice', () => {
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
+      })),
+      services: (data?.services || []).map(service => ({
+        service: service?.service || '',
+        quantity: service?.quantity || 0,
+        unitPriceSell: service?.unit_price_sell || 0,
+        totalPrice: service?.total_price || 0
       }))
     }
   }
@@ -57,13 +64,28 @@ export const useInvoiceStore = defineStore('invoice', () => {
   async function getAllInvoices(param) {
     isLoading.value = true
     const { data } = await invoiceApi.getAllInvoice(param)
-    invoices.value = data.data.map(mapInvoice)
+
+    // Group by invoice number
+    const grouped = {}
+    data.data.forEach(item => {
+      const key = item.invoice.invoice_number
+      if (!grouped[key]) {
+        grouped[key] = {
+          invoiceNumber: key,
+          versions: []
+        }
+      }
+      grouped[key].versions.push(mapInvoice(item))
+    })
+
+    invoices.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
   }
 
   async function getInvoice(id) {
     const { data } = await invoiceApi.getInvoiceById(id)
+    console.log("data :", data)
     invoice.value = mapInvoice(data)
   }
 
@@ -71,7 +93,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     await invoiceApi.addInvoice(invoice)
   }
 
-  async function setInvoice (selectedInvoice) {
+  async function setInvoice(selectedInvoice) {
     invoice.value = selectedInvoice
   }
 
@@ -83,7 +105,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     await invoiceApi.deleteInvoice(id)
   }
 
-  async function $resetInvoice () {
+  async function $resetInvoice() {
     invoice.value = mapInvoice()
   }
 

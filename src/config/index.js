@@ -61,7 +61,7 @@ const menuMapping = {
   },
   purchase_order_return: {
     name: 'Purchase Order Return',
-    path: '/purchase-order/:id/return'
+    path: '/purchase-order/return/:id'
   },
   purchase_order_detail: {
     name: 'Detail PO',
