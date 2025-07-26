@@ -19,10 +19,31 @@
           </div>
         </div>
         <div v-else class="list">
-          <ItemComponent v-for="(invoice, index) in invoices" :key="index" :number="index + paginationData.from"
-            :item="invoice" :first-section="invoice.invoice.invoiceNumber" :second-section="invoice.invoice.date"
-            :current-status="invoice.currentStatus" :third-section="invoice.invoice.type"
-            @click="goToDetail(invoice)" />
+          <div v-for="(allInv, index) in invoices" :key="index">
+            <template v-if="allInv.versions.length > 1">
+              <ItemComponent :number="index + paginationData.from"
+                :item="allInv.versions[allInv.versions.length - 1]"
+                :first-section="allInv.versions[allInv.versions.length - 1].invoice.invoiceNumber"
+                :second-section="allInv.versions[allInv.versions.length - 1].invoice.date"
+                :third-section="allInv.versions[allInv.versions.length - 1].invoice.type" wideRow
+                :current-status="allInv.versions[allInv.versions.length - 1].currentStatus"
+                data-bs-toggle="collapse" :data-bs-target="'#collapsChild' + index" />
+              <div class="collapse" :id="'collapsChild' + index">
+                <div v-for="(inv, versionIndex) in allInv.versions" :key="versionIndex">
+                  <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)" :item="inv"
+                    :first-section="inv.invoice.invoiceNumber" :second-section="inv.invoice.date"
+                    :third-section="inv.invoice.type" :current-status="inv.currentStatus" class="item-child" wideRow
+                    @click="goToDetail(inv)"
+                    :class="{ disabled: versionIndex != (allInv.versions.length - 1) }" />
+                </div>
+              </div>
+            </template>
+            <ItemComponent v-else :number="index + paginationData.from" :item="allInv.versions[0]"
+              :first-section="allInv.versions[0].invoice.invoiceNumber"
+              :second-section="allInv.versions[0].invoice.date"
+              :third-section="allInv.versions[0].invoice.type" wideRow
+              :current-status="allInv.versions[0].currentStatus" @click="goToDetail(allInv.versions[0])" />
+          </div>
         </div>
       </div>
     </div>
@@ -92,4 +113,13 @@ const goToDetail = async (invoice) => {
 
 <style lang="scss" scoped>
 @use '@/assets/css/page.scss';
+
+.item-child {
+  margin-left: 10%;
+}
+
+.disabled {
+  background-color: rgb(219, 219, 219);
+  border-color: transparent;
+}
 </style>

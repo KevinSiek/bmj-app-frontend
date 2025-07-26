@@ -8,11 +8,12 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapProformaInvoice (data) {
+  function mapProformaInvoice(data) {
     return {
       id: data?.id || '',
       status: data?.status || [],
       currentStatus: data?.current_status || '',
+      version: data?.version || 0,
       project: {
         proformaInvoiceNumber: data?.project?.proforma_invoice_number || '',
         purchaseOrderNumber: data?.project?.purchase_order_number || '',
@@ -48,6 +49,12 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
+      })),
+      services: (data?.services || []).map(service => ({
+        service: service?.service || '',
+        quantity: service?.quantity || 0,
+        unitPriceSell: service?.unit_price_sell || 0,
+        totalPrice: service?.total_price || 0
       }))
     }
   }
@@ -55,7 +62,19 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
   async function getAllProformaInvoices(param) {
     isLoading.value = true
     const { data } = await proformaInvoiceApi.getAllProformaInvoice(param)
-    proformaInvoices.value = data.data.map(mapProformaInvoice)
+    // Group by proforma invoice number
+    const grouped = {}
+    data.data.forEach(item => {
+      const key = item.project.proforma_invoice_number
+      if (!grouped[key]) {
+        grouped[key] = {
+          proformaInvoiceNumber: key,
+          versions: []
+        }
+      }
+      grouped[key].versions.push(mapProformaInvoice(item))
+    })
+    proformaInvoices.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
   }
@@ -69,7 +88,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     await proformaInvoiceApi.addProformaInvoice(proformaInvoice.value)
   }
 
-  async function setProformaInvoice (selectedProformaInvoice) {
+  async function setProformaInvoice(selectedProformaInvoice) {
     proformaInvoice.value = selectedProformaInvoice
   }
 
@@ -82,15 +101,15 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     await proformaInvoiceApi.deleteProformaInvoice(id)
   }
 
-  async function processToInvoice (id) {
+  async function processToInvoice(id) {
     const response = await proformaInvoiceApi.processToInvoice(id)
   }
 
-  async function dpPaid (id) {
+  async function dpPaid(id) {
     const response = await proformaInvoiceApi.dpPaid(id)
   }
 
-  async function $resetProformaInvoice () {
+  async function $resetProformaInvoice() {
     proformaInvoice.value = mapProformaInvoice()
   }
 

@@ -92,11 +92,11 @@
         </div>
       </div>
       <div class="my-2">
-        <div class="title">Sparepart</div>
+        <div class="title">{{ purchaseOrder.purchaseOrder.type }}</div>
         <div class="table-placeholder">
           <table class="table table-hover">
             <thead>
-              <tr class="align-middle">
+              <tr class="align-middle" v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'">
                 <th scope="col-1" class="table-number">NO</th>
                 <th scope="col" class="table-name">DESCRIPTION</th>
                 <th scope="col" class="table-name">PART NUMBER</th>
@@ -106,9 +106,16 @@
                 <th scope="col" class="table-name">AMOUNT</th>
                 <th scope="col" class="table-name">STATUS</th>
               </tr>
+              <tr class="align-middle" v-else>
+                <th scope="col-1" class="table-number">NO</th>
+                <th scope="col" class="table-name">SERVICE</th>
+                <th scope="col" class="table-name">QUANTITY</th>
+                <th scope="col" class="table-name">UNIT PRICE</th>
+                <th scope="col" class="table-name">TOTAL PRICE</th>
+              </tr>
             </thead>
-            <tbody class="table-group-divider">
-              <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="index" class="align-middle borderless">
+            <tbody class="table-group-divider" v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'">
+              <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="sparepart.id" class="align-middle borderless">
                 <td scope="row" class="table-col table-number">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
                     {{ index + 1 }}
@@ -151,16 +158,45 @@
                 </td>
               </tr>
             </tbody>
+            <tbody class="table-group-divider" v-else>
+              <tr v-for="(service, index) in purchaseOrder.services" :key="index" class="align-middle borderless">
+                <td scope="row" class="table-col table-number">
+                  <div :class="{ space: index === purchaseOrder.services.length - 1 }">
+                    {{ index + 1 }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.services.length - 1 }">
+                    {{ service.service }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.services.length - 1 }">
+                    {{ service.quantity }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.services.length - 1 }">
+                    {{ service.unitPriceSell }}
+                  </div>
+                </td>
+                <td class="table-col table-name">
+                  <div :class="{ space: index === purchaseOrder.services.length - 1 }">
+                    {{ service.totalPrice }}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
             <tbody>
               <tr class="align-middle">
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
               </tr>
             </tbody>
             <tbody>
@@ -169,70 +205,84 @@
                 <td class="table-col table-part-number">Amount</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.amount }}</td>
+                <td v-else class="table-col table-name">{{ purchaseOrder.price.amount }}</td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.amount }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">2</td>
                 <td class="table-col table-name">Less: Discount</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.discount }}</td>
+                <td v-else class="table-col table-name">{{ purchaseOrder.price.discount }}</td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.discount }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">3</td>
                 <td class="table-col table-name">Sub Total (1-2)</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.subtotal }}</td>
+                <td v-else class="table-col table-name">{{ purchaseOrder.price.subtotal }}</td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.subtotal }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">4</td>
                 <td class="table-col table-name">Less: Advance Payment</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.advancePayment }}</td>
+                <td v-else class="table-col table-name">{{ purchaseOrder.price.advancePayment }}</td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.advancePayment }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">5</td>
                 <td class="table-col table-name">Total (3-4)</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.total }}</td>
+                <td v-else class="table-col table-name">{{ purchaseOrder.price.total }}</td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.total }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">6</td>
                 <td class="table-col table-name">VAT</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.vat }}</td>
+                <td v-else class="table-col table-name">{{ purchaseOrder.price.vat }}</td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.vat }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">7</td>
                 <td class="table-col table-name">TOTAL AMOUNT(5+6)</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.totalAmount }}</td>
+                <td v-else class="table-col table-name">{{ purchaseOrder.price.totalAmount }}</td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.totalAmount }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
             </tbody>
           </table>
@@ -269,7 +319,7 @@
       <button v-if="isShowRelease" type="button" class="btn btn-process mx-3" @click="doRelease">Release</button>
       <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setToDoneConfirmation">Done</button>
       <button v-if="isShowReturn" type="button" class="btn btn-process mx-3"
-        @click="setToReturnConfirmation">Return</button>
+        @click="doReturn">Return</button>
     </div>
   </div>
 </template>
@@ -377,6 +427,14 @@ const doRelease = async () => {
   await router.push(`${menuConfig.work_order.path}/add/${route.params.id}`)
 }
 
+const doReturn = async () => {
+  if (purchaseOrder.value.purchaseOrder.type === common.type.service) {
+    modalStore.openMessageModal(common.modal.failed, "Service quotations cannot be returned")
+    return
+  }
+  await router.push(`${menuConfig.purchase_order.path}/return/${route.params.id}`)
+}
+
 const setToDone = async () => {
   try {
     await purchaseOrderStore.done(route.params.id)
@@ -397,7 +455,7 @@ const setToReturn = async () => {
   }
 }
 const setToReturnConfirmation = () => {
-  modalStore.openConfirmationModal('to return Purchase Order ?', 'Purchase Order Returned', setToReturn)
+  modalStore.openConfirmationModal('to return Purchase Order ? 2', 'Purchase Order Returned', setToReturn)
 }
 
 const download = () => {

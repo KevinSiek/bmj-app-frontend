@@ -19,9 +19,31 @@
           </div>
         </div>
         <div v-else class="list">
-          <ItemComponent v-for="(pi, index) in proformaInvoices" :key="index" :number="index + paginationData.from"
-            :item="pi" :first-section="pi.project.proformaInvoiceNumber" :second-section="pi.project.date"
-            :third-section="pi.project.type" :current-status="pi.currentStatus" @click="goToDetail(pi)" />
+          <div v-for="(allPI, index) in proformaInvoices" :key="index">
+            <template v-if="allPI.versions.length > 1">
+              <ItemComponent :number="index + paginationData.from"
+                :item="allPI.versions[allPI.versions.length - 1]"
+                :first-section="allPI.versions[allPI.versions.length - 1].project.proformaInvoiceNumber"
+                :second-section="allPI.versions[allPI.versions.length - 1].project.date"
+                :third-section="allPI.versions[allPI.versions.length - 1].project.type" wideRow
+                :current-status="allPI.versions[allPI.versions.length - 1].currentStatus"
+                data-bs-toggle="collapse" :data-bs-target="'#collapsChild' + index" />
+              <div class="collapse" :id="'collapsChild' + index">
+                <div v-for="(pi, versionIndex) in allPI.versions" :key="versionIndex">
+                  <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)" :item="pi"
+                    :first-section="pi.project.proformaInvoiceNumber" :second-section="pi.project.date"
+                    :third-section="pi.project.type" :current-status="pi.currentStatus" class="item-child" wideRow
+                    @click="goToDetail(pi)"
+                    :class="{ disabled: versionIndex != (allPI.versions.length - 1) }" />
+                </div>
+              </div>
+            </template>
+            <ItemComponent v-else :number="index + paginationData.from" :item="allPI.versions[0]"
+              :first-section="allPI.versions[0].project.proformaInvoiceNumber"
+              :second-section="allPI.versions[0].project.date"
+              :third-section="allPI.versions[0].project.type" wideRow
+              :current-status="allPI.versions[0].currentStatus" @click="goToDetail(allPI.versions[0])" />
+          </div>
         </div>
       </div>
     </div>
@@ -91,4 +113,13 @@ const goToDetail = async (pi) => {
 
 <style lang="scss" scoped>
 @use '@/assets/css/page.scss';
+
+.item-child {
+  margin-left: 10%;
+}
+
+.disabled {
+  background-color: rgb(219, 219, 219);
+  border-color: transparent;
+}
 </style>

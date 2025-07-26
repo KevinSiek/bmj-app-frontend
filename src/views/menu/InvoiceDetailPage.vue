@@ -111,11 +111,11 @@
         </div>
       </div>
       <div class="my-2">
-        <div class="title">Sparepart</div>
+        <div class="title">{{ invoice.purchaseOrder.purchaseOrderType }}</div>
         <div class="table-placeholder">
           <table class="table table-hover">
             <thead>
-              <tr class="align-middle">
+              <tr class="align-middle" v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'">
                 <th scope="col-1" class="table-number">NO</th>
                 <th scope="col" class="table-name">PART NAME</th>
                 <th scope="col" class="table-part-number">PART NUMBER</th>
@@ -125,47 +125,65 @@
                 <th scope="col" class="table-name">TOTAL PRICE</th>
                 <th scope="col" class="table-name">STOCK</th>
               </tr>
+              <tr class="align-middle" v-else>
+                <th scope="col-1" class="table-number">NO</th>
+                <th scope="col" class="table-name">SERVICE</th>
+                <th scope="col" class="table-name">QUANTITY</th>
+                <th scope="col" class="table-name">UNIT PRICE</th>
+                <th scope="col" class="table-name">TOTAL PRICE</th>
+              </tr>
             </thead>
-            <tbody class="table-group-divider">
+            <tbody class="table-group-divider" v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'">
               <tr v-for="(sparepart, index) in invoice.spareparts" :key="index" class="align-middle">
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name">{{ sparepart.unit }}</td>
+                <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
                 <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
                 <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
                 <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
+            </tbody>
+            <tbody class="table-group-divider" v-else>
+              <tr v-for="(service, index) in invoice.services" :key="index" class="align-middle">
+                <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
+                <td class="table-col table-name">{{ service.service }}</td>
+                <td class="table-col table-name">{{ service.quantity }}</td>
+                <td class="table-col table-name">{{ service.unitPriceSell }}</td>
+                <td class="table-col table-name">{{ service.totalPrice }}</td>
+              </tr>
+            </tbody>
+            <tbody>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>
                 <td class="table-col table-part-number">SubTotal</td>
                 <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name">{{ invoice.price.subtotal }}</td>
-                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">2</td>
                 <td class="table-col table-name">PPN 12%</td>
                 <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name">{{ invoice.price.ppn }}</td>
-                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">3</td>
                 <td class="table-col table-name">Grand Total</td>
                 <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name">{{ invoice.price.grandTotal }}</td>
-                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
             </tbody>
           </table>
