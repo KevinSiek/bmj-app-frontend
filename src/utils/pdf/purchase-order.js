@@ -11,7 +11,7 @@ const data = {
   purchaseOrder: {
     purchaseOrderNumber: 'PO123456',
     purchaseOrderDate: '2023-09-01',
-    type: 'Spareparts'
+    type: 'Service'
   },
   proformaInvoice: {
     proformaInvoiceNumber: 'PI123456',
@@ -201,7 +201,7 @@ const createPdf = () => {
 
   const serviceTable = {
     table: {
-      widths: [20, 200, 20, 100, 100],
+      widths: [20, 200, 20, 115, 115],
       body: [
         [
           { text: 'No', style: 'tableHeader', alignment: 'center' },
