@@ -27,6 +27,10 @@ const menuMapping = {
     name: 'Profile',
     path: '/profile'
   },
+  general: {
+    name: 'General',
+    path: '/general'
+  },
   dashboard: {
     name: 'Dashboard',
     path: '/dashboard'
@@ -256,7 +260,8 @@ const api = {
   work_order: '/api/work-order',
   employee: '/api/employee',
   purchase: '/api/buy',
-  delivery_order: '/api/delivery-order'
+  delivery_order: '/api/delivery-order',
+  general: '/api/general'
 }
 
 export {

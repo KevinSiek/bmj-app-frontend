@@ -51,6 +51,7 @@ const DeliveryOrderAddPage = () => import('@/views/menu/DeliveryOrderAddPage.vue
 const DeliveryOrderDetailPage = () => import('@/views/menu/DeliveryOrderDetailPage.vue')
 const ReturnPage = () => import('@/views/menu/ReturnPage.vue')
 const ReturnDetailPage = () => import('@/views/menu/ReturnDetailPage.vue')
+const GeneralPage = () => import('@/views/menu/GeneralPage.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -112,6 +113,11 @@ const router = createRouter({
         requireAuth: true,
       },
       children: [
+        {
+          path: menuConfig.general.path,
+          name: menuConfig.general.name,
+          component: GeneralPage
+        },
         {
           path: menuConfig.profile.path,
           name: menuConfig.profile.name,

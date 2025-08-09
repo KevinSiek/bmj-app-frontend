@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import NavBarDesktopComponent from '@/components/NavbarDesktop.vue'
@@ -39,14 +39,20 @@ import ProfileComponent from '@/components/ProfileBar.vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore } from '@/stores/main'
 import { useTrackStore } from '@/stores/track'
+import { useGeneralStore } from '@/stores/general'
 
 const TrackNav = defineAsyncComponent(() => import('@/components/TrackNav.vue'))
 
 const authStore = useAuthStore()
 const mainStore = useMainStore()
+const generalStore = useGeneralStore()
 const router = useRouter()
 const trackStore = useTrackStore()
 const { isMobile } = storeToRefs(mainStore)
+
+onMounted(() => {
+  generalStore.getGeneralData()
+})
 
 const goBack = () => {
   if (router) router.back()
