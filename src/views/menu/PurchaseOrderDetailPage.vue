@@ -115,7 +115,8 @@
               </tr>
             </thead>
             <tbody class="table-group-divider" v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'">
-              <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="sparepart.id" class="align-middle borderless">
+              <tr v-for="(sparepart, index) in purchaseOrder.spareparts" :key="sparepart.id"
+                class="align-middle borderless">
                 <td scope="row" class="table-col table-number">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
                     {{ index + 1 }}
@@ -207,7 +208,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.amount }}</td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
+                  purchaseOrder.price.amount }}</td>
                 <td v-else class="table-col table-name">{{ purchaseOrder.price.amount }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
@@ -219,7 +221,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.discount }}</td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
+                  purchaseOrder.price.discount }}</td>
                 <td v-else class="table-col table-name">{{ purchaseOrder.price.discount }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
@@ -231,7 +234,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.subtotal }}</td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
+                  purchaseOrder.price.subtotal }}</td>
                 <td v-else class="table-col table-name">{{ purchaseOrder.price.subtotal }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
@@ -243,7 +247,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.advancePayment }}</td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
+                  purchaseOrder.price.advancePayment }}</td>
                 <td v-else class="table-col table-name">{{ purchaseOrder.price.advancePayment }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
@@ -255,7 +260,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.total }}</td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
+                  purchaseOrder.price.total }}</td>
                 <td v-else class="table-col table-name">{{ purchaseOrder.price.total }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
@@ -267,7 +273,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.vat }}</td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
+                  purchaseOrder.price.vat }}</td>
                 <td v-else class="table-col table-name">{{ purchaseOrder.price.vat }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
@@ -279,7 +286,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{ purchaseOrder.price.totalAmount }}</td>
+                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
+                  purchaseOrder.price.totalAmount }}</td>
                 <td v-else class="table-col table-name">{{ purchaseOrder.price.totalAmount }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
@@ -310,16 +318,21 @@
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
     <div class="right">
-      <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation">Full
+      <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation"
+        :disabled="isProcessing">Full
         Paid</button>
-      <button v-if="isShowReady" type="button" class="btn btn-process mx-3" @click="setToReadyConfirmation">Sparepart
+      <button v-if="isShowReady" type="button" class="btn btn-process mx-3" @click="setToReadyConfirmation"
+        :disabled="isProcessing">Sparepart
         Ready</button>
-      <button v-if="isShowCreatePi" type="button" class="btn btn-process mx-3" @click="createPiConfirmation">Create
+      <button v-if="isShowCreatePi" type="button" class="btn btn-process mx-3" @click="createPiConfirmation"
+        :disabled="isProcessing">Create
         PI</button>
-      <button v-if="isShowRelease" type="button" class="btn btn-process mx-3" @click="doRelease">Release</button>
-      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setToDoneConfirmation">Done</button>
-      <button v-if="isShowReturn" type="button" class="btn btn-process mx-3"
-        @click="doReturn">Return</button>
+      <button v-if="isShowRelease" type="button" class="btn btn-process mx-3" @click="doRelease"
+        :disabled="isProcessing">Release</button>
+      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setToDoneConfirmation"
+        :disabled="isProcessing">Done</button>
+      <button v-if="isShowReturn" type="button" class="btn btn-process mx-3" @click="doReturn"
+        :disabled="isProcessing">Return</button>
     </div>
   </div>
 </template>
@@ -327,7 +340,7 @@
 <script setup>
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { common, menuMapping as menuConfig } from '@/config'
 import { useRole } from '@/composeable/useRole'
@@ -343,6 +356,8 @@ const modalStore = useModalStore()
 const trackStore = useTrackStore()
 
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
+
+const isProcessing = ref(false)
 
 const isShowFullPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
@@ -385,22 +400,30 @@ onMounted(async () => {
 })
 
 const fullPaid = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseOrderStore.fullPaid(route.params.id)
     fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const setFullPaidConfirmation = () => {
   modalStore.openConfirmationModal('Purchase Order has been Paid ?', 'Purchase Order has been paid', fullPaid)
 }
 const setToReady = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseOrderStore.ready(route.params.id)
     fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const setToReadyConfirmation = () => {
@@ -408,11 +431,15 @@ const setToReadyConfirmation = () => {
 }
 
 const createProformaInvoice = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseOrderStore.processToProformaInvoice(route.params.id)
     await router.push(`${menuConfig.proforma_invoice.path}`)
   } catch (error) {
     throw error.data.error
+  } finally {
+    isProcessing.value = false
   }
 }
 const createPiConfirmation = () => {
@@ -436,26 +463,19 @@ const doReturn = async () => {
 }
 
 const setToDone = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseOrderStore.done(route.params.id)
     fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const setToDoneConfirmation = () => {
   modalStore.openConfirmationModal('Purchase Order has been Done ?', 'Purchase Order Done', setToDone)
-}
-const setToReturn = async () => {
-  try {
-    await purchaseOrderStore.returnPurchaseOrder(route.params.id)
-    fetchData()
-  } catch (error) {
-    throw error.data.error || error.data.message
-  }
-}
-const setToReturnConfirmation = () => {
-  modalStore.openConfirmationModal('to return Purchase Order ? 2', 'Purchase Order Returned', setToReturn)
 }
 
 const download = () => {

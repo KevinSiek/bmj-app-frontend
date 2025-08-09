@@ -57,7 +57,8 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="doReleaseConfirmation">Release</button>
+      <button type="button" class="btn btn-process" @click="doReleaseConfirmation"
+        :disabled="isProcessing">Release</button>
     </div>
   </div>
 </template>
@@ -67,7 +68,7 @@ import { useModalStore } from '@/stores/modal'
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { useDeliveryOrderStore } from '@/stores/delivery-order'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { menuMapping as menuConfig } from '@/config'
 
@@ -80,19 +81,22 @@ const modalStore = useModalStore()
 const { deliveryOrder } = storeToRefs(deliveryOrderStore)
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
+const isProcessing = ref(false)
+
 onBeforeMount(() => {
   if (!deliveryOrder.value) deliveryOrderStore.$resetDeliveryOrder()
 })
-onMounted(() => {
-  // workOrderStore.getWorkOrder(route.params.id)
-})
 
 const doRelease = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseOrderStore.release(route.params.id, deliveryOrder.value)
     router.push(menuConfig.delivery_order.path)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const doReleaseConfirmation = () => {

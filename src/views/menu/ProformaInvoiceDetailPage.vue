@@ -178,7 +178,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.amount }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{
+                  proformaInvoice.price.amount }}</td>
                 <td v-else class="table-col table-name">{{ proformaInvoice.price.amount }}</td>
               </tr>
               <tr class="align-middle">
@@ -187,7 +188,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.discount }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{
+                  proformaInvoice.price.discount }}</td>
                 <td v-else class="table-col table-name">{{ proformaInvoice.price.discount }}</td>
               </tr>
               <tr class="align-middle">
@@ -196,7 +198,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.subtotal }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{
+                  proformaInvoice.price.subtotal }}</td>
                 <td v-else class="table-col table-name">{{ proformaInvoice.price.subtotal }}</td>
               </tr>
               <tr class="align-middle">
@@ -205,7 +208,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.advancePayment }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{
+                  proformaInvoice.price.advancePayment }}</td>
                 <td v-else class="table-col table-name">{{ proformaInvoice.price.advancePayment }}</td>
               </tr>
               <tr class="align-middle">
@@ -214,7 +218,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.total }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{
+                  proformaInvoice.price.total }}</td>
                 <td v-else class="table-col table-name">{{ proformaInvoice.price.total }}</td>
               </tr>
               <tr class="align-middle">
@@ -223,7 +228,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.vat }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{
+                  proformaInvoice.price.vat }}</td>
                 <td v-else class="table-col table-name">{{ proformaInvoice.price.vat }}</td>
               </tr>
               <tr class="align-middle">
@@ -232,7 +238,8 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{ proformaInvoice.price.totalAmount }}</td>
+                <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name">{{
+                  proformaInvoice.price.totalAmount }}</td>
                 <td v-else class="table-col table-name">{{ proformaInvoice.price.totalAmount }}</td>
               </tr>
             </tbody>
@@ -262,9 +269,11 @@
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
     <div class="right">
-      <button v-if="isDPPaid" type="button" class="btn btn-process mx-4" @click="paidDpConfirmation">DP
+      <button v-if="isDPPaid" type="button" class="btn btn-process mx-4" @click="paidDpConfirmation"
+        :disabled="isProcessing">DP
         Paid</button>
-      <button type="button" class="btn btn-process" @click="createInvoiceConfirmation">Create Invoice</button>
+      <button type="button" class="btn btn-process" @click="createInvoiceConfirmation" :disabled="isProcessing">Create
+        Invoice</button>
     </div>
   </div>
 </template>
@@ -277,7 +286,7 @@ import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
 import { useTrackStore } from '@/stores/track'
 import { createPdf } from '@/utils/pdf/proforma-invoice'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -289,6 +298,8 @@ const trackStore = useTrackStore()
 const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
 
 const { isRoleDirector, isRoleMarketing, isRoleInventory, isRoleFinance, isRoleService } = useRole()
+
+const isProcessing = ref(false)
 
 const isDPPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
@@ -311,11 +322,15 @@ const goToEdit = () => {
 }
 
 const paidDp = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await proformaInvoiceStore.dpPaid(route.params.id)
     await fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const paidDpConfirmation = () => {
@@ -323,10 +338,14 @@ const paidDpConfirmation = () => {
 }
 
 const createInvoice = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await proformaInvoiceStore.processToInvoice(route.params.id)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 

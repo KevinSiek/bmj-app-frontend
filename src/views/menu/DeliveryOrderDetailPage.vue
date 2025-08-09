@@ -175,7 +175,8 @@
     </div>
     <div class="right">
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
-      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation">Done</button>
+      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation"
+        :disabled="isProcessing">Done</button>
     </div>
   </div>
 </template>
@@ -187,7 +188,7 @@ import { useDeliveryOrderStore } from '@/stores/delivery-order'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { createPdf } from '@/utils/pdf/delivery-note'
 
@@ -199,6 +200,8 @@ const modalStore = useModalStore()
 
 const { deliveryOrder } = storeToRefs(deliveryOrderStore)
 const { isRoleDirector, isRoleInventory, isRoleService } = useRole()
+
+const isProcessing = ref(false)
 
 const isShowDone = computed(() =>
   (isRoleInventory.value || isRoleService.value || isRoleDirector.value) &&
@@ -219,11 +222,15 @@ const fetchData = async () => {
 }
 
 const done = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await deliveryOrderStore.process(route.params.id)
     await fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const setDoneConfirmation = () => {

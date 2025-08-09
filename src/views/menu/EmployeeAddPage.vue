@@ -24,7 +24,7 @@
     </form>
   </div>
   <div class="button">
-    <button type="submit" class="btn btn-update" @click="addEmployeeConfirmation">
+    <button type="submit" class="btn btn-update" @click="addEmployeeConfirmation" :disabled="isProcessing">
       Add Employee
     </button>
   </div>
@@ -35,7 +35,7 @@ import { menuMapping as menuConfig } from '@/config'
 import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { validatePassword } from '@/utils/form-util'
 
@@ -44,6 +44,8 @@ const modalStore = useModalStore()
 const employeeStore = useEmployeeStore()
 
 const { employee } = storeToRefs(employeeStore)
+
+const isProcessing = ref(false)
 
 const roles = [
   'Director',
@@ -58,11 +60,15 @@ onBeforeMount(() => {
 })
 
 const addEmployee = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await employeeStore.addEmployee()
     router.push(menuConfig.employee.path)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
   // if (validatePassword(employee.value.password, employee.value.password_confirmation)) {
   // }

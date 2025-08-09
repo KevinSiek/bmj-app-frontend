@@ -7,7 +7,8 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="editQuotationConfirmation">Edit Quotation</button>
+      <button type="button" class="btn btn-process" @click="editQuotationConfirmation" :disabled="isProcessing">Edit
+        Quotation</button>
     </div>
   </div>
 </template>
@@ -17,7 +18,7 @@ import { common, menuMapping as menuConfig } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuotationStore } from '@/stores/quotation'
 import { useModalStore } from '@/stores/modal'
-import { defineAsyncComponent, onMounted } from 'vue'
+import { defineAsyncComponent, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 const QuotationForm = defineAsyncComponent(() => import('@/components/quotation/QuotationForm.vue'))
 
@@ -28,16 +29,22 @@ const quotationStore = useQuotationStore()
 
 const { quotation } = storeToRefs(quotationStore)
 
+const isProcessing = ref(false)
+
 onMounted(() => {
   quotationStore.getQuotation(route.params.id)
 })
 
 const editQuotation = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await quotationStore.editQuotation()
     router.push(`${menuConfig.quotation.path}/${quotation.value.slug}`)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 

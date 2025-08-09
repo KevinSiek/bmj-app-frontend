@@ -8,7 +8,8 @@
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="processQuotationConfirmation">Create PO</button>
+      <button type="button" class="btn btn-process" @click="processQuotationConfirmation"
+        :disabled="isProcessing">Create PO</button>
     </div>
   </div>
 </template>
@@ -16,7 +17,7 @@
 <script setup>
 import { menuMapping as menuConfig, common } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
-import { defineAsyncComponent, onBeforeMount, onMounted } from 'vue'
+import { defineAsyncComponent, onBeforeMount, onMounted, ref } from 'vue'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import { useTrackStore } from '@/stores/track'
@@ -32,6 +33,8 @@ const modalStore = useModalStore()
 
 const { quotation } = storeToRefs(quotationStore)
 
+const isProcessing = ref(false)
+
 onBeforeMount(() => {
   if (!quotation.value) quotationStore.$resetQuotation()
 })
@@ -45,11 +48,15 @@ const goToEdit = () => {
 }
 
 const processQuotation = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await quotationStore.processQuotation(route.params.id)
     router.push(menuConfig.purchase_order)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 

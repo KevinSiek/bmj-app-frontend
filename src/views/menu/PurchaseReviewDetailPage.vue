@@ -43,13 +43,16 @@
   </div>
   <div class="button">
     <div class="right">
-      <button type="button" class="btn btn-danger mx-3" @click="rejectConfirmation">Reject</button>
+      <button type="button" class="btn btn-danger mx-3" @click="rejectConfirmation"
+        :disabled="isProcessing">Reject</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-needChange mx-3" @click="needChangeConfirmation">Need Change</button>
+      <button type="button" class="btn btn-needChange mx-3" @click="needChangeConfirmation"
+        :disabled="isProcessing">Need Change</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-success mx-3" @click="approveConfirmation">Approve</button>
+      <button type="button" class="btn btn-success mx-3" @click="approveConfirmation"
+        :disabled="isProcessing">Approve</button>
     </div>
   </div>
 </template>
@@ -58,7 +61,7 @@
 import { useModalStore } from '@/stores/modal'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -67,35 +70,49 @@ const modalStore = useModalStore()
 
 const { purchase } = storeToRefs(purchaseStore)
 
+const isProcessing = ref(false)
+
 onMounted(() => {
   purchaseStore.getPurchase(route.params.id)
 })
 
 const reject = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseStore.rejectPurchase(route.params.id)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const rejectConfirmation = () => {
   modalStore.openConfirmationModal('reject this purchase ?', 'Purchase has been Rejected', reject)
 }
 const needChange = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseStore.needChangePurchase(route.params.id)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const needChangeConfirmation = () => {
   modalStore.openConfirmationModal('this purchase need change ?', 'Purchase need to be changed', needChange)
 }
 const approve = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseStore.approvePurchase(route.params.id)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const approveConfirmation = () => {

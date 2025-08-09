@@ -43,7 +43,8 @@
   </div>
   <div class="button" v-if="purchase.status == common.status.approved">
     <div class="right">
-      <button type="button" class="btn btn-process" @click="receiveConfirmation">Receive</button>
+      <button type="button" class="btn btn-process" @click="receiveConfirmation"
+        :disabled="isProcessing">Receive</button>
     </div>
   </div>
 </template>
@@ -53,7 +54,7 @@ import { common } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -62,6 +63,8 @@ const modalStore = useModalStore()
 
 const { purchase } = storeToRefs(purchaseStore)
 
+const isProcessing = ref(false)
+
 onBeforeMount(() => {
   if (!purchase.value) purchaseStore.$resetPurchase()
 })
@@ -69,10 +72,14 @@ onMounted(() => {
   purchaseStore.getPurchase(route.params.id)
 })
 const receive = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseStore.receive(route.params.id)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const receiveConfirmation = () => {

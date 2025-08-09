@@ -4,11 +4,11 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit" @click="quotationStore.$resetQuotation" :disabled="isLoading">Reset
+      <button type="button" class="btn btn-edit" @click="quotationStore.$resetQuotation" :disabled="isProcessing">Reset
         Value</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="addQuotationConfirmation" :disabled="isLoading">Add
+      <button type="button" class="btn btn-process" @click="addQuotationConfirmation" :disabled="isProcessing">Add
         Quotation</button>
     </div>
   </div>
@@ -26,19 +26,18 @@ const router = useRouter()
 const modalStore = useModalStore()
 const quotationStore = useQuotationStore()
 
-const isLoading = ref(false)
+const isProcessing = ref(false)
 
 const addQuotation = async () => {
-  if (isLoading.value) return
+  if (isProcessing.value) return
   try {
-    isLoading.value = true
+    isProcessing.value = true
     await quotationStore.addQuotation()
     router.push(menuConfig.quotation.path)
   } catch (error) {
     throw error.data.error || error.data.message
-  }
-  finally {
-    isLoading.value = false
+  } finally {
+    isProcessing.value = false
   }
 }
 

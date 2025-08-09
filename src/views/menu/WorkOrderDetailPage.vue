@@ -252,7 +252,8 @@
     </div>
     <div class="right">
       <button type="button" class="btn btn-process mx-3">Print</button>
-      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation">Done</button>
+      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation"
+        :disabled="isProcessing">Done</button>
     </div>
   </div>
 </template>
@@ -264,7 +265,7 @@ import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -275,6 +276,8 @@ const modalStore = useModalStore()
 
 const { workOrder } = storeToRefs(workOrderStore)
 const { isRoleDirector, isRoleInventory, isRoleService } = useRole()
+
+const isProcessing = ref(false)
 
 const isShowDone = computed(() =>
   (isRoleInventory.value || isRoleService.value || isRoleDirector.value) &&
@@ -295,13 +298,18 @@ const fetchData = async () => {
 }
 
 const done = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await workOrderStore.process(route.params.id)
     await fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
+
 const setDoneConfirmation = () => {
   modalStore.openConfirmationModal('to this Puchase Order is Done ?', 'Purchase Order Done', done)
 }

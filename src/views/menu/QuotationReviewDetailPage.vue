@@ -149,13 +149,16 @@
   </div>
   <div class="button">
     <div class="right">
-      <button type="button" class="btn btn-danger" @click="rejectQuotationConfirmation">Reject</button>
+      <button type="button" class="btn btn-danger" @click="rejectQuotationConfirmation"
+        :disabled="isProcessing">Reject</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-approve" @click="needChangeQuotationConfirmation">Need Change</button>
+      <button type="button" class="btn btn-approve" @click="needChangeQuotationConfirmation"
+        :disabled="isProcessing">Need Change</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-success" @click="approveQuotationConfirmation">Approve</button>
+      <button type="button" class="btn btn-success" @click="approveQuotationConfirmation"
+        :disabled="isProcessing">Approve</button>
     </div>
   </div>
 </template>
@@ -163,7 +166,7 @@
 <script setup>
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useTrackStore } from '@/stores/track'
 import { useRoute, useRouter } from 'vue-router'
 import { useModalStore } from '@/stores/modal'
@@ -176,6 +179,8 @@ const route = useRoute()
 const router = useRouter()
 const { quotationReview } = storeToRefs(quotationStore)
 
+const isProcessing = ref(false)
+
 onBeforeMount(() => {
   if (!quotationReview.value) quotationStore.$resetQuotationReview()
 })
@@ -185,35 +190,46 @@ onMounted(() => {
 })
 
 const approveQuotation = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await quotationStore.approveQuotation(route.params.id)
     // router.push(menuConfig.quotation.path)
   } catch (error) {
     console.log('ERROR PAGE', error)
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const approveQuotationConfirmation = () => {
   modalStore.openConfirmationModal('to Approve this Quotation ?', `Quotation ${route.params.id} Approved`, approveQuotation)
 }
 const needChangeQuotation = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await quotationStore.needChangeQuotation(route.params.id)
     // router.push(menuConfig.quotation.path)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const needChangeQuotationConfirmation = () => {
   modalStore.openConfirmationModal('to review this Quotation ?', `Quotation ${route.params.id} Reviewed`, needChangeQuotation)
 }
 const rejectQuotation = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await quotationStore.rejectQuotation(route.params.id)
     // router.push(menuConfig.quotation.path)
   } catch (error) {
-    console.log('ERROR PAGE', error)
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const rejectQuotationConfirmation = () => {

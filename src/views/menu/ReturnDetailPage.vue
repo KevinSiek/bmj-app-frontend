@@ -258,10 +258,11 @@
   </div>
   <div class="button">
     <div class="right">
-      <button type="button" class="btn btn-danger" @click="rejectConfirmation">Reject</button>
+      <button type="button" class="btn btn-danger" @click="rejectConfirmation" :disabled="isProcessing">Reject</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-success" @click="approveConfirmation">Approve</button>
+      <button type="button" class="btn btn-success" @click="approveConfirmation"
+        :disabled="isProcessing">Approve</button>
     </div>
   </div>
 </template>
@@ -269,7 +270,7 @@
 <script setup>
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
@@ -283,6 +284,8 @@ const trackStore = useTrackStore()
 
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
+const isProcessing = ref(false)
+
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
   await trackStore.setTrackData(purchaseOrder.value.status)
@@ -295,22 +298,30 @@ onMounted(async () => {
 })
 
 const reject = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseOrderStore.rejectReturn(route.params.id)
     router.push(menuConfig.return.path)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const rejectConfirmation = () => {
   modalStore.openConfirmationModal('reject this return ?', 'Return has been Rejected', reject)
 }
 const approve = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseOrderStore.approveReturn(route.params.id)
     router.push(menuConfig.return.path)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const approveConfirmation = () => {

@@ -192,7 +192,7 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="updatePiConfirmation">Save</button>
+      <button type="button" class="btn btn-process" @click="updatePiConfirmation" :disabled="isProcessing">Save</button>
     </div>
   </div>
 </template>
@@ -202,7 +202,7 @@ import { menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -211,6 +211,8 @@ const proformaInvoiceStore = useProformaInvoiceStore()
 const modalStore = useModalStore()
 
 const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
+
+const isProcessing = ref(false)
 
 onBeforeMount(() => {
   if (!proformaInvoice.value) proformaInvoiceStore.$resetProformaInvoice()
@@ -224,11 +226,15 @@ const back = () => {
 }
 
 const updatePi = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await proformaInvoiceStore.updateProformaInvoice()
     router.push(`${menuConfig.proforma_invoice.path}/${route.params.id}`)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const updatePiConfirmation = () => {

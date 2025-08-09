@@ -57,7 +57,8 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="editSparepartConfirmation">Edit</button>
+      <button type="button" class="btn btn-process" @click="editSparepartConfirmation"
+        :disabled="isProcessing">Edit</button>
     </div>
   </div>
 </template>
@@ -68,13 +69,15 @@ import { useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores/modal'
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 
 const router = useRouter()
 const sparepartStore = useSparepartStore()
 const modalStore = useModalStore()
 
 const { sparepart } = storeToRefs(sparepartStore)
+
+const isProcessing = ref(false)
 
 onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()
@@ -89,11 +92,15 @@ const addSeller = () => {
 }
 
 const addSparepart = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await sparepartStore.addSparepart()
     router.push(menuConfig.spareparts)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 

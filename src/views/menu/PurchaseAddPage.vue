@@ -96,7 +96,8 @@
   </div>
   <div class="button">
     <div class="right">
-      <button type="button" class="btn btn-process" @click="doPurchaseConfirmation">Add</button>
+      <button type="button" class="btn btn-process" @click="doPurchaseConfirmation"
+        :disabled="isProcessing">Add</button>
     </div>
   </div>
 </template>
@@ -105,7 +106,7 @@
 import { menuMapping as menuConfig } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
 import { formatCurrency } from '@/utils/form-util'
@@ -116,6 +117,8 @@ const modalStore = useModalStore()
 const router = useRouter()
 
 const { purchase, searchedSpareparts } = storeToRefs(purchaseStore)
+
+const isProcessing = ref(false)
 
 const totalPurchase = computed(() => purchase.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
 
@@ -156,11 +159,15 @@ const removeSparepart = (index) => {
   purchase.value.spareparts.splice(index, 1)
 }
 const doPurchase = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await purchaseStore.addPurchase()
     router.push(menuConfig.purchase.path)
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 

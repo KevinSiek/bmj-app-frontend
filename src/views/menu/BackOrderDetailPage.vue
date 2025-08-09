@@ -142,7 +142,8 @@
   </div>
   <div class="button">
     <div class="right">
-      <button type="button" class="btn btn-process" @click="processBackOrderConfirmation">Ready</button>
+      <button type="button" class="btn btn-process" @click="processBackOrderConfirmation"
+        :disabled="isProcessing">Ready</button>
     </div>
   </div>
 </template>
@@ -151,7 +152,7 @@
 import { useBackOrderStore } from '@/stores/back-order'
 import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -159,6 +160,8 @@ const backOrderStore = useBackOrderStore()
 const modalStore = useModalStore()
 
 const { backOrder } = storeToRefs(backOrderStore)
+
+const isProcessing = ref(false)
 
 onBeforeMount(() => {
   if (!backOrder.value) backOrderStore.$resetBackOrder()
@@ -168,11 +171,14 @@ onMounted(() => {
 })
 
 const processBackOrder = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     await backOrderStore.processBackOrder(route.params.id)
   } catch (error) {
-    console.log('ERROR PAGE', error)
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 

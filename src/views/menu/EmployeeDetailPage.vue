@@ -83,7 +83,7 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-danger mx-3" @click="openDeleteModal">
+      <button type="button" class="btn btn-danger mx-3" @click="openDeleteModal" :disabled="isProcessing">
         Delete Employee
       </button>
       <button type="button" class="btn btn-secondary mx-3" @click="resetPasswordConfirmation">
@@ -137,6 +137,7 @@ const isPassShow = ref(false)
 const isConfPassShow = ref(false)
 const isShowDeleteModal = ref(false)
 const deleteConfirmation = ref('')
+const isProcessing = ref(false)
 
 const roles = [
   common.role.director,
@@ -186,8 +187,11 @@ const closeDeleteModal = () => {
   deleteConfirmation.value = ''
 }
 const deleteEmployee = async () => {
+  if (isProcessing.value) return
+  isProcessing.value = true
   await employeeStore.deleteEmployee(employee.value.id)
   modalStore.closeModal()
+  isProcessing.value = false
   router.push(menuConfig.employee.path)
 }
 const deleteEmployeeConfirmation = () => {

@@ -115,7 +115,8 @@
     <div class="left">
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process mx-3" @click="setToReturnConfirmation">Return</button>
+      <button type="button" class="btn btn-process mx-3" @click="setToReturnConfirmation"
+        :disabled="isProcessing">Return</button>
     </div>
   </div>
 </template>
@@ -137,6 +138,8 @@ const modalStore = useModalStore()
 const trackStore = useTrackStore()
 
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
+
+const isProcessing = ref(false)
 
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
@@ -173,14 +176,16 @@ const addSparepart = (sparepart) => {
     modalStore.openMessageModal(common.modal.failed, 'Returned quantity must be greater than zero')
     return
   }
-  returnedSparepart.value.push({...sparepart})
+  returnedSparepart.value.push({ ...sparepart })
 }
 const removeSparepart = (index) => {
   returnedSparepart.value.splice(index, 1)
 }
 
 const setToReturn = async () => {
+  if (isProcessing.value) return
   try {
+    isProcessing.value = true
     // Map to API expected format: { sparepart_id, quantity }
     const returnedItems = returnedSparepart.value.map(item => ({
       sparepart_id: item.id,
@@ -192,6 +197,8 @@ const setToReturn = async () => {
     fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
   }
 }
 const setToReturnConfirmation = () => {
