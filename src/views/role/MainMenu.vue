@@ -13,6 +13,7 @@
       </div>
     </div>
     <div class="information">
+      <!-- QUOTATION -->
       <div class="information__item">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
@@ -24,9 +25,10 @@
           </svg>
         </div>
         <div class="value">
-          : 0
+          : {{ summary?.quotation || 0 }}
         </div>
       </div>
+      <!-- PURCHASE ORDER -->
       <div class="information__item">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-check"
@@ -38,9 +40,10 @@
           </svg>
         </div>
         <div class="value">
-          : 0
+          : {{ summary?.purchase_order || 0 }}
         </div>
       </div>
+      <!-- DELIVERY ORDER -->
       <div class="information__item">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
@@ -49,9 +52,10 @@
           </svg>
         </div>
         <div class="value">
-          : 0
+          : {{ summary?.delivery_order || 0 }}
         </div>
       </div>
+      <!-- WORK ORDER -->
       <div class="information__item">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
@@ -60,7 +64,7 @@
           </svg>
         </div>
         <div class="value">
-          : 0
+          : {{ summary?.work_order || 0 }}
         </div>
       </div>
     </div>
@@ -77,7 +81,8 @@
         Marketing
       </div>
     </div>
-    <div class="information">
+    <!-- QUOTATION APPROVE -->
+    <div class="information marketing">
       <div class="information__item text-success">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
@@ -89,9 +94,10 @@
           </svg>
         </div>
         <div class="value">
-          : 0
+          : {{ summary?.quotation?.approve || 0 }} / {{ summary?.quotation?.total || 0 }}
         </div>
       </div>
+      <!-- QUOTATION REJECT -->
       <div class="information__item text-danger">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
@@ -103,9 +109,26 @@
           </svg>
         </div>
         <div class="value">
-          : 0
+          : {{ summary?.quotation?.reject || 0 }} / {{ summary?.quotation?.total || 0 }}
         </div>
       </div>
+      <!-- PURCHASE ORDER DONE -->
+      <div class="information__item">
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-check"
+            viewBox="0 0 16 16">
+            <path
+              d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z" />
+            <path
+              d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+          </svg>
+        </div>
+        <div class="value">
+          : <span class="text-success">{{ summary?.purchase_order?.done || 0 }}</span>/<span class="text-danger">{{
+            summary?.purchase_order?.total || 0 }}</span>
+        </div>
+      </div>
+      <!-- DELIVERY ORDER DONE -->
       <div class="information__item">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
@@ -114,9 +137,11 @@
           </svg>
         </div>
         <div class="value">
-          : <span class="text-success">0</span>/<span class="text-danger">0</span>
+          : <span class="text-success">{{ summary?.delivery_order?.done || 0 }}</span>/<span class="text-danger">{{
+            summary?.delivery_order?.total || 0 }}</span>
         </div>
       </div>
+      <!-- WORK ORDER DONE -->
       <div class="information__item">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
@@ -125,7 +150,8 @@
           </svg>
         </div>
         <div class="value">
-          : <span class="text-success">0</span>/<span class="text-danger">0</span>
+          : <span class="text-success">{{ summary?.work_order?.done || 0 }}</span>/<span class="text-danger">{{
+            summary?.work_order?.total || 0 }}</span>
         </div>
       </div>
     </div>
@@ -143,9 +169,10 @@
       </div>
     </div>
     <div class="information inventory">
-      <div>Prepare: 0</div>
-      <div>Ready: 0</div>
-      <div>Release: 0</div>
+      <div>Prepare: {{ summary?.purchase_order?.prepare || 0 }}</div>
+      <div>Ready: {{ summary?.purchase_order?.ready || 0 }}</div>
+      <div>Release: {{ summary?.purchase_order?.release || 0 }}</div>
+      <div>Total: {{ summary?.purchase_order?.total || 0 }}</div>
     </div>
   </router-link>
   <router-link class="menu-item nav-link finance" :to="menuConfig.menu_finance.path">
@@ -164,9 +191,9 @@
       </div>
     </div>
     <div class="information finance">
-      <div>Waiting for payment: 0</div>
-      <div>Already paid: 0</div>
-      <div>PO: 0</div>
+      <div>Waiting for payment: {{ summary?.purchase_order?.wait_for_payment || 0 }}</div>
+      <div>DP Paid: {{ summary?.purchase_order?.dp_paid || 0 }}</div>
+      <div>Full Paid: {{ summary?.purchase_order?.full_paid || 0 }}</div>
     </div>
   </router-link>
   <router-link class="menu-item nav-link service" :to="menuConfig.menu_service.path">
@@ -181,14 +208,28 @@
         Service
       </div>
     </div>
-    <div class="information">
-      Total Service: 0
+    <div class="information service">
+      <div>On progress: {{ summary?.work_order?.on_progress || 0 }}</div>
+      <div>Done: {{ summary?.work_order?.done || 0 }}</div>
+      <div>Total: {{ summary?.work_order?.total || 0 }}</div>
     </div>
   </router-link>
 </template>
 
 <script setup>
 import { menuMapping as menuConfig } from '@/config'
+import { useSummaryStore } from '@/stores/summary'
+import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+
+const summaryStore = useSummaryStore()
+
+const { summary } = storeToRefs(summaryStore)
+
+onMounted(() => {
+  summaryStore.getSummary()
+})
+
 </script>
 
 <style lang="scss" scoped>
@@ -219,7 +260,7 @@ import { menuMapping as menuConfig } from '@/config'
   .information {
     margin-top: 2%;
     display: flex;
-    width: 60%;
+    min-width: 60%;
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: center;
@@ -238,8 +279,18 @@ import { menuMapping as menuConfig } from '@/config'
     }
   }
 
+  .marketing {
+    display: flex;
+    flex-wrap: wrap;
+
+    .information__item {
+      margin: 3% 5%;
+    }
+  }
+
   .finance,
-  .inventory {
+  .inventory,
+  .service {
     display: flex;
     flex-direction: column;
   }

@@ -261,7 +261,8 @@ const api = {
   employee: '/api/employee',
   purchase: '/api/buy',
   delivery_order: '/api/delivery-order',
-  general: '/api/general'
+  general: '/api/general',
+  summary: '/api/summary'
 }
 
 export {
