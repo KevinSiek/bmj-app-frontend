@@ -68,7 +68,7 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.proformaInvoice.proformaInvoiceDate"
+            <input type="date" class="form-control mt-2" v-model="workOrder.proformaInvoice.proformaInvoiceDate"
               placeholder="Date" disabled>
           </div>
         </div>
@@ -80,7 +80,7 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.date" placeholder="Date"
+            <input type="date" class="form-control mt-2" v-model="workOrder.serviceOrder.date" placeholder="Date"
               disabled>
           </div>
           <div class="input form-group col-12">
@@ -92,12 +92,12 @@
             <div class="row">
               <div class="col-6">
                 <label for="">Expected Start Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.startDate"
+                <input type="date" class="form-control mt-2" v-model="workOrder.serviceOrder.startDate"
                   placeholder="Expected Start Date" disabled>
               </div>
               <div class="col-6">
                 <label for="">Expected End Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.endDate"
+                <input type="date" class="form-control mt-2" v-model="workOrder.serviceOrder.endDate"
                   placeholder="Expected End Date" disabled>
               </div>
             </div>
@@ -169,12 +169,12 @@
             <div class="row px-3">
               <div class="col-6">
                 <label for="">Start Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.startDate" placeholder="Start Date"
+                <input type="date" class="form-control mt-2" v-model="workOrder.date.startDate" placeholder="Start Date"
                   disabled>
               </div>
               <div class="col-6">
                 <label for="">End Date</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.date.endDate" placeholder="End Date"
+                <input type="date" class="form-control mt-2" v-model="workOrder.date.endDate" placeholder="End Date"
                   disabled>
               </div>
             </div>

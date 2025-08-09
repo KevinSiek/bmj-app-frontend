@@ -68,7 +68,7 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.date" placeholder="Date" disabled>
+            <input type="date" class="form-control mt-2" v-model="invoice.invoice.date" placeholder="Date" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Term of Payment</label><br>
@@ -95,7 +95,7 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.purchaseOrderDate"
+            <input type="date" class="form-control mt-2" v-model="invoice.purchaseOrder.purchaseOrderDate"
               placeholder="Date" disabled>
           </div>
           <div class="input form-group col-12">

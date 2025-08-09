@@ -69,7 +69,7 @@
             </div>
             <div class="input form-group col-12">
               <label for="">Date</label><br>
-              <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.deliveryOrderDate"
+              <input type="date" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.deliveryOrderDate"
                 placeholder="Date" disabled>
             </div>
             <div class="input form-group col-12">
@@ -123,7 +123,7 @@
             </div>
             <div class="input form-group col-12">
               <label for="">Date</label><br>
-              <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.purchaseOrderDate"
+              <input type="date" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.purchaseOrderDate"
                 placeholder="Date" disabled>
             </div>
             <div class="input form-group col-12">

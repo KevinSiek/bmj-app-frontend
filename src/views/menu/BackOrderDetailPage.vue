@@ -11,7 +11,7 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.purchaseOrderDate"
+            <input type="date" class="form-control mt-2" v-model="backOrder.purchaseOrder.purchaseOrderDate"
               placeholder="Date" disabled>
           </div>
           <div class="input form-group col-12">
@@ -28,7 +28,7 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="text" class="form-control mt-2" v-model="backOrder.deliveryOrder.date" placeholder="Date"
+            <input type="date" class="form-control mt-2" v-model="backOrder.deliveryOrder.date" placeholder="Date"
               disabled>
           </div>
           <div class="input form-group col-12">

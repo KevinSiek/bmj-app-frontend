@@ -10,6 +10,11 @@
               <input type="text" class="form-control mt-2" v-model="proformaInvoice.project.proformaInvoiceNumber"
                 placeholder="No Proforma Invoice" disabled>
             </div>
+            <div class="input form-group col-12">
+              <label for="">Date Proforma Invoice</label><br>
+              <input type="date" class="form-control mt-2" v-model="proformaInvoice.date"
+                placeholder="Date Proforma Invoice" disabled>
+            </div>
           </div>
           <div class="right">
             <div class="input form-group col-12">

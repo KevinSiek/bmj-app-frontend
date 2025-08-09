@@ -7,7 +7,7 @@
           <div class="left">
             <div class="input form-group col-12">
               <label for="">Date</label><br>
-              <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.deliveryOrderDate"
+              <input type="date" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.deliveryOrderDate"
                 placeholder="No">
             </div>
             <div class="input form-group col-12">
