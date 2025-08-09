@@ -10,18 +10,18 @@
 import { ref } from 'vue'
 import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
 import MenuWorkOrder from '@/components/menu/MenuWorkOrder.vue'
-import { menuMapping } from '@/config'
+import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
   {
     name: 'Purchase Order',
     component: MenuPurchaseOrder,
-    path: menuMapping.spareparts.path
+    path: menuConfig.spareparts.path
   },
   {
     name: 'Work Order',
     component: MenuWorkOrder,
-    path: menuMapping.work_order.path
+    path: menuConfig.work_order.path
   }
 ])
 </script>

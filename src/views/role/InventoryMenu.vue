@@ -12,28 +12,28 @@ import MenuPurchase from '@/components/menu/MenuPurchase.vue'
 import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
 import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
-import { menuMapping } from '@/config'
+import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
   {
     name: 'Sparepart',
     component: MenuSparepart,
-    path: menuMapping.spareparts.path
+    path: menuConfig.spareparts.path
   },
   {
     name: 'Purchase Order',
     component: MenuPurchaseOrder,
-    path: menuMapping.purchase_order.path
+    path: menuConfig.purchase_order.path
   },
   {
     name: 'Purchase',
     component: MenuPurchase,
-    path: menuMapping.purchase.path
+    path: menuConfig.purchase.path
   },
   {
     name: 'Back Order',
     component: MenuBackOrder,
-    path: menuMapping.back_order.path
+    path: menuConfig.back_order.path
   }
 ])
 </script>

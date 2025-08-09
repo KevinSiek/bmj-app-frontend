@@ -1,5 +1,5 @@
 <template>
-  <router-link class="menu-item nav-link director" :to="menuMapping.menu_director.path">
+  <router-link class="menu-item nav-link director" :to="menuConfig.menu_director.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
@@ -65,7 +65,7 @@
       </div>
     </div>
   </router-link>
-  <router-link class="menu-item nav-link sales" :to="menuMapping.menu_sales.path">
+  <router-link class="menu-item nav-link sales" :to="menuConfig.menu_sales.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
@@ -130,7 +130,7 @@
       </div>
     </div>
   </router-link>
-  <router-link class="menu-item nav-link inventory" :to="menuMapping.menu_inventory.path">
+  <router-link class="menu-item nav-link inventory" :to="menuConfig.menu_inventory.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
@@ -148,7 +148,7 @@
       <div>Release: 0</div>
     </div>
   </router-link>
-  <router-link class="menu-item nav-link finance" :to="menuMapping.menu_finance.path">
+  <router-link class="menu-item nav-link finance" :to="menuConfig.menu_finance.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-bar-graph"
@@ -169,7 +169,7 @@
       <div>PO: 0</div>
     </div>
   </router-link>
-  <router-link class="menu-item nav-link service" :to="menuMapping.menu_service.path">
+  <router-link class="menu-item nav-link service" :to="menuConfig.menu_service.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
@@ -188,7 +188,7 @@
 </template>
 
 <script setup>
-import { menuMapping } from '@/config'
+import { menuMapping as menuConfig } from '@/config'
 </script>
 
 <style lang="scss" scoped>

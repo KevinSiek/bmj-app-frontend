@@ -17,53 +17,53 @@ import MenuSparepart from '@/components/menu/MenuSparepart.vue'
 import MenuPurchase from '@/components/menu/MenuPurchase.vue'
 import MenuWorkOrder from '@/components/menu/MenuWorkOrder.vue'
 import MenuEmployee from '@/components/menu/MenuEmployee.vue'
-import { menuMapping } from '@/config'
+import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
   {
     name: 'Quotation',
     component: MenuQuotation,
-    path: menuMapping.quotation.path
+    path: menuConfig.quotation.path
   },
   {
     name: 'Purchase Order',
     component: MenuPurchaseOrder,
-    path: menuMapping.purchase_order.path
+    path: menuConfig.purchase_order.path
   },
   {
     name: 'Invoice',
     component: MenuInvoice,
-    path: menuMapping.invoice.path
+    path: menuConfig.invoice.path
   },
   {
     name: 'Proforma Invoice',
     component: MenuProformaInvoice,
-    path: menuMapping.proforma_invoice.path
+    path: menuConfig.proforma_invoice.path
   },
   {
     name: 'Sparepart',
     component: MenuSparepart,
-    path: menuMapping.spareparts.path
+    path: menuConfig.spareparts.path
   },
   {
     name: 'Purchase',
     component: MenuPurchase,
-    path: menuMapping.purchase.path
+    path: menuConfig.purchase.path
   },
   {
     name: 'Back Order',
     component: MenuBackOrder,
-    path: menuMapping.back_order.path
+    path: menuConfig.back_order.path
   },
   {
     name: 'Work Order',
     component: MenuWorkOrder,
-    path: menuMapping.work_order.path
+    path: menuConfig.work_order.path
   },
   {
     name: 'Employee',
     component: MenuEmployee,
-    path: menuMapping.employee.path
+    path: menuConfig.employee.path
   }
 ])
 </script>
