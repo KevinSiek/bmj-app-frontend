@@ -125,7 +125,19 @@ export const useQuotationStore = defineStore('quotation', () => {
   async function getAllQuotation(param) {
     isLoading.value = true
     const { data } = await quotationApi.getAllQuotations(param)
-    quotations.value = data.data.map(mapQuotations)
+    // Group by invoice number
+    const grouped = {}
+    data.data.forEach(item => {
+      const key = item.project.quotation_number
+      if (!grouped[key]) {
+        grouped[key] = {
+          quotationNumber: key,
+          versions: []
+        }
+      }
+      grouped[key].versions.push(mapQuotation(item))
+    })
+    quotations.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
   }

@@ -62,6 +62,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
   async function getAllProformaInvoices(param) {
     isLoading.value = true
     const { data } = await proformaInvoiceApi.getAllProformaInvoice(param)
+    console.log("data :", data)
     // Group by proforma invoice number
     const grouped = {}
     data.data.forEach(item => {
