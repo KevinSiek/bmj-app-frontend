@@ -26,7 +26,7 @@
         <label for="branch">Branch</label><br>
         <select class="form-select mt-2" id="branch" v-model="employee.branch">
           <option value="" disabled selected>Select Branch</option>
-          <option v-for="(branch, index) in branches" :key="index" :value="branch">
+          <option v-for="(branch, index) in common.branch" :key="index" :value="branch">
             {{ branch }}
           </option>
         </select>
@@ -47,6 +47,7 @@ import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { common } from '@/config'
 
 const router = useRouter()
 const modalStore = useModalStore()

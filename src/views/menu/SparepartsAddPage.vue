@@ -18,7 +18,7 @@
               <label for="branch">Branch</label><br>
               <select class="form-select mt-2" id="branch" v-model="sparepart.branch">
                 <option value="" disabled selected>Select Branch</option>
-                <option v-for="(branch, index) in branches" :key="index" :value="branch">
+                <option v-for="(branch, index) in common.branch" :key="index" :value="branch">
                   {{ branch }}
                 </option>
               </select>
@@ -79,11 +79,7 @@ import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores/modal'
 import { onBeforeMount, ref } from 'vue'
-
-const branches = [
-  'Jakarta',
-  'Semarang'
-]
+import { common } from '@/config'
 
 const router = useRouter()
 const sparepartStore = useSparepartStore()
