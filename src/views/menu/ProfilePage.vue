@@ -9,7 +9,7 @@
           Hi, {{ userName }} !
         </div>
       </div>
-      <form @submit.prevent="updateProfile()" class="row form-profile">
+      <form @submit.prevent="updateProfileConfirmation()" class="row form-profile">
         <div class="input form-group col-12">
           <label for="name">Full Name</label><br>
           <input type="text" class="form-control mt-2" v-model="user.fullname" placeholder="Full name">
@@ -28,7 +28,7 @@
         </div>
         <div class="input form-group col-6">
           <label for="password">Confirm Password</label><br>
-          <input type="password" class="form-control mt-2" v-model="user.password_confirmation"
+          <input type="password" class="form-control mt-2" v-model="user.confirm_password"
             placeholder="Retype Password">
         </div>
         <div class="button">
@@ -44,8 +44,11 @@
 <script setup>
 import { onBeforeMount, ref, reactive, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useModalStore } from '@/stores/modal'
+import { common } from '@/config'
 
 const auth = useAuthStore()
+const modalStore = useModalStore()
 
 const userName = ref('')
 const user = reactive({
@@ -53,7 +56,7 @@ const user = reactive({
   email: '',
   role: '',
   password: '',
-  password_confirmation: ''
+  confirm_password: ''
 })
 
 onBeforeMount(() => {
@@ -63,19 +66,36 @@ onBeforeMount(() => {
 watch(() => auth.user, () => {
   _getUser()
   user.password = ''
-  user.password_confirmation = ''
+  user.confirm_password = ''
 })
 
 const _getUser = () => {
   user.fullname = auth.user?.fullname
   user.email = auth.user?.email
+  user.role = auth.user?.role
+  user.password = ''
+  user.confirm_password = ''
   userName.value = auth.user?.fullname.split(' ')[0]
 }
 
-const updateProfile = () => {
-  if (user.password === user.password_confirmation) {
-    auth.updateUser(user)
+const updateProfile = async () => {
+  try {
+    if (user.password === user.confirm_password) {
+      await auth.updateUser(user)
+    } else {
+      throw {
+        data: {
+          error: 'Password and Confirm Password do not match'
+        }
+      }
+    }
+  } catch (error) {
+    throw error.data.error || error.data.message
   }
+}
+
+const updateProfileConfirmation = () => {
+  modalStore.openConfirmationModal('to Update this Profile ?', 'Update Profile Success', updateProfile)
 }
 </script>
 
