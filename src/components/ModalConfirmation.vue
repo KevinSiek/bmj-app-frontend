@@ -1,6 +1,9 @@
 <template>
-  <div class="modal fade show" style="display: block;" :id="idModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="false">
+  <div v-if="isLoading" class="loader-overlay">
+    <div class="loader"></div>
+  </div>
+  <div v-else class="modal fade show" style="display: block;" :id="idModal" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body">
@@ -30,15 +33,21 @@
 <script setup>
 import { useModalStore } from '@/stores/modal'
 import { common } from '@/config'
+import { ref } from 'vue'
 
 const modalStore = useModalStore()
 
+const isLoading = ref(false)
+
 const event = async () => {
   try {
+    isLoading.value = true
     await modalStore.action()
     modalStore.openMessageModal(common.modal.success, modalStore.messages)
   } catch (error) {
     modalStore.openMessageModal(common.modal.failed, error)
+  } finally {
+    isLoading.value = false
   }
 }
 const closeModal = () => {
@@ -47,6 +56,8 @@ const closeModal = () => {
 </script>
 
 <style lang="scss" scoped>
+$primary-color: black;
+
 .modal-dialog {
   z-index: 1050;
 }
@@ -84,6 +95,54 @@ const closeModal = () => {
 
 .modal-backdrop {
   z-index: 1000;
+}
+
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid $primary-color;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  animation: spin 1s linear infinite;
+  z-index: 9999;
+}
+
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg) translate(-50%, -50%);
+  }
+
+  100% {
+    transform: rotate(360deg) translate(-50%, -50%);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media only screen and (max-width: 768px) {
