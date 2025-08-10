@@ -16,8 +16,18 @@
       <div class="input form-group col-12">
         <label for="role">Role</label><br>
         <select class="form-select mt-2" id="role" v-model="employee.role">
+          <option value="" disabled selected>Select Role</option>
           <option v-for="(role, index) in roles" :key="index" :value="role">
             {{ role }}
+          </option>
+        </select>
+      </div>
+      <div class="input form-group col-12">
+        <label for="branch">Branch</label><br>
+        <select class="form-select mt-2" id="branch" v-model="employee.branch">
+          <option value="" disabled selected>Select Branch</option>
+          <option v-for="(branch, index) in branches" :key="index" :value="branch">
+            {{ branch }}
           </option>
         </select>
       </div>
@@ -37,7 +47,6 @@ import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { validatePassword } from '@/utils/form-util'
 
 const router = useRouter()
 const modalStore = useModalStore()
@@ -53,6 +62,11 @@ const roles = [
   'Finance',
   'Inventory',
   'Service'
+]
+
+const branches = [
+  'Jakarta',
+  'Semarang'
 ]
 
 onBeforeMount(() => {

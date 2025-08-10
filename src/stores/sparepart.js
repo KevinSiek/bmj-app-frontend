@@ -12,6 +12,7 @@ export const useSparepartStore = defineStore('sparepart', () => {
     return {
       sparepartId: data?.id || '',
       slug: data?.slug || '',
+      branch: data?.branch || '',
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
       totalUnit: data?.total_unit || 0,
