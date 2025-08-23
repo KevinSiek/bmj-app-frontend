@@ -50,6 +50,15 @@
           </div>
         </div>
       </div>
+      <div class="lower">
+        <div class="notes my-2">
+          <div class="title">Notes</div>
+          <div class="inputform-floating">
+            <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
+              v-model="deliveryOrder.notes"></textarea>
+          </div>
+        </div>
+      </div>
     </form>
   </div>
   <div class="button">
@@ -84,7 +93,7 @@ const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 const isProcessing = ref(false)
 
 onBeforeMount(() => {
-  if (!deliveryOrder.value) deliveryOrderStore.$resetDeliveryOrder()
+  deliveryOrderStore.$resetDeliveryOrder()
 })
 
 const doRelease = async () => {
