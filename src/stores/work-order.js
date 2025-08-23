@@ -59,7 +59,8 @@ export const useWorkOrderStore = defineStore('work-order', () => {
         apd: data?.additional?.apd || '',
         peduliLindungi: data?.additional?.peduli_lindungi || '',
         executionTime: data?.additional?.execution_time || ''
-      }
+      },
+      status: data?.status || []
     }
   }
 
