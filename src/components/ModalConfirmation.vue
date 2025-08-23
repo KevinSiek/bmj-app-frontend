@@ -2,7 +2,7 @@
   <div v-if="isLoading" class="loader-overlay">
     <div class="loader"></div>
   </div>
-  <div v-else class="modal fade show" style="display: block;" :id="idModal" tabindex="-1"
+  <div v-else class="modal fade show" style="display: block;" id="modalConfirmation" tabindex="-1"
     aria-labelledby="exampleModalLabel" aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
