@@ -446,7 +446,7 @@ const createProformaInvoice = async () => {
   }
 }
 const createPiConfirmation = () => {
-  modalStore.openNotesModal('PI', () => {
+  modalStore.openNotesModal('Create PI', () => {
     modalStore.openConfirmationModal('to create Proforma Invoice ?', 'PI Created', createProformaInvoice)
   })
 }

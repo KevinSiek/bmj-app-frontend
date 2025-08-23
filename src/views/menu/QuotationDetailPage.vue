@@ -51,7 +51,7 @@ const processQuotation = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await quotationStore.processQuotation(route.params.id)
+    await quotationStore.processQuotation(route.params.id, modalStore.notes)
     router.push(menuConfig.purchase_order)
   } catch (error) {
     throw error.data.error || error.data.message
@@ -61,7 +61,9 @@ const processQuotation = async () => {
 }
 
 const processQuotationConfirmation = () => {
-  modalStore.openConfirmationModal('to process this Quotation to Purchase Order ?', `Purchase Order Created with quotation ${route.params.id}`, processQuotation)
+  modalStore.openNotesModal('Create PO', () => {
+    modalStore.openConfirmationModal('to process this Quotation to Purchase Order ?', `Purchase Order Created with quotation ${route.params.id}`, processQuotation)
+  })
 }
 
 const download = () => {
