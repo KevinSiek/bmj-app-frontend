@@ -115,8 +115,8 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     await purchaseOrderApi.deletePurchaseOrder(id)
   }
 
-  async function processToProformaInvoice(id) {
-    const response = await purchaseOrderApi.processToProformaInvoice(id)
+  async function processToProformaInvoice(id, notes) {
+    const response = await purchaseOrderApi.processToProformaInvoice(id, { notes })
   }
 
   async function updateStatus(id, status) {
@@ -141,6 +141,10 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
 
   async function done(id) {
     const response = await purchaseOrderApi.done(id)
+  }
+
+  async function reject(id, notes) {
+    const response = await purchaseOrderApi.reject(id, { notes })
   }
 
   async function returnPurchaseOrder(id, returnedItems) {
@@ -174,6 +178,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     ready,
     release,
     done,
+    reject,
     returnPurchaseOrder,
     approveReturn,
     rejectReturn,

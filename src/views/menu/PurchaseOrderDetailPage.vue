@@ -316,6 +316,8 @@
   <div class="button">
     <div class="left">
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
+      <button v-if="isShowReject" type="button" class="btn btn-danger mx-3" @click="rejectConfirmation"
+        :disabled="isProcessing">Reject</button>
     </div>
     <div class="right">
       <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation"
@@ -387,6 +389,7 @@ const isShowReturn = computed(() =>
   purchaseOrder.value.status.some(item => item.state === common.track.done) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.return)
 )
+const isShowReject = computed(() => isRoleDirector.value)
 
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
@@ -434,7 +437,7 @@ const createProformaInvoice = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await purchaseOrderStore.processToProformaInvoice(route.params.id)
+    await purchaseOrderStore.processToProformaInvoice(route.params.id, modalStore.notes)
     await router.push(`${menuConfig.proforma_invoice.path}`)
   } catch (error) {
     throw error.data.error
@@ -443,7 +446,9 @@ const createProformaInvoice = async () => {
   }
 }
 const createPiConfirmation = () => {
-  modalStore.openConfirmationModal('to create Proforma Invoice ?', 'PI Created', createProformaInvoice)
+  modalStore.openNotesModal('PI', () => {
+    modalStore.openConfirmationModal('to create Proforma Invoice ?', 'PI Created', createProformaInvoice)
+  })
 }
 
 const doRelease = async () => {
@@ -476,6 +481,25 @@ const setToDone = async () => {
 }
 const setToDoneConfirmation = () => {
   modalStore.openConfirmationModal('Purchase Order has been Done ?', 'Purchase Order Done', setToDone)
+}
+
+const doReject = async () => {
+  if (isProcessing.value) return
+  try {
+    isProcessing.value = true
+    await purchaseOrderStore.reject(route.params.id, modalStore.notes)
+    fetchData()
+  } catch (error) {
+    throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
+  }
+}
+
+const rejectConfirmation = () => {
+  modalStore.openNotesModal('Reject', () => {
+    modalStore.openConfirmationModal('to Reject this Purchase Order ?', 'Purchase Order Rejected', doReject)
+  })
 }
 
 const download = () => {

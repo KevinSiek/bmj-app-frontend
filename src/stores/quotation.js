@@ -183,9 +183,9 @@ export const useQuotationStore = defineStore('quotation', () => {
     await quotationApi.updateQuotation(quotation.value.slug, quotation.value)
   }
 
-  async function processQuotation(id) {
+  async function processQuotation(id, notes) {
     console.log('ID', id)
-    const response = await quotationApi.processQuotation(id)
+    const response = await quotationApi.processQuotation(id, { notes })
     console.log('RES', response)
   }
 
