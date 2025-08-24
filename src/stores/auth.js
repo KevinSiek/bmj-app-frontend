@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
 import { ref } from 'vue'
 import { setToken, getToken, removeToken } from '@/utils/local-storage'
+import authApi from '@/api/auth'
+import axios from 'axios'
 
 export const useAuthStore = defineStore('auth-store', () => {
 	const user = ref(null)
@@ -20,9 +21,9 @@ export const useAuthStore = defineStore('auth-store', () => {
 
 	const login = async (credentials) => {
 		try {
-			const response = await axios.post('/api/login', credentials)
-      await setToken('token-bmj', response.data.access_token, 24)
-      user.value = response.data.user
+			const response = await authApi.login(credentials)
+      await setToken('token-bmj', response.access_token, 24)
+      user.value = response.user
       authenticated.value = true
       axios.defaults.headers.common.Authorization = `Bearer ${getToken('token-bmj')}`
 		} catch (error) {
@@ -36,7 +37,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 
 	const logout = async () => {
 		try {
-			await axios.post('/api/logout')
+			await authApi.logout()
 			user.value = null;
       authenticated.value = false
       removeToken('token-bmj')
@@ -50,24 +51,18 @@ export const useAuthStore = defineStore('auth-store', () => {
 	const getUser = async () => {
 		try {
       axios.defaults.headers.common.Authorization = `Bearer ${getToken('token-bmj')}`
-			const response = await axios.get('/api/user')
-      user.value = response.data.user
+			const response = await authApi.getUser()
+      user.value = response.user
       authenticated.value = true
 		} catch (error) {
       user.value = null
       authenticated.value = false
-			console.error('Error loading new arrivals:', error)
 		}
 	}
 
 	const updateUser = async (credentials) => {
-		try {
-			await axios.post('/api/profile/update', credentials)
-			await getUser()
-		} catch (error) {
-			console.error('Error loading new arrivals:', error)
-			throw error
-		}
+    await authApi.changePassword(credentials)
+    await getUser()
 	}
 
 	return{

@@ -2,26 +2,26 @@
   <div v-if="isLoading" class="loader-overlay">
     <div class="loader"></div>
   </div>
-  <div v-else class="modal fade show" style="display: block;" id="modalConfirmation" tabindex="-1"
+  <div v-else class="modal fade show" style="display: block;" id="ModalNotes" tabindex="-1"
     aria-labelledby="exampleModalLabel" aria-hidden="false">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-question-lg" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-              d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 0 1-.5.5h-.77a.5.5 0 0 1-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777ZM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14" />
-          </svg>
+
           <div class="text-header">
-            Are you sure
+            Notes for {{ messages }}
           </div>
-          <div class="text mt-1">
-            {{ modalStore.confirmationMessages }}
+          <div class="text mt-4">
+            <div class="inputform-floating">
+              <textarea class="form-control" placeholder="Notes" id="floatingTextarea2"
+                style="height: 150px; width: 500px;" v-model="notes"></textarea>
+            </div>
           </div>
           <div class="button-modal">
-            <button type="button" class="btn btn-danger mx-2 px-4 py-2" data-bs-dismiss="modal"
-              @click="modalStore.closeModal">No</button>
-            <button type="button" class="btn btn-success mx-2 px-4 py-2" @click="event"
-              data-bs-dismiss="modal">Yes</button>
+            <button type="button" class="btn btn-cancel mx-2 px-4 py-2" data-bs-dismiss="modal"
+              @click="modalStore.closeModal">Cancel</button>
+            <button type="button" class="btn btn-process mx-2 px-4 py-2" @click="event" data-bs-dismiss="modal">
+              {{ messages }}</button>
           </div>
         </div>
       </div>
@@ -34,16 +34,17 @@
 import { useModalStore } from '@/stores/modal'
 import { common } from '@/config'
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
 
 const modalStore = useModalStore()
 
+const { messages, notes } = storeToRefs(modalStore)
 const isLoading = ref(false)
 
 const event = async () => {
   try {
     isLoading.value = true
     await modalStore.action()
-    modalStore.openMessageModal(common.modal.success, modalStore.messages)
   } catch (error) {
     modalStore.openMessageModal(common.modal.failed, error)
   } finally {
@@ -57,6 +58,7 @@ const closeModal = () => {
 
 <style lang="scss" scoped>
 $primary-color: black;
+$secondary-color: rgb(98, 98, 98);
 
 .modal-dialog {
   z-index: 1050;
@@ -85,6 +87,18 @@ $primary-color: black;
   .button-modal {
     margin-top: 7%;
     padding-bottom: 5%;
+
+    .btn {
+      color: white;
+    }
+
+    .btn-cancel {
+      background-color: $secondary-color;
+    }
+
+    .btn-process {
+      background-color: $primary-color;
+    }
   }
 }
 

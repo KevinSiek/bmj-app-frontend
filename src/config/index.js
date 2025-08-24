@@ -247,7 +247,11 @@ const common = {
     release: 'Release',
     done: 'Done',
     return: 'Return'
-  }
+  },
+  branch: {
+    jakarta: 'Jakarta',
+    semarang: 'Semarang'
+  },
 }
 
 const api = {
@@ -262,7 +266,10 @@ const api = {
   purchase: '/api/buy',
   delivery_order: '/api/delivery-order',
   general: '/api/general',
-  summary: '/api/summary'
+  summary: '/api/summary',
+  login: '/api/login',
+  logout: '/api/logout',
+  user: '/api/user',
 }
 
 export {

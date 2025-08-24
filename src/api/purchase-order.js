@@ -92,6 +92,9 @@ const done = (id) => {
   return httpApi.postDataViaApi(`${api.purchase_order}/done/${id}`)
 }
 
+const reject = (id, param) => {
+  return httpApi.postDataViaApi(`${api.purchase_order}/reject/${id}`, param)
+}
 
 // Return Purchase Order
 const getAllReturnPurchaseOrder = async (param) => {
@@ -123,6 +126,7 @@ export default {
   ready,
   release,
   done,
+  reject,
   returnPurchaseOrder,
   approveReturn,
   rejectReturn

@@ -15,8 +15,13 @@
               <input type="text" class="form-control mt-2" v-model="sparepart.totalUnit" placeholder="Stock">
             </div>
             <div class="input form-group col-12">
-              <label for="">Branch</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.branch" placeholder="Branch">
+              <label for="branch">Branch</label><br>
+              <select class="form-select mt-2" id="branch" v-model="sparepart.branch">
+                <option value="" disabled selected>Select Branch</option>
+                <option v-for="(branch, index) in common.branch" :key="index" :value="branch">
+                  {{ branch }}
+                </option>
+              </select>
             </div>
           </div>
           <div class="right">
@@ -78,6 +83,7 @@ import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores/modal'
 import { onBeforeMount, ref } from 'vue'
+import { common } from '@/config'
 
 const router = useRouter()
 const sparepartStore = useSparepartStore()

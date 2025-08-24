@@ -64,8 +64,8 @@ const deleteQuotation = (id) => {
   return httpApi.deleteDataViaApi(`${api.quotation}/${id}`)
 }
 
-const processQuotation = (id) => {
-  return httpApi.postDataViaApi(`${api.quotation}/moveToPo/${id}`)
+const processQuotation = (id, param) => {
+  return httpApi.postDataViaApi(`${api.quotation}/moveToPo/${id}`, param)
 }
 
 const approveQuotation = (id) => {

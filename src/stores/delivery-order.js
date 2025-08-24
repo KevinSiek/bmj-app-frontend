@@ -46,7 +46,8 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
-      }))
+      })),
+      status: data?.status || []
     }
   }
 

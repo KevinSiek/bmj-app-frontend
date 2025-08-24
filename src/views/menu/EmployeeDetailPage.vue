@@ -24,6 +24,15 @@
           </option>
         </select>
       </div>
+      <div class="input form-group col-12">
+        <label for="branch">Branch</label><br>
+        <select class="form-select mt-2" id="branch" v-model="employee.branch" disabled>
+          <option value="" disabled selected>Select Branch</option>
+          <option v-for="(branch, index) in common.branch" :key="index" :value="branch">
+            {{ branch }}
+          </option>
+        </select>
+      </div>
       <div class="input form-group col-6">
         <label for="password">Password</label><br>
         <div class="input-group mt-2">
