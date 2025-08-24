@@ -75,7 +75,10 @@ import { menuMapping as menuConfig } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
+import { useModalStore } from '@/stores/modal'
+
+import { common } from '@/config'
 
 const route = useRoute()
 const router = useRouter()
