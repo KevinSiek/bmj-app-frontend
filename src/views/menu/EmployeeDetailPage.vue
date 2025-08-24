@@ -189,7 +189,7 @@ const closeDeleteModal = () => {
 const deleteEmployee = async () => {
   if (isProcessing.value) return
   isProcessing.value = true
-  await employeeStore.deleteEmployee(employee.value.id)
+  await employeeStore.deleteEmployee(route.params.id)
   modalStore.closeModal()
   isProcessing.value = false
   router.push(menuConfig.employee.path)

@@ -21,6 +21,14 @@
           </option>
         </select>
       </div>
+      <div class="input form-group col-12">
+        <label for="role">Branch</label><br>
+        <select class="form-select mt-2" id="branch" v-model="employee.branch">
+          <option v-for="(branch, index) in branches" :key="index" :value="branch">
+            {{ branch }}
+          </option>
+        </select>
+      </div>
     </form>
   </div>
   <div class="button">
@@ -53,6 +61,11 @@ const roles = [
   'Finance',
   'Inventory',
   'Service'
+]
+
+const branches = [
+  'Jakarta',
+  'Semarang',
 ]
 
 onBeforeMount(() => {

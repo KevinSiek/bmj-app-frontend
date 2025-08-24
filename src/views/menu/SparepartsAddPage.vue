@@ -14,6 +14,10 @@
               <label for="">Stock</label><br>
               <input type="text" class="form-control mt-2" v-model="sparepart.totalUnit" placeholder="Stock">
             </div>
+            <div class="input form-group col-12">
+              <label for="">Branch</label><br>
+              <input type="text" class="form-control mt-2" v-model="sparepart.branch" placeholder="Branch">
+            </div>
           </div>
           <div class="right">
             <div class="input form-group col-12">
@@ -33,13 +37,17 @@
         <div class="title">Purchase Price</div>
         <div class="data row">
           <div class="lists" v-for="(list, index) in sparepart.unitPriceBuy" :key="index">
-            <div class="input form-group col-6">
+            <div class="input form-group col-5">
               <label for="">Seller</label><br>
               <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller">
             </div>
             <div class="input form-group col-3">
               <label for="">Puchase Price</label><br>
               <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price">
+            </div>
+            <div class="input form-group col-3">
+              <label for="">Quantity</label><br>
+              <input type="text" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
             </div>
           </div>
         </div>

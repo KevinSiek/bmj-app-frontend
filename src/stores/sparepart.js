@@ -8,17 +8,19 @@ export const useSparepartStore = defineStore('sparepart', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapSparepart (data) {
+  function mapSparepart(data) {
     return {
       sparepartId: data?.id || '',
       slug: data?.slug || '',
+      branch: data?.branch || '',
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
       totalUnit: data?.total_unit || 0,
       unitPriceSell: data?.unit_price_sell || 0,
       unitPriceBuy: (data?.unit_price_buy || []).map(buy => ({
         seller: buy?.seller || '',
-        price: buy?.price || 0
+        price: buy?.price || 0,
+        quantity: buy?.quantity || 0
       }))
     }
   }
@@ -37,22 +39,22 @@ export const useSparepartStore = defineStore('sparepart', () => {
   }
 
   async function addSparepart() {
-    const data = await sparepartApi.addSparepart(sparepart)
+    const data = await sparepartApi.addSparepart(sparepart.value)
   }
 
-  async function setSparepart (selectedSparepart) {
+  async function setSparepart(selectedSparepart) {
     sparepart.value = selectedSparepart
   }
 
   async function updateSparepart() {
-    const { data } = await sparepartApi.updateSparepart(sparepart.value.id, sparepart)
+    const data = await sparepartApi.updateSparepart(sparepart.value.sparepartId, sparepart.value)
   }
 
   async function deleteSparepart(id) {
     await sparepartApi.deleteSparepart(id)
   }
 
-  async function $resetSparepart () {
+  async function $resetSparepart() {
     sparepart.value = mapSparepart()
   }
 

@@ -14,6 +14,10 @@
               <label for="">Stock</label><br>
               <input type="text" class="form-control mt-2" v-model="sparepart.totalUnit" placeholder="Stock" disabled>
             </div>
+            <div class="input form-group col-12">
+              <label for="">Branch</label><br>
+              <input type="text" class="form-control mt-2" v-model="sparepart.branch" placeholder="Branch" disabled>
+            </div>
           </div>
           <div class="right">
             <div class="input form-group col-12">
@@ -33,13 +37,17 @@
         <div class="title">Purchase Price</div>
         <div class="data row">
           <div class="lists" v-for="(list, index) in sparepart.unitPriceBuy" :key="index">
-            <div class="input form-group col-6">
+            <div class="input form-group col-5">
               <label for="">Seller</label><br>
               <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller" disabled>
             </div>
             <div class="input form-group col-3">
               <label for="">Puchase Price</label><br>
               <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price" disabled>
+            </div>
+            <div class="input form-group col-3">
+              <label for="">Quantity</label><br>
+              <input type="text" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity" disabled>
             </div>
           </div>
         </div>
@@ -49,7 +57,7 @@
   <div class="button">
     <div class="left">
       <button type="button" class="btn btn-edit" @click="back">Back</button>
-      <button type="button" class="btn btn-danger mx-5">Delete</button>
+      <button type="button" class="btn btn-danger mx-5" @click="deleteSparepartConfirmation">Delete</button>
     </div>
     <div class="right">
       <button type="button" class="btn btn-process" @click="goToEdit">Edit</button>
@@ -62,11 +70,15 @@ import { menuMapping as menuConfig } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
+import { useModalStore } from '@/stores/modal'
+
 
 const route = useRoute()
 const router = useRouter()
+const modalStore = useModalStore()
 const sparepartStore = useSparepartStore()
+const isProcessing = ref(false)
 
 const { sparepart } = storeToRefs(sparepartStore)
 
@@ -78,8 +90,24 @@ onMounted(() => {
   sparepartStore.getSparepart(route.params.id)
 })
 
+const deleteSparepart = async () => {
+  try {
+    if (isProcessing.value) return
+    await sparepartStore.deleteSparepart(route.params.id)
+    modalStore.closeModal()
+    isProcessing.value = false
+    router.push(menuConfig.spareparts.path)
+  } catch (error) {
+    throw error.data.error || error.data.message
+  }
+}
+
 const goToEdit = async () => {
   router.push(`${menuConfig.spareparts.path}/${sparepart.id}/edit`)
+}
+
+const deleteSparepartConfirmation = () => {
+  modalStore.openConfirmationModal('to delete sparepart ?', 'Delete Sparepart Success', deleteSparepart)
 }
 const back = () => {
   router.back()
