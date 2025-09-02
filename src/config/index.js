@@ -265,6 +265,7 @@ const api = {
   employee: '/api/employee',
   purchase: '/api/buy',
   delivery_order: '/api/delivery-order',
+  dashboard: '/api/dashboard',
   general: '/api/general',
   summary: '/api/summary',
   login: '/api/login',
