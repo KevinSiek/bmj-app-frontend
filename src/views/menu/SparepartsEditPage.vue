@@ -42,13 +42,17 @@
         <div class="title">Purchase Price</div>
         <div class="data row">
           <div class="lists" v-for="(list, index) in sparepart.unitPriceBuy" :key="index">
-            <div class="input form-group col-6">
+            <div class="input form-group col-5">
               <label for="">Seller</label><br>
               <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller">
             </div>
             <div class="input form-group col-3">
               <label for="">Puchase Price</label><br>
               <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price">
+            </div>
+            <div class="input form-group col-3">
+              <label for="">Quantity</label><br>
+              <input type="text" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
             </div>
           </div>
         </div>
@@ -105,7 +109,7 @@ const addSparepart = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await sparepartStore.addSparepart()
+    await sparepartStore.updateSparepart()
     router.push(menuConfig.spareparts)
   } catch (error) {
     throw error.data.error || error.data.message
@@ -115,7 +119,7 @@ const addSparepart = async () => {
 }
 
 const editSparepartConfirmation = () => {
-  modalStore.openConfirmationModal('to Add this Sparepart ?', 'Add Sparepart Success', addSparepart)
+  modalStore.openConfirmationModal('to edit this Sparepart ?', 'Edit Sparepart Success', addSparepart)
 }
 const back = () => {
   router.back()

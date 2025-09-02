@@ -12,7 +12,7 @@
             </div>
             <div class="input form-group col-12">
               <label for="">Date Proforma Invoice</label><br>
-              <input type="date" class="form-control mt-2" v-model="proformaInvoice.date"
+              <input type="date" class="form-control mt-2" v-model="proformaInvoice.project.date"
                 placeholder="Date Proforma Invoice" disabled>
             </div>
           </div>
