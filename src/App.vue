@@ -5,6 +5,9 @@
     <transition name="fade">
       <ModalConfirmation v-if="modalStore.isShowConfirmation" />
     </transition>
+    <transition name="fade">
+      <ModalNotes v-if="modalStore.isShowNotes" />
+    </transition>
   </div>
 </template>
 
@@ -12,6 +15,7 @@
 import { RouterView } from 'vue-router'
 import ModalMessage from '@/components/ModalMessage.vue'
 import ModalConfirmation from '@/components/ModalConfirmation.vue'
+import ModalNotes from '@/components/ModalNotes.vue'
 import { useModalStore } from '@/stores/modal'
 import { useMainStore } from './stores/main'
 import responsiveUtil from '@/utils/responsive'

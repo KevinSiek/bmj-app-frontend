@@ -12,7 +12,7 @@
         Director
       </div>
     </div>
-    <div class="information">
+    <div v-if="userRole === common.role.director" class="information">
       <!-- QUOTATION -->
       <div class="information__item">
         <div class="icon">
@@ -82,7 +82,7 @@
       </div>
     </div>
     <!-- QUOTATION APPROVE -->
-    <div class="information marketing">
+    <div v-if="userRole === common.role.marketing || userRole === common.role.director" class="information marketing">
       <div class="information__item text-success">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
@@ -168,7 +168,7 @@
         Inventory
       </div>
     </div>
-    <div class="information inventory">
+    <div v-if="userRole === common.role.inventory || userRole === common.role.director" class="information inventory">
       <div>Prepare: {{ summary?.purchase_order?.prepare || 0 }}</div>
       <div>Ready: {{ summary?.purchase_order?.ready || 0 }}</div>
       <div>Release: {{ summary?.purchase_order?.release || 0 }}</div>
@@ -190,7 +190,7 @@
         Finance
       </div>
     </div>
-    <div class="information finance">
+    <div v-if="userRole === common.role.finance || userRole === common.role.director" class="information finance">
       <div>Waiting for payment: {{ summary?.purchase_order?.wait_for_payment || 0 }}</div>
       <div>DP Paid: {{ summary?.purchase_order?.dp_paid || 0 }}</div>
       <div>Full Paid: {{ summary?.purchase_order?.full_paid || 0 }}</div>
@@ -208,7 +208,7 @@
         Service
       </div>
     </div>
-    <div class="information service">
+    <div v-if="userRole === common.role.service || userRole === common.role.director" class="information service">
       <div>On progress: {{ summary?.work_order?.on_progress || 0 }}</div>
       <div>Done: {{ summary?.work_order?.done || 0 }}</div>
       <div>Total: {{ summary?.work_order?.total || 0 }}</div>
@@ -217,14 +217,19 @@
 </template>
 
 <script setup>
-import { menuMapping as menuConfig } from '@/config'
+import { menuMapping as menuConfig, common } from '@/config'
+import { useAuthStore } from '@/stores/auth'
 import { useSummaryStore } from '@/stores/summary'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const summaryStore = useSummaryStore()
+const authStore = useAuthStore()
 
+const { user } = storeToRefs(authStore)
 const { summary } = storeToRefs(summaryStore)
+
+const userRole = computed(() => user.value?.role || 'guest')
 
 onMounted(() => {
   summaryStore.getSummary()
@@ -236,15 +241,15 @@ onMounted(() => {
 .menu-item {
   width: 25%;
   margin: 3%;
-  height: 23vh;
+  height: 26vh;
   border-radius: 15px;
   background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   .title {
-    margin-top: 3%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -258,7 +263,6 @@ onMounted(() => {
   }
 
   .information {
-    margin-top: 2%;
     display: flex;
     min-width: 60%;
     flex-wrap: wrap;

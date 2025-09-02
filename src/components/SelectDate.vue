@@ -50,7 +50,7 @@ const selectYear = () => {
   }
 
   .month {
-    width: 15%;
+    width: 17%;
 
     select {
       padding-left: 2.2vw;

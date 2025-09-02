@@ -4,7 +4,7 @@
       <div class="icon">
         <i class="bi bi-file-text-fill"></i>
       </div>
-      <div class="text mx-4">
+      <div class="text">
         Invoice
       </div>
     </div>
@@ -79,6 +79,10 @@
   .title {
     display: flex;
     font-size: 30px;
+
+    .icon {
+      margin-right: 20px;
+    }
   }
 }
 </style>

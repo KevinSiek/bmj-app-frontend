@@ -53,7 +53,12 @@ export const useEmployeeStore = defineStore('employee', () => {
   }
 
   async function resetPassword(id) {
-    await employeeApi.resetPassword(id)
+    const { data } = await employeeApi.resetPassword(id)
+    employee.value = mapEmployee({
+      ...data,
+      password: data.temp_password,
+      passwordConfirmation: ''
+    })
   }
 
   async function $resetEmployee () {

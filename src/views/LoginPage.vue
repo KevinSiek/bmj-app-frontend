@@ -29,12 +29,13 @@ const login = async () => {
     router.push('/menu')
   } catch (error) {
     modalStore.openMessageModal(common.modal.failed, 'Email or Password is incorrect')
+  } finally {
+    isLoading.value = false
   }
-  isLoading.value = false
 }
 
-const showHide = () => {
-  isPassShow.value = !isPassShow.value
+const showHide = (isShow) => {
+  isPassShow.value = isShow
 }
 
 </script>

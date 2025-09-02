@@ -36,11 +36,11 @@
       <div class="input form-group col-6">
         <label for="password">Password</label><br>
         <div class="input-group mt-2">
-          <input v-if="!isPassShow" type="password" class="input form-control" v-model="employee.password"
+          <input :type="isPassShow ? 'text' : 'password'" class="input form-control" v-model="employee.password"
             placeholder="Password">
-          <input v-else type="text" class="input form-control" v-model="employee.password" placeholder="Password">
           <span class="input input-group-text">
-            <button type="button" @click="showHidePass()" class="showHideBtn">
+            <button type="button" @mousedown="showHidePass(true)" @mouseup="showHidePass(false)"
+              @mouseleave="showHidePass(false)" class="showHideBtn">
               <svg v-if="!isPassShow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-eye" viewBox="0 0 16 16">
                 <path
@@ -63,12 +63,11 @@
       <div class="input form-group col-6">
         <label for="password">Confirm Password</label><br>
         <div class="input-group mt-2">
-          <input v-if="!isConfPassShow" type="password" class="input form-control"
+          <input :type="isConfPassShow ? 'text' : 'password'" class="input form-control"
             v-model="employee.password_confirmation" placeholder="Retype Password">
-          <input v-else type="text" class="input form-control" v-model="employee.password_confirmation"
-            placeholder="Retype Password">
           <span class="input input-group-text">
-            <button type="button" @click="showHideConfPass()" class="showHideBtn">
+            <button type="button" @mousedown="showHideConfPass(true)" @mouseup="showHideConfPass(false)"
+              @mouseleave="showHideConfPass(false)" class="showHideBtn">
               <svg v-if="!isConfPassShow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-eye" viewBox="0 0 16 16">
                 <path
@@ -163,11 +162,11 @@ onMounted(() => {
   employeeStore.getEmployee(route.params.id)
 })
 
-const showHidePass = () => {
-  isPassShow.value = !isPassShow.value
+const showHidePass = (isShow) => {
+  isPassShow.value = isShow
 }
-const showHideConfPass = () => {
-  isConfPassShow.value = !isConfPassShow.value
+const showHideConfPass = (isShow) => {
+  isConfPassShow.value = isShow
 }
 
 const goToEdit = async () => {
@@ -177,7 +176,6 @@ const goToEdit = async () => {
 const resetPassword = async () => {
   try {
     await employeeStore.resetPassword(route.params.id)
-    employeeStore.getEmployee(route.params.id)
   } catch (error) {
     throw error.data.error || error.data.message
   }

@@ -68,8 +68,8 @@ const deletePurchaseOrder = (id) => {
   return httpApi.deleteDataViaApi(`${api.purchase_order}/${id}`)
 }
 
-const processToProformaInvoice = (id) => {
-  return httpApi.postDataViaApi(`${api.purchase_order}/moveToPi/${id}`)
+const processToProformaInvoice = (id, param) => {
+  return httpApi.postDataViaApi(`${api.purchase_order}/moveToPi/${id}`, param)
 }
 
 const updateStatusPurchaseOrder = (id, status) => {

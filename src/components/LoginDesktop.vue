@@ -19,11 +19,11 @@
           <div class="form form-group">
             <label for="password">Password</label><br>
             <div class="input-group mt-2">
-              <input v-if="!isPassShow" type="password" class="input form-control" v-model="user.password"
+              <input :type="isPassShow ? 'text' : 'password'" class="input form-control" v-model="user.password"
                 placeholder="Password">
-              <input v-else type="text" class="input form-control" v-model="user.password" placeholder="Password">
               <span class="input input-group-text">
-                <button type="button" @click="showHide()" class="showHideBtn">
+                <button type="button" @mousedown="showHide(true)" @mouseup="showHide(false)"
+                  @mouseleave="showHide(false)" class="showHideBtn">
                   <svg v-if="!isPassShow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-eye" viewBox="0 0 16 16">
                     <path
