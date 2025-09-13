@@ -254,6 +254,65 @@ const common = {
   },
 }
 
+const accessFeature = {
+  director: {
+    path: '/director',
+    name: 'Director',
+    feature: [
+      'dashboard',
+      'quotation',
+      'purchase_order',
+      'proforma_invoice',
+      'invoice',
+      'spareparts',
+      'back_order',
+      'purchase',
+      'employee',
+      'work_order',
+      'delivery_order',
+      'general'
+    ]
+  },
+  marketing: {
+    path: '/marketing',
+    name: 'Marketing',
+    feature: [
+      'quotation',
+      'purchase_order'
+    ]
+  },
+  inventory: {
+    path: '/inventory',
+    name: 'Inventory',
+    feature: [
+      'purchase_order',
+      'spareparts',
+      'back_order',
+      'purchase'
+    ]
+  },
+  finance: {
+    path: '/finance',
+    name: 'Finance',
+    feature: [
+      'quotation',
+      'purchase_order',
+      'proforma_invoice',
+      'invoice'
+    ]
+  },
+  service: {
+    path: '/service',
+    name: 'Service',
+    feature: [
+      'purchase_order',
+      'back_order',
+      'work_order'
+    ]
+  }
+}
+
+
 const api = {
   quotation: '/api/quotation',
   proforma_invoice: '/api/proforma-invoice',
@@ -276,5 +335,6 @@ const api = {
 export {
   menuMapping,
   common,
-  api
+  api,
+  accessFeature
 }

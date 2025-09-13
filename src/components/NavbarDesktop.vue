@@ -7,11 +7,11 @@
       </router-link>
     </div>
     <div class="navs">
-      <div v-for="(menu) in menus" class="menu-role nav-link" :key="menu.path">
+      <div class="menu-role nav-link">
         <div class="nav my-2">
           <div class="role my-3">
             <div class="logo">
-              <i :class="`bi bi-${iconMap[menu.name.toLowerCase()]}`"></i>
+              <i :class="`bi bi-${iconMap['user']}`"></i>
             </div>
             <div class="text text-role mx-2">{{ menu.name }}</div>
           </div>
@@ -31,10 +31,21 @@
 </template>
 
 <script setup>
-import { menuMapping } from '@/config'
+import { menuMapping, accessFeature } from '@/config'
+import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
+const authStore = useAuthStore()
+
+const { user } = storeToRefs(authStore)
+
+const menu = computed(() => {
+  return accessFeature[user.value.role.toLowerCase()]
+})
 
 const iconMap = {
-  director: 'person-square',
+  user: 'person-square',
   dashboard: 'clipboard-data',
   quotation: 'file-text-fill',
   purchase_order: 'clipboard-check-fill',
@@ -49,63 +60,63 @@ const iconMap = {
   general: 'sliders'
 }
 
-const menus = [
-  {
-    path: '/director',
-    name: 'Director',
-    feature: [
-      'dashboard',
-      'quotation',
-      'purchase_order',
-      'proforma_invoice',
-      'invoice',
-      'spareparts',
-      'back_order',
-      'purchase',
-      'employee',
-      'work_order',
-      'delivery_order',
-      'general'
-    ]
-  },
-  // {
-  //   path: '/marketing',
-  //   name: 'Marketing',
-  //   feature: [
-  //     'quotation',
-  //     'purchase_order'
-  //   ]
-  // },
-  // {
-  //   path: '/inventory',
-  //   name: 'Inventory',
-  //   feature: [
-  //     'purchase_order',
-  //     'spareparts',
-  //     'back_order',
-  //     'purchase'
-  //   ]
-  // },
-  // {
-  //   path: '/finance',
-  //   name: 'Finance',
-  //   feature: [
-  //     'quotation',
-  //     'purchase_order',
-  //     'proforma_invoice',
-  //     'invoice'
-  //   ]
-  // },
-  // {
-  //   path: '/service',
-  //   name: 'Service',
-  //   feature: [
-  //     'purchase_order',
-  //     'back_order',
-  //     'work_order'
-  //   ]
-  // }
-]
+// const menus = [
+//   {
+//     path: '/director',
+//     name: 'Director',
+//     feature: [
+//       'dashboard',
+//       'quotation',
+//       'purchase_order',
+//       'proforma_invoice',
+//       'invoice',
+//       'spareparts',
+//       'back_order',
+//       'purchase',
+//       'employee',
+//       'work_order',
+//       'delivery_order',
+//       'general'
+//     ]
+//   },
+//   // {
+//   //   path: '/marketing',
+//   //   name: 'Marketing',
+//   //   feature: [
+//   //     'quotation',
+//   //     'purchase_order'
+//   //   ]
+//   // },
+//   // {
+//   //   path: '/inventory',
+//   //   name: 'Inventory',
+//   //   feature: [
+//   //     'purchase_order',
+//   //     'spareparts',
+//   //     'back_order',
+//   //     'purchase'
+//   //   ]
+//   // },
+//   // {
+//   //   path: '/finance',
+//   //   name: 'Finance',
+//   //   feature: [
+//   //     'quotation',
+//   //     'purchase_order',
+//   //     'proforma_invoice',
+//   //     'invoice'
+//   //   ]
+//   // },
+//   // {
+//   //   path: '/service',
+//   //   name: 'Service',
+//   //   feature: [
+//   //     'purchase_order',
+//   //     'back_order',
+//   //     'work_order'
+//   //   ]
+//   // }
+// ]
 
 </script>
 
