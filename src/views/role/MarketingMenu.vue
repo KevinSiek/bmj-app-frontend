@@ -24,16 +24,6 @@ const componentList = ref([
     name: 'Purchase Order',
     component: MenuPurchaseOrder,
     path: menuConfig.purchase_order.path
-  },
-  {
-    name: 'Invoice',
-    component: MenuInvoice,
-    path: menuConfig.invoice.path
-  },
-  {
-    name: 'Proforma Invoice',
-    component: MenuProformaInvoice,
-    path: menuConfig.proforma_invoice.path
   }
 ])
 </script>

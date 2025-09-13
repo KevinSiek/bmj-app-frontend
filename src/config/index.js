@@ -7,9 +7,9 @@ const menuMapping = {
     name: 'Menu Director',
     path: '/menu/director'
   },
-  menu_sales: {
-    name: 'Menu Sales',
-    path: '/menu/sales'
+  menu_marketing: {
+    name: 'Menu Marketing',
+    path: '/menu/marketing'
   },
   menu_inventory: {
     name: 'Menu Inventory',

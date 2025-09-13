@@ -8,7 +8,7 @@ const LoginPage = () => import('@/views/LoginPage.vue')
 const MenuPage = () => import('@/views/MenuPage.vue')
 const MainMenuPage = () => import('@/views/role/MainMenu.vue')
 const MenuDirectorPage = () => import('@/views/role/DirectorMenu.vue')
-const MenuSalesPage = () => import('@/views/role/SalesMenu.vue')
+const MenuMarketingPage = () => import('@/views/role/MarketingMenu.vue')
 const MenuServicePage = () => import('@/views/role/ServiceMenu.vue')
 const MenuInventoryPage = () => import('@/views/role/InventoryMenu.vue')
 const MenuFinancePage = () => import('@/views/role/FinanceMenu.vue')
@@ -84,9 +84,9 @@ const router = createRouter({
           component: MenuDirectorPage
         },
         {
-          path: menuConfig.menu_sales.path,
-          name: menuConfig.menu_sales.name,
-          component: MenuSalesPage
+          path: menuConfig.menu_marketing.path,
+          name: menuConfig.menu_marketing.name,
+          component: MenuMarketingPage
         },
         {
           path: menuConfig.menu_finance.path,

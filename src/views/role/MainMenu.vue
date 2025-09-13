@@ -69,7 +69,7 @@
       </div>
     </div>
   </router-link>
-  <router-link class="menu-item nav-link sales" :to="menuConfig.menu_sales.path">
+  <router-link class="menu-item nav-link marketing" :to="menuConfig.menu_marketing.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
