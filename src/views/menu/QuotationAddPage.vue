@@ -80,8 +80,27 @@ $secondary-color: rgb(98, 98, 98);
 }
 
 @media only screen and (max-width: 769px) {
-  /* For mobile phones: */
+  .contain {}
 }
 
-@media only screen and (max-width: 767px) {}
+@media only screen and (max-width: 767px) {
+
+  /*   mobile phones: */
+  .contain {
+    height: 80vh;
+  }
+
+  .button {
+    margin: 4% 6%;
+
+    .btn {
+      padding: 1vh 4vw;
+      font-size: 3.5vw;
+    }
+
+    .left {
+      display: flex;
+    }
+  }
+}
 </style>

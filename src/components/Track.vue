@@ -185,4 +185,10 @@ ul li .active .awesome {
   font-size: 16px;
   color: ghostwhite;
 }
+
+@media only screen and (max-width: 767px) {
+  .main {
+    margin: 0% 5% 0 5%;
+  }
+}
 </style>

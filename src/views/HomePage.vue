@@ -7,11 +7,13 @@
       <div class="up">
         <NavBarMobileComponent v-if="isMobile" :logout="logout" class="navbar-mobile"></NavBarMobileComponent>
         <div class="page-title">
-          <div v-if="router.currentRoute.value.meta.useBack" class="back">
-            <i class="bi bi-caret-left-fill" @click="goBack()"></i>
-          </div>
-          <div class="text">
-            {{ router.currentRoute.value.name }}
+          <div class="title">
+            <div v-if="router.currentRoute.value.meta.useBack" class="back">
+              <i class="bi bi-caret-left-fill" @click="goBack()"></i>
+            </div>
+            <div class="text">
+              {{ router.currentRoute.value.name }}
+            </div>
           </div>
           <div v-if="router.currentRoute.value.meta.useTrack" class="track">
             <button type="button" class="btn" @click="trackStore.openTrackModal()">Track</button>
@@ -105,6 +107,10 @@ $background-color: #f0f0f0;
         padding-left: 4vw;
         align-items: center;
 
+        .title {
+          display: flex;
+        }
+
         .back {
           display: flex;
           align-items: center;
@@ -162,7 +168,10 @@ $background-color: #f0f0f0;
         height: 10vh;
 
         .page-title {
+          display: flex;
+          justify-content: space-between;
           margin-left: 18%;
+          width: 100%;
 
           .back {
             i {

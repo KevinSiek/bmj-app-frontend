@@ -35,6 +35,11 @@ const { isShowTrack } = storeToRefs(trackStore)
   display: flex;
   justify-content: flex-end;
   z-index: 1000;
+
+  @media (max-width: 768px) {
+    top: 3%;
+    bottom: 0%;
+  }
 }
 
 .popup {
@@ -49,12 +54,23 @@ const { isShowTrack } = storeToRefs(trackStore)
   flex-direction: column;
   justify-content: center;
 
+  @media (max-width: 768px) {
+    width: 90%;
+    border-radius: 15px;
+    padding: 15px;
+  }
+
   .title {
     font-size: 28px;
     font-weight: 500;
     display: flex;
     justify-content: space-between;
     margin: 0% 3% 3% 3%;
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+      margin: 0% 2% 5% 2%;
+    }
   }
 }
 

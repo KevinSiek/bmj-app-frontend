@@ -1,4 +1,18 @@
 <template>
+  <div class="upper">
+    <!-- Header: Title and Time Interval Selector -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title"></h1>
+      <div class="time-interval-selector">
+        <button @click="selectInterval('7d')" :class="{ active: selectedInterval === '7d' }">Last 7 Days</button>
+        <button @click="selectInterval('30d')" :class="{ active: selectedInterval === '30d' }">Last 30 Days</button>
+        <button @click="selectInterval('quarter')" :class="{ active: selectedInterval === 'quarter' }">This
+          Quarter</button>
+        <button @click="selectInterval('6m')" :class="{ active: selectedInterval === '6m' }">Last 6 Months</button>
+        <button @click="selectInterval('12m')" :class="{ active: selectedInterval === '12m' }">Last year</button>
+      </div>
+    </div>
+  </div>
   <div class="contain">
     <!-- Loading and No Data States -->
     <div v-if="isLoading" class="loading-text">
@@ -10,33 +24,21 @@
 
     <!-- Dashboard Content -->
     <div v-else class="dashboard-content">
-      <!-- Header: Title and Time Interval Selector -->
-      <div class="dashboard-header">
-        <h1 class="dashboard-title"></h1>
-        <div class="time-interval-selector">
-          <button @click="selectInterval('7d')" :class="{ active: selectedInterval === '7d' }">Last 7 Days</button>
-          <button @click="selectInterval('30d')" :class="{ active: selectedInterval === '30d' }">Last 30 Days</button>
-          <button @click="selectInterval('quarter')" :class="{ active: selectedInterval === 'quarter' }">This Quarter</button>
-          <button @click="selectInterval('6m')" :class="{ active: selectedInterval === '6m' }">Last 6 Months</button>
-          <button @click="selectInterval('12m')" :class="{ active: selectedInterval === '12m' }">Last year</button>
-        </div>
-      </div>
-
       <!-- KPI Cards -->
       <div class="kpi-container">
-        <div class="kpi-card">
+        <div class="kpi-card revenue">
           <h3 class="kpi-title">Revenue</h3>
           <p class="kpi-value">{{ formatCurrency(summary.revenueInInterval) }}</p>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card potential-revenue">
           <h3 class="kpi-title">Potential Revenue</h3>
           <p class="kpi-value">{{ formatCurrency(summary.potentialRevenue) }}</p>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card margin">
           <h3 class="kpi-title">Gross Profit Margin (Parts)</h3>
           <p class="kpi-value">{{ summary.grossProfitMargin.toFixed(1) }}%</p>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card quote-to-po">
           <h3 class="kpi-title">Quote-to-PO Conversion</h3>
           <p class="kpi-value">{{ summary.quoteToPoConversionRate.toFixed(1) }}%</p>
         </div>
@@ -68,7 +70,7 @@
         <div class="chart-card">
           <h2 class="chart-title">Sales Team Performance</h2>
           <div class="chart-wrapper">
-              <BarChart :data="salesTeamPerformanceData" :options="salesTeamPerformanceOptions" />
+            <BarChart :data="salesTeamPerformanceData" :options="salesTeamPerformanceOptions" />
           </div>
         </div>
 
@@ -88,7 +90,7 @@
         <div class="chart-card">
           <h2 class="chart-title">Top 5 Customers (Last 90d)</h2>
           <div class="chart-wrapper">
-              <BarChart :data="topCustomersData" :options="topCustomersOptions" />
+            <BarChart :data="topCustomersData" :options="topCustomersOptions" />
           </div>
         </div>
       </div>
@@ -142,14 +144,14 @@ const salesFunnelOptions = computed(() => ({
 
 const doughnutOptions = computed(() => ({
   ...baseOptions,
-  plugins: { ...baseOptions.plugins, legend: { position: 'right' }, tooltip: { callbacks: { label: (c) => `${c.label}: ${c.raw}` }} }
+  plugins: { ...baseOptions.plugins, legend: { position: 'right' }, tooltip: { callbacks: { label: (c) => `${c.label}: ${c.raw}` } } }
 }));
 
 const horizontalBarOptions = (title) => ({
-    ...baseOptions,
-    indexAxis: 'y',
-    scales: { x: { beginAtZero: true, title: { display: true, text: title } } },
-    plugins: { ...baseOptions.plugins, legend: { display: false }, tooltip: { callbacks: { label: (c) => ` ${formatCurrency(c.raw)}` } } }
+  ...baseOptions,
+  indexAxis: 'y',
+  scales: { x: { beginAtZero: true, title: { display: true, text: title } } },
+  plugins: { ...baseOptions.plugins, legend: { display: false }, tooltip: { callbacks: { label: (c) => ` ${formatCurrency(c.raw)}` } } }
 });
 
 const salesTeamPerformanceOptions = computed(() => horizontalBarOptions('Revenue (IDR)'));
@@ -189,6 +191,7 @@ const salesFunnelData = computed(() => {
 const revenueByTypeData = computed(() => {
   if (!summary.value?.revenueByType) return defaultChartData;
   const data = summary.value.revenueByType;
+  console.log('Revenue by Type Data:', data);
   return {
     labels: data.map(item => item.type),
     datasets: [{
@@ -200,12 +203,12 @@ const revenueByTypeData = computed(() => {
 });
 
 const salesTeamPerformanceData = computed(() => {
-    if (!summary.value?.salesTeamPerformance) return defaultChartData;
-    const data = summary.value.salesTeamPerformance;
-    return {
-        labels: data.map(c => c.fullname),
-        datasets: [{ label: 'Revenue', data: data.map(c => c.total_revenue), backgroundColor: 'rgba(153, 102, 255, 0.7)' }]
-    };
+  if (!summary.value?.salesTeamPerformance) return defaultChartData;
+  const data = summary.value.salesTeamPerformance;
+  return {
+    labels: data.map(c => c.fullname),
+    datasets: [{ label: 'Revenue', data: data.map(c => c.total_revenue), backgroundColor: 'rgba(153, 102, 255, 0.7)' }]
+  };
 });
 
 const operationalBottlenecksData = computed(() => {
@@ -237,75 +240,179 @@ const arAgingData = computed(() => {
 });
 
 const topCustomersData = computed(() => {
-    if (!summary.value?.topCustomersByRevenue) return defaultChartData;
-    const data = summary.value.topCustomersByRevenue;
-    return {
-        labels: data.map(c => c.company_name),
-        datasets: [{ label: 'Revenue', data: data.map(c => c.total_revenue), backgroundColor: 'rgba(54, 162, 235, 0.7)' }]
-    };
+  if (!summary.value?.topCustomersByRevenue) return defaultChartData;
+  const data = summary.value.topCustomersByRevenue;
+  return {
+    labels: data.map(c => c.company_name),
+    datasets: [{ label: 'Revenue', data: data.map(c => c.total_revenue), backgroundColor: 'rgba(54, 162, 235, 0.7)' }]
+  };
 });
 </script>
 
 <style lang="scss" scoped>
-@use '@/assets/css/page.scss';
+.upper {
+  margin: 1% 4%;
+}
 
 .contain {
-  padding: 1.5rem; background-color: #f9fafb;
-  height: calc(100vh - 80px); overflow-y: auto;
+  margin: 1% 4%;
+  background-color: #f9fafb;
+  height: 72vh;
+  overflow-y: auto;
 }
+
+.loading-text,
+.no-data-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 .dashboard-header {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1.5rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
+
 .dashboard-title {
-  font-size: 1.875rem; font-weight: 700; color: #1f2937;
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    text-align: center;
+  }
 }
+
 .time-interval-selector {
-  display: flex; gap: 0.5rem; background-color: #e5e7eb;
-  padding: 0.25rem; border-radius: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  background-color: #e5e7eb;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
   button {
-    padding: 0.5rem 1rem; border: none; background-color: transparent;
-    border-radius: 0.375rem; cursor: pointer; font-weight: 500;
-    color: #4b5563; transition: all 0.2s ease-in-out;
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: transparent;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: #4b5563;
+    transition: all 0.2s ease-in-out;
+
     &.active {
-      background-color: #ffffff; color: #1f2937;
+      background-color: #ffffff;
+      color: #1f2937;
       box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
     }
   }
 }
+
 .kpi-container {
-  display: grid; grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem; margin-bottom: 1.5rem;
-  @media (min-width: 640px) { grid-template-columns: repeat(2, 1fr); }
-  @media (min-width: 1280px) { grid-template-columns: repeat(4, 1fr); }
-}
-.kpi-card {
-  background-color: #ffffff; padding: 1.25rem; border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.07); text-align: left;
-  .kpi-title {
-    color: #6b7280; font-size: 0.875rem; font-weight: 500;
-  }
-  .kpi-value {
-    font-size: 1.875rem; font-weight: 700; color: #1f2937;
-    margin-top: 0.25rem;
-  }
-}
-.charts-container {
-  display: grid; grid-template-columns: repeat(1, 1fr);
+  display: flex;
+  flex-direction: row;
   gap: 1.5rem;
-  @media (min-width: 1024px) { grid-template-columns: repeat(3, 1fr); }
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .kpi-card {
+    background-color: #ffffff;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.07);
+    text-align: left;
+
+    &.revenue,
+    &.potential-revenue {
+      width: 35%;
+
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+    }
+
+    &.margin,
+    &.quote-to-po {
+      width: 15%;
+
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+    }
+
+    .kpi-title {
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .kpi-value {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-top: 0.25rem;
+    }
+  }
 }
+
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 15px;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  >* {
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
+
 .chart-card {
-  background-color: #ffffff; padding: 1.5rem; border-radius: 0.75rem;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  border-radius: 0.75rem;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.07);
+
   &.md-col-span-3 {
-    @media (min-width: 1024px) { grid-column: span 3 / span 3; }
+    @media (min-width: 1024px) {
+      grid-column: span 3 / span 3;
+    }
   }
+
   .chart-title {
-    font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
   }
+
   .chart-wrapper {
-    position: relative; height: 20rem;
+    position: relative;
+    height: 20rem;
   }
 }
 </style>

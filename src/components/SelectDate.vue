@@ -78,5 +78,16 @@ const selectYear = () => {
   }
 }
 
-@media only screen and (max-width: 766px) {}
+@media only screen and (max-width: 766px) {
+  .date {
+
+    .month,
+    .year {
+      select {
+        font-size: 14px;
+      }
+    }
+
+  }
+}
 </style>

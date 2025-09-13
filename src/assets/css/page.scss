@@ -68,11 +68,22 @@ $primary-color: black;
   }
 }
 @media only screen and (max-width: 767px) {
-  /* For mobile phones: */
+  /*   mobile phones: */
   .contain{
     .upper{
+      margin: 3% 4%;
+      .left{
+        width: 65%;
+        .review, .return {
+          margin-left: 4%;
+          .btn{
+            font-size: 2.5vw;
+            padding: 1.5vw 2.5vw 1.5vw 2.5vw;
+          }
+        }
+      }
       .btn-add{
-        padding-right: 8%;
+        // padding-right: 4%;
         .btn{
           margin-left: 5%;
           width: 24vw;
@@ -81,6 +92,11 @@ $primary-color: black;
           font-size: 2.5vw;
         }
       }
+    }
+
+    .lower{
+      height: 70vh;
+      margin: 4% 4%;
     }
   }
 }

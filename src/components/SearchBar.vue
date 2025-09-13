@@ -35,8 +35,8 @@ const handleInputSearch = () => {
 @media only screen and (max-width: 767px) {
 
   /* For mobile phones: */
-  .search-bar {
-    margin-left: 8%;
-  }
+  // .search-bar {
+  //   margin-left: 4%;
+  // }
 }
 </style>

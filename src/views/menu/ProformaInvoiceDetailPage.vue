@@ -271,10 +271,10 @@
   <div class="button">
     <div class="left">
       <button v-if="isDPPaid" type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
-      <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
+      <button type="button" class="btn btn-process" @click="download">Print</button>
     </div>
     <div class="right">
-      <button v-if="isDPPaid" type="button" class="btn btn-process mx-4" @click="paidDpConfirmation"
+      <button v-if="isDPPaid" type="button" class="btn btn-process" @click="paidDpConfirmation"
         :disabled="isProcessing">DP
         Paid</button>
       <button type="button" class="btn btn-process" @click="createInvoiceConfirmation" :disabled="isProcessing">Create
@@ -426,6 +426,12 @@ $secondary-color: rgb(98, 98, 98);
   margin: 1.5% 4%;
   justify-content: space-between;
 
+  .left,
+  .right {
+    display: flex;
+    gap: 20px;
+  }
+
   .btn {
     padding: 1.5vh 3vw 1.5vh 3vw;
     font-weight: 500;
@@ -440,6 +446,65 @@ $secondary-color: rgb(98, 98, 98);
 
   .btn-process {
     background-color: $primary-color;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .contain {
+    padding: 4% 5%;
+    // height: auto;
+
+    .upper,
+    .lower {
+      flex-direction: column;
+
+      .left,
+      .right {
+        width: 100%;
+      }
+
+      .data {
+        flex-direction: column;
+      }
+    }
+
+    .table-placeholder {
+      .table {
+        min-width: 800px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .button {
+    margin: 4% 6%;
+    flex-direction: column;
+    gap: 15px;
+
+    .btn {
+      padding: 1.2vh 4vw;
+      font-size: 3vw;
+      width: 100%;
+      margin: 0;
+    }
+
+    .left,
+    .right {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      width: 100%;
+
+      .btn {
+        width: calc(50% - 5px);
+      }
+    }
+  }
+
+  .down-payment {
+    font-size: 16px;
+    height: auto;
+    padding: 3% 4%;
   }
 }
 </style>

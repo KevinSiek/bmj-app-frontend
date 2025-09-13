@@ -160,5 +160,36 @@ $primary-color: black;
   }
 }
 
-@media only screen and (max-width: 766px) {}
+@media only screen and (max-width: 766px) {
+  .item {
+    margin: 0% 4% 2.5% 4%;
+
+    .number {
+      font-size: 12px;
+      width: 6%;
+    }
+
+    .content {
+      .first-section {
+        width: 55%;
+        font-size: 13px;
+      }
+
+      .second-section {
+        width: 35%;
+        font-size: 12px;
+      }
+
+      .status-default {
+        width: 35%;
+        font-size: 12px;
+      }
+
+      .status-big {
+        width: 40%;
+        font-size: 13px;
+      }
+    }
+  }
+}
 </style>

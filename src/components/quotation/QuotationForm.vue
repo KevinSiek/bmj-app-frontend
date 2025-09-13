@@ -544,4 +544,47 @@ $secondary-color: rgb(98, 98, 98);
 .dropdown-menu::-webkit-scrollbar-thumb:hover {
   background: #696969;
 }
+
+@media only screen and (max-width: 767px) {
+
+  .upper,
+  .lower {
+    .data {
+      flex-direction: column;
+    }
+
+    .left,
+    .right {
+      width: 100%;
+    }
+  }
+
+  .sparepart,
+  .service {
+    .row {
+      .col-4 {
+        width: 100%;
+      }
+
+      .col-2,
+      .col-3 {
+        width: 33.33%;
+        margin-top: 10px;
+        padding: 0 5px;
+      }
+    }
+
+    .list {
+      margin-bottom: 20px;
+    }
+  }
+
+  .table-placeholder {
+    font-size: 14px;
+
+    .table {
+      min-width: 800px;
+    }
+  }
+}
 </style>
