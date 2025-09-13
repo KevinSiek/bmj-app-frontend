@@ -5,7 +5,7 @@
         <SearchBar @searched="handleUpdateSearch" />
       </div>
       <div class="btn-add">
-        <button class="btn btn-primary" @click="goToAdd">Add Employee</button>
+        <button class="btn btn-primary" @click="goToAdd">{{ addText }}</button>
       </div>
     </div>
     <div class="lower paginate shadow">
@@ -40,14 +40,19 @@ import { useRoute, useRouter } from 'vue-router'
 import { useEmployeeStore } from '@/stores/employee'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onMounted, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
+import { useMainStore } from '@/stores/main'
 
+const mainStore = useMainStore()
 const route = useRoute()
 const router = useRouter()
 const employeeStore = useEmployeeStore()
 
+const { isMobile } = storeToRefs(mainStore)
 const { employees, paginationData, isLoading } = storeToRefs(employeeStore)
+
+const addText = computed(() => (isMobile.value ? 'Add' : 'Add Employee'))
 
 onMounted(async () => {
   // Handle first load

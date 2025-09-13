@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="btn-add">
-        <button class="btn btn-primary" @click="goToAdd">Add Purchase</button>
+        <button class="btn btn-primary" @click="goToAdd">{{ addText }}</button>
       </div>
     </div>
     <div class="lower paginate shadow">
@@ -47,16 +47,21 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onMounted, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
+import { useMainStore } from '@/stores/main'
 
+const mainStore = useMainStore()
 const route = useRoute()
 const router = useRouter()
 const purchaseStore = usePurchaseStore()
 const { selectedMonth, selectedYear } = useDate()
 
+const { isMobile } = storeToRefs(mainStore)
 const { purchases, paginationData, isLoading } = storeToRefs(purchaseStore)
+
+const addText = computed(() => (isMobile.value ? 'Add' : 'Add Purchase'))
 
 onMounted(async () => {
   // Handle first load

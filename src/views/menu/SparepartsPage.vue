@@ -6,7 +6,7 @@
       </div>
       <div class="btn-add">
         <button class="btn btn-primary" @click="goToAdd">
-          Add Sparepart
+          {{ addText }}
         </button>
       </div>
     </div>
@@ -42,14 +42,19 @@ import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onMounted, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
+import { useMainStore } from '@/stores/main'
 
+const mainStore = useMainStore()
 const route = useRoute()
 const router = useRouter()
 const sparepartStore = useSparepartStore()
 
+const { isMobile } = storeToRefs(mainStore)
 const { spareparts, paginationData, isLoading } = storeToRefs(sparepartStore)
+
+const addText = computed(() => (isMobile.value ? 'Add' : 'Add Sparepart'))
 
 onMounted(async () => {
   // Handle first load
