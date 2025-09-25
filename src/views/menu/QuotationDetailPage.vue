@@ -67,7 +67,10 @@ const processQuotationConfirmation = () => {
 }
 
 const download = () => {
-  createPdf(quotation.value)
+  modalStore.openNotesModal('Print Quotation', async () => {
+    await createPdf(quotation.value, modalStore.notes)
+    modalStore.closeModal()
+  })
 }
 </script>
 
