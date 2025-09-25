@@ -213,7 +213,7 @@ const common = {
       prepare: 'Prepare',
       dpPaid: 'DP Paid',
       ready: 'Ready',
-      done: 'done',
+      done: 'Done',
       bo: 'BO'
     },
     work_order: {
