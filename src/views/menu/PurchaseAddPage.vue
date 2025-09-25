@@ -243,4 +243,6 @@ $secondary-color: rgb(98, 98, 98);
 .dropdown-menu {
   text-align: center;
 }
+
+@media only screen and (max-width: 767px) {}
 </style>

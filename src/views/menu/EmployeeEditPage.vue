@@ -123,4 +123,31 @@ $primary-color: black;
     background-color: $primary-color;
   }
 }
+
+@media only screen and (max-width: 767px) {
+  .button {
+    margin: 4% 6%;
+    flex-direction: column;
+    gap: 15px;
+
+    .btn {
+      padding: 1.2vh 4vw;
+      font-size: 3vw;
+      width: 100%;
+      margin: 0;
+    }
+
+    .left,
+    .right {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      width: 100%;
+
+      .btn {
+        width: calc(50% - 5px);
+      }
+    }
+  }
+}
 </style>

@@ -258,4 +258,58 @@ $secondary-color: rgb(98, 98, 98);
     background-color: $primary-color;
   }
 }
+
+@media only screen and (max-width: 767px) {
+  .contain {
+    padding: 4% 5%;
+    height: 78vh;
+
+    .upper,
+    .lower {
+      flex-direction: column;
+
+      .left,
+      .right {
+        width: 100%;
+      }
+
+      .data {
+        flex-direction: column;
+      }
+    }
+
+    .table-placeholder {
+      .table {
+        min-width: 800px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .button {
+    margin: 4% 6%;
+    flex-direction: column;
+    gap: 15px;
+
+    .btn {
+      padding: 1.2vh 4vw;
+      font-size: 3vw;
+      width: 100%;
+      margin: 0;
+    }
+
+    .left,
+    .right {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      gap: 10px;
+      width: 100%;
+
+      .btn {
+        width: calc(50% - 5px);
+      }
+    }
+  }
+}
 </style>

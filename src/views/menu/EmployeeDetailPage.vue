@@ -5,6 +5,10 @@
     </div>
     <form @submit.prevent="action()" class="row form">
       <div class="input form-group col-12">
+        <label for="name">Code</label><br>
+        <input type="text" class="form-control mt-2" v-model="employee.id" placeholder="Code" disabled>
+      </div>
+      <div class="input form-group col-12">
         <label for="name">FullName</label><br>
         <input type="text" class="form-control mt-2" v-model="employee.fullname" placeholder="Fullname" disabled>
       </div>
@@ -269,5 +273,32 @@ $primary-color: black;
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+@media only screen and (max-width: 767px) {
+  .button {
+    margin: 4% 6%;
+    flex-direction: column;
+    gap: 15px;
+
+    .btn {
+      padding: 1.2vh 4vw;
+      font-size: 3vw;
+      width: 100%;
+      margin: 0;
+    }
+
+    .left,
+    .right {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      width: 100%;
+
+      .btn {
+        width: calc(50% - 5px);
+      }
+    }
+  }
 }
 </style>
