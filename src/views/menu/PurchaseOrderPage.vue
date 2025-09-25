@@ -26,19 +26,18 @@
         <div v-else class="list">
           <div v-for="(allPO, index) in purchaseOrders" :key="index">
             <template v-if="allPO.versions.length > 1">
-              <ItemComponent :number="index + paginationData.from"
-                :item="allPO.versions[allPO.versions.length - 1]"
+              <ItemComponent :number="index + paginationData.from" :item="allPO.versions[allPO.versions.length - 1]"
                 :first-section="allPO.versions[allPO.versions.length - 1].purchaseOrder.purchaseOrderNumber"
                 :second-section="allPO.versions[allPO.versions.length - 1].purchaseOrder.purchaseOrderDate"
                 :third-section="allPO.versions[allPO.versions.length - 1].purchaseOrder.type" wideRow
-                :current-status="paymentStatus(allPO.versions[allPO.versions.length - 1])"
-                data-bs-toggle="collapse" :data-bs-target="'#collapsChild' + index" />
+                :current-status="paymentStatus(allPO.versions[allPO.versions.length - 1])" data-bs-toggle="collapse"
+                :data-bs-target="'#collapsChild' + index" />
               <div class="collapse" :id="'collapsChild' + index">
                 <div v-for="(po, versionIndex) in allPO.versions" :key="versionIndex">
                   <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)" :item="po"
-                    :first-section="po.purchaseOrder.purchaseOrderNumber" :second-section="po.purchaseOrder.purchaseOrderDate"
-                    :third-section="po.purchaseOrder.type" :current-status="paymentStatus(po)" class="item-child" wideRow
-                    @click="goToDetail(po)"
+                    :first-section="po.purchaseOrder.purchaseOrderNumber"
+                    :second-section="po.purchaseOrder.purchaseOrderDate" :third-section="po.purchaseOrder.type"
+                    :current-status="paymentStatus(po)" class="item-child" wideRow @click="goToDetail(po)"
                     :class="{ disabled: versionIndex != (allPO.versions.length - 1) }" />
                 </div>
               </div>
@@ -57,7 +56,7 @@
 </template>
 
 <script setup>
-import { menuMapping as menuConfig } from '@/config'
+import { menuMapping as menuConfig, common } from '@/config'
 import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
@@ -98,7 +97,8 @@ watch(() => route.query, (before, after) => {
 const paymentStatus = (item) => {
   if (item?.proformaInvoice) {
     const pi = item.proformaInvoice
-    if (pi.isFullPaid) return item.currentStatus + ' (Full Paid)'
+    if (pi.isFullPaid && item.status.find(step => step.state === common.status.po.done)) return 'Done (Full Paid)'
+    else if (pi.isFullPaid && !item.status.find(step => step.state === common.status.po.done)) return item.currentStatus + ' (Full Paid)'
     else if (pi.isDpPaid) return item.currentStatus + ' (DP Paid)'
     else return item.currentStatus + ' (Unpaid)'
   }
