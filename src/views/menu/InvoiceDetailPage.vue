@@ -123,7 +123,6 @@
                 <th scope="col" class="table-name">UNIT</th>
                 <th scope="col" class="table-name">UNIT PRICE</th>
                 <th scope="col" class="table-name">TOTAL PRICE</th>
-                <th scope="col" class="table-name">STOCK</th>
               </tr>
               <tr class="align-middle" v-else>
                 <th scope="col-1" class="table-number">NO</th>
@@ -140,8 +139,8 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
-                <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
-                <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
                 <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
             </tbody>
@@ -150,8 +149,8 @@
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
                 <td class="table-col table-name">{{ service.service }}</td>
                 <td class="table-col table-name">{{ service.quantity }}</td>
-                <td class="table-col table-name">{{ service.unitPriceSell }}</td>
-                <td class="table-col table-name">{{ service.totalPrice }}</td>
+                <td class="table-col table-name">{{ formatCurrency(service.unitPriceSell) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(service.totalPrice) }}</td>
               </tr>
             </tbody>
             <tbody>
@@ -162,7 +161,7 @@
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ invoice.price.subtotal }}</td>
+                <td class="table-col table-name">{{ formatCurrency(invoice.price.subtotal) }}</td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -172,7 +171,7 @@
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ invoice.price.ppn }}</td>
+                <td class="table-col table-name">{{ formatCurrency(invoice.price.ppn) }}</td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -182,7 +181,7 @@
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ invoice.price.grandTotal }}</td>
+                <td class="table-col table-name">{{ formatCurrency(invoice.price.grandTotal) }}</td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
             </tbody>
@@ -215,6 +214,7 @@ import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted } from 'vue'
 import { useTrackStore } from '@/stores/track'
 import { createPdf } from '@/utils/pdf/invoice'
+import { formatCurrency } from '@/utils/form-util'
 
 const route = useRoute()
 const router = useRouter()

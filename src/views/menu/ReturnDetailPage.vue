@@ -137,12 +137,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ sparepart.unitPriceSell }}
+                    {{ formatCurrency(sparepart.unitPriceSell) }}
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ sparepart.totalPrice }}
+                    {{ formatCurrency(sparepart.totalPrice) }}
                   </div>
                 </td>
                 <td class="table-col table-name">
@@ -171,7 +171,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.amount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.amount) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -181,7 +181,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.discount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.discount) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -191,7 +191,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.subtotal }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.subtotal) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -201,7 +201,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.advancePayment }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.advancePayment) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -211,7 +211,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.total }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.total) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -221,7 +221,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.vat }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.vat) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -231,7 +231,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ purchaseOrder.price.totalAmount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.totalAmount) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -275,6 +275,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
+import { formatCurrency } from '@/utils/form-util'
 
 const router = useRouter()
 const route = useRoute()

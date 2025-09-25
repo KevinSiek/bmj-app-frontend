@@ -98,8 +98,8 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit }}</td>
-                <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
-                <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
                 <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
               <tr class="align-middle">
@@ -108,7 +108,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.amount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.amount) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -117,7 +117,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.discount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.discount) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -126,7 +126,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.subtotal }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.subtotal) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -135,7 +135,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.advancePayment }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.advancePayment) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -144,7 +144,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.total }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.total) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -153,7 +153,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.vat }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.vat) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -162,7 +162,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ proformaInvoice.price.totalAmount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.totalAmount) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
             </tbody>
@@ -204,6 +204,7 @@ import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { formatCurrency } from '@/utils/form-util'
 
 const route = useRoute()
 const router = useRouter()

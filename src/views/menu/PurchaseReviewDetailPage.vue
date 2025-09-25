@@ -21,8 +21,8 @@
                 <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
-                <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
               </tr>
             </tbody>
           </table>
@@ -63,6 +63,7 @@ import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { formatCurrency } from '@/utils/form-util'
 
 const route = useRoute()
 const purchaseStore = usePurchaseStore()

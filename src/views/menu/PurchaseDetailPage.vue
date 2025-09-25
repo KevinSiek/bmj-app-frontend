@@ -21,8 +21,8 @@
                 <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
-                <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
               </tr>
             </tbody>
           </table>
@@ -41,7 +41,7 @@
   <div class="status background">
     Status: {{ purchase.currentStatus }}
   </div>
-  <div class="button" v-if="purchase.status == common.status.approved">
+  <div class="button" v-if="purchase.currentStatus == common.status.approved">
     <div class="right">
       <button type="button" class="btn btn-process" @click="receiveConfirmation"
         :disabled="isProcessing">Receive</button>
@@ -56,6 +56,7 @@ import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { formatCurrency } from '@/utils/form-util'
 
 const route = useRoute()
 const purchaseStore = usePurchaseStore()

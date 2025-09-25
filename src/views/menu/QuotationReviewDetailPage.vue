@@ -100,8 +100,8 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit }}</td>
-                <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
-                <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
                 <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
               <tr class="align-middle">
@@ -111,7 +111,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ quotationReview.price.subtotal }}</td>
+                <td class="table-col table-name">{{ formatCurrency(quotationReview.price.subtotal) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -121,7 +121,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ quotationReview.price.ppn }}</td>
+                <td class="table-col table-name">{{ formatCurrency(quotationReview.price.ppn) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -131,7 +131,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ quotationReview.price.grandTotal }}</td>
+                <td class="table-col table-name">{{ formatCurrency(quotationReview.price.grandTotal) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
             </tbody>
@@ -170,6 +170,7 @@ import { onBeforeMount, onMounted, ref } from 'vue'
 import { useTrackStore } from '@/stores/track'
 import { useRoute, useRouter } from 'vue-router'
 import { useModalStore } from '@/stores/modal'
+import { formatCurrency } from '@/utils/form-util'
 
 const quotationStore = useQuotationStore()
 const trackStore = useTrackStore()

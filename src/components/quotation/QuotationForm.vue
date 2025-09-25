@@ -108,8 +108,8 @@
               <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
               <td class="table-col table-name">{{ sparepart.quantity }}</td>
               <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
-              <td class="table-col table-name">{{ sparepart.unitPriceSell }}</td>
-              <td class="table-col table-name">{{ sparepart.totalPrice }}</td>
+              <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
+              <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
               <td class="table-col table-name">{{ sparepart.stock }}</td>
             </tr>
             <tr class="align-middle">
@@ -119,7 +119,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ quotation.price.subtotal }}</td>
+              <td class="table-col table-name">{{ formatCurrency(quotation.price.subtotal) }}</td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -129,7 +129,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ quotation.price.ppn }}</td>
+              <td class="table-col table-name">{{ formatCurrency(quotation.price.ppn) }}</td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -139,7 +139,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ quotation.price.grandTotal }}</td>
+              <td class="table-col table-name">{{ formatCurrency(quotation.price.grandTotal) }}</td>
               <td class="table-col table-name"></td>
             </tr>
           </tbody>
@@ -150,10 +150,10 @@
           <div class="row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                   <label for="">Sparepart Name</label>
                 </div>
-                <div class="col-2">
+                <div class="col-3">
                   <label for="">Part Number</label>
                 </div>
                 <div class="col-2">
@@ -176,7 +176,7 @@
           <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                     data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
                     @keyup="handleInputSearch(sparepart.sparepartName)">
@@ -187,7 +187,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="col-2">
+                <div class="col-3">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
                     placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
                     @change="handleInputSearch(sparepart.sparepartNumber)"
@@ -213,9 +213,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-1
-
-">
+            <div class="col-1">
               <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
                   class="bi bi-trash3"></i></button>
             </div>
@@ -247,29 +245,29 @@
               <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
               <td class="table-col table-name">{{ service.service }}</td>
               <td class="table-col table-name">{{ service.quantity }}</td>
-              <td class="table-col table-name">{{ service.unitPriceSell }}</td>
-              <td class="table-col table-name">{{ service.totalPrice }}</td>
+              <td class="table-col table-name">{{ formatCurrency(service.unitPriceSell) }}</td>
+              <td class="table-col table-name">{{ formatCurrency(service.totalPrice) }}</td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">SubTotal</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ quotation.price.subtotal }}</td>
+              <td class="table-col table-name">{{ formatCurrency(quotation.price.subtotal) }}</td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">PPN 12%</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ quotation.price.ppn }}</td>
+              <td class="table-col table-name">{{ formatCurrency(quotation.price.ppn) }}</td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">Grand Total</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ quotation.price.grandTotal }}</td>
+              <td class="table-col table-name">{{ formatCurrency(quotation.price.grandTotal) }}</td>
             </tr>
           </tbody>
         </table>
@@ -334,21 +332,26 @@
       </div>
     </div>
     <div class="price my-2">
-      <div class="amount">
-        Total Amount: {{ formatCurrency(quotation.price.amount) }}
+      <div class="amount type">
+        <div class="label">Total Amount</div>
+        <div>: {{ formatCurrency(quotation.price.amount) }}</div>
       </div>
       <template v-if="!isTypeAdd">
-        <div class="discount">
-          Discount: {{ formatCurrency(quotation.price.discount) }}
+        <div class="discount type">
+          <div class="label">Discount</div>
+          <div>: {{ formatCurrency(quotation.price.discount) }}</div>
         </div>
-        <div class="subtotal">
-          Subtotal: {{ formatCurrency(quotation.price.subtotal) }}
+        <div class="subtotal type">
+          <div class="label">Subtotal</div>
+          <div>: {{ formatCurrency(quotation.price.subtotal) }}</div>
         </div>
-        <div class="ppn">
-          PPN: {{ formatCurrency(quotation.price.ppn) }}
+        <div class="ppn type">
+          <div class="label">PPN</div>
+          <div>: {{ formatCurrency(quotation.price.ppn) }}</div>
         </div>
-        <div class="grand-total">
-          Grand Total: {{ formatCurrency(quotation.price.grandTotal) }}
+        <div class="grand-total type">
+          <div class="label">Grand Total</div>
+          <div>: {{ formatCurrency(quotation.price.grandTotal) }}</div>
         </div>
       </template>
     </div>
@@ -512,6 +515,16 @@ $secondary-color: rgb(98, 98, 98);
   }
 }
 
+.price {
+  .type {
+    display: flex;
+  }
+
+  .label {
+    width: 180px;
+  }
+}
+
 .table-placeholder {
   text-align: center;
   border: 2px solid $primary-color;
@@ -520,7 +533,7 @@ $secondary-color: rgb(98, 98, 98);
 }
 
 .dropdown-menu {
-  text-align: center;
+  width: 200px;
   max-height: 300px;
   overflow-y: auto;
   margin-right: -10%;

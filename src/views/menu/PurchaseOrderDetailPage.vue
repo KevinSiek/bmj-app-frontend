@@ -144,12 +144,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ sparepart.unitPriceSell }}
+                    {{ formatCurrency(sparepart.unitPriceSell) }}
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ sparepart.totalPrice }}
+                    {{ formatCurrency(sparepart.totalPrice) }}
                   </div>
                 </td>
                 <td class="table-col table-name">
@@ -178,12 +178,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.services.length - 1 }">
-                    {{ service.unitPriceSell }}
+                    {{ formatCurrency(service.unitPriceSell) }}
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.services.length - 1 }">
-                    {{ service.totalPrice }}
+                    {{ formatCurrency(service.totalPrice) }}
                   </div>
                 </td>
               </tr>
@@ -194,7 +194,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
+                <td></td>
+                <td></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
@@ -208,9 +209,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
-                  purchaseOrder.price.amount }}</td>
-                <td v-else class="table-col table-name">{{ purchaseOrder.price.amount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.amount) }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -221,9 +220,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
-                  purchaseOrder.price.discount }}</td>
-                <td v-else class="table-col table-name">{{ purchaseOrder.price.discount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.discount) }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -234,9 +231,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
-                  purchaseOrder.price.subtotal }}</td>
-                <td v-else class="table-col table-name">{{ purchaseOrder.price.subtotal }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.subtotal) }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -247,9 +242,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
-                  purchaseOrder.price.advancePayment }}</td>
-                <td v-else class="table-col table-name">{{ purchaseOrder.price.advancePayment }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.advancePayment) }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -260,9 +253,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
-                  purchaseOrder.price.total }}</td>
-                <td v-else class="table-col table-name">{{ purchaseOrder.price.total }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.total) }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -273,9 +264,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
-                  purchaseOrder.price.vat }}</td>
-                <td v-else class="table-col table-name">{{ purchaseOrder.price.vat }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.vat) }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -286,9 +275,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name">{{
-                  purchaseOrder.price.totalAmount }}</td>
-                <td v-else class="table-col table-name">{{ purchaseOrder.price.totalAmount }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.totalAmount) }}</td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -317,7 +304,7 @@
     <div class="left">
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
       <button v-if="isShowReject" type="button" class="btn btn-danger mx-3" @click="rejectConfirmation"
-        :disabled="isProcessing">Reject</button>
+        :disabled="isProcessing">Cancel PO</button>
     </div>
     <div class="right">
       <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation"
@@ -349,6 +336,7 @@ import { useRole } from '@/composeable/useRole'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
 import { createPdf } from '@/utils/pdf/purchase-order'
+import { formatCurrency } from '@/utils/form-util'
 
 const router = useRouter()
 const route = useRoute()
@@ -503,7 +491,10 @@ const rejectConfirmation = () => {
 }
 
 const download = () => {
-  createPdf(purchaseOrder.value)
+  modalStore.openNotesModal('Print PO', async () => {
+    await createPdf(purchaseOrder.value, modalStore.notes)
+    modalStore.closeModal()
+  })
 }
 </script>
 
