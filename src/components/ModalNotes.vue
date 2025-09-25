@@ -183,18 +183,41 @@ $secondary-color: rgb(98, 98, 98);
 
   /* For mobile phones: */
   .modal-body {
+    margin-top: 2%;
+    padding: 15px;
+
     svg {
-      width: 24vw;
-      height: 20vh;
+      width: 20vw;
+      height: 18vh;
     }
 
     .text-header {
-      margin-top: -7%;
-      font-size: 6.5vw;
+      font-size: 5vw;
     }
 
     .text {
       font-size: 3.5vw;
+      width: 100%;
+
+      .inputform-floating {
+        textarea {
+          width: 100% !important;
+          height: 120px !important;
+        }
+      }
+    }
+
+    .button-modal {
+      margin-top: 5%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+
+      .btn {
+        font-size: 3.5vw;
+        padding: 8px 15px !important;
+      }
     }
   }
 }
