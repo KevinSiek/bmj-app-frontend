@@ -300,11 +300,11 @@
       {{ purchaseOrder.downPayment }} %
     </div>
   </div>
-  <div class="button">
+  <div class="button" v-if="!isRejected">
     <div class="left">
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
       <button v-if="isShowReject" type="button" class="btn btn-danger mx-3" @click="rejectConfirmation"
-        :disabled="isProcessing">Cancel PO</button>
+        :disabled="isProcessing">Reject PO</button>
     </div>
     <div class="right">
       <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation"
@@ -378,6 +378,7 @@ const isShowReturn = computed(() =>
   !purchaseOrder.value.status.some(item => item.state === common.track.return)
 )
 const isShowReject = computed(() => isRoleDirector.value)
+const isRejected = computed(() => purchaseOrder.value.currentStatus === common.status.rejected || purchaseOrder.value.status.some(item => item.state === common.status.rejected))
 
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
