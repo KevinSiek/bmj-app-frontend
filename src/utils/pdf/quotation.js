@@ -5,89 +5,89 @@ import { common } from '@/config'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-const data = {
-  id: 'ID',
-  currentStatus: 'ready',
-  project: {
-    quotationNumber: 'Q123456',
-    type: 'Service',
-    date: '2023-09-01'
-  },
-  customer: {
-    companyName: 'BMJ Company',
-    address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
-    city: 'Jakarta',
-    province: 'DKI Jakarta',
-    office: 'Head Office',
-    urban: 'Central Jakarta',
-    subdistrict: 'Gambir',
-    postalCode: '10110'
-  },
-  notes: 'Please handle with care.',
-  price: {
-    amount: '1000000',
-    discount: '100000',
-    subtotal: '900000',
-    total: '900000',
-    ppn: '0',
-    grandTotal: '900000'
-  },
-  spareparts: [
-    {
-      sparepartName: 'Sparepart A',
-      sparepartNumber: 'SP001',
-      service: 'Service A',
-      quantity: 10,
-      unitPriceSell: 100000,
-      totalPrice: 1000000,
-      stock: 'In Stock'
-    },
-    {
-      sparepartName: 'Sparepart B',
-      sparepartNumber: 'SP002',
-      service: 'Service B',
-      quantity: 5,
-      unitPriceSell: 200000,
-      totalPrice: 1000000,
-      stock: 'In Stock'
-    },
-    // {
-    //   sparepartName: 'Sparepart A',
-    //   sparepartNumber: 'SP001',
-    //   quantity: 10,
-    //   unitPriceSell: 100000,
-    //   totalPrice: 1000000,
-    //   stock: 'In Stock'
-    // },
-    // {
-    //   sparepartName: 'Sparepart A',
-    //   sparepartNumber: 'SP001',
-    //   quantity: 10,
-    //   unitPriceSell: 100000,
-    //   totalPrice: 1000000,
-    //   stock: 'In Stock'
-    // },
-    // {
-    //   sparepartName: 'Sparepart A',
-    //   sparepartNumber: 'SP001',
-    //   quantity: 10,
-    //   unitPriceSell: 100000,
-    //   totalPrice: 1000000,
-    //   stock: 'In Stock'
-    // },
-    // {
-    //   sparepartName: 'Sparepart A',
-    //   sparepartNumber: 'SP001',
-    //   quantity: 10,
-    //   unitPriceSell: 100000,
-    //   totalPrice: 1000000,
-    //   stock: 'In Stock'
-    // },
-  ]
-}
+// const data = {
+//   id: 'ID',
+//   currentStatus: 'ready',
+//   project: {
+//     quotationNumber: 'Q123456',
+//     type: 'Service',
+//     date: '2023-09-01'
+//   },
+//   customer: {
+//     companyName: 'BMJ Company',
+//     address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
+//     city: 'Jakarta',
+//     province: 'DKI Jakarta',
+//     office: 'Head Office',
+//     urban: 'Central Jakarta',
+//     subdistrict: 'Gambir',
+//     postalCode: '10110'
+//   },
+//   notes: 'Please handle with care.',
+//   price: {
+//     amount: '1000000',
+//     discount: '100000',
+//     subtotal: '900000',
+//     total: '900000',
+//     ppn: '0',
+//     grandTotal: '900000'
+//   },
+//   spareparts: [
+//     {
+//       sparepartName: 'Sparepart A',
+//       sparepartNumber: 'SP001',
+//       service: 'Service A',
+//       quantity: 10,
+//       unitPriceSell: 100000,
+//       totalPrice: 1000000,
+//       stock: 'In Stock'
+//     },
+//     {
+//       sparepartName: 'Sparepart B',
+//       sparepartNumber: 'SP002',
+//       service: 'Service B',
+//       quantity: 5,
+//       unitPriceSell: 200000,
+//       totalPrice: 1000000,
+//       stock: 'In Stock'
+//     },
+//     // {
+//     //   sparepartName: 'Sparepart A',
+//     //   sparepartNumber: 'SP001',
+//     //   quantity: 10,
+//     //   unitPriceSell: 100000,
+//     //   totalPrice: 1000000,
+//     //   stock: 'In Stock'
+//     // },
+//     // {
+//     //   sparepartName: 'Sparepart A',
+//     //   sparepartNumber: 'SP001',
+//     //   quantity: 10,
+//     //   unitPriceSell: 100000,
+//     //   totalPrice: 1000000,
+//     //   stock: 'In Stock'
+//     // },
+//     // {
+//     //   sparepartName: 'Sparepart A',
+//     //   sparepartNumber: 'SP001',
+//     //   quantity: 10,
+//     //   unitPriceSell: 100000,
+//     //   totalPrice: 1000000,
+//     //   stock: 'In Stock'
+//     // },
+//     // {
+//     //   sparepartName: 'Sparepart A',
+//     //   sparepartNumber: 'SP001',
+//     //   quantity: 10,
+//     //   unitPriceSell: 100000,
+//     //   totalPrice: 1000000,
+//     //   stock: 'In Stock'
+//     // },
+//   ]
+// }
 
-const createPdf = () => {
-  const { project, customer, price, spareparts, notes } = data
+const createPdf = async (data, notes) => {
+  const { project, customer, price, spareparts } = data
 
   // Top Left
   const customerInfo = {

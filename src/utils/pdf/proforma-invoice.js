@@ -22,92 +22,92 @@ const toWords = new ToWords({
   }
 })
 
-const data = {
-  id: 'ID',
-  currentStatus: 'ready',
-  project: {
-    proformaInvoiceNumber: 'PROFORMA_INV_NUMBER',
-    purchaseOrderNumber: 'PO_NUMBER',
-    purchaseOrderDate: '2023-09-01',
-    date: '2023-09-30',
-    type: 'Service'
-  },
-  customer: {
-    companyName: 'BMJ Company',
-    address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
-    city: 'Jakarta',
-    province: 'DKI Jakarta',
-    office: 'Head Office',
-    urban: 'Central Jakarta',
-    subdistrict: 'Gambir',
-    postalCode: '10110'
-  },
-  notes: 'Please handle with care.',
-  price: {
-    amount: '1000000',
-    discount: '100000',
-    subtotal: '900000',
-    advancePayment: '0',
-    total: '900000',
-    vat: '0',
-    totalAmount: '900000'
-  },
-  downPayment: '0',
-  spareparts: [
-    {
-      sparepartName: 'Sparepart A',
-      sparepartNumber: 'SP001',
-      service: 'Service A',
-      quantity: 10,
-      unitPriceSell: 100000,
-      totalPrice: 1000000,
-      stock: 'In Stock'
-    },
-    {
-      sparepartName: 'Sparepart B',
-      sparepartNumber: 'SP002',
-      service: 'Service B',
-      quantity: 5,
-      unitPriceSell: 200000,
-      totalPrice: 1000000,
-      stock: 'In Stock'
-    },
-    // {
-    //   sparepartName: 'Sparepart A',
-    //   sparepartNumber: 'SP001',
-    //   quantity: 10,
-    //   unitPriceSell: 100000,
-    //   totalPrice: 1000000,
-    //   stock: 'In Stock'
-    // },
-    // {
-    //   sparepartName: 'Sparepart A',
-    //   sparepartNumber: 'SP001',
-    //   quantity: 10,
-    //   unitPriceSell: 100000,
-    //   totalPrice: 1000000,
-    //   stock: 'In Stock'
-    // },
-    // {
-    //   sparepartName: 'Sparepart A',
-    //   sparepartNumber: 'SP001',
-    //   quantity: 10,
-    //   unitPriceSell: 100000,
-    //   totalPrice: 1000000,
-    //   stock: 'In Stock'
-    // },
-    // {
-    //   sparepartName: 'Sparepart A',
-    //   sparepartNumber: 'SP001',
-    //   quantity: 10,
-    //   unitPriceSell: 100000,
-    //   totalPrice: 1000000,
-    //   stock: 'In Stock'
-    // },
-  ]
-}
+// const data = {
+//   id: 'ID',
+//   currentStatus: 'ready',
+//   project: {
+//     proformaInvoiceNumber: 'PROFORMA_INV_NUMBER',
+//     purchaseOrderNumber: 'PO_NUMBER',
+//     purchaseOrderDate: '2023-09-01',
+//     date: '2023-09-30',
+//     type: 'Service'
+//   },
+//   customer: {
+//     companyName: 'BMJ Company',
+//     address: 'JL. KARYA BARU NO 60. PONTIANAK SELATAN',
+//     city: 'Jakarta',
+//     province: 'DKI Jakarta',
+//     office: 'Head Office',
+//     urban: 'Central Jakarta',
+//     subdistrict: 'Gambir',
+//     postalCode: '10110'
+//   },
+//   notes: 'Please handle with care.',
+//   price: {
+//     amount: '1000000',
+//     discount: '100000',
+//     subtotal: '900000',
+//     advancePayment: '0',
+//     total: '900000',
+//     vat: '0',
+//     totalAmount: '900000'
+//   },
+//   downPayment: '0',
+//   spareparts: [
+//     {
+//       sparepartName: 'Sparepart A',
+//       sparepartNumber: 'SP001',
+//       service: 'Service A',
+//       quantity: 10,
+//       unitPriceSell: 100000,
+//       totalPrice: 1000000,
+//       stock: 'In Stock'
+//     },
+//     {
+//       sparepartName: 'Sparepart B',
+//       sparepartNumber: 'SP002',
+//       service: 'Service B',
+//       quantity: 5,
+//       unitPriceSell: 200000,
+//       totalPrice: 1000000,
+//       stock: 'In Stock'
+//     },
+//     // {
+//     //   sparepartName: 'Sparepart A',
+//     //   sparepartNumber: 'SP001',
+//     //   quantity: 10,
+//     //   unitPriceSell: 100000,
+//     //   totalPrice: 1000000,
+//     //   stock: 'In Stock'
+//     // },
+//     // {
+//     //   sparepartName: 'Sparepart A',
+//     //   sparepartNumber: 'SP001',
+//     //   quantity: 10,
+//     //   unitPriceSell: 100000,
+//     //   totalPrice: 1000000,
+//     //   stock: 'In Stock'
+//     // },
+//     // {
+//     //   sparepartName: 'Sparepart A',
+//     //   sparepartNumber: 'SP001',
+//     //   quantity: 10,
+//     //   unitPriceSell: 100000,
+//     //   totalPrice: 1000000,
+//     //   stock: 'In Stock'
+//     // },
+//     // {
+//     //   sparepartName: 'Sparepart A',
+//     //   sparepartNumber: 'SP001',
+//     //   quantity: 10,
+//     //   unitPriceSell: 100000,
+//     //   totalPrice: 1000000,
+//     //   stock: 'In Stock'
+//     // },
+//   ]
+// }
 
-const createPdf = () => {
+const createPdf = (data) => {
   const { project, customer, price, downPayment, spareparts } = data
 
   const totalAmountWord = toWords.convert(price.totalAmount)
