@@ -62,7 +62,7 @@ const processQuotation = async () => {
 
 const processQuotationConfirmation = () => {
   modalStore.openNotesModal('Create PO', () => {
-    modalStore.openConfirmationModal('to process this Quotation to Purchase Order ?', `Purchase Order Created with quotation ${route.params.id}`, processQuotation)
+    modalStore.openConfirmationModal('to process this Quotation to Purchase Order ?', `Purchase Order Created with quotation ${quotation.value.project.quotationNumber}`, processQuotation)
   })
 }
 
