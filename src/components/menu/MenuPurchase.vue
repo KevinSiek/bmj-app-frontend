@@ -4,8 +4,8 @@
       <div class="icon">
         <i class="bi bi-cart"></i>
       </div>
-      <div class="text mx-2">
-        Purchases
+      <div class="text">
+        Purchase
       </div>
     </div>
     <!-- <div class="information">
@@ -69,13 +69,5 @@
 </script>
 
 <style lang="scss" scoped>
-.menu {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-
-  .title {
-    display: flex;
-  }
-}
+@use '@/assets/css/menu-item.scss';
 </style>

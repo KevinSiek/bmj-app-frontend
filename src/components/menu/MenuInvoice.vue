@@ -69,20 +69,5 @@
 </script>
 
 <style lang="scss" scoped>
-.menu {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-
-  .title {
-    display: flex;
-    font-size: 30px;
-
-    .icon {
-      margin-right: 20px;
-    }
-  }
-}
+@use '@/assets/css/menu-item.scss';
 </style>

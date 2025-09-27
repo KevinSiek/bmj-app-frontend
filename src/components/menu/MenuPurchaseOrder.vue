@@ -4,7 +4,7 @@
       <div class="icon">
         <i class="bi bi-clipboard-check-fill"></i>
       </div>
-      <div class="text mx-2">
+      <div class="text">
         Purchase Order
       </div>
     </div>
@@ -69,13 +69,5 @@
 </script>
 
 <style lang="scss" scoped>
-.menu {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-
-  .title {
-    display: flex;
-  }
-}
+@use '@/assets/css/menu-item.scss';
 </style>

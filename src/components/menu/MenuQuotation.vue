@@ -4,7 +4,7 @@
       <div class="icon">
         <i class="bi bi-file-text-fill"></i>
       </div>
-      <div class="text mx-2">
+      <div class="text">
         Quotation
       </div>
     </div>
@@ -69,13 +69,5 @@
 </script>
 
 <style lang="scss" scoped>
-.menu {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-
-  .title {
-    display: flex;
-  }
-}
+@use '@/assets/css/menu-item.scss';
 </style>
