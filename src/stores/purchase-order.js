@@ -40,10 +40,8 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
         amount: data?.price?.amount || 0,
         discount: data?.price?.discount || 0,
         subtotal: data?.price?.subtotal || 0,
-        advancePayment: data?.price?.advance_payment || 0,
-        total: data?.price?.total || 0,
-        vat: data?.price?.vat || 0,
-        totalAmount: data?.price?.total_amount || 0
+        ppn: data?.price?.ppn || 0,
+        grandTotal: data?.price?.grand_total || 0
       },
       notes: data?.notes || '',
       downPayment: data?.down_payment || 0,

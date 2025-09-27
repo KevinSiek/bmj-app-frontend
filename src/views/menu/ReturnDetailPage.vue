@@ -187,7 +187,7 @@
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">3</td>
-                <td class="table-col table-name">Sub Total (1-2)</td>
+                <td class="table-col table-name">Sub Total</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
@@ -197,41 +197,21 @@
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">4</td>
-                <td class="table-col table-name">Less: Advance Payment</td>
+                <td class="table-col table-name">VAT</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.advancePayment) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.ppn) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">5</td>
-                <td class="table-col table-name">Total (3-4)</td>
+                <td class="table-col table-name">GRAND TOTAL</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.total) }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-              </tr>
-              <tr class="align-middle">
-                <td scope="row" class="table-col table-number">6</td>
-                <td class="table-col table-name">VAT</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.vat) }}</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-              </tr>
-              <tr class="align-middle">
-                <td scope="row" class="table-col table-number">7</td>
-                <td class="table-col table-name">TOTAL AMOUNT(5+6)</td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.totalAmount) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.grandTotal) }}</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>

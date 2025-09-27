@@ -34,9 +34,7 @@ import { common } from '@/config'
 //     amount: '1000000',
 //     discount: '100000',
 //     subtotal: '900000',
-//     advancePayment: '0',
-//     total: '900000',
-//     vat: '0',
+//     ppn: '0',
 //     totalAmount: '900000'
 //   },
 //   downPayment: '0',
@@ -300,24 +298,8 @@ const createPdf = async (data, notes) => {
               '',
               '',
               '',
-              { text: 'Advance Payment' },
-              { text: formatCurrency(price.advancePayment), alignment: 'right' }
-            ],
-            [
-              '',
-              '',
-              '',
-              '',
-              { text: 'Total' },
-              { text: formatCurrency(price.total), alignment: 'right' }
-            ],
-            [
-              '',
-              '',
-              '',
-              '',
               { text: 'VAT' },
-              { text: formatCurrency(price.vat), alignment: 'right' }
+              { text: formatCurrency(price.ppn), alignment: 'right' }
             ],
             [
               '',
@@ -325,7 +307,7 @@ const createPdf = async (data, notes) => {
               '',
               '',
               { text: 'TOTAL AMOUNT', bold: true },
-              { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+              { text: formatCurrency(price.grandTotal), alignment: 'right', bold: true }
             ],
           ]
         },
