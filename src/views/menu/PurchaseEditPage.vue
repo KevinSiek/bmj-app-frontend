@@ -61,8 +61,8 @@
                     @input="selectItem(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Unit Price" v-model="sparepart.unitPrice"
-                    @change="selectItem(sparepartIndex, sparepart)" disabled>
+                  <input type="number" class="form-control mt-2" placeholder="Unit Price"
+                    v-model="sparepart.unitPriceSell" @change="selectItem(sparepartIndex, sparepart)" disabled>
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price"
@@ -143,7 +143,7 @@ const selectItem = (index, purchaseData, sparepartData) => {
     ...purchaseData,
     ...sparepartData
   }
-  data.totalPrice = data.quantity * data.unitPrice
+  data.totalPrice = data.quantity * data.unitPriceSell
   purchase.value.spareparts.splice(index, 1, data)
 }
 
@@ -153,7 +153,7 @@ const addSparepart = () => {
     sparepartName: '',
     sparepartNumber: '',
     quantity: 0,
-    unitPrice: 0,
+    unitPriceSell: 0,
     unitPriceBuy: 0,
     totalPrice: 0,
     stock: ''
@@ -168,6 +168,7 @@ const doPurchase = async () => {
     isProcessing.value = true
     await purchaseStore.updatePurchase()
     router.push(`${menuConfig.purchase.path}/${purchase.value.id}`)
+    purchaseStore.getPurchase(route.params.id)
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
@@ -177,7 +178,7 @@ const doPurchase = async () => {
 
 const doPurchaseConfirmation = () => {
   purchase.value.spareparts = purchase.value.spareparts.filter((item) => item.quantity > 0)
-  modalStore.openConfirmationModal(`to Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Success', doPurchase)
+  modalStore.openConfirmationModal(`to Update Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Updated', doPurchase)
 }
 
 </script>
