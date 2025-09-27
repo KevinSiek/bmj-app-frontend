@@ -26,6 +26,7 @@ const BackOrderPage = () => import('@/views/menu/BackOrderPage.vue')
 const BackOrderDetailPage = () => import('@/views/menu/BackOrderDetailPage.vue')
 const PurchasePage = () => import('@/views/menu/PurchasePage.vue')
 const PurchaseAddPage = () => import('@/views/menu/PurchaseAddPage.vue')
+const PurchaseEditPage = () => import('@/views/menu/PurchaseEditPage.vue')
 const PurchaseReviewPage = () => import('@/views/menu/PurchaseReviewPage.vue')
 const PurchaseReviewDetailPage = () => import('@/views/menu/PurchaseReviewDetailPage.vue')
 const PurchaseDetailPage = () => import('@/views/menu/PurchaseDetailPage.vue')
@@ -233,6 +234,15 @@ const router = createRouter({
               path: menuConfig.purchase_add.path,
               name: menuConfig.purchase_add.name,
               component: PurchaseAddPage,
+              meta: {
+                useBack: true,
+                useTrack: false
+              }
+            },
+             {
+              path: menuConfig.purchase_edit.path,
+              name: menuConfig.purchase_edit.name,
+              component: PurchaseEditPage,
               meta: {
                 useBack: true,
                 useTrack: false

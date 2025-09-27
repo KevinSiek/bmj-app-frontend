@@ -41,8 +41,11 @@
   <div class="status background">
     Status: {{ purchase.currentStatus }}
   </div>
-  <div class="button" v-if="purchase.currentStatus == common.status.approved">
-    <div class="right">
+  <div class="button">
+    <div class="left" v-if="isShowEdit">
+      <button type="button" class="btn btn-process" @click="goToEdit" :disabled="isProcessing">Edit</button>
+    </div>
+    <div class="right" v-if="purchase.currentStatus == common.status.approved">
       <button type="button" class="btn btn-process" @click="receiveConfirmation"
         :disabled="isProcessing">Receive</button>
     </div>
@@ -50,15 +53,16 @@
 </template>
 
 <script setup>
-import { common } from '@/config'
+import { common, menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { formatCurrency } from '@/utils/form-util'
 
 const route = useRoute()
+const router = useRouter()
 const purchaseStore = usePurchaseStore()
 const modalStore = useModalStore()
 
@@ -66,12 +70,20 @@ const { purchase } = storeToRefs(purchaseStore)
 
 const isProcessing = ref(false)
 
+const isShowEdit = computed(() => {
+  return purchase.value.currentStatus != common.status.received && purchase.value.currentStatus != common.status.canceled
+})
+
 onBeforeMount(() => {
   if (!purchase.value) purchaseStore.$resetPurchase()
 })
 onMounted(() => {
   purchaseStore.getPurchase(route.params.id)
 })
+
+const goToEdit = () => {
+  router.push(`${menuConfig.purchase.path}/${purchase.value.id}/edit`)
+}
 const receive = async () => {
   if (isProcessing.value) return
   try {
@@ -143,7 +155,7 @@ $secondary-color: rgb(98, 98, 98);
 .button {
   display: flex;
   margin: 2% 4%;
-  justify-content: flex-end;
+  justify-content: space-between;
 
   .btn {
     padding: 1.5vh 3vw 1.5vh 3vw;

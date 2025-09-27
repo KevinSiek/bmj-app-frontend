@@ -39,7 +39,7 @@
     </form>
   </div>
   <div class="status background">
-    Status: {{ purchase.status }}
+    Status: {{ purchase.currentStatus }}
   </div>
   <div class="button">
     <div class="right">

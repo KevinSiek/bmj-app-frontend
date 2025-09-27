@@ -18,7 +18,6 @@ export const usePurchaseStore = defineStore('purchase', () => {
       buyNumber: data?.buy_number || '',
       notes: data?.notes || '',
       currentStatus: data?.current_status || '',
-      status: data?.status || [],
       totalAmount: data?.total_amount || 0,
       spareparts: (data?.spareparts || []).map(sparepart => ({
         sparepartId: sparepart?.sparepart_id || sparepart?.id || '',
@@ -81,13 +80,15 @@ export const usePurchaseStore = defineStore('purchase', () => {
   }
 
   async function updatePurchase () {
-    console.log('UPDATE PURCHASE')
-    const { data } = await purchaseApi.updatePurchase(purchase.value.id)
+    console.log(purchase.value)
+    const { data } = await purchaseApi.updatePurchase(purchase.value.id, purchase.value)
+    console.log('updatePurchase', data)
   }
 
   async function getSpareparts (param) {
     const { data } = await getAllSparepart(param)
     searchedSpareparts.value = data.data.map(mapSparepart)
+    console.log('searchedSpareparts', searchedSpareparts.value)
   }
 
   async function receive (id) {

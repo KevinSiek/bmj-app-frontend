@@ -131,6 +131,10 @@ const menuMapping = {
     name: 'Add Purchase',
     path: '/purchase/add'
   },
+  purchase_edit: {
+    name: 'Edit Purchase',
+    path: '/purchase/:id/edit'
+  },
   purchase_detail: {
     name: 'Detail Purchase',
     path: '/purchase/:id'
