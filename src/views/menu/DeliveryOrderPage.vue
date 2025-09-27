@@ -19,11 +19,29 @@
           </div>
         </div>
         <div v-else class="list">
-          <ItemComponent v-for="(deliveryOrder, index) in deliveryOrders" :key="index"
-            :number="index + paginationData.from" :item="deliveryOrder" bigRow
-            :first-section="deliveryOrder.deliveryOrder.deliveryOrderNumber"
-            :second-section="deliveryOrder.deliveryOrder.deliveryOrderDate"
-            :current-status="deliveryOrder.currentStatus" @click="goToDetail(deliveryOrder)" />
+          <div v-for="(deliveryOrder, index) in deliveryOrders" :key="index">
+            <template v-if="deliveryOrder?.versions?.length > 1">
+              <ItemComponent bigRow :number="index + paginationData.from"
+                :item="deliveryOrder.versions[deliveryOrder.versions.length - 1]"
+                :first-section="deliveryOrder.versions[deliveryOrder.versions.length - 1].deliveryOrder.deliveryOrderNumber"
+                :second-section="deliveryOrder.versions[deliveryOrder.versions.length - 1].deliveryOrder.deliveryOrderDate"
+                :current-status="deliveryOrder.currentStatus" data-bs-toggle="collapse"
+                :data-bs-target="'#collapsChild' + index" />
+              <div class="collapse" :id="'collapsChild' + index">
+                <div v-for="(doChild, versionIndex) in deliveryOrder.versions" :key="versionIndex">
+                  <ItemComponent bigRow :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)"
+                    :item="doChild" :first-section="doChild.deliveryOrder.deliveryOrderNumber"
+                    :second-section="doChild.deliveryOrder.deliveryOrderDate" :current-status="doChild.currentStatus"
+                    class="item-child" @click="goToDetail(doChild)"
+                    :class="{ disabled: versionIndex != (deliveryOrder.versions.length - 1) }" isChild />
+                </div>
+              </div>
+            </template>
+            <ItemComponent v-else :number="index + paginationData.from" :item="deliveryOrder" bigRow
+              :first-section="deliveryOrder.deliveryOrder.deliveryOrderNumber"
+              :second-section="deliveryOrder.deliveryOrder.deliveryOrderDate"
+              :current-status="deliveryOrder.currentStatus" @click="goToDetail(deliveryOrder)" />
+          </div>
         </div>
       </div>
     </div>
