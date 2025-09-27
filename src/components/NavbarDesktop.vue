@@ -154,6 +154,21 @@ $dark-white: #D1D1D1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: calc(85vh);
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 0px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $dark-white;
+      border-radius: 10px;
+    }
 
     .menu-role {
       width: 100%;
