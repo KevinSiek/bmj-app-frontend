@@ -27,10 +27,10 @@ import { storeToRefs } from 'pinia'
 import { common } from '@/config'
 
 const props = defineProps({
-  number: String || Number,
-  firstSection: String || Number,
-  secondSection: String || Number,
-  thirdSection: String || Number,
+  number: [String, Number],
+  firstSection: [String, Number],
+  secondSection: [String, Number],
+  thirdSection: [String, Number],
   firstSectionKey: String,
   secondSectionKey: String,
   thirdSectionKey: String,
