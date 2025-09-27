@@ -27,7 +27,7 @@ import { storeToRefs } from 'pinia'
 import { common } from '@/config'
 
 const props = defineProps({
-  number: Number,
+  number: String || Number,
   firstSection: String || Number,
   secondSection: String || Number,
   thirdSection: String || Number,
