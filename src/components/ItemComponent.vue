@@ -152,6 +152,18 @@ $primary-color: black;
     .second-section {
       width: 15%;
     }
+
+    .status-default {
+      width: 22%;
+    }
+
+    .status-big {
+      width: 27%;
+    }
+
+    .status-wide {
+      width: 27%;
+    }
   }
 }
 
