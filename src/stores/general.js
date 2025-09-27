@@ -5,19 +5,19 @@ import generalApi from '@/api/general'
 export const useGeneralStore = defineStore('general', () => {
   const discount = ref(0)
   const currencyConverter = ref(0)
-  const vat = ref(0)
+  const ppn = ref(0)
 
   const processData = {
     toPercentage: (data) => {
       discount.value = data.discount * 100
       currencyConverter.value = data.currency_converter
-      vat.value = data.ppn * 100
+      ppn.value = data.ppn * 100
     },
     toNormal: () => {
       return {
         discount: discount.value / 100,
         currency_converter: currencyConverter.value,
-        ppn: vat.value / 100
+        ppn: ppn.value / 100
       }
     }
   }
@@ -30,5 +30,5 @@ export const useGeneralStore = defineStore('general', () => {
   async function updateGeneralData () {
     await generalApi.updateGeneralData(processData.toNormal())
   }
-  return { discount, currencyConverter, vat, getGeneralData, updateGeneralData }
+  return { discount, currencyConverter, ppn, getGeneralData, updateGeneralData }
 })

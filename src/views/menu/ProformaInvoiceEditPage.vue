@@ -153,7 +153,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.vat) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.ppn) }}</td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">

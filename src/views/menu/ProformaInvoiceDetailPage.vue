@@ -223,7 +223,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.vat) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.ppn) }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">7</td>

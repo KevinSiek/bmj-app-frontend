@@ -31,7 +31,7 @@ import { api } from '@/config'
 //     subtotal: 1000000,
 //     advance_payment: 100000,
 //     total: 1000000,
-//     vat: 10000,
+//     ppn: 10000,
 //     total_amount: 100000000
 //   },
 //   down_payment: 10,

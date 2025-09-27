@@ -37,7 +37,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
         subtotal: data?.price?.subtotal || 0,
         advancePayment: data?.price?.advance_payment || 0,
         total: data?.price?.total || 0,
-        vat: data?.price?.vat || 0,
+        ppn: data?.price?.ppn || 0,
         totalAmount: data?.price?.total_amount || 0
       },
       downPayment: data?.down_payment || 0,

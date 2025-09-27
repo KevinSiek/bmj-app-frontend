@@ -49,7 +49,7 @@ const toWords = new ToWords({
 //     subtotal: '900000',
 //     advancePayment: '0',
 //     total: '900000',
-//     vat: '0',
+//     ppn: '0',
 //     totalAmount: '900000'
 //   },
 //   downPayment: '0',
@@ -294,7 +294,7 @@ const createPdf = (data) => {
             '',
             '',
             '',
-            { text: formatCurrency(price.vat), alignment: 'right' }
+            { text: formatCurrency(price.ppn), alignment: 'right' }
           ],
           [
             '7',
@@ -428,7 +428,7 @@ const createPdf = (data) => {
             { text: 'VAT' },
             '',
             '',
-            { text: formatCurrency(price.vat), alignment: 'right' }
+            { text: formatCurrency(price.ppn), alignment: 'right' }
           ],
           [
             '7',
@@ -630,7 +630,7 @@ const createPdf = (data) => {
       //         '',
       //         '',
       //         '',
-      //         { text: formatCurrency(price.vat), alignment: 'right' }
+      //         { text: formatCurrency(price.ppn), alignment: 'right' }
       //       ],
       //       [
       //         '7',

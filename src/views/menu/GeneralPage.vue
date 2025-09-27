@@ -26,7 +26,7 @@
         <div class="input form-group col-12">
           <label for="">VAT</label>
           <div class="value mt-2">
-            <input type="text" class="form-control" v-model="vat" placeholder="VAT">
+            <input type="text" class="form-control" v-model="ppn" placeholder="VAT">
             <span>%</span>
           </div>
           <div class="description mt-2">
@@ -52,7 +52,7 @@ import { onMounted } from 'vue';
 const generalStore = useGeneralStore()
 const modalStore = useModalStore()
 
-const { discount, currencyConverter, vat } = storeToRefs(generalStore)
+const { discount, currencyConverter, ppn } = storeToRefs(generalStore)
 
 onMounted(() => {
   generalStore.getGeneralData()
