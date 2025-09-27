@@ -71,18 +71,6 @@ const classStatus = computed(() => ({
 <style lang="scss" scoped>
 $primary-color: black;
 
-.green {
-  background-color: #00BC03;
-}
-
-.blue {
-  background-color: #27487C;
-}
-
-.red {
-  background-color: #D70000;
-}
-
 .item {
   display: flex;
   border: 1px solid $primary-color;
@@ -135,6 +123,18 @@ $primary-color: black;
       width: 25%;
       padding: 1% 1%;
       justify-self: flex-end;
+    }
+
+    .green {
+      background-color: #00BC03;
+    }
+
+    .blue {
+      background-color: #27487C;
+    }
+
+    .red {
+      background-color: #D70000;
     }
   }
 }
