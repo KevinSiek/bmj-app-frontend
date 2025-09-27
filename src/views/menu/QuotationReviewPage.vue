@@ -49,7 +49,7 @@ const router = useRouter()
 const quotationStore = useQuotationStore()
 const { selectedMonth, selectedYear } = useDate()
 
-const { quotationReviews, paginationData } = storeToRefs(quotationStore)
+const { quotationReviews, paginationData, isLoading } = storeToRefs(quotationStore)
 
 onMounted(async () => {
   // Handle first load

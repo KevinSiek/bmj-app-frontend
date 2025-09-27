@@ -429,7 +429,7 @@ const createProformaInvoice = async () => {
     await purchaseOrderStore.processToProformaInvoice(route.params.id, modalStore.notes)
     await router.push(`${menuConfig.proforma_invoice.path}`)
   } catch (error) {
-    throw error.data.error
+    throw error.data.error || error.data.message
   } finally {
     isProcessing.value = false
   }
