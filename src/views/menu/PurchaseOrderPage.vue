@@ -38,7 +38,7 @@
                     :first-section="po.purchaseOrder.purchaseOrderNumber"
                     :second-section="po.purchaseOrder.purchaseOrderDate" :third-section="po.purchaseOrder.type"
                     :current-status="paymentStatus(po)" class="item-child" wideRow @click="goToDetail(po)"
-                    :class="{ disabled: versionIndex != (allPO.versions.length - 1) }" />
+                    :class="{ disabled: versionIndex != (allPO.versions.length - 1) }" isChild />
                 </div>
               </div>
             </template>

@@ -1,5 +1,5 @@
   <template>
-    <div class="item">
+    <div class="item" :class="{ 'item-child': isChild }">
       <div class="number">
         {{ number }}
       </div>
@@ -38,7 +38,8 @@ const props = defineProps({
   bigRow: Boolean,
   wideRow: Boolean,
   color: String,
-  currentStatus: String
+  currentStatus: String,
+  isChild: Boolean
 })
 
 const mainStore = useMainStore()
@@ -69,6 +70,18 @@ const classStatus = computed(() => ({
 
 <style lang="scss" scoped>
 $primary-color: black;
+
+.green {
+  background-color: #00BC03;
+}
+
+.blue {
+  background-color: #27487C;
+}
+
+.red {
+  background-color: #D70000;
+}
 
 .item {
   display: flex;
@@ -123,17 +136,21 @@ $primary-color: black;
       padding: 1% 1%;
       justify-self: flex-end;
     }
+  }
+}
 
-    .green {
-      background-color: #00BC03;
+.item-child {
+  .number {
+    width: 8%;
+  }
+
+  .content {
+    .first-section {
+      width: 43%;
     }
 
-    .blue {
-      background-color: #27487C;
-    }
-
-    .red {
-      background-color: #D70000;
+    .second-section {
+      width: 15%;
     }
   }
 }
