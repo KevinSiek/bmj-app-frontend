@@ -19,9 +19,34 @@
           </div>
         </div>
         <div v-else class="list">
-          <ItemComponent v-for="(backOrder, index) in backOrders" :key="index" :number="index + paginationData.from"
+            <div v-for="(allBackOrder, index) in backOrders" :key="index">
+            <template v-if="allBackOrder.versions.length > 1">
+              <ItemComponent :number="index + paginationData.from"
+                :item="allBackOrder.versions[allBackOrder.versions.length - 1]"
+                :first-section="allBackOrder.versions[allBackOrder.versions.length - 1].backOrderNumber"
+                :second-section="allBackOrder.versions[allBackOrder.versions.length - 1].deliveryOrder.date"
+                :third-section="allBackOrder.versions[allBackOrder.versions.length - 1].purchaseOrder.type"
+                :current-status="allBackOrder.versions[allBackOrder.versions.length - 1].currentStatus"
+                data-bs-toggle="collapse" :data-bs-target="'#collapsChild' + index" />
+              <div class="collapse" :id="'collapsChild' + index">
+                <div v-for="(backOrder, versionIndex) in allBackOrder.versions" :key="versionIndex">
+                  <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)" :item="backOrder"
+                    :first-section="backOrder.backOrderNumber" :second-section="backOrder.deliveryOrder.date"
+                    :third-section="backOrder.purchaseOrder.type" :current-status="backOrder.currentStatus" class="item-child"
+                    @click="goToDetail(backOrder)"
+                    :class="{ disabled: versionIndex != (allBackOrder.versions.length - 1) }" />
+                </div>
+              </div>
+            </template>
+            <ItemComponent v-else :number="index + paginationData.from" :item="allBackOrder.versions[0]"
+              :first-section="allBackOrder.versions[0].backOrderNumber"
+              :second-section="allBackOrder.versions[0].deliveryOrder.date"
+              :third-section="allBackOrder.versions[0].purchaseOrder.type"
+              :current-status="allBackOrder.versions[0].currentStatus" @click="goToDetail(allBackOrder.versions[0])" />
+          </div>
+          <!-- <ItemComponent v-for="(backOrder, index) in backOrders" :key="index" :number="index + paginationData.from"
             :item="backOrder" :first-section="backOrder.backOrderNumber" :second-section="backOrder.date"
-            :current-status="backOrder.currentStatus" @click="goToDetail(backOrder)" />
+            :current-status="backOrder.currentStatus" @click="goToDetail(backOrder)" /> -->
         </div>
       </div>
     </div>
@@ -92,4 +117,13 @@ const goToDetail = async (backOrder) => {
 
 <style lang="scss" scoped>
 @use '@/assets/css/page.scss';
+.item-child {
+  margin-left: 10%;
+}
+
+.disabled {
+  background-color: rgb(219, 219, 219);
+  border-color: transparent;
+}
+
 </style>

@@ -8,7 +8,7 @@ export const useBackOrderStore = defineStore('back-order', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapBackOrder (data) {
+  function mapBackOrder(data) {
     return {
       id: data?.id || '',
       date: data?.date || '',
@@ -51,17 +51,28 @@ export const useBackOrderStore = defineStore('back-order', () => {
     }
   }
 
-  async function getAllBackOrder (param) {
+  async function getAllBackOrder(param) {
     isLoading.value = true
-    console.log('FETCH BACK ORDER BY DATE', param)
     const { data } = await backOrderApi.getAllBackOrder(param)
-    backOrders.value = data.data.map(mapBackOrder)
+    // Group by invoice number
+    const grouped = {}
+    data.data.forEach(item => {
+      const key = item.back_order_number
+      if (!grouped[key]) {
+        grouped[key] = {
+          backOrderNumber: key,
+          versions: []
+        }
+      }
+      grouped[key].versions.push(mapBackOrder(item))
+    })
+
+    backOrders.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
-    console.log(data)
   }
 
-  async function getBackOrder (id) {
+  async function getBackOrder(id) {
     const { data } = await backOrderApi.getBackOrderById(id)
     console.log(data)
     backOrder.value = mapBackOrder(data)
@@ -72,19 +83,19 @@ export const useBackOrderStore = defineStore('back-order', () => {
     backOrder.value = selectedBackOrder
   }
 
-  async function addBackOrder () {
+  async function addBackOrder() {
     const response = await backOrderApi.addBackOrder(backOrder)
   }
 
-  async function updateBackOrder () {
+  async function updateBackOrder() {
     const { data } = await backOrderApi.updateBackOrder(backOrder.value.id)
   }
 
-  async function processBackOrder (id) {
+  async function processBackOrder(id) {
     const response = await backOrderApi.processBackOrder(id)
   }
 
-  async function $resetBackOrder () {
+  async function $resetBackOrder() {
     backOrder.value = mapBackOrder()
   }
 
