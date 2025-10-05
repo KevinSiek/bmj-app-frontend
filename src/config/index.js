@@ -334,6 +334,7 @@ const api = {
   login: '/api/login',
   logout: '/api/logout',
   user: '/api/user',
+  customer: '/api/customer'
 }
 
 export {

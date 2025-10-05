@@ -34,8 +34,18 @@
         <div class="left">
           <div class="input form-group col-12">
             <label for="">Company Name</label><br>
+            <!-- <input type="text" class="form-control mt-2" v-model="quotation.customer.companyName"
+              placeholder="Company Name" :disabled="disabled"> -->
             <input type="text" class="form-control mt-2" v-model="quotation.customer.companyName"
-              placeholder="Company Name" :disabled="disabled">
+              placeholder="Company Name" data-bs-toggle="dropdown" aria-expanded="false"
+              @change="handleInputSearchCustomer(quotation.customer.companyName)"
+              @keyup="handleInputSearchCustomer(quotation.customer.companyName)">
+            <ul class="dropdown-menu dropdown-menu-customer">
+              <li v-for="(item, index) in customers" :key="index" class="dropdown-item"
+                @click="selectItemCustomer(item)">
+                {{ item.companyName }}
+              </li>
+            </ul>
           </div>
           <div class="input form-group col-12">
             <label for="">Address</label><br>
@@ -366,18 +376,19 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { common } from '@/config'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { useModalStore } from '@/stores/modal'
 import { formatCurrency } from '@/utils/form-util'
+import { useCustomerStore } from '@/stores/customer'
 
 const quotationStore = useQuotationStore()
-const modalStore = useModalStore()
+const customerStore = useCustomerStore()
 
 const { quotation, searchedSpareparts } = storeToRefs(quotationStore)
+const { customers } = storeToRefs(customerStore)
 
 const props = defineProps({
   type: String,
@@ -407,6 +418,16 @@ const searchSparepart = (search) => {
 
 const handleInputSearch = (search) => {
   debounce(() => searchSparepart(search), 500, 'search-quotation-sparepart')
+}
+
+const searchCustomer = (search) => {
+  if (search !== '') customerStore.getCustomers({ search })
+}
+const handleInputSearchCustomer = (search) => {
+  debounce(() => searchCustomer(search), 500, 'search-quotation-customer')
+}
+const selectItemCustomer = (customerData) => {
+  quotation.value.customer = customerData
 }
 
 const selectItem = (index, purchaseData, sparepartData) => {
@@ -532,11 +553,16 @@ $secondary-color: rgb(98, 98, 98);
   overflow: auto;
 }
 
+
 .dropdown-menu {
   width: 200px;
   max-height: 300px;
   overflow-y: auto;
   margin-right: -10%;
+}
+
+.dropdown-menu-customer {
+  width: 400px;
 }
 
 .dropdown-menu::-webkit-scrollbar {
