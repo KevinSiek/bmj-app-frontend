@@ -106,7 +106,7 @@ $primary-color: black;
     }
 
     .status-default {
-      width: 20%;
+      width: 23%;
       text-align: center;
       background-color: $primary-color;
       color: white;

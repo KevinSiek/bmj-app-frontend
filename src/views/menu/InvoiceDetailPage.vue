@@ -70,11 +70,11 @@
             <label for="">Date</label><br>
             <input type="date" class="form-control mt-2" v-model="invoice.invoice.date" placeholder="Date" disabled>
           </div>
-          <div class="input form-group col-12">
+          <!-- <div class="input form-group col-12">
             <label for="">Term of Payment</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.invoice.termOfPayment"
               placeholder="Term of Payment" disabled>
-          </div>
+          </div> -->
           <div class="input form-group col-12">
             <label for="">Sub Total</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.invoice.subTotal" placeholder="Sub Total"
@@ -98,11 +98,11 @@
             <input type="date" class="form-control mt-2" v-model="invoice.purchaseOrder.purchaseOrderDate"
               placeholder="Date" disabled>
           </div>
-          <div class="input form-group col-12">
+          <!-- <div class="input form-group col-12">
             <label for="">Payment Due</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.paymentDue"
               placeholder="Payment Due" disabled>
-          </div>
+          </div> -->
           <div class="input form-group col-12">
             <label for="">Discount</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.discount" placeholder="Discount"
@@ -202,16 +202,44 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="download">Download</button>
+      <button type="button" class="btn btn-process" @click="openDownloadModal">Download</button>
     </div>
   </div>
+  <transition name="fade">
+    <div v-if="isShowDownloadModal" class="modal fade show" style="display: block;" id="downloadModal" tabindex="-1"
+      aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Download Invoice</h5>
+          </div>
+          <div class="modal-body">
+            <div class="input form-group col-12 my-2">
+              <label for="">Term of Payment</label><br>
+              <input type="text" class="form-control mt-2" v-model="termOfPayment" placeholder="Term of Payment">
+            </div>
+            <div class="input form-group col-12 my-2">
+              <label for="">Payment Due</label><br>
+              <input type="text" class="form-control mt-2" v-model="paymentDue" placeholder="Payment Due">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+              @click="closeDownloadModal">Close</button>
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" @click="download">Download</button>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="modal-backdrop fade show" @click.self="closeDeleteModal"></div> -->
+    </div>
+  </transition>
 </template>
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoice'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useTrackStore } from '@/stores/track'
 import { createPdf } from '@/utils/pdf/invoice'
 import { formatCurrency } from '@/utils/form-util'
@@ -223,6 +251,10 @@ const trackStore = useTrackStore()
 
 const { invoice } = storeToRefs(invoiceStore)
 
+const isShowDownloadModal = ref(false)
+const termOfPayment = ref('')
+const paymentDue = ref('')
+
 onBeforeMount(() => {
   if (!invoice.value) invoiceStore.$resetInvoice()
 })
@@ -231,11 +263,18 @@ onMounted(() => {
   trackStore.setTrackData(invoice.value.status)
 })
 
+const openDownloadModal = () => {
+  isShowDownloadModal.value = true
+}
+const closeDownloadModal = () => {
+  isShowDownloadModal.value = false
+}
+
 const back = () => {
   router.back()
 }
 const download = () => {
-  createPdf(invoice.value)
+  createPdf({ termOfPayment: termOfPayment.value, paymentDue: paymentDue.value, ...invoice.value })
 }
 </script>
 

@@ -60,7 +60,7 @@ import { common } from '@/config'
 // }
 
 const createPdf = (data) => {
-  const { purchaseOrder, invoice, customer, price } = data
+  const { purchaseOrder, invoice, customer, price, termOfPayment, paymentDue } = data
 
   // Top Left
   const customerInfo = {
@@ -83,8 +83,8 @@ const createPdf = (data) => {
     table: {
       widths: ['auto', 'auto','*'],
       body: [
-        ['Term of Payment', ':',invoice.termOfPayment],
-        ['Payment Due', ':', purchaseOrder.paymentDue],
+        ['Term of Payment', ':', termOfPayment],
+        ['Payment Due', ':', paymentDue],
       ]
     },
     layout: {
