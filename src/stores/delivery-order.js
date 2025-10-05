@@ -8,7 +8,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapDeliveryOrder (data) {
+  function mapDeliveryOrder(data) {
     return {
       id: data?.id || '',
       currentStatus: data?.current_status || '',
@@ -54,8 +54,19 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
   async function getAllDeliveryOrders(param) {
     isLoading.value = true
     const { data } = await deliveryOrderApi.getAllDeliveryOrder(param)
-    console.log(data)
-    deliveryOrders.value = data.data.map(mapDeliveryOrder)
+    // Group by invoice number
+    const grouped = {}
+    data.data.forEach(item => {
+      const key = item.delivery_order.delivery_order_number
+      if (!grouped[key]) {
+        grouped[key] = {
+          deliveryOrderNumber: key,
+          versions: []
+        }
+      }
+      grouped[key].versions.push(mapDeliveryOrder(item))
+    })
+    deliveryOrders.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
   }
@@ -71,7 +82,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     await deliveryOrderApi.addDeliveryOrder(deliveryOrder)
   }
 
-  async function setDeliveryOrder (selectedDeliveryOrder) {
+  async function setDeliveryOrder(selectedDeliveryOrder) {
     deliveryOrder.value = selectedDeliveryOrder
   }
 
@@ -87,7 +98,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     const response = await deliveryOrderApi.process(id)
   }
 
-  async function $resetDeliveryOrder () {
+  async function $resetDeliveryOrder() {
     deliveryOrder.value = mapDeliveryOrder()
   }
 
