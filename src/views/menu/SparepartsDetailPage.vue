@@ -100,7 +100,6 @@ const deleteSparepart = async () => {
   try {
     if (isProcessing.value) return
     await sparepartStore.deleteSparepart(route.params.id)
-    modalStore.closeModal()
     isProcessing.value = false
     router.push(menuConfig.spareparts.path)
   } catch (error) {

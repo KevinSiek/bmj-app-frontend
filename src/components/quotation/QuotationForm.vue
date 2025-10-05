@@ -39,7 +39,7 @@
             <input type="text" class="form-control mt-2" v-model="quotation.customer.companyName"
               placeholder="Company Name" data-bs-toggle="dropdown" aria-expanded="false"
               @change="handleInputSearchCustomer(quotation.customer.companyName)"
-              @keyup="handleInputSearchCustomer(quotation.customer.companyName)">
+              @keyup="handleInputSearchCustomer(quotation.customer.companyName)" :disabled="disabled">
             <ul class="dropdown-menu dropdown-menu-customer">
               <li v-for="(item, index) in customers" :key="index" class="dropdown-item"
                 @click="selectItemCustomer(item)">
@@ -346,7 +346,7 @@
         <div class="label">Total Amount</div>
         <div>: {{ formatCurrency(quotation.price.amount) }}</div>
       </div>
-      <template v-if="!isTypeAdd">
+      <template v-if="!isTypeAdd && isTypeEdit">
         <div class="discount type">
           <div class="label">Discount</div>
           <div>: {{ formatCurrency(quotation.price.discount) }}</div>

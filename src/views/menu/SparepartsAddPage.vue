@@ -40,19 +40,27 @@
       </div>
       <div class="lower my-2">
         <div class="title">Purchase Price</div>
-        <div class="data row">
-          <div class="lists" v-for="(list, index) in sparepart.unitPriceBuy" :key="index">
-            <div class="input form-group col-5">
-              <label for="">Seller</label><br>
-              <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller">
+        <div class="lists" v-for="(list, index) in sparepart.unitPriceBuy" :key="index">
+          <div class="row">
+            <div class="col-11">
+              <div class="data row">
+                <div class="input form-group col-5">
+                  <label for="">Seller</label><br>
+                  <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller">
+                </div>
+                <div class="input form-group col-3">
+                  <label for="">Puchase Price</label><br>
+                  <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price">
+                </div>
+                <div class="input form-group col-3">
+                  <label for="">Quantity</label><br>
+                  <input type="text" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
+                </div>
+              </div>
             </div>
-            <div class="input form-group col-3">
-              <label for="">Puchase Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price">
-            </div>
-            <div class="input form-group col-3">
-              <label for="">Quantity</label><br>
-              <input type="text" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
+            <div class="col-1 button-remove">
+              <button type="button" class="btn btn-outline-danger" @click="removeSeller(index)"><i
+                  class="bi bi-trash3"></i></button>
             </div>
           </div>
         </div>
@@ -118,6 +126,10 @@ const addSparepart = async () => {
   }
 }
 
+const removeSeller = (index) => {
+  sparepart.value.unitPriceBuy.splice(index, 1)
+}
+
 const addSparepartConfirmation = () => {
   modalStore.openConfirmationModal('to Add this Sparepart ?', 'Add Sparepart Success', addSparepart)
 }
@@ -165,9 +177,13 @@ $secondary-color: rgb(98, 98, 98);
     .lists {
       display: flex;
 
-      .input {
-        margin: 0.5% 5% 0.5% 0%;
+      .row {
+        width: 100%;
       }
+
+      // .input {
+      //   margin: 0.5% 5% 0.5% 0%;
+      // }
     }
   }
 }
@@ -175,6 +191,12 @@ $secondary-color: rgb(98, 98, 98);
 .add-btn {
   display: flex;
   justify-content: center;
+}
+
+.button-remove {
+  display: flex;
+  align-items: flex-end;
+  margin: 2% 0%;
 }
 
 .button {

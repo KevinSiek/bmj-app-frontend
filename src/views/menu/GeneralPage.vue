@@ -18,7 +18,7 @@
             <div>%</div>
           </div>
           <div class="description mt-2">
-            <span>*This is discount rate for all of the sparepart</span>
+            <span>*This is maximum discount rate for all of the sparepart</span>
           </div>
         </div>
       </div>
