@@ -31,6 +31,7 @@ export const useQuotationStore = defineStore('quotation', () => {
         quotationNumber: data?.project?.quotation_number || '',
         type: data?.project?.type || '',
         date: data?.project?.date || '',
+        branch: data?.branch || '',
       },
       discount: data?.discount || 0,
       ppn: data?.ppn || 0,

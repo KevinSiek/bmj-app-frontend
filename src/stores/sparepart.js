@@ -15,7 +15,10 @@ export const useSparepartStore = defineStore('sparepart', () => {
       branch: data?.branch || '',
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
-      totalUnit: data?.total_unit || 0,
+      totalUnit: (data.totalUnit || []).map(branch => ({
+        name: branch.name,
+        stock: branch.stock
+      })),
       unitPriceSell: data?.unit_price_sell || 0,
       unitPriceBuy: data?.unit_price_buy || 0,
       unitPriceSeller: (data?.unit_price_seller || []).map(buy => ({

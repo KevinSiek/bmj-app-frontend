@@ -12,7 +12,12 @@
             </div>
             <div class="input form-group col-12">
               <label for="">Stock</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.totalUnit" placeholder="Stock" disabled>
+              <div class="branch">
+                <template v-for="(branch, index) in sparepart.totalUnit" :key="index">
+                  <label for="">{{ branch.name }}</label><br>
+                  <input type="text" class="form-control mt-2" v-model="branch.stock" placeholder="Stock" disabled>
+                </template>
+              </div>
             </div>
             <div class="input form-group col-12">
               <label for="branch">Branch</label><br>
@@ -149,6 +154,11 @@ $secondary-color: rgb(98, 98, 98);
     .data {
       display: flex;
       justify-content: space-between;
+
+      .branch {
+        font-size: 14px;
+        margin-left: 20px;
+      }
     }
 
     .left,

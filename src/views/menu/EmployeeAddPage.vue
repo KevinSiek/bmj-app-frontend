@@ -62,7 +62,9 @@ const roles = [
   'Marketing',
   'Finance',
   'Inventory',
-  'Service'
+  'Service',
+  'Inventory Admin',
+  'Inventory Purchase'
 ]
 
 const branches = [

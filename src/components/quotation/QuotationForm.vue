@@ -15,6 +15,17 @@
               :disabled="disabled">
           </div>
         </div>
+        <div v-else-if="isRoleDirector" class="left">
+          <div class="input form-group col-12">
+            <label for="">Branch</label><br>
+            <select class="form-select mt-2" aria-label="Branch" v-model="quotation.project.branch"
+              :disabled="disabled">
+              <option value="" disabled selected>Select Branch</option>
+              <option value="Semarang">Semarang</option>
+              <option value="Jakarta">Jakarta</option>
+            </select>
+          </div>
+        </div>
         <div class="right">
           <div class="input form-group col-12">
             <label for="">Project Type</label><br>
@@ -383,12 +394,15 @@ import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import { formatCurrency } from '@/utils/form-util'
 import { useCustomerStore } from '@/stores/customer'
+import { useRole } from '@/composeable/useRole'
 
 const quotationStore = useQuotationStore()
 const customerStore = useCustomerStore()
 
 const { quotation, searchedSpareparts } = storeToRefs(quotationStore)
 const { customers } = storeToRefs(customerStore)
+
+const { isRoleDirector } = useRole()
 
 const props = defineProps({
   type: String,
