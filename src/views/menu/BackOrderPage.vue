@@ -19,7 +19,7 @@
           </div>
         </div>
         <div v-else class="list">
-            <div v-for="(allBackOrder, index) in backOrders" :key="index">
+          <div v-for="(allBackOrder, index) in backOrders" :key="index">
             <template v-if="allBackOrder.versions.length > 1">
               <ItemComponent :number="index + paginationData.from"
                 :item="allBackOrder.versions[allBackOrder.versions.length - 1]"
@@ -32,8 +32,8 @@
                 <div v-for="(backOrder, versionIndex) in allBackOrder.versions" :key="versionIndex">
                   <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)" :item="backOrder"
                     :first-section="backOrder.backOrderNumber" :second-section="backOrder.deliveryOrder.date"
-                    :third-section="backOrder.purchaseOrder.type" :current-status="backOrder.currentStatus" class="item-child"
-                    @click="goToDetail(backOrder)"
+                    :third-section="backOrder.purchaseOrder.type" :current-status="backOrder.currentStatus"
+                    class="item-child" @click="goToDetail(backOrder)"
                     :class="{ disabled: versionIndex != (allBackOrder.versions.length - 1) }" />
                 </div>
               </div>
@@ -89,8 +89,7 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchBackOrder()
-    console.log("REFETCH PURCHASE")
+    debounce(() => fetchBackOrder(), 500, 'fetch-back-order')
   }
 })
 
@@ -117,6 +116,7 @@ const goToDetail = async (backOrder) => {
 
 <style lang="scss" scoped>
 @use '@/assets/css/page.scss';
+
 .item-child {
   margin-left: 10%;
 }
@@ -125,5 +125,4 @@ const goToDetail = async (backOrder) => {
   background-color: rgb(219, 219, 219);
   border-color: transparent;
 }
-
 </style>

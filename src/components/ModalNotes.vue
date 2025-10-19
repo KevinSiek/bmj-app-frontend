@@ -57,6 +57,8 @@ const closeModal = () => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/css/loader.scss';
+
 $primary-color: black;
 $secondary-color: rgb(98, 98, 98);
 
@@ -109,54 +111,6 @@ $secondary-color: rgb(98, 98, 98);
 
 .modal-backdrop {
   z-index: 1000;
-}
-
-.loader {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid $primary-color;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  animation: spin 1s linear infinite;
-  z-index: 9999;
-}
-
-.loader-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9998;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg) translate(-50%, -50%);
-  }
-
-  100% {
-    transform: rotate(360deg) translate(-50%, -50%);
-  }
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 @media only screen and (max-width: 768px) {

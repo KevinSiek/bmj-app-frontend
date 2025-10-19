@@ -82,8 +82,7 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchWorkOrder()
-    console.log("REFETCH WORK ORDER")
+    debounce(() => fetchWorkOrder(), 500, 'fetch-work-order')
   }
 })
 

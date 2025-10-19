@@ -77,8 +77,7 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchPurchase()
-    console.log("REFETCH PURCHASE")
+    debounce(() => fetchPurchase(), 500, 'fetch-purchase')
   }
 })
 

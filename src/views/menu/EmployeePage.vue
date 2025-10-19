@@ -68,7 +68,7 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchEmployees()
+    debounce(() => fetchEmployees(), 500, 'fetch-employee')
   }
 })
 

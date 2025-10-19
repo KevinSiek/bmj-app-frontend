@@ -60,15 +60,15 @@
       </div>
       <div class="lower my-2">
         <div class="left">
-          <div class="title">Proforma Invoice</div>
+          <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.proformaInvoice.proformaInvoiceNumber"
+            <input type="text" class="form-control mt-2" v-model="workOrder.purchaseOrder.purchaseOrderNumber"
               placeholder="No" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
-            <input type="date" class="form-control mt-2" v-model="workOrder.proformaInvoice.proformaInvoiceDate"
+            <input type="date" class="form-control mt-2" v-model="workOrder.purchaseOrder.purchaseOrderDate"
               placeholder="Date" disabled>
           </div>
         </div>
@@ -251,7 +251,7 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process">Print</button>
+      <button type="button" class="btn btn-process" @click="download">Print</button>
       <button v-if="isShowDone" type="button" class="btn btn-process" @click="setDoneConfirmation"
         :disabled="isProcessing">Done</button>
     </div>
@@ -267,6 +267,7 @@ import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { createPdf } from '@/utils/pdf/work-order'
 
 const route = useRoute()
 const router = useRouter()
@@ -280,8 +281,8 @@ const { isRoleDirector, isRoleInventory, isRoleService } = useRole()
 const isProcessing = ref(false)
 
 const isShowDone = computed(() =>
-  (isRoleInventory.value || isRoleService.value || isRoleDirector.value) &&
-  workOrder.value.currentStatus !== common.status.work_order.done
+  workOrder.value.currentStatus && ((isRoleInventory.value || isRoleService.value || isRoleDirector.value) &&
+    workOrder.value.currentStatus !== common.status.work_order.done)
   // !workOrder.value.status.some(item => item.state === common.status.work_order.done)
 )
 
@@ -312,6 +313,9 @@ const done = async () => {
 
 const setDoneConfirmation = () => {
   modalStore.openConfirmationModal('to this Puchase Order is Done ?', 'Purchase Order Done', done)
+}
+const download = () => {
+  createPdf(workOrder.value)
 }
 const back = () => {
   router.push(menuConfig.work_order.path)

@@ -53,6 +53,7 @@ const DeliveryOrderDetailPage = () => import('@/views/menu/DeliveryOrderDetailPa
 const ReturnPage = () => import('@/views/menu/ReturnPage.vue')
 const ReturnDetailPage = () => import('@/views/menu/ReturnDetailPage.vue')
 const GeneralPage = () => import('@/views/menu/GeneralPage.vue')
+const UploadDataPage = () => import('@/views/menu/UploadDataPage.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -128,6 +129,11 @@ const router = createRouter({
           path: menuConfig.dashboard.path,
           name: menuConfig.dashboard.name,
           component: DashboardPage
+        },
+        {
+          path: menuConfig.upload_data.path,
+          name: menuConfig.upload_data.name,
+          component: UploadDataPage
         },
         // Quotation
         {

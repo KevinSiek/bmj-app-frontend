@@ -29,8 +29,8 @@
                 data-bs-toggle="collapse" :data-bs-target="'#collapsChild' + index" />
               <div class="collapse" :id="'collapsChild' + index">
                 <div v-for="(doChild, versionIndex) in deliveryOrder.versions" :key="versionIndex">
-                  <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)"
-                    :item="doChild" :first-section="doChild.deliveryOrder.deliveryOrderNumber"
+                  <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)" :item="doChild"
+                    :first-section="doChild.deliveryOrder.deliveryOrderNumber"
                     :second-section="doChild.deliveryOrder.deliveryOrderDate" :current-status="doChild.currentStatus"
                     class="item-child" @click="goToDetail(doChild)"
                     :class="{ disabled: versionIndex != (deliveryOrder.versions.length - 1) }" isChild />
@@ -40,7 +40,8 @@
             <ItemComponent v-else :number="index + paginationData.from" :item="deliveryOrder.versions[0]"
               :first-section="deliveryOrder.versions[0].deliveryOrder.deliveryOrderNumber"
               :second-section="deliveryOrder.versions[0].deliveryOrder.deliveryOrderDate"
-              :current-status="deliveryOrder.versions[0].currentStatus" @click="goToDetail(deliveryOrder.versions[0])" />
+              :current-status="deliveryOrder.versions[0].currentStatus"
+              @click="goToDetail(deliveryOrder.versions[0])" />
           </div>
         </div>
       </div>
@@ -84,7 +85,7 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchDeliveryOrder()
+    debounce(() => fetchDeliveryOrder(), 500, 'fetch-delivery-order')
   }
 })
 

@@ -1,4 +1,7 @@
 <template>
+  <div v-if="isLoading" class="loader-overlay">
+    <div class="loader"></div>
+  </div>
   <div class="login-page">
     <div class="left">
       <div class="company-name">
@@ -55,13 +58,14 @@
 </template>
 
 <script setup>
-defineProps(['user', 'login', 'showHide', 'isPassShow'])
+defineProps(['user', 'login', 'showHide', 'isPassShow', 'isLoading'])
 
 </script>
 
 <style lang="scss" scoped>
-$primary-color: black;
+@use '@/assets/css/loader.scss';
 
+$primary-color: black;
 
 .login-page {
   width: 100%;

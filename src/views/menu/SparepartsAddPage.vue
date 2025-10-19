@@ -31,8 +31,12 @@
                 placeholder="Sparepart Number">
             </div>
             <div class="input form-group col-12">
+              <label for="">Buy Price</label><br>
+              <input type="number" class="form-control mt-2" v-model="sparepart.unitPriceBuy" placeholder="Buy Price">
+            </div>
+            <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceSell"
+              <input type="number" class="form-control mt-2" v-model="sparepart.unitPriceSell"
                 placeholder="Selling Price">
             </div>
           </div>
@@ -40,21 +44,26 @@
       </div>
       <div class="lower my-2">
         <div class="title">Purchase Price</div>
-        <div class="lists" v-for="(list, index) in sparepart.unitPriceBuy" :key="index">
+        <div class="lists" v-for="(list, index) in sparepart.unitPriceSeller" :key="index">
           <div class="row">
             <div class="col-11">
               <div class="data row">
                 <div class="input form-group col-5">
                   <label for="">Seller</label><br>
-                  <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller">
+                  <select class="form-select mt-2" id="branch" v-model="list.seller">
+                    <option value="" disabled selected>Select Seller</option>
+                    <option v-for="(seller, index) in sellers" :key="index" :value="seller.name">
+                      {{ seller.name }}
+                    </option>
+                  </select>
                 </div>
                 <div class="input form-group col-3">
                   <label for="">Puchase Price</label><br>
-                  <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price">
+                  <input type="number" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price">
                 </div>
                 <div class="input form-group col-3">
                   <label for="">Quantity</label><br>
-                  <input type="text" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
+                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
                 </div>
               </div>
             </div>
@@ -90,14 +99,17 @@ import { useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores/modal'
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { common } from '@/config'
+import { useSellerStore } from '@/stores/seller'
 
 const router = useRouter()
 const sparepartStore = useSparepartStore()
+const sellerStore = useSellerStore()
 const modalStore = useModalStore()
 
 const { sparepart } = storeToRefs(sparepartStore)
+const { sellers } = storeToRefs(sellerStore)
 
 const isProcessing = ref(false)
 
@@ -106,9 +118,14 @@ onBeforeMount(() => {
   console.log(sparepart.value)
 })
 
+onMounted(() => {
+  sellerStore.getSellers()
+})
+
 const addSeller = () => {
-  sparepart.value.unitPriceBuy.push({
+  sparepart.value.unitPriceSeller.push({
     seller: '',
+    quantity: 0,
     price: 0
   })
 }
@@ -127,7 +144,7 @@ const addSparepart = async () => {
 }
 
 const removeSeller = (index) => {
-  sparepart.value.unitPriceBuy.splice(index, 1)
+  sparepart.value.unitPriceSeller.splice(index, 1)
 }
 
 const addSparepartConfirmation = () => {

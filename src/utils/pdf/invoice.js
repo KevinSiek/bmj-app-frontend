@@ -2,6 +2,7 @@ import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
 import { common } from '@/config'
+import { getBase64FromUrl } from '../pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -59,8 +60,10 @@ import { common } from '@/config'
 //   ]
 // }
 
-const createPdf = (data) => {
+const createPdf = async (data) => {
   const { purchaseOrder, invoice, customer, price, termOfPayment, paymentDue } = data
+
+  const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
   // Top Left
   const customerInfo = {
@@ -213,8 +216,12 @@ const createPdf = (data) => {
   const type = purchaseOrder.purchaseOrderType === common.type.sparepart ? 'SPAREPART' : 'SERVICE'
 
   const docDefinition = {
+    header: {
+      image: logoBase64, // your base64 logo string
+      width: 550,
+      margin: [25, 30, 30, 0]
+    },
     content: [
-      // Header details
       {
         text: 'INVOICE',
         margin: [0, 0, 0, 5],
@@ -231,7 +238,7 @@ const createPdf = (data) => {
       },
       {
         table: {
-          widths: ['auto', '*'],
+          widths: ['50%', '50%'],
           body: [
             [topLeftSide, topRightSide],
           ]
@@ -285,7 +292,7 @@ const createPdf = (data) => {
             ['SUB TOTAL', { text: formatCurrency(price.subtotal), alignment: 'right' }],
             ['DISC', { text: formatCurrency(price.discount), alignment: 'right' }],
             ['PPN 11%', { text: formatCurrency(price.ppn), alignment: 'right' }],
-            ['GRAND TOTAL', { text: formatCurrency(price.grandTotal), alignment: 'right' }]
+            [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(price.grandTotal), alignment: 'right', bold: true }]
           ]
         },
         layout: {
@@ -352,7 +359,8 @@ const createPdf = (data) => {
     defaultStyle: {
       fontSize: 10
     },
-    pageMargins: [40, 60, 40, 60]
+    pageMargins: [40, 100, 40, 60],
+    pageSize: 'A4',
   }
 
   pdfMake.createPdf(docDefinition).download(`Invoice_${data.id}.pdf`)

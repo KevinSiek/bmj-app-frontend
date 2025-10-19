@@ -14,7 +14,6 @@ import './assets/css/base.css'
 axios.defaults.baseURL = 'http://localhost:8000';
 axios.defaults.headers.common['key'] = 'rest-api-test';
 axios.defaults.withCredentials = true;
-// axios.defaults.baseURL = 'https://pricelist.bmj.co.id/backend/';
 
 const app = createApp(App)
 

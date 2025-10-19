@@ -10,8 +10,7 @@
 import { ref } from 'vue'
 import MenuQuotation from '@/components/menu/MenuQuotation.vue'
 import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
-import MenuInvoice from '@/components/menu/MenuInvoice.vue'
-import MenuProformaInvoice from '@/components/menu/MenuProformaInvoice.vue'
+import MenuSparepart from '@/components/menu/MenuSparepart.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
@@ -24,6 +23,11 @@ const componentList = ref([
     name: 'Purchase Order',
     component: MenuPurchaseOrder,
     path: menuConfig.purchase_order.path
+  },
+  {
+    name: 'Sparepart',
+    component: MenuSparepart,
+    path: menuConfig.spareparts.path
   }
 ])
 </script>

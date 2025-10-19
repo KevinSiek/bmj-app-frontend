@@ -186,6 +186,10 @@ const menuMapping = {
   return_detail: {
     name: 'Detail Return',
     path: '/return/:id'
+  },
+  upload_data: {
+    name: 'Upload Data',
+    path: '/upload-data'
   }
 }
 
@@ -274,7 +278,8 @@ const accessFeature = {
       'employee',
       'work_order',
       'delivery_order',
-      'general'
+      'general',
+      'upload_data'
     ]
   },
   marketing: {
@@ -334,7 +339,8 @@ const api = {
   login: '/api/login',
   logout: '/api/logout',
   user: '/api/user',
-  customer: '/api/customer'
+  customer: '/api/customer',
+  seller: '/api/seller',
 }
 
 export {

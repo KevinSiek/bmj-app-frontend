@@ -2,6 +2,7 @@ import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
 import { common } from '@/config'
+import { getBase64FromUrl } from '../pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -93,7 +94,9 @@ import { common } from '@/config'
 // }
 
 const createPdf = async (data, notes) => {
-  const { purchaseOrder, customer, price, spareparts } = data
+  const { purchaseOrder, customer, price, spareparts, services } = data
+
+  const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
   // Top Left
   const customerInfo = {
@@ -208,7 +211,7 @@ const createPdf = async (data, notes) => {
           { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
           { text: 'AMOUNT', style: 'tableHeader', alignment: 'center' }
         ],
-        ...spareparts.map((item, idx) => [
+        ...services.map((item, idx) => [
           { text: idx + 1, alignment: 'center' },
           { text: item.service, alignment: 'center' },
           { text: item.quantity, alignment: 'center' },
@@ -230,17 +233,15 @@ const createPdf = async (data, notes) => {
   }
 
   const docDefinition = {
-
+    header: {
+      image: logoBase64, // your base64 logo string
+      width: 550,
+      margin: [25, 30, 30, 0]
+    },
     content: [
-      // Header details
-      // {
-      //   image: 'data:image/png;base64,...', // your image in base64
-      //   width: 100, // or height: 50
-      //   margin: [0, 10, 0, 0]
-      // },
       {
         text: 'PURCHASE ORDER',
-        margin: [0, 0, 0, 40],
+        margin: [0, 10, 0, 40],
         alignment: 'center',
         bold: true,
         fontSize: 18,
@@ -375,7 +376,8 @@ const createPdf = async (data, notes) => {
     defaultStyle: {
       fontSize: 10
     },
-    pageMargins: [40, 60, 40, 60]
+    pageMargins: [40, 100, 40, 60],
+    pageSize: 'A4',
   }
 
   pdfMake.createPdf(docDefinition).download(`Purchase_Order_${data.id}.pdf`)

@@ -99,7 +99,7 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchQuotation()
+    debounce(() => fetchQuotation(), 500, 'fetch-quotation')
   }
 })
 

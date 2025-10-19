@@ -1,5 +1,6 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+import { getBase64FromUrl } from '../pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -53,8 +54,10 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 //   ]
 // }
 
-const createPdf = (data) => {
+const createPdf = async (data) => {
   const { deliveryOrder, customer, spareparts, notes } = data
+
+  const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
   // Top Left
   const title = {
@@ -163,8 +166,12 @@ const createPdf = (data) => {
   }
 
   const docDefinition = {
+    header: {
+      image: logoBase64, // your base64 logo string
+      width: 550,
+      margin: [25, 30, 30, 0]
+    },
     content: [
-      // Header details
       {
         text: 'PT. BERKAT MEGAH JAYA',
         margin: [0, 0, 0, 0],
@@ -273,7 +280,8 @@ const createPdf = (data) => {
     defaultStyle: {
       fontSize: 10
     },
-    pageMargins: [40, 60, 40, 60]
+    pageMargins: [40, 100, 40, 60],
+    pageSize: 'A4',
   }
 
   pdfMake.createPdf(docDefinition).download(`Delivery_Note_${data.id}.pdf`)

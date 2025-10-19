@@ -77,7 +77,7 @@ export const useQuotationStore = defineStore('quotation', () => {
       sparepartName: data?.sparepart_name || '',
       totalUnit: data?.total_unit || 0,
       unitPriceSell: data?.unit_price_sell || 0,
-      unitPriceBuy: (data?.unit_price_buy || []).map(buy => ({
+      unitPriceSeller: (data?.unit_price_seller || []).map(buy => ({
         seller: buy?.seller || '',
         price: buy?.price || 0
       }))

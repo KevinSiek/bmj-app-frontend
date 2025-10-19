@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Unit Price"
-                    v-model="sparepart.unitPriceSell" @change="selectItem(sparepartIndex, sparepart)" disabled>
+                    v-model="sparepart.unitPriceBuy" @change="selectItem(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price"
@@ -139,7 +139,7 @@ const selectItem = (index, purchaseData, sparepartData) => {
     ...purchaseData,
     ...sparepartData
   }
-  data.totalPrice = data.quantity * data.unitPriceSell
+  data.totalPrice = data.quantity * data.unitPriceBuy
   purchase.value.spareparts.splice(index, 1, data)
 }
 

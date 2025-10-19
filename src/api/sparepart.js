@@ -41,7 +41,7 @@ const deleteSparepart = (id) => {
 }
 
 const addSparepartInBulk = (spareparts) => {
-  return httpApi.postDataViaApi(`${api.sparepart}/insert`, spareparts)
+  return httpApi.postDataViaApi(`${api.sparepart}/updateAllData`, spareparts)
 }
 
 

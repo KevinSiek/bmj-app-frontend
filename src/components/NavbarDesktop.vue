@@ -1,7 +1,7 @@
 <template>
   <div class="contain">
     <div class="webName">
-      <!-- <img src="../assets/WebName.png" alt=""> -->
+      <!-- <img src="/assets/images.png" alt=""> -->
       <router-link :to="menuMapping.menu.path" class="nav-link">
         PT. BMJ
       </router-link>
@@ -57,7 +57,8 @@ const iconMap = {
   employee: 'person-fill-gear',
   work_order: 'person-workspace',
   delivery_order: 'truck',
-  general: 'sliders'
+  general: 'sliders',
+  upload_data: 'file-earmark-arrow-up'
 }
 
 // const menus = [

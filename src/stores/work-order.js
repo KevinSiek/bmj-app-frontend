@@ -20,6 +20,10 @@ export const useWorkOrderStore = defineStore('work-order', () => {
         endDate: data?.service_order?.end_date || ''
       },
       currentStatus: data?.current_status || '',
+      purchaseOrder: {
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        purchaseOrderDate: data?.purchase_order?.purchase_order_date || ''
+      },
       proformaInvoice: {
         proformaInvoiceNumber: data?.proforma_invoice?.proforma_invoice_number || '',
         proformaInvoiceDate: data?.proforma_invoice?.proforma_invoice_date || ''

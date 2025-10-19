@@ -1,5 +1,5 @@
 <template>
-  <LoginDesktop :user="user" :login="login" :is-pass-show="isPassShow" :showHide="showHide" />
+  <LoginDesktop :user="user" :login="login" :is-pass-show="isPassShow" :showHide="showHide" :isLoading="isLoading" />
 </template>
 
 <script setup>

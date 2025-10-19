@@ -21,27 +21,24 @@
         <div v-else class="list">
           <div v-for="(allInv, index) in invoices" :key="index">
             <template v-if="allInv.versions.length > 1">
-              <ItemComponent :number="index + paginationData.from"
-                :item="allInv.versions[allInv.versions.length - 1]"
+              <ItemComponent :number="index + paginationData.from" :item="allInv.versions[allInv.versions.length - 1]"
                 :first-section="allInv.versions[allInv.versions.length - 1].invoice.invoiceNumber"
                 :second-section="allInv.versions[allInv.versions.length - 1].invoice.date"
                 :third-section="allInv.versions[allInv.versions.length - 1].invoice.type" wideRow
-                :current-status="allInv.versions[allInv.versions.length - 1].currentStatus"
-                data-bs-toggle="collapse" :data-bs-target="'#collapsChild' + index" />
+                :current-status="allInv.versions[allInv.versions.length - 1].currentStatus" data-bs-toggle="collapse"
+                :data-bs-target="'#collapsChild' + index" />
               <div class="collapse" :id="'collapsChild' + index">
                 <div v-for="(inv, versionIndex) in allInv.versions" :key="versionIndex">
                   <ItemComponent :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)" :item="inv"
                     :first-section="inv.invoice.invoiceNumber" :second-section="inv.invoice.date"
                     :third-section="inv.invoice.type" :current-status="inv.currentStatus" class="item-child" wideRow
-                    @click="goToDetail(inv)"
-                    :class="{ disabled: versionIndex != (allInv.versions.length - 1) }" />
+                    @click="goToDetail(inv)" :class="{ disabled: versionIndex != (allInv.versions.length - 1) }" />
                 </div>
               </div>
             </template>
             <ItemComponent v-else :number="index + paginationData.from" :item="allInv.versions[0]"
               :first-section="allInv.versions[0].invoice.invoiceNumber"
-              :second-section="allInv.versions[0].invoice.date"
-              :third-section="allInv.versions[0].invoice.type" wideRow
+              :second-section="allInv.versions[0].invoice.date" :third-section="allInv.versions[0].invoice.type" wideRow
               :current-status="allInv.versions[0].currentStatus" @click="goToDetail(allInv.versions[0])" />
           </div>
         </div>
@@ -78,7 +75,7 @@ onMounted(async () => {
     updateQuery(router, route, { page: 1, month: selectedMonth.value, year: selectedYear.value })
     return
   }
-  fetchPurchase()
+  fetchInvoice()
 })
 
 watch(() => route.query, (before, after) => {
@@ -86,12 +83,11 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchPurchase()
-    console.log("REFETCH PURCHASE")
+    debounce(() => fetchInvoice(), 500, 'fetch-invoice')
   }
 })
 
-const fetchPurchase = async () => {
+const fetchInvoice = async () => {
   const { page, search, month, year } = route.query
   invoiceStore.getAllInvoices({ page, search, month, year })
 }

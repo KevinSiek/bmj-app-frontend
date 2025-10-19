@@ -345,10 +345,10 @@ const isShowRelease = computed(() =>
   purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.release)
 )
-const isShowDone = computed(() =>
-  (isRoleMarketing.value || isRoleDirector.value) &&
-  purchaseOrder.value.status.some(item => item.state === common.track.release) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.done)
+const isShowDone = computed(() => false
+  // (isRoleMarketing.value || isRoleDirector.value) &&
+  // purchaseOrder.value.status.some(item => item.state === common.track.release) &&
+  // !purchaseOrder.value.status.some(item => item.state === common.track.done)
 )
 const isShowReturn = computed(() =>
   (isRoleMarketing.value || isRoleDirector.value) &&

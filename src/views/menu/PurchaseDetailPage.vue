@@ -21,7 +21,7 @@
                 <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
+                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceBuy) }}</td>
                 <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
               </tr>
             </tbody>

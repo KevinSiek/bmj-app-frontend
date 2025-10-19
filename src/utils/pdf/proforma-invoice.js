@@ -3,6 +3,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
 import { ToWords } from 'to-words'
 import { common } from '@/config'
+import { getBase64FromUrl } from '../pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -107,10 +108,12 @@ const toWords = new ToWords({
 //   ]
 // }
 
-const createPdf = (data) => {
-  const { project, customer, price, downPayment, spareparts } = data
+const createPdf = async (data) => {
+  const { project, customer, price, downPayment, spareparts, services } = data
 
   const totalAmountWord = toWords.convert(price.totalAmount)
+
+  const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
   // Top Left
   const purchaseOrderInfo = {
@@ -355,7 +358,7 @@ const createPdf = (data) => {
             '',
             '',
           ],
-          ...spareparts.map((item, idx) => [
+          ...services.map((item, idx) => [
             { text: idx + 1, alignment: 'center' },
             { text: item.service },
             { text: item.quantity, alignment: 'center' },
@@ -455,9 +458,12 @@ const createPdf = (data) => {
 
 
   const docDefinition = {
-
+    header: {
+      image: logoBase64, // your base64 logo string
+      width: 550,
+      margin: [25, 30, 30, 0]
+    },
     content: [
-      // Header details
       {
         text: 'PROFORMA INVOICE',
         margin: [0, 0, 0, 0],
@@ -714,7 +720,8 @@ const createPdf = (data) => {
     defaultStyle: {
       fontSize: 10
     },
-    pageMargins: [40, 60, 40, 60]
+    pageMargins: [40, 100, 40, 60],
+    pageSize: 'A4',
   }
 
   pdfMake.createPdf(docDefinition).download(`Proforma_Invoice_${data.id}.pdf`)

@@ -17,7 +17,8 @@ export const useSparepartStore = defineStore('sparepart', () => {
       sparepartName: data?.sparepart_name || '',
       totalUnit: data?.total_unit || 0,
       unitPriceSell: data?.unit_price_sell || 0,
-      unitPriceBuy: (data?.unit_price_buy || []).map(buy => ({
+      unitPriceBuy: data?.unit_price_buy || 0,
+      unitPriceSeller: (data?.unit_price_seller || []).map(buy => ({
         seller: buy?.seller || '',
         price: buy?.price || 0,
         quantity: buy?.quantity || 0
@@ -58,6 +59,13 @@ export const useSparepartStore = defineStore('sparepart', () => {
     sparepart.value = mapSparepart()
   }
 
+  async function uploadSparepartFile(file) {
+    isLoading.value = true
+    const formData = new FormData()
+    await sparepartApi.uploadFile(formData)
+    isLoading.value = false
+  }
+
   return {
     sparepart,
     spareparts,
@@ -69,6 +77,7 @@ export const useSparepartStore = defineStore('sparepart', () => {
     updateSparepart,
     deleteSparepart,
     addSparepart,
+    uploadSparepartFile,
     $resetSparepart
   }
 })

@@ -90,7 +90,7 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchPurchaseOrder()
+    debounce(() => fetchPurchaseOrder(), 500, 'fetch-purchase-order')
   }
 })
 

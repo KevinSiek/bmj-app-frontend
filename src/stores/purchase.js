@@ -24,6 +24,7 @@ export const usePurchaseStore = defineStore('purchase', () => {
         sparepartName: sparepart?.sparepart_name || '',
         sparepartNumber: sparepart?.sparepart_number || '',
         quantity: sparepart?.quantity || 0,
+        unitPriceBuy: sparepart?.unit_price_buy || 0,
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
         stock: sparepart?.stock || ''
@@ -38,10 +39,11 @@ export const usePurchaseStore = defineStore('purchase', () => {
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
       totalUnit: data?.total_unit || 0,
+      unitPriceBuy: data?.unit_price_buy || 0,
       unitPriceSell: data?.unit_price_sell || 0,
-      unitPriceBuy: (data?.unit_price_buy || []).map(buy => ({
-        seller: buy?.seller || '',
-        price: buy?.price || 0
+      unitPriceSeller: (data?.unit_price_seller || []).map(seller => ({
+        seller: seller?.seller || '',
+        price: seller?.price || 0
       }))
     }
   }

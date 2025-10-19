@@ -2,6 +2,7 @@ import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
 import { common } from '@/config'
+import { getBase64FromUrl } from '@/utils/pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -87,7 +88,9 @@ import { common } from '@/config'
 // }
 
 const createPdf = async (data, notes) => {
-  const { project, customer, price, spareparts } = data
+  const { project, customer, price, spareparts, services } = data
+
+  const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
   // Top Left
   const customerInfo = {
@@ -113,7 +116,7 @@ const createPdf = async (data, notes) => {
       paddingLeft: () => 0,
       paddingRight: () => 1
     },
-    margin: [0, 10, 5, 5],
+    margin: [0, 13, 5, 5],
     minHeight: 460
   }
 
@@ -225,7 +228,7 @@ const createPdf = async (data, notes) => {
             { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
             { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 }
           ],
-          ...spareparts.map((item, idx) => [
+          ...services.map((item, idx) => [
             { text: idx + 1, alignment: 'center', fontSize: 8 },
             { text: item.service, fontSize: 8 },
             { text: item.quantity, alignment: 'center', fontSize: 8 },
@@ -289,23 +292,22 @@ const createPdf = async (data, notes) => {
   }
 
   const docDefinition = {
+    header: {
+      image: logoBase64, // your base64 logo string
+      width: 550,
+      margin: [25, 30, 30, 0]
+    },
     content: [
-      // Header details
-      // {
-      //   image: 'data:image/png;base64,...', // your image in base64
-      //   width: 100, // or height: 50
-      //   margin: [0, 10, 0, 0]
-      // },
       {
         text: `Quotation No : ${data.project.quotationNumber}`,
-        margin: [0, 0, 0, 0],
+        margin: [0, 3, 0, 0],
       },
 
       customerInfo,
 
       {
         text: `Dengan Hormat,`,
-        margin: [0, 25, 0, 0]
+        margin: [0, 15, 0, 0]
       },
       {
         text: `Berikut kami sampaikan Penawaran harga sparepart Mesin Mitsubishi dengan rincian sebagain berikut:`,
@@ -382,7 +384,8 @@ const createPdf = async (data, notes) => {
     defaultStyle: {
       fontSize: 10
     },
-    pageMargins: [40, 60, 40, 60]
+    pageMargins: [40, 100, 40, 60],
+    pageSize: 'A4',
   }
 
   pdfMake.createPdf(docDefinition).download(`Quotation_${data.id}.pdf`)

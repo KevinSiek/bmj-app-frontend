@@ -5,7 +5,7 @@
         <SearchBar @searched="handleUpdateSearch" />
       </div>
       <div class="btn-add">
-        <button class="btn btn-primary" @click="goToAdd">
+        <button v-if="isRoleDirector" class="btn btn-primary" @click="goToAdd">
           {{ addText }}
         </button>
       </div>
@@ -45,6 +45,7 @@ import debounce from '@/utils/debouncer'
 import { computed, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useMainStore } from '@/stores/main'
+import { useRole } from '@/composeable/useRole'
 
 const mainStore = useMainStore()
 const route = useRoute()
@@ -53,6 +54,8 @@ const sparepartStore = useSparepartStore()
 
 const { isMobile } = storeToRefs(mainStore)
 const { spareparts, paginationData, isLoading } = storeToRefs(sparepartStore)
+
+const { isRoleDirector } = useRole
 
 const addText = computed(() => (isMobile.value ? 'Add' : 'Add Sparepart'))
 
@@ -70,8 +73,7 @@ watch(() => route.query, (before, after) => {
     return
   }
   if (JSON.stringify(before) !== JSON.stringify(after)) {
-    fetchSpareparts()
-    console.log("REFETCH SPAREPART")
+    debounce(() => fetchSpareparts(), 500, 'fetch-sparepart')
   }
 })
 

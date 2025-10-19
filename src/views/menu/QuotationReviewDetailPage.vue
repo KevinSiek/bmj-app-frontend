@@ -117,7 +117,7 @@
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">PPN 12%</td>
+                <td class="table-col table-name">PPN 11%</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>

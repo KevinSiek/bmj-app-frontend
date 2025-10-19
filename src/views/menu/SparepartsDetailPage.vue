@@ -30,6 +30,11 @@
               <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber" placeholder="Part Number"
                 disabled>
             </div>
+            <div v-if="isRoleDirector || isRoleFinance" class="input form-group col-12">
+              <label for="">Buy Price</label><br>
+              <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceBuy" placeholder="Buy Price"
+                disabled>
+            </div>
             <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
               <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceSell" placeholder="Selling Price"
@@ -38,10 +43,10 @@
           </div>
         </div>
       </div>
-      <div class="lower my-2">
+      <div v-if="isRoleDirector || isRoleFinance" class="lower my-2">
         <div class="title">Purchase Price</div>
         <div class="data row">
-          <div class="lists" v-for="(list, index) in sparepart.unitPriceBuy" :key="index">
+          <div class="lists" v-for="(list, index) in sparepart.unitPriceSeller" :key="index">
             <div class="input form-group col-5">
               <label for="">Seller</label><br>
               <input type="text" class="form-control mt-2" v-model="list.seller" placeholder="Seller" disabled>
@@ -77,8 +82,8 @@ import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
-
 import { common } from '@/config'
+import { useRole } from '@/composeable/useRole'
 
 const route = useRoute()
 const router = useRouter()
@@ -87,6 +92,8 @@ const sparepartStore = useSparepartStore()
 const isProcessing = ref(false)
 
 const { sparepart } = storeToRefs(sparepartStore)
+
+const { isRoleDirector, isRoleFinance } = useRole()
 
 onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()
