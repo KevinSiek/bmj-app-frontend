@@ -8,14 +8,14 @@ export const useSparepartStore = defineStore('sparepart', () => {
   const paginationData = ref({})
   const isLoading = ref(false)
 
-  function mapSparepart(data) {
+  function mapSparepart(data = {}) {
     return {
       sparepartId: data?.id || '',
       slug: data?.slug || '',
       branch: data?.branch || '',
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
-      totalUnit: (data.totalUnit || []).map(branch => ({
+      totalUnit: (data?.total_unit || []).map(branch => ({
         name: branch.name,
         stock: branch.stock
       })),
@@ -32,13 +32,17 @@ export const useSparepartStore = defineStore('sparepart', () => {
   async function getAllSpareparts(param) {
     isLoading.value = true
     const { data } = await sparepartApi.getAllSparepart(param)
+    console.log("data :", data)
+
     spareparts.value = data.data.map(mapSparepart)
     paginationData.value = data
     isLoading.value = false
   }
 
   async function getSparepart(id) {
+    console.log("getSparepart -- id:", id)
     const { data } = await sparepartApi.getSparepartById(id)
+    console.log("data :", data)
     sparepart.value = mapSparepart(data)
   }
 
