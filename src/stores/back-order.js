@@ -43,7 +43,10 @@ export const useBackOrderStore = defineStore('back-order', () => {
         sparepartNumber: sparepart?.sparepart_number || '',
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
-        totalUnit: sparepart?.total_unit || '',
+        totalUnit: (data?.totalUnit || []).map(branch => ({
+          name: branch?.name || '',
+          stock: branch?.stock || 0
+        })),
         order: sparepart?.order || 0,
         deliveryOrder: sparepart?.delivery_order || 0,
         backOrder: sparepart?.back_order || 0

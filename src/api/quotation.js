@@ -80,7 +80,7 @@ const needChangeQuotation = (id) => {
 
 
 export default {
-	getAllQuotations,
+  getAllQuotations,
   getAllReviewQuotations,
   addQuotation,
   getQuotationyId,
