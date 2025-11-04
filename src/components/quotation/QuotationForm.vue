@@ -15,7 +15,8 @@
               :disabled="disabled">
           </div>
         </div>
-        <div v-else-if="isRoleDirector" class="left">
+        <!-- CRITICAL FIX: Show branch field for both Director AND Marketing roles -->
+        <div v-else-if="isRoleDirector || isRoleMarketing" class="left">
           <div class="input form-group col-12">
             <label for="">Branch</label><br>
             <select class="form-select mt-2" aria-label="Branch" v-model="quotation.project.branch"
@@ -425,7 +426,8 @@ const customerStore = useCustomerStore()
 const { quotation, searchedSpareparts } = storeToRefs(quotationStore)
 const { customers } = storeToRefs(customerStore)
 
-const { isRoleDirector } = useRole()
+// CRITICAL FIX: Import both Director and Marketing role checks
+const { isRoleDirector, isRoleMarketing } = useRole()
 
 const props = defineProps({
   type: String,
