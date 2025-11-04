@@ -14,7 +14,7 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-right dropdown">
           <li><router-link to="/profile" class="dropdown-item">Profile</router-link></li>
-          <li><a class="dropdown-item" @click="logout()">Log out</a></li>
+          <li><button type="button" class="dropdown-item logout-btn" @click="handleLogout">Log out</button></li>
         </ul>
       </div>
     </div>
@@ -24,14 +24,38 @@
 <script setup>
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
-defineProps(["logout"])
+const props = defineProps(["logout"])
 
 const authStore = useAuthStore()
+const router = useRouter()
 
 const userName = computed(() =>
   authStore.user?.fullname?.split(' ')[0] || 'User'
 )
+
+// FIXED: Handle logout with multiple fallback mechanisms
+const handleLogout = async () => {
+  try {
+    console.log('Logout initiated')
+    
+    // Try using the parent logout prop first (if provided)
+    if (props.logout && typeof props.logout === 'function') {
+      console.log('Using parent logout function')
+      await props.logout()
+    } else {
+      // Fallback to direct auth store logout
+      console.log('Using auth store logout')
+      await authStore.logout()
+      router.replace({ name: 'Login' })
+    }
+  } catch (error) {
+    console.error('Logout error:', error)
+    // Force logout as last resort
+    authStore.forceLogout()
+  }
+}
 
 </script>
 
@@ -58,6 +82,28 @@ $primary-color: black;
     width: 2vw;
     height: 2.5vh;
     color: $primary-color;
+  }
+}
+
+// FIXED: Logout button styling to be properly clickable
+.logout-btn {
+  border: none !important;
+  background: none !important;
+  width: 100% !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  padding: 0.25rem 1rem !important;
+  font-size: inherit !important;
+  color: #212529 !important;
+  
+  &:hover {
+    background-color: #e9ecef !important;
+    text-decoration: none !important;
+  }
+  
+  &:focus {
+    outline: none !important;
+    background-color: #f8f9fa !important;
   }
 }
 
