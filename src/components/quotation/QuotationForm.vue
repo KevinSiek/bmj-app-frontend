@@ -45,8 +45,6 @@
         <div class="left">
           <div class="input form-group col-12">
             <label for="">Company Name</label><br>
-            <!-- <input type="text" class="form-control mt-2" v-model="quotation.customer.companyName"
-              placeholder="Company Name" :disabled="disabled"> -->
             <input type="text" class="form-control mt-2" v-model="quotation.customer.companyName"
               placeholder="Company Name" data-bs-toggle="dropdown" aria-expanded="false"
               @change="handleInputSearchCustomer(quotation.customer.companyName)"
@@ -222,11 +220,11 @@
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                    @input="selectItem(sparepartIndex, sparepart)">
+                    @input="updateSparepartCalculation(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Unit Price"
-                    v-model="sparepart.unitPriceSell" @change="selectItem(sparepartIndex, sparepart)">
+                    v-model="sparepart.unitPriceSell" @change="updateSparepartCalculation(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price"
@@ -444,13 +442,43 @@ const selectItemCustomer = (customerData) => {
   quotation.value.customer = customerData
 }
 
+// FIXED: Enhanced selectItem function to properly set sparepartId
 const selectItem = (index, purchaseData, sparepartData) => {
+  // Ensure we have sparepartData (from dropdown selection)
+  if (!sparepartData) {
+    console.warn('No sparepart data provided for selection')
+    return
+  }
+  
+  console.log('Selecting sparepart:', sparepartData)
+  
+  // Create complete sparepart data with required backend fields
   const data = {
     ...purchaseData,
-    ...sparepartData
+    // CRITICAL: Set the sparepartId from the selected item
+    sparepartId: sparepartData.sparepartId || sparepartData.id,
+    sparepartName: sparepartData.sparepartName || sparepartData.sparepart_name,
+    sparepartNumber: sparepartData.sparepartNumber || sparepartData.sparepart_number,
+    unitPriceSell: purchaseData.unitPriceSell || sparepartData.unitPriceSell || sparepartData.unit_price_sell,
+    quantity: purchaseData.quantity || 1,
+    stock: sparepartData.stock || 'available'
   }
-  data.totalPrice = data.quantity * data.unitPriceSell
+  
+  // Calculate total price
+  data.totalPrice = (data.quantity || 0) * (data.unitPriceSell || 0)
+  
+  console.log('Final sparepart data:', data)
+  
+  // Update the sparepart in the array
+  quotation.value.spareparts.splice(index, 1, data)
+  updatePrice()
+}
 
+// Added separate function for quantity/price updates without sparepartData
+const updateSparepartCalculation = (index, sparepartData) => {
+  const data = { ...sparepartData }
+  data.totalPrice = (data.quantity || 0) * (data.unitPriceSell || 0)
+  
   quotation.value.spareparts.splice(index, 1, data)
   updatePrice()
 }
@@ -473,7 +501,7 @@ const updatePrice = () => {
 
 const addSparepart = () => {
   quotation.value.spareparts.push({
-    sparepartId: '',
+    sparepartId: '', // CRITICAL: Initialize as empty string, will be set on selection
     sparepartName: '',
     sparepartNumber: '',
     quantity: 0,
