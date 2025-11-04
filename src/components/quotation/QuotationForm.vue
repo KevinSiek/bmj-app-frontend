@@ -45,8 +45,6 @@
         <div class="left">
           <div class="input form-group col-12">
             <label for="">Company Name</label><br>
-            <!-- <input type="text" class="form-control mt-2" v-model="quotation.customer.companyName"
-              placeholder="Company Name" :disabled="disabled"> -->
             <input type="text" class="form-control mt-2" v-model="quotation.customer.companyName"
               placeholder="Company Name" data-bs-toggle="dropdown" aria-expanded="false"
               @change="handleInputSearchCustomer(quotation.customer.companyName)"
@@ -197,36 +195,61 @@
           <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
-                <div class="col-3">
+                <!-- FIXED: Sparepart Name with Clickable Suggestions -->
+                <div class="col-3 sparepart-container">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
-                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
-                    @keyup="handleInputSearch(sparepart.sparepartName)">
-                  <ul class="dropdown-menu">
-                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
-                      @click="selectItem(sparepartIndex, sparepart, item)">
+                    @input="handleInputSearch(sparepart.sparepartName)"
+                    @keyup="handleInputSearch(sparepart.sparepartName)"
+                    :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }">
+                  
+                  <!-- FIXED: Button-based suggestions instead of li elements -->
+                  <div v-if="searchedSpareparts.length > 0" class="sparepart-dropdown">
+                    <button
+                      v-for="(item, index) in searchedSpareparts"
+                      :key="index"
+                      type="button"
+                      class="sparepart-suggestion-btn"
+                      @mousedown.prevent
+                      @click="selectItem(sparepartIndex, sparepart, item)"
+                    >
                       {{ item.sparepartName }}
-                    </li>
-                  </ul>
+                    </button>
+                  </div>
+                  
+                  <div v-if="!sparepart.sparepartId && sparepart.sparepartName" class="invalid-feedback">
+                    Please select from suggestions to link sparepart ID
+                  </div>
                 </div>
-                <div class="col-3">
+                
+                <!-- FIXED: Part Number with Clickable Suggestions -->
+                <div class="col-3 sparepart-container">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
-                    placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
-                    @change="handleInputSearch(sparepart.sparepartNumber)"
+                    placeholder="Part Number" 
+                    @input="handleInputSearch(sparepart.sparepartNumber)"
                     @keyup="handleInputSearch(sparepart.sparepartNumber)">
-                  <ul class="dropdown-menu">
-                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
-                      @click="selectItem(sparepartIndex, sparepart, item)">
+                  
+                  <!-- FIXED: Button-based suggestions -->
+                  <div v-if="searchedSpareparts.length > 0" class="sparepart-dropdown">
+                    <button
+                      v-for="(item, index) in searchedSpareparts"
+                      :key="index"
+                      type="button"
+                      class="sparepart-suggestion-btn"
+                      @mousedown.prevent
+                      @click="selectItem(sparepartIndex, sparepart, item)"
+                    >
                       {{ item.sparepartNumber }}
-                    </li>
-                  </ul>
+                    </button>
+                  </div>
                 </div>
+                
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                    @input="selectItem(sparepartIndex, sparepart)">
+                    @input="updateSparepartCalculation(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Unit Price"
-                    v-model="sparepart.unitPriceSell" @change="selectItem(sparepartIndex, sparepart)">
+                    v-model="sparepart.unitPriceSell" @change="updateSparepartCalculation(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price"
@@ -444,13 +467,54 @@ const selectItemCustomer = (customerData) => {
   quotation.value.customer = customerData
 }
 
+// CRITICAL FIX: Enhanced selectItem function with proper sparepartId mapping
 const selectItem = (index, purchaseData, sparepartData) => {
+  // Ensure we have sparepartData (from dropdown selection)
+  if (!sparepartData) {
+    console.warn('No sparepart data provided for selection')
+    return
+  }
+  
+  console.log('Selecting sparepart:', sparepartData)
+  console.log('Current purchase data:', purchaseData)
+  
+  // CRITICAL: Map sparepartId with comprehensive fallbacks
   const data = {
     ...purchaseData,
-    ...sparepartData
+    // CRITICAL: Set sparepartId - try multiple possible field names
+    sparepartId: sparepartData.id || sparepartData.sparepartId || sparepartData.sparepart_id,
+    sparepartName: sparepartData.sparepartName || sparepartData.sparepart_name || sparepartData.name,
+    sparepartNumber: sparepartData.sparepartNumber || sparepartData.sparepart_number || sparepartData.part_number,
+    unitPriceSell: sparepartData.unitPriceSell || sparepartData.unit_price_sell || sparepartData.selling_price || purchaseData.unitPriceSell || 0,
+    quantity: purchaseData.quantity || 1,
+    stock: sparepartData.stock || sparepartData.available_stock || 'available'
   }
-  data.totalPrice = data.quantity * data.unitPriceSell
+  
+  // Calculate total price
+  data.totalPrice = (data.quantity || 0) * (data.unitPriceSell || 0)
+  
+  console.log('Final sparepart data with ID:', data.sparepartId, data)
+  
+  // CRITICAL: Validate sparepartId is properly set
+  if (!data.sparepartId) {
+    console.error('CRITICAL ERROR: sparepartId not set after selection!')
+    console.error('Original sparepartData:', sparepartData)
+    alert('Error: Could not get sparepart ID from selection. Please check the sparepart data format.')
+    return
+  }
+  
+  // Update the sparepart in the array
+  quotation.value.spareparts.splice(index, 1, data)
+  updatePrice()
+  
+  console.log('Sparepart selection completed successfully with sparepartId:', data.sparepartId)
+}
 
+// Added separate function for quantity/price updates without sparepartData
+const updateSparepartCalculation = (index, sparepartData) => {
+  const data = { ...sparepartData }
+  data.totalPrice = (data.quantity || 0) * (data.unitPriceSell || 0)
+  
   quotation.value.spareparts.splice(index, 1, data)
   updatePrice()
 }
@@ -473,7 +537,7 @@ const updatePrice = () => {
 
 const addSparepart = () => {
   quotation.value.spareparts.push({
-    sparepartId: '',
+    sparepartId: '', // CRITICAL: Initialize as empty string, will be set on selection
     sparepartName: '',
     sparepartNumber: '',
     quantity: 0,
@@ -567,6 +631,57 @@ $secondary-color: rgb(98, 98, 98);
   overflow: auto;
 }
 
+// CRITICAL FIX: Sparepart container for dropdown positioning
+.sparepart-container {
+  position: relative;
+}
+
+// CRITICAL FIX: Proper sparepart dropdown styling
+.sparepart-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-top: 2px;
+}
+
+// CRITICAL FIX: Clickable sparepart suggestion buttons
+.sparepart-suggestion-btn {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: #212529;
+  border-bottom: 1px solid #f8f9fa;
+  
+  &:hover {
+    background-color: #e9ecef;
+    color: #16181b;
+  }
+  
+  &:focus {
+    outline: none;
+    background-color: #f8f9fa;
+  }
+  
+  &:active {
+    background-color: #dee2e6;
+  }
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
 
 .dropdown-menu {
   width: 200px;
