@@ -13,53 +13,103 @@ export const useQuotationStore = defineStore('quotation', () => {
   const isLoading = ref(false)
 
   function mapQuotation(data) {
-    return {
+    // CRITICAL FIX: Add detailed logging and error handling for data mapping
+    console.log('MAPPING QUOTATION DATA:', data)
+    
+    if (!data) {
+      console.warn('No data provided to mapQuotation')
+      return createEmptyQuotation()
+    }
+
+    const mapped = {
       id: data?.id || '',
       slug: data?.slug || '',
       version: data?.version || 0,
       customer: {
-        companyName: data?.customer.company_name || '',
-        address: data?.customer.address || '',
-        city: data?.customer.city || '',
-        province: data?.customer.province || '',
-        office: data?.customer.office || '',
-        urban: data?.customer.urban || '',
+        companyName: data?.customer?.company_name || data?.customer?.companyName || '',
+        address: data?.customer?.address || '',
+        city: data?.customer?.city || '',
+        province: data?.customer?.province || '',
+        office: data?.customer?.office || '',
+        urban: data?.customer?.urban || '',
         subdistrict: data?.customer?.subdistrict || '',
-        postalCode: data?.customer?.postal_code || ''
+        postalCode: data?.customer?.postal_code || data?.customer?.postalCode || ''
       },
       project: {
-        quotationNumber: data?.project?.quotation_number || '',
-        type: data?.project?.type || '',
-        date: data?.project?.date || '',
-        branch: data?.branch || '',
+        quotationNumber: data?.project?.quotation_number || data?.quotation_number || '',
+        type: data?.project?.type || data?.type || '',
+        date: data?.project?.date || data?.date || '',
+        // CRITICAL FIX: Fix branch mapping with multiple fallbacks
+        branch: data?.project?.branch || data?.branch || data?.project_branch || '',
       },
       discount: data?.discount || 0,
       ppn: data?.ppn || 0,
       price: {
-        amount: data?.price?.amount || 0,
-        discount: data?.price?.discount || 0,
-        ppn: data?.price?.ppn || 0,
-        subtotal: data?.price?.subtotal || 0,
-        grandTotal: data?.price?.grand_total || 0
+        amount: data?.price?.amount || data?.amount || 0,
+        discount: data?.price?.discount || data?.discount || 0,
+        ppn: data?.price?.ppn || data?.ppn || 0,
+        subtotal: data?.price?.subtotal || data?.subtotal || 0,
+        grandTotal: data?.price?.grand_total || data?.price?.grandTotal || data?.grand_total || 0
       },
-      currentStatus: data?.current_status || '',
+      currentStatus: data?.current_status || data?.currentStatus || '',
       status: data?.status || [],
       notes: data?.notes || '',
-      spareparts: (data?.spareparts || []).map(sparepart => ({
-        sparepartId: sparepart?.sparepart_id || sparepart?.id || '',
-        sparepartName: sparepart?.sparepart_name || '',
-        sparepartNumber: sparepart?.sparepart_number || '',
+      spareparts: (data?.spareparts || data?.detail_quotations?.filter(d => d.type === 'sparepart') || []).map(sparepart => ({
+        sparepartId: sparepart?.sparepart_id || sparepart?.sparepartId || sparepart?.id || '',
+        sparepartName: sparepart?.sparepart_name || sparepart?.sparepartName || sparepart?.name || '',
+        sparepartNumber: sparepart?.sparepart_number || sparepart?.sparepartNumber || sparepart?.part_number || '',
         quantity: sparepart?.quantity || 0,
-        unitPriceSell: sparepart?.unit_price_sell || 0,
-        totalPrice: sparepart?.total_price || 0,
+        unitPriceSell: sparepart?.unit_price_sell || sparepart?.unitPriceSell || sparepart?.selling_price || 0,
+        totalPrice: sparepart?.total_price || sparepart?.totalPrice || 0,
         stock: sparepart?.stock || ''
       })),
-      services: (data?.services || []).map(service => ({
-        service: service?.service || '',
-        unitPriceSell: service?.unit_price_sell || '',
+      services: (data?.services || data?.detail_quotations?.filter(d => d.type === 'service') || []).map(service => ({
+        service: service?.service || service?.service_name || service?.name || '',
+        unitPriceSell: service?.unit_price_sell || service?.unitPriceSell || service?.price || 0,
         quantity: service?.quantity || 0,
-        totalPrice: service?.total_price || 0,
+        totalPrice: service?.total_price || service?.totalPrice || 0,
       }))
+    }
+    
+    console.log('MAPPED QUOTATION RESULT:', mapped)
+    return mapped
+  }
+
+  function createEmptyQuotation() {
+    return {
+      id: '',
+      slug: '',
+      version: 0,
+      customer: {
+        companyName: '',
+        address: '',
+        city: '',
+        province: '',
+        office: '',
+        urban: '',
+        subdistrict: '',
+        postalCode: ''
+      },
+      project: {
+        quotationNumber: '',
+        type: '',
+        date: '',
+        branch: '',
+      },
+      discount: 0,
+      ppn: 0,
+      price: {
+        amount: 0,
+        discount: 0,
+        ppn: 0,
+        subtotal: 0,
+        grandTotal: 0
+      },
+      currentStatus: '',
+      status: [],
+      notes: '',
+      spareparts: [],
+      services: []
     }
   }
 
@@ -88,44 +138,6 @@ export const useQuotationStore = defineStore('quotation', () => {
     }
   }
 
-  // function setQuotation (data) {
-  //   // Set basic properties
-  //   quotation.id = data.id || ''
-  //   quotation.slug = data.slug || ''
-  //   quotation.quotation_number = data.quotation_number || ''
-  //   quotation.status = data.status || ''
-  //   quotation.notes = data.notes || ''
-
-  //   // Set customer properties
-  //   quotation.customer.companyName = data.customer?.companyName || ''
-  //   quotation.customer.address = data.customer?.address || ''
-  //   quotation.customer.city = data.customer?.city || ''
-  //   quotation.customer.province = data.customer?.province || ''
-  //   quotation.customer.office = data.customer?.office || ''
-  //   quotation.customer.urban = data.customer?.urban || ''
-  //   quotation.customer.subdistrict = data.customer?.subdistrict || ''
-  //   quotation.customer.postalCode = data.customer?.postalCode || ''
-
-  //   // Set project properties
-  //   quotation.project.noQuotation = data.project?.noQuotation || ''
-  //   quotation.project.type = data.project?.type || ''
-
-  //   // Set price properties
-  //   quotation.price.subtotal = data.price?.subtotal || 0
-  //   quotation.price.ppn = data.price?.ppn || 0
-  //   quotation.price.grandTotal = data.price?.grandTotal || 0
-
-  //   // Set spareparts array with proper mapping
-  //   quotation.spareparts = (data.spareparts || []).map(sparepart => ({
-  //     partName: sparepart.partName || '',
-  //     sparepart_number: sparepart.sparepart_number || '',
-  //     quantity: sparepart.quantity || 0,
-  //     unitPrice: sparepart.unitPrice || 0,
-  //     totalPrice: sparepart.totalPrice || 0,
-  //     stock: sparepart.stock || ''
-  //   }))
-  // }
-
   async function getAllQuotation(param) {
     isLoading.value = true
     const { data } = await quotationApi.getAllQuotations(param)
@@ -146,16 +158,42 @@ export const useQuotationStore = defineStore('quotation', () => {
     isLoading.value = false
   }
 
+  // CRITICAL FIX: Enhanced getQuotation with error handling and logging
   async function getQuotation(id) {
-    const { data } = await quotationApi.getQuotationyId(id)
-    console.log('GET QUOTATION', data)
-    quotation.value = mapQuotation(data)
+    try {
+      console.log('FETCHING QUOTATION WITH ID:', id)
+      const { data } = await quotationApi.getQuotationyId(id)
+      console.log('RAW API RESPONSE:', data)
+      
+      if (!data) {
+        console.error('No data returned from getQuotationyId API')
+        quotation.value = createEmptyQuotation()
+        return
+      }
+      
+      quotation.value = mapQuotation(data)
+      console.log('FINAL MAPPED QUOTATION:', quotation.value)
+      
+    } catch (error) {
+      console.error('ERROR FETCHING QUOTATION:', error)
+      console.error('Failed to load quotation with ID:', id)
+      // Set empty quotation to prevent undefined errors
+      quotation.value = createEmptyQuotation()
+      throw error
+    }
   }
 
   async function getQuotationReview(id) {
-    const { data } = await quotationApi.getQuotationyId(id)
-    console.log('GET QUOTATION', data)
-    quotationReview.value = mapQuotation(data)
+    try {
+      console.log('FETCHING QUOTATION REVIEW WITH ID:', id)
+      const { data } = await quotationApi.getQuotationyId(id)
+      console.log('RAW API RESPONSE FOR REVIEW:', data)
+      quotationReview.value = mapQuotation(data)
+    } catch (error) {
+      console.error('ERROR FETCHING QUOTATION REVIEW:', error)
+      quotationReview.value = createEmptyQuotation()
+      throw error
+    }
   }
 
   async function getAllQuotationReview(param) {
@@ -214,15 +252,16 @@ export const useQuotationStore = defineStore('quotation', () => {
     console.log("List Sparepart", searchedSpareparts.value)
   }
 
+  // CRITICAL FIX: Enhanced reset function with proper initialization
   async function $resetQuotation() {
-    quotation.value = mapQuotation()
-    console.log('DATA', quotation.value)
+    quotation.value = createEmptyQuotation()
+    console.log('RESET QUOTATION DATA:', quotation.value)
   }
 
   async function $resetQuotationReview() {
     console.log('RESET QUOTATION REVIEW')
-    quotationReview.value = mapQuotation()
-    console.log('DATA', quotationReview.value)
+    quotationReview.value = createEmptyQuotation()
+    console.log('RESET QUOTATION REVIEW DATA:', quotationReview.value)
   }
 
   return {
