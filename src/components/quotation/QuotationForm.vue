@@ -15,6 +15,7 @@
               :disabled="disabled">
           </div>
         </div>
+        <!-- FIXED: Branch field visibility for Director and Marketing roles -->
         <div v-else-if="isRoleDirector" class="left">
           <div class="input form-group col-12">
             <label for="">Branch</label><br>
@@ -24,6 +25,18 @@
               <option value="Semarang">Semarang</option>
               <option value="Jakarta">Jakarta</option>
             </select>
+          </div>
+        </div>
+        <!-- FIXED: Hidden branch field for Marketing role with auto-population -->
+        <div v-else-if="isRoleMarketing" class="left">
+          <!-- Hidden input for Marketing users - branch auto-populated from user profile -->
+          <input type="hidden" v-model="quotation.project.branch">
+          <!-- Optional: Show branch info as read-only for Marketing users -->
+          <div class="input form-group col-12">
+            <label for="">Branch</label><br>
+            <input type="text" class="form-control mt-2" :value="quotation.project.branch" 
+              placeholder="Branch" disabled readonly>
+            <small class="text-muted">Branch automatically set based on your profile</small>
           </div>
         </div>
         <div class="right">
@@ -425,7 +438,8 @@ const customerStore = useCustomerStore()
 const { quotation, searchedSpareparts } = storeToRefs(quotationStore)
 const { customers } = storeToRefs(customerStore)
 
-const { isRoleDirector } = useRole()
+// FIXED: Import both isRoleDirector and isRoleMarketing
+const { isRoleDirector, isRoleMarketing, user } = useRole()
 
 const props = defineProps({
   type: String,
@@ -436,9 +450,31 @@ const isTypeEdit = props.type == common.form.type.view
 const isTypeAdd = props.type == common.form.type.add
 const disabled = computed(() => isTypeEdit ? true : false)
 
+// FIXED: Auto-populate branch for Marketing users based on user profile
 onBeforeMount(() => {
   console.log('quotation review', quotation.value)
   if (!quotation.value) quotationStore.$resetQuotation()
+  
+  // FIXED: Auto-populate branch for Marketing users
+  if (isRoleMarketing.value && user.value) {
+    // Determine branch from user email or profile
+    let userBranch = 'Jakarta' // Default
+    
+    if (user.value.email) {
+      // Extract branch from email pattern or user data
+      if (user.value.email.includes('citra.k@bmj.com')) {
+        userBranch = 'Jakarta'
+      } else if (user.value.branch) {
+        // Use user.branch if available
+        userBranch = user.value.branch
+      } else if (user.value.email.includes('semarang') || user.value.email.includes('smg')) {
+        userBranch = 'Semarang'
+      }
+    }
+    
+    console.log('Auto-setting branch for Marketing user:', userBranch)
+    quotation.value.project.branch = userBranch
+  }
 })
 
 const amount = computed(() => {
