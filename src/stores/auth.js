@@ -30,21 +30,38 @@ export const useAuthStore = defineStore('auth-store', () => {
 			user.value = null
       authenticated.value = false
       removeToken('token-bmj')
-			console.error('Error loading new arrivals:', error)
+			console.error('Error during login:', error)
 			throw error
 		}
 	}
 
 	const logout = async () => {
 		try {
-			await authApi.logout()
-			user.value = null;
-      authenticated.value = false
-      removeToken('token-bmj')
-      axios.defaults.headers.common.Authorization = null
+			// Always clear local state first to ensure UI updates immediately
+			user.value = null
+			authenticated.value = false
+			removeToken('token-bmj')
+			axios.defaults.headers.common.Authorization = null
+			
+			// Attempt to call backend logout, but don't fail if it errors
+			try {
+				await authApi.logout()
+			} catch (apiError) {
+				console.warn('Backend logout failed, but local state cleared:', apiError)
+			}
+			
+			// Force reload to ensure clean state
+			window.location.reload()
 		} catch (error) {
-			console.error('Error loading new arrivals:', error)
-			throw error
+			// Even if logout fails, ensure local state is cleared
+			user.value = null
+			authenticated.value = false
+			removeToken('token-bmj')
+			axios.defaults.headers.common.Authorization = null
+			console.error('Error during logout, but local state cleared:', error)
+			
+			// Force reload as fallback
+			window.location.reload()
 		}
 	}
 
@@ -65,12 +82,22 @@ export const useAuthStore = defineStore('auth-store', () => {
     await getUser()
 	}
 
+	// Force logout - clears everything and reloads page
+	const forceLogout = () => {
+		user.value = null
+		authenticated.value = false
+		removeToken('token-bmj')
+		axios.defaults.headers.common.Authorization = null
+		window.location.href = '/login'
+	}
+
 	return{
 		user,
 		login,
 		logout,
 		getUser,
 		updateUser,
-		authenticated
+		authenticated,
+		forceLogout
 	}
 })
