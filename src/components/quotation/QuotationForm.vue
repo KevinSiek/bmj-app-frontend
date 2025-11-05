@@ -222,22 +222,22 @@
                     :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }"
                   />
                   
-                  <!-- FIXED: Controlled dropdown visibility -->
-                  <div
+                  <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
+                  <ul
                     v-if="showDropdown[sparepartIndex] && searchedSpareparts.length > 0"
-                    class="sparepart-dropdown"
+                    class="dropdown-menu"
+                    style="display: block;"
                   >
-                    <button
+                    <li
                       v-for="(item, index) in searchedSpareparts"
                       :key="index"
-                      type="button"
-                      class="sparepart-suggestion-btn"
+                      class="dropdown-item"
                       @mousedown.prevent
                       @click="onSelect(sparepartIndex, sparepart, item)"
                     >
                       {{ item.sparepartName }}
-                    </button>
-                  </div>
+                    </li>
+                  </ul>
                   
                   <div v-if="!sparepart.sparepartId && sparepart.sparepartName" class="invalid-feedback">
                     Please select from suggestions to link sparepart ID
@@ -257,22 +257,22 @@
                     @blur="onInputBlur(sparepartIndex)"
                   />
                   
-                  <!-- FIXED: Controlled dropdown visibility -->
-                  <div
+                  <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
+                  <ul
                     v-if="showDropdown[sparepartIndex] && searchedSpareparts.length > 0"
-                    class="sparepart-dropdown"
+                    class="dropdown-menu"
+                    style="display: block;"
                   >
-                    <button
+                    <li
                       v-for="(item, index) in searchedSpareparts"
                       :key="index"
-                      type="button"
-                      class="sparepart-suggestion-btn"
+                      class="dropdown-item"
                       @mousedown.prevent
                       @click="onSelect(sparepartIndex, sparepart, item)"
                     >
                       {{ item.sparepartNumber }}
-                    </button>
-                  </div>
+                    </li>
+                  </ul>
                 </div>
                 
                 <div class="col-2">
