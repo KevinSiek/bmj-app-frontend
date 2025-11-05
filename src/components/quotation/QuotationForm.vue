@@ -1,5 +1,5 @@
 <template>
-  <form class="row form">
+  <form class="row form" @click.capture="onRootClick">
     <div class="upper my-2">
       <div class="title">Project</div>
       <div class="data">
@@ -208,22 +208,32 @@
           <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
-                <!-- FIXED: Sparepart Name with Clickable Suggestions -->
-                <div class="col-3 sparepart-container">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
-                    @input="handleInputSearch(sparepart.sparepartName)"
-                    @keyup="handleInputSearch(sparepart.sparepartName)"
-                    :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }">
+                <!-- FIXED: Sparepart Name with Controlled Dropdown -->
+                <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+                  <input
+                    type="text"
+                    class="form-control mt-2"
+                    v-model="sparepart.sparepartName"
+                    placeholder="Part Name"
+                    @focus="openDropdown(sparepartIndex)"
+                    @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
+                    @keydown.esc.prevent="closeDropdown(sparepartIndex)"
+                    @blur="onInputBlur(sparepartIndex)"
+                    :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }"
+                  />
                   
-                  <!-- FIXED: Button-based suggestions instead of li elements -->
-                  <div v-if="searchedSpareparts.length > 0" class="sparepart-dropdown">
+                  <!-- FIXED: Controlled dropdown visibility -->
+                  <div
+                    v-if="showDropdown[sparepartIndex] && searchedSpareparts.length > 0"
+                    class="sparepart-dropdown"
+                  >
                     <button
                       v-for="(item, index) in searchedSpareparts"
                       :key="index"
                       type="button"
                       class="sparepart-suggestion-btn"
                       @mousedown.prevent
-                      @click="selectItem(sparepartIndex, sparepart, item)"
+                      @click="onSelect(sparepartIndex, sparepart, item)"
                     >
                       {{ item.sparepartName }}
                     </button>
@@ -234,22 +244,31 @@
                   </div>
                 </div>
                 
-                <!-- FIXED: Part Number with Clickable Suggestions -->
-                <div class="col-3 sparepart-container">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
-                    placeholder="Part Number" 
-                    @input="handleInputSearch(sparepart.sparepartNumber)"
-                    @keyup="handleInputSearch(sparepart.sparepartNumber)">
+                <!-- FIXED: Part Number with Controlled Dropdown -->
+                <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+                  <input
+                    type="text"
+                    class="form-control mt-2"
+                    v-model="sparepart.sparepartNumber"
+                    placeholder="Part Number"
+                    @focus="openDropdown(sparepartIndex)"
+                    @input="onNumberInput(sparepartIndex, sparepart.sparepartNumber)"
+                    @keydown.esc.prevent="closeDropdown(sparepartIndex)"
+                    @blur="onInputBlur(sparepartIndex)"
+                  />
                   
-                  <!-- FIXED: Button-based suggestions -->
-                  <div v-if="searchedSpareparts.length > 0" class="sparepart-dropdown">
+                  <!-- FIXED: Controlled dropdown visibility -->
+                  <div
+                    v-if="showDropdown[sparepartIndex] && searchedSpareparts.length > 0"
+                    class="sparepart-dropdown"
+                  >
                     <button
                       v-for="(item, index) in searchedSpareparts"
                       :key="index"
                       type="button"
                       class="sparepart-suggestion-btn"
                       @mousedown.prevent
-                      @click="selectItem(sparepartIndex, sparepart, item)"
+                      @click="onSelect(sparepartIndex, sparepart, item)"
                     >
                       {{ item.sparepartNumber }}
                     </button>
@@ -423,7 +442,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, reactive } from 'vue'
 import { common } from '@/config'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
@@ -449,6 +468,59 @@ const props = defineProps({
 const isTypeEdit = props.type == common.form.type.view
 const isTypeAdd = props.type == common.form.type.add
 const disabled = computed(() => isTypeEdit ? true : false)
+
+// FIXED: Dropdown visibility state per row index
+const showDropdown = reactive([])
+
+// FIXED: Dropdown control functions
+const openDropdown = (index) => {
+  showDropdown[index] = true
+}
+
+const closeDropdown = (index) => {
+  showDropdown[index] = false
+  // Clear search results to force dropdown to hide
+  searchedSpareparts.value = []
+}
+
+// FIXED: Root click handler to close dropdown on outside click
+const onRootClick = (evt) => {
+  const container = evt.target.closest('.sparepart-container')
+  if (!container) {
+    // Clicked outside any sparepart container → close all dropdowns
+    Object.keys(showDropdown).forEach((k) => (showDropdown[k] = false))
+    searchedSpareparts.value = []
+  }
+}
+
+// FIXED: Enhanced input handlers with dropdown control
+const searchSparepart = (search) => {
+  if (search !== '') quotationStore.getSpareparts({ page: 1, search })
+}
+
+const onNameInput = (index, search) => {
+  openDropdown(index)
+  debounce(() => searchSparepart(search), 300, `search-quotation-sparepart-name-${index}`)
+}
+
+const onNumberInput = (index, search) => {
+  openDropdown(index)
+  debounce(() => searchSparepart(search), 300, `search-quotation-sparepart-number-${index}`)
+}
+
+const onInputBlur = (index) => {
+  // Defer closing to allow click on suggestion (since it uses mousedown)
+  setTimeout(() => closeDropdown(index), 150)
+}
+
+// Customer search handlers (unchanged)
+const handleInputSearchCustomer = (search) => {
+  if (search !== '') debounce(() => customerStore.getCustomers({ search }), 500, 'search-quotation-customer')
+}
+
+const selectItemCustomer = (customerData) => {
+  quotation.value.customer = customerData
+}
 
 // FIXED: Auto-populate branch for Marketing users based on user profile
 onBeforeMount(() => {
@@ -485,26 +557,8 @@ const amount = computed(() => {
   }
 })
 
-const searchSparepart = (search) => {
-  if (search !== '') quotationStore.getSpareparts({ page: 1, search })
-}
-
-const handleInputSearch = (search) => {
-  debounce(() => searchSparepart(search), 500, 'search-quotation-sparepart')
-}
-
-const searchCustomer = (search) => {
-  if (search !== '') customerStore.getCustomers({ search })
-}
-const handleInputSearchCustomer = (search) => {
-  debounce(() => searchCustomer(search), 500, 'search-quotation-customer')
-}
-const selectItemCustomer = (customerData) => {
-  quotation.value.customer = customerData
-}
-
-// CRITICAL FIX: Enhanced selectItem function with proper sparepartId mapping
-const selectItem = (index, purchaseData, sparepartData) => {
+// FIXED: Enhanced selectItem with dropdown close
+const onSelect = (index, purchaseData, sparepartData) => {
   // Ensure we have sparepartData (from dropdown selection)
   if (!sparepartData) {
     console.warn('No sparepart data provided for selection')
@@ -542,6 +596,9 @@ const selectItem = (index, purchaseData, sparepartData) => {
   // Update the sparepart in the array
   quotation.value.spareparts.splice(index, 1, data)
   updatePrice()
+  
+  // FIXED: Close dropdown after successful selection
+  closeDropdown(index)
   
   console.log('Sparepart selection completed successfully with sparepartId:', data.sparepartId)
 }
