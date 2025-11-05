@@ -30,51 +30,17 @@
           </div>
         </div>
         <div class="input form-group col-12 mx-3">
-          <div v-for="(sparepart, sparepartIndex) in purchase.spareparts" :key="sparepartIndex" class="list row">
-            <div class="col-11">
-              <div class="row">
-                <div class="col-4">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
-                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
-                    @keyup="handleInputSearch(sparepart.sparepartName)">
-                  <ul class="dropdown-menu">
-                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
-                      @click="selectItem(sparepartIndex, sparepart, item)">
-                      {{ item.sparepartName }}
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-2">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
-                    placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
-                    @change="handleInputSearch(sparepart.sparepartNumber)"
-                    @keyup="handleInputSearch(sparepart.sparepartNumber)">
-                  <ul class="dropdown-menu">
-                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
-                      @click="selectItem(sparepartIndex, sparepart, item)">
-                      {{ item.sparepartNumber }}
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                    @input="selectItem(sparepartIndex, sparepart)">
-                </div>
-                <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Unit Price"
-                    v-model="sparepart.unitPriceBuy" @change="selectItem(sparepartIndex, sparepart)">
-                </div>
-                <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Total Price"
-                    v-model="sparepart.totalPrice" disabled>
-                </div>
-              </div>
-            </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
-                  class="bi bi-trash3"></i></button>
-            </div>
-          </div>
+          <!-- REFACTORED: Use shared SparepartRow component -->
+          <SparepartRow
+            v-for="(sparepart, sparepartIndex) in purchase.spareparts"
+            :key="sparepartIndex"
+            v-model="purchase.spareparts[sparepartIndex]"
+            :suggestions="searchedSpareparts"
+            mode="purchase"
+            @search="handleInputSearch"
+            @remove="removeSparepart(sparepartIndex)"
+          />
+          
           <div class="add-btn mt-3">
             <button type="button" class="btn btn-outline-dark" @click="addSparepart">
               <i class="bi bi-plus-lg"></i>
@@ -111,6 +77,7 @@ import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
 import { formatCurrency } from '@/utils/form-util'
 import { useRouter } from 'vue-router'
+import SparepartRow from '@/components/SparepartRow.vue'
 
 const purchaseStore = usePurchaseStore()
 const modalStore = useModalStore()
@@ -134,30 +101,24 @@ const handleInputSearch = (search) => {
   debounce(() => searchSparepart(search), 500, 'search-purchase-sparepart')
 }
 
-const selectItem = (index, purchaseData, sparepartData) => {
-  const data = {
-    ...purchaseData,
-    ...sparepartData
-  }
-  data.totalPrice = data.quantity * data.unitPriceBuy
-  purchase.value.spareparts.splice(index, 1, data)
-}
-
 const addSparepart = () => {
   purchase.value.spareparts.push({
-    sparepartId: '',
+    sparepartId: '', // Initialize as empty string, will be set on selection
     sparepartName: '',
     sparepartNumber: '',
     quantity: 0,
     unitPriceSell: 0,
+    unitPrice: 0, // Use unitPrice for consistency with component
     unitPriceBuy: 0,
     totalPrice: 0,
     stock: ''
   })
 }
+
 const removeSparepart = (index) => {
   purchase.value.spareparts.splice(index, 1)
 }
+
 const doPurchase = async () => {
   if (isProcessing.value) return
   try {
@@ -175,7 +136,6 @@ const doPurchaseConfirmation = () => {
   purchase.value.spareparts = purchase.value.spareparts.filter((item) => item.quantity > 0)
   modalStore.openConfirmationModal(`to Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Success', doPurchase)
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -191,11 +151,6 @@ $secondary-color: rgb(98, 98, 98);
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 1%;
-  }
-
-  .list {
-    display: flex;
-    align-items: flex-end;
   }
 
   .add-btn {
@@ -238,10 +193,6 @@ $secondary-color: rgb(98, 98, 98);
 
 .button-placeholder {
   width: 20px;
-}
-
-.dropdown-menu {
-  text-align: center;
 }
 
 @media only screen and (max-width: 767px) {}
