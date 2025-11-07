@@ -215,16 +215,16 @@
                     class="form-control mt-2"
                     v-model="sparepart.sparepartName"
                     placeholder="Part Name"
-                    @focus="openDropdown(sparepartIndex)"
+                    @focus="openDropdown(sparepartIndex, 'name')"
                     @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
-                    @keydown.esc.prevent="closeDropdown(sparepartIndex)"
-                    @blur="onInputBlur(sparepartIndex)"
+                    @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')"
+                    @blur="onNameBlur(sparepartIndex)"
                     :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }"
                   />
                   
                   <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
                   <ul
-                    v-if="showDropdown[sparepartIndex] && searchedSpareparts.length > 0"
+                    v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].name && searchedSpareparts.length > 0"
                     class="dropdown-menu"
                     style="display: block;"
                   >
@@ -251,15 +251,15 @@
                     class="form-control mt-2"
                     v-model="sparepart.sparepartNumber"
                     placeholder="Part Number"
-                    @focus="openDropdown(sparepartIndex)"
+                    @focus="openDropdown(sparepartIndex, 'number')"
                     @input="onNumberInput(sparepartIndex, sparepart.sparepartNumber)"
-                    @keydown.esc.prevent="closeDropdown(sparepartIndex)"
-                    @blur="onInputBlur(sparepartIndex)"
+                    @keydown.esc.prevent="closeDropdown(sparepartIndex, 'number')"
+                    @blur="onNumberBlur(sparepartIndex)"
                   />
                   
                   <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
                   <ul
-                    v-if="showDropdown[sparepartIndex] && searchedSpareparts.length > 0"
+                    v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].number && searchedSpareparts.length > 0"
                     class="dropdown-menu"
                     style="display: block;"
                   >
@@ -469,18 +469,28 @@ const isTypeEdit = props.type == common.form.type.view
 const isTypeAdd = props.type == common.form.type.add
 const disabled = computed(() => isTypeEdit ? true : false)
 
-// FIXED: Dropdown visibility state per row index
-const showDropdown = reactive([])
+// FIXED: Dropdown visibility state per row index and field (name/number)
+// showDropdown[index] = { name: boolean, number: boolean }
+const showDropdown = reactive({})
 
-// FIXED: Dropdown control functions
-const openDropdown = (index) => {
-  showDropdown[index] = true
+// FIXED: Dropdown control functions (per-field)
+const openDropdown = (index, field = 'name') => {
+  if (!showDropdown[index]) showDropdown[index] = { name: false, number: false }
+  showDropdown[index][field] = true
 }
 
-const closeDropdown = (index) => {
-  showDropdown[index] = false
-  // Clear search results to force dropdown to hide
-  searchedSpareparts.value = []
+const closeDropdown = (index, field) => {
+  if (!showDropdown[index]) return
+  if (field) {
+    showDropdown[index][field] = false
+  } else {
+    // close both
+    showDropdown[index].name = false
+    showDropdown[index].number = false
+  }
+  // Clear search results to force dropdown to hide when no field open
+  const anyOpen = Object.values(showDropdown[index] || {}).some(Boolean)
+  if (!anyOpen) searchedSpareparts.value = []
 }
 
 // FIXED: Root click handler to close dropdown on outside click
@@ -488,7 +498,12 @@ const onRootClick = (evt) => {
   const container = evt.target.closest('.sparepart-container')
   if (!container) {
     // Clicked outside any sparepart container → close all dropdowns
-    Object.keys(showDropdown).forEach((k) => (showDropdown[k] = false))
+    Object.keys(showDropdown).forEach((k) => {
+      if (showDropdown[k]) {
+        showDropdown[k].name = false
+        showDropdown[k].number = false
+      }
+    })
     searchedSpareparts.value = []
   }
 }
@@ -499,18 +514,22 @@ const searchSparepart = (search) => {
 }
 
 const onNameInput = (index, search) => {
-  openDropdown(index)
+  openDropdown(index, 'name')
   debounce(() => searchSparepart(search), 300, `search-quotation-sparepart-name-${index}`)
 }
 
 const onNumberInput = (index, search) => {
-  openDropdown(index)
+  openDropdown(index, 'number')
   debounce(() => searchSparepart(search), 300, `search-quotation-sparepart-number-${index}`)
 }
 
-const onInputBlur = (index) => {
-  // Defer closing to allow click on suggestion (since it uses mousedown)
-  setTimeout(() => closeDropdown(index), 150)
+// Separate blur handlers so closing one field doesn't immediately close the other if it's active
+const onNameBlur = (index) => {
+  setTimeout(() => closeDropdown(index, 'name'), 150)
+}
+
+const onNumberBlur = (index) => {
+  setTimeout(() => closeDropdown(index, 'number'), 150)
 }
 
 // Customer search handlers (unchanged)
