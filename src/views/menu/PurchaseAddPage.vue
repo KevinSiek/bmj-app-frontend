@@ -1,6 +1,14 @@
 <template>
   <div class="contain background shadow">
     <form class="row form">
+      <div class="input form-group col-4 my-2">
+        <div class="title">Branch</div>
+        <select class="form-select mt-2" aria-label="Branch" v-model="purchase.branch">
+          <option value="" disabled selected>Select Branch</option>
+          <option value="Semarang">Semarang</option>
+          <option value="Jakarta">Jakarta</option>
+        </select>
+      </div>
       <div class="my-2">
         <div class="title">Purchase List</div>
         <div class="input form-group col-12 mx-3">

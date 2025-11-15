@@ -102,6 +102,10 @@ export const useBackOrderStore = defineStore('back-order', () => {
     backOrder.value = mapBackOrder()
   }
 
+  async function $resetBackOrders() {
+    backOrders.value = []
+  }
+
   return {
     backOrder,
     backOrders,
@@ -113,6 +117,7 @@ export const useBackOrderStore = defineStore('back-order', () => {
     updateBackOrder,
     getBackOrder,
     processBackOrder,
-    $resetBackOrder
+    $resetBackOrder,
+    $resetBackOrders
   }
 })

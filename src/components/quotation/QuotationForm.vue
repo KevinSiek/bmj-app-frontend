@@ -15,7 +15,6 @@
               :disabled="disabled">
           </div>
         </div>
-        <!-- FIXED: Branch field visibility for Director and Marketing roles -->
         <div v-else-if="isRoleDirector" class="left">
           <div class="input form-group col-12">
             <label for="">Branch</label><br>
@@ -27,15 +26,11 @@
             </select>
           </div>
         </div>
-        <!-- FIXED: Hidden branch field for Marketing role with auto-population -->
         <div v-else-if="isRoleMarketing" class="left">
-          <!-- Hidden input for Marketing users - branch auto-populated from user profile -->
-          <input type="hidden" v-model="quotation.project.branch">
-          <!-- Optional: Show branch info as read-only for Marketing users -->
           <div class="input form-group col-12">
             <label for="">Branch</label><br>
-            <input type="text" class="form-control mt-2" :value="quotation.project.branch" 
-              placeholder="Branch" disabled readonly>
+            <input type="text" class="form-control mt-2" :value="quotation.project.branch" placeholder="Branch" disabled
+              readonly>
             <small class="text-muted">Branch automatically set based on your profile</small>
           </div>
         </div>
@@ -210,71 +205,46 @@
               <div class="row">
                 <!-- FIXED: Sparepart Name with Controlled Dropdown -->
                 <div class="col-3 sparepart-container" :data-index="sparepartIndex">
-                  <input
-                    type="text"
-                    class="form-control mt-2"
-                    v-model="sparepart.sparepartName"
-                    placeholder="Part Name"
+                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                     @focus="openDropdown(sparepartIndex, 'name')"
                     @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
-                    @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')"
-                    @blur="onNameBlur(sparepartIndex)"
-                    :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }"
-                  />
-                  
+                    @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')" @blur="onNameBlur(sparepartIndex)"
+                    :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }" />
+
                   <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
                   <ul
                     v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].name && searchedSpareparts.length > 0"
-                    class="dropdown-menu"
-                    style="display: block;"
-                  >
-                    <li
-                      v-for="(item, index) in searchedSpareparts"
-                      :key="index"
-                      class="dropdown-item"
-                      @mousedown.prevent
-                      @click="onSelect(sparepartIndex, sparepart, item)"
-                    >
+                    class="dropdown-menu" style="display: block;">
+                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
+                      @mousedown.prevent @click="onSelect(sparepartIndex, sparepart, item)">
                       {{ item.sparepartName }}
                     </li>
                   </ul>
-                  
+
                   <div v-if="!sparepart.sparepartId && sparepart.sparepartName" class="invalid-feedback">
                     Please select from suggestions to link sparepart ID
                   </div>
                 </div>
-                
+
                 <!-- FIXED: Part Number with Controlled Dropdown -->
                 <div class="col-3 sparepart-container" :data-index="sparepartIndex">
-                  <input
-                    type="text"
-                    class="form-control mt-2"
-                    v-model="sparepart.sparepartNumber"
-                    placeholder="Part Number"
-                    @focus="openDropdown(sparepartIndex, 'number')"
+                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
+                    placeholder="Part Number" @focus="openDropdown(sparepartIndex, 'number')"
                     @input="onNumberInput(sparepartIndex, sparepart.sparepartNumber)"
                     @keydown.esc.prevent="closeDropdown(sparepartIndex, 'number')"
-                    @blur="onNumberBlur(sparepartIndex)"
-                  />
-                  
+                    @blur="onNumberBlur(sparepartIndex)" />
+
                   <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
                   <ul
                     v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].number && searchedSpareparts.length > 0"
-                    class="dropdown-menu"
-                    style="display: block;"
-                  >
-                    <li
-                      v-for="(item, index) in searchedSpareparts"
-                      :key="index"
-                      class="dropdown-item"
-                      @mousedown.prevent
-                      @click="onSelect(sparepartIndex, sparepart, item)"
-                    >
+                    class="dropdown-menu" style="display: block;">
+                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
+                      @mousedown.prevent @click="onSelect(sparepartIndex, sparepart, item)">
                       {{ item.sparepartNumber }}
                     </li>
                   </ul>
                 </div>
-                
+
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
                     @input="updateSparepartCalculation(sparepartIndex, sparepart)">
@@ -545,25 +515,9 @@ const selectItemCustomer = (customerData) => {
 onBeforeMount(() => {
   console.log('quotation review', quotation.value)
   if (!quotation.value) quotationStore.$resetQuotation()
-  
-  // FIXED: Auto-populate branch for Marketing users
+
   if (isRoleMarketing.value && user.value) {
-    // Determine branch from user email or profile
-    let userBranch = 'Jakarta' // Default
-    
-    if (user.value.email) {
-      // Extract branch from email pattern or user data
-      if (user.value.email.includes('citra.k@bmj.com')) {
-        userBranch = 'Jakarta'
-      } else if (user.value.branch) {
-        // Use user.branch if available
-        userBranch = user.value.branch
-      } else if (user.value.email.includes('semarang') || user.value.email.includes('smg')) {
-        userBranch = 'Semarang'
-      }
-    }
-    
-    console.log('Auto-setting branch for Marketing user:', userBranch)
+    const userBranch = user.value.branch || 'Semarang'
     quotation.value.project.branch = userBranch
   }
 })
@@ -583,10 +537,10 @@ const onSelect = (index, purchaseData, sparepartData) => {
     console.warn('No sparepart data provided for selection')
     return
   }
-  
+
   console.log('Selecting sparepart:', sparepartData)
   console.log('Current purchase data:', purchaseData)
-  
+
   // CRITICAL: Map sparepartId with comprehensive fallbacks
   const data = {
     ...purchaseData,
@@ -598,12 +552,12 @@ const onSelect = (index, purchaseData, sparepartData) => {
     quantity: purchaseData.quantity || 1,
     stock: sparepartData.stock || sparepartData.available_stock || 'available'
   }
-  
+
   // Calculate total price
   data.totalPrice = (data.quantity || 0) * (data.unitPriceSell || 0)
-  
+
   console.log('Final sparepart data with ID:', data.sparepartId, data)
-  
+
   // CRITICAL: Validate sparepartId is properly set
   if (!data.sparepartId) {
     console.error('CRITICAL ERROR: sparepartId not set after selection!')
@@ -611,14 +565,14 @@ const onSelect = (index, purchaseData, sparepartData) => {
     alert('Error: Could not get sparepart ID from selection. Please check the sparepart data format.')
     return
   }
-  
+
   // Update the sparepart in the array
   quotation.value.spareparts.splice(index, 1, data)
   updatePrice()
-  
+
   // FIXED: Close dropdown after successful selection
   closeDropdown(index)
-  
+
   console.log('Sparepart selection completed successfully with sparepartId:', data.sparepartId)
 }
 
@@ -626,7 +580,7 @@ const onSelect = (index, purchaseData, sparepartData) => {
 const updateSparepartCalculation = (index, sparepartData) => {
   const data = { ...sparepartData }
   data.totalPrice = (data.quantity || 0) * (data.unitPriceSell || 0)
-  
+
   quotation.value.spareparts.splice(index, 1, data)
   updatePrice()
 }
@@ -775,21 +729,21 @@ $secondary-color: rgb(98, 98, 98);
   cursor: pointer;
   color: #212529;
   border-bottom: 1px solid #f8f9fa;
-  
+
   &:hover {
     background-color: #e9ecef;
     color: #16181b;
   }
-  
+
   &:focus {
     outline: none;
     background-color: #f8f9fa;
   }
-  
+
   &:active {
     background-color: #dee2e6;
   }
-  
+
   &:last-child {
     border-bottom: none;
   }

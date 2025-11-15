@@ -17,6 +17,7 @@ export const usePurchaseStore = defineStore('purchase', () => {
       id: data?.id || '',
       buyNumber: data?.buy_number || '',
       notes: data?.notes || '',
+      branch: data?.branch || '',
       currentStatus: data?.current_status || '',
       totalAmount: data?.total_amount || 0,
       spareparts: (data?.spareparts || []).map(sparepart => ({
@@ -105,6 +106,10 @@ export const usePurchaseStore = defineStore('purchase', () => {
     purchase.value = mapPurchase()
   }
 
+  async function $resetPurchases () {
+    purchaseReviews.value = []
+  }
+
   async function approvePurchase (id) {
     const response = await purchaseApi.approvePurchase(id)
     return response
@@ -135,6 +140,7 @@ export const usePurchaseStore = defineStore('purchase', () => {
     getSpareparts,
     receive,
     $resetPurchase,
+    $resetPurchases,
     approvePurchase,
     rejectPurchase,
     needChangePurchase

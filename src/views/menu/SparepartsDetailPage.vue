@@ -10,16 +10,15 @@
               <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Company Name"
                 disabled>
             </div>
-            <div class="input form-group col-12">
-              <label for="">Stock</label><br>
-              <div class="branch">
-                <template v-for="(branch, index) in sparepart.totalUnit" :key="index">
-                  <label for="">{{ branch.name }}</label><br>
+            <template v-for="(branch, index) in sparepart.totalUnit" :key="index">
+              <div class="input form-group col-12">
+                <div class="branch">
+                  <label for="">Stock {{ branch.name }}</label><br>
                   <input type="text" class="form-control mt-2" v-model="branch.stock" placeholder="Stock" disabled>
-                </template>
+                </div>
               </div>
-            </div>
-            <div class="input form-group col-12">
+            </template>
+            <!-- <div class="input form-group col-12">
               <label for="branch">Branch</label><br>
               <select class="form-select mt-2" id="branch" v-model="sparepart.branch" disabled>
                 <option value="" disabled selected>Select Branch</option>
@@ -27,7 +26,7 @@
                   {{ branch }}
                 </option>
               </select>
-            </div>
+            </div> -->
           </div>
           <div class="right">
             <div class="input form-group col-12">
@@ -157,7 +156,6 @@ $secondary-color: rgb(98, 98, 98);
 
       .branch {
         font-size: 14px;
-        margin-left: 20px;
       }
     }
 

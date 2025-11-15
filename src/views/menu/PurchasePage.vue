@@ -47,7 +47,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { computed, onMounted, watch } from 'vue'
+import { computed, onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 import { useMainStore } from '@/stores/main'
@@ -62,6 +62,11 @@ const { isMobile } = storeToRefs(mainStore)
 const { purchases, paginationData, isLoading } = storeToRefs(purchaseStore)
 
 const addText = computed(() => (isMobile.value ? 'Add' : 'Add Purchase'))
+
+onBeforeMount(() => {
+  isLoading.value = true
+  purchaseStore.$resetPurchases()
+})
 
 onMounted(async () => {
   // Handle first load

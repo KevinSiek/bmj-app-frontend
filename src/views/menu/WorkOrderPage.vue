@@ -57,7 +57,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 
@@ -67,6 +67,11 @@ const workOrderStore = useWorkOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
 const { workOrders, paginationData, isLoading } = storeToRefs(workOrderStore)
+
+onBeforeMount(() => {
+  isLoading.value = true
+  workOrderStore.$resetWorkOrders()
+})
 
 onMounted(async () => {
   // Handle first load

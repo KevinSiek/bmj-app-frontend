@@ -40,7 +40,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useEmployeeStore } from '@/stores/employee'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { computed, onMounted, watch } from 'vue'
+import { computed, onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useMainStore } from '@/stores/main'
 
@@ -53,6 +53,11 @@ const { isMobile } = storeToRefs(mainStore)
 const { employees, paginationData, isLoading } = storeToRefs(employeeStore)
 
 const addText = computed(() => (isMobile.value ? 'Add' : 'Add Employee'))
+
+onBeforeMount(() => {
+  isLoading.value = true
+  employeeStore.$resetEmployees()
+})
 
 onMounted(async () => {
   // Handle first load

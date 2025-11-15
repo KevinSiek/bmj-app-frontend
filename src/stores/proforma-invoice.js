@@ -114,6 +114,10 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     proformaInvoice.value = mapProformaInvoice()
   }
 
+  async function $resetProformaInvoices() {
+    proformaInvoices.value = []
+  }
+
   return {
     proformaInvoice,
     proformaInvoices,
@@ -127,6 +131,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     setProformaInvoice,
     processToInvoice,
     dpPaid,
-    $resetProformaInvoice
+    $resetProformaInvoice,
+    $resetProformaInvoices
   }
 })

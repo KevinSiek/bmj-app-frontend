@@ -108,6 +108,10 @@ export const useWorkOrderStore = defineStore('work-order', () => {
     workOrder.value = mapWorkOrder()
   }
 
+  async function $resetWorkOrders() {
+    workOrders.value = []
+  }
+
   return {
     workOrder,
     workOrders,
@@ -120,6 +124,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
     deleteWorkOrder,
     addWorkOrder,
     process,
-    $resetWorkOrder
+    $resetWorkOrder,
+    $resetWorkOrders
   }
 })

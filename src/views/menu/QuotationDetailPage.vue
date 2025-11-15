@@ -17,13 +17,14 @@
 <script setup>
 import { menuMapping as menuConfig, common } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
-import { defineAsyncComponent, onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import { useTrackStore } from '@/stores/track'
 import { useModalStore } from '@/stores/modal'
 import { createPdf } from '@/utils/pdf/quotation'
-const QuotationForm = defineAsyncComponent(() => import('@/components/quotation/QuotationForm.vue'))
+
+import QuotationForm from '@/components/quotation/QuotationForm.vue'
 
 const route = useRoute()
 const router = useRouter()

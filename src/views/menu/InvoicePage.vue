@@ -58,7 +58,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoice'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 
@@ -68,6 +68,11 @@ const invoiceStore = useInvoiceStore()
 const { selectedMonth, selectedYear } = useDate()
 
 const { invoices, paginationData, isLoading } = storeToRefs(invoiceStore)
+
+onBeforeMount(() => {
+  isLoading.value = true
+  invoiceStore.$resetInvoices()
+})
 
 onMounted(async () => {
   // Handle first load

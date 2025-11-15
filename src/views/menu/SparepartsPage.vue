@@ -42,7 +42,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { computed, onMounted, watch } from 'vue'
+import { computed, onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useMainStore } from '@/stores/main'
 import { useRole } from '@/composeable/useRole'
@@ -55,9 +55,14 @@ const sparepartStore = useSparepartStore()
 const { isMobile } = storeToRefs(mainStore)
 const { spareparts, paginationData, isLoading } = storeToRefs(sparepartStore)
 
-const { isRoleDirector } = useRole
+const { isRoleDirector } = useRole()
 
 const addText = computed(() => (isMobile.value ? 'Add' : 'Add Sparepart'))
+
+onBeforeMount(() => {
+  isLoading.value = true
+  sparepartStore.$resetSpareparts()
+})
 
 onMounted(async () => {
   // Handle first load

@@ -59,7 +59,7 @@ import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 import { useDeliveryOrderStore } from '@/stores/delivery-order'
@@ -70,6 +70,11 @@ const deliveryOrderStore = useDeliveryOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
 const { deliveryOrders, paginationData, isLoading } = storeToRefs(deliveryOrderStore)
+
+onBeforeMount(() => {
+  isLoading.value = true
+  deliveryOrderStore.$resetDeliveryOrders()
+})
 
 onMounted(async () => {
   // Handle first load

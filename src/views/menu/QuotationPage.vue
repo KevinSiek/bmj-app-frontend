@@ -3,7 +3,7 @@
     <div class="upper">
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
-        <div class="review">
+        <div v-if="isRoleDirector" class="review">
           <router-link :to="menuConfig.quotation_review.path" class="nav-link">
             <button class="btn btn-primary">Review</button>
           </router-link>
@@ -69,21 +69,29 @@ import { useRoute, useRouter } from 'vue-router'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { computed, onMounted, watch } from 'vue'
+import { computed, onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 import { useMainStore } from '@/stores/main'
+import { useRole } from '@/composeable/useRole'
 
 const mainStore = useMainStore()
 const router = useRouter()
 const route = useRoute()
 const quotationStore = useQuotationStore()
 const { selectedMonth, selectedYear } = useDate()
+const { isRoleDirector } = useRole()
 
 const { isMobile } = storeToRefs(mainStore)
 const { quotations, paginationData, isLoading } = storeToRefs(quotationStore)
 
+
 const addText = computed(() => (isMobile.value ? 'Add' : 'Add Quotation'))
+
+onBeforeMount(() => {
+  isLoading.value = true
+  quotationStore.$resetQuotations()
+})
 
 onMounted(async () => {
   // Handle first load
@@ -119,6 +127,7 @@ const handleUpdateSearch = (search) => {
 const goToDetail = (quotation) => {
   quotationStore.$resetQuotation()
   quotationStore.setQuotation(quotation)
+  console.log(quotation)
   router.push(`${menuConfig.quotation.path}/${quotation.slug}`)
 }
 const goToAdd = () => {

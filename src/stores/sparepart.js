@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import sparepartApi from '@/api/sparepart'
+import { common } from '@/config'
 
 export const useSparepartStore = defineStore('sparepart', () => {
   const sparepart = ref(null)
@@ -15,9 +16,9 @@ export const useSparepartStore = defineStore('sparepart', () => {
       branch: data?.branch || '',
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
-      totalUnit: (data?.total_unit || []).map(branch => ({
-        name: branch.name,
-        stock: branch.stock
+      totalUnit: (data?.total_unit || Object.values(common.branch)).map(branch => ({
+        name: branch.name || branch,
+        stock: branch.stock || 0
       })),
       unitPriceSell: data?.unit_price_sell || 0,
       unitPriceBuy: data?.unit_price_buy || 0,
@@ -66,6 +67,10 @@ export const useSparepartStore = defineStore('sparepart', () => {
     sparepart.value = mapSparepart()
   }
 
+  async function $resetSpareparts() {
+    spareparts.value = []
+  }
+
   async function uploadSparepartFile(file) {
     isLoading.value = true
     const formData = new FormData()
@@ -85,6 +90,7 @@ export const useSparepartStore = defineStore('sparepart', () => {
     deleteSparepart,
     addSparepart,
     uploadSparepartFile,
-    $resetSparepart
+    $resetSparepart,
+    $resetSpareparts
   }
 })

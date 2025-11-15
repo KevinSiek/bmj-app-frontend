@@ -125,6 +125,10 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     purchaseOrder.value = mapPurchaseOrder()
   }
 
+  async function $resetPurchaseOrders() {
+    purchaseOrders.value = []
+  }
+
   async function fullPaid(id) {
     const response = await purchaseOrderApi.fullPaid(id)
   }
@@ -180,6 +184,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     returnPurchaseOrder,
     approveReturn,
     rejectReturn,
-    $resetPurchaseOrder
+    $resetPurchaseOrder,
+    $resetPurchaseOrders
   }
 })

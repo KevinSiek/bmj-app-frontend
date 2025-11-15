@@ -109,6 +109,10 @@ export const useInvoiceStore = defineStore('invoice', () => {
     invoice.value = mapInvoice()
   }
 
+  async function $resetInvoices() {
+    invoices.value = []
+  }
+
   return {
     invoice,
     invoices,
@@ -120,6 +124,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     updateInvoice,
     deleteInvoice,
     addInvoice,
-    $resetInvoice
+    $resetInvoice,
+    $resetInvoices
   }
 })

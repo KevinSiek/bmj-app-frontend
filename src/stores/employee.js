@@ -65,6 +65,10 @@ export const useEmployeeStore = defineStore('employee', () => {
     employee.value = mapEmployee()
   }
 
+  async function $resetEmployees() {
+    employees.value = []
+  }
+
   return {
     employee,
     employees,
@@ -76,6 +80,7 @@ export const useEmployeeStore = defineStore('employee', () => {
     deleteEmployee,
     addEmployee,
     $resetEmployee,
+    $resetEmployees,
     setEmployee,
     resetPassword
   }

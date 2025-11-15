@@ -65,7 +65,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 
@@ -75,6 +75,11 @@ const purchaseOrderStore = usePurchaseOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
 const { purchaseOrders, paginationData, isLoading } = storeToRefs(purchaseOrderStore)
+
+onBeforeMount(() => {
+  isLoading.value = true
+  purchaseOrderStore.$resetPurchaseOrders()
+})
 
 onMounted(async () => {
   // Handle first load

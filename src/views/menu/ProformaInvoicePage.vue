@@ -58,7 +58,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 
@@ -68,6 +68,11 @@ const proformaInvoiceStore = useProformaInvoiceStore()
 const { selectedMonth, selectedYear } = useDate()
 
 const { proformaInvoices, paginationData, isLoading } = storeToRefs(proformaInvoiceStore)
+
+onBeforeMount(() => {
+  isLoading.value = true
+  proformaInvoiceStore.$resetProformaInvoices()
+})
 
 onMounted(async () => {
   // Handle first load

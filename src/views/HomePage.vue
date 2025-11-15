@@ -42,6 +42,7 @@ import { storeToRefs } from 'pinia'
 import { useMainStore } from '@/stores/main'
 import { useTrackStore } from '@/stores/track'
 import { useGeneralStore } from '@/stores/general'
+import { useRole } from '@/composeable/useRole'
 
 const TrackNav = defineAsyncComponent(() => import('@/components/TrackNav.vue'))
 
@@ -51,9 +52,12 @@ const generalStore = useGeneralStore()
 const router = useRouter()
 const trackStore = useTrackStore()
 const { isMobile } = storeToRefs(mainStore)
+const { isRoleDirector } = useRole()
 
 onMounted(() => {
-  generalStore.getGeneralData()
+  if (isRoleDirector.value) {
+    generalStore.getGeneralData()
+  }
 })
 
 const goBack = () => {

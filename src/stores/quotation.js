@@ -10,7 +10,7 @@ export const useQuotationStore = defineStore('quotation', () => {
   const quotationReviews = ref([])
   const paginationData = ref({})
   const searchedSpareparts = ref([])
-  const isLoading = ref(false)
+  const isLoading = ref(true)
 
   function mapQuotation(data) {
     return {
@@ -129,18 +129,28 @@ export const useQuotationStore = defineStore('quotation', () => {
   async function getAllQuotation(param) {
     isLoading.value = true
     const { data } = await quotationApi.getAllQuotations(param)
-    // Group by invoice number
     const grouped = {}
+
+    // Group first
     data.data.forEach(item => {
-      const key = item.project.quotation_number
+      const mapped = mapQuotation(item)
+      const key = mapped.project.quotationNumber
+
       if (!grouped[key]) {
         grouped[key] = {
           quotationNumber: key,
           versions: []
         }
       }
-      grouped[key].versions.push(mapQuotation(item))
+
+      grouped[key].versions.push(mapped)
     })
+
+    // Sort inside each group by version DESC
+    Object.values(grouped).forEach(group => {
+      group.versions.sort((a, b) => b.version - a.version)
+    })
+
     quotations.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
@@ -219,6 +229,10 @@ export const useQuotationStore = defineStore('quotation', () => {
     console.log('DATA', quotation.value)
   }
 
+  async function $resetQuotations() {
+    quotations.value = []
+  }
+
   async function $resetQuotationReview() {
     console.log('RESET QUOTATION REVIEW')
     quotationReview.value = mapQuotation()
@@ -234,6 +248,7 @@ export const useQuotationStore = defineStore('quotation', () => {
     paginationData,
     searchedSpareparts,
     $resetQuotation,
+    $resetQuotations,
     $resetQuotationReview,
     getAllQuotation,
     getAllQuotationReview,

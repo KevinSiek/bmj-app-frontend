@@ -40,7 +40,7 @@ const editQuotation = async () => {
   try {
     isProcessing.value = true
     await quotationStore.editQuotation()
-    router.push(`${menuConfig.quotation.path}/${quotation.value.slug}`)
+    router.push(menuConfig.quotation.path)
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
