@@ -148,7 +148,7 @@ export const useQuotationStore = defineStore('quotation', () => {
 
     // Sort inside each group by version DESC
     Object.values(grouped).forEach(group => {
-      group.versions.sort((a, b) => b.version - a.version)
+      group.versions.sort((a, b) => a.version - b.version)
     })
 
     quotations.value = Object.values(grouped)
