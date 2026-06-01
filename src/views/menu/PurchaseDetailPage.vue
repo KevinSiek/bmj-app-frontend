@@ -70,8 +70,15 @@ const { purchase } = storeToRefs(purchaseStore)
 
 const isProcessing = ref(false)
 
+const HIDDEN_EDIT_STATUSES = [
+  common.status.purchase.received,
+  common.status.rejected,
+  common.status.purchase.approved,
+]
+
 const isShowEdit = computed(() => {
-  return purchase.value.currentStatus != common.status.received && purchase.value.currentStatus != common.status.canceled
+  const status = purchase.value.currentStatus
+  return status && !HIDDEN_EDIT_STATUSES.includes(status)
 })
 
 onBeforeMount(() => {
@@ -93,6 +100,7 @@ const receive = async () => {
     throw error.data.error || error.data.message
   } finally {
     isProcessing.value = false
+    purchaseStore.getPurchase(route.params.id)
   }
 }
 const receiveConfirmation = () => {

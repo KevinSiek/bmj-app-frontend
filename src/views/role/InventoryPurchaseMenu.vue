@@ -1,7 +1,7 @@
 <template>
   <template v-for="(item, index) in componentList" :key="index">
     <router-link :to="item.path" class="menu-item nav-link">
-      <component :is="item.component"></component>
+      <component :is="item.component" class="inventory"></component>
     </router-link>
   </template>
 </template>
@@ -11,7 +11,6 @@ import { ref } from 'vue'
 import MenuPurchase from '@/components/menu/MenuPurchase.vue'
 import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
-import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
@@ -19,11 +18,6 @@ const componentList = ref([
     name: 'Sparepart',
     component: MenuSparepart,
     path: menuConfig.spareparts.path
-  },
-  {
-    name: 'Purchase Order',
-    component: MenuPurchaseOrder,
-    path: menuConfig.purchase_order.path
   },
   {
     name: 'Purchase',

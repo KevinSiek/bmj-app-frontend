@@ -14,15 +14,17 @@ export function useRole() {
   const isRoleDirector = isRole(common.role.director)
   const isRoleMarketing = isRole(common.role.marketing)
   const isRoleFinance = isRole(common.role.finance)
-  const isRoleInventory = isRole(common.role.inventory)
+  const isRoleInventoryAdmin = isRole(common.role.inventory_admin)
   const isRoleService = isRole(common.role.service)
+  const isRoleInventoryPurchase = isRole(common.role.inventory_purchase)
 
   return {
     user,
     isRoleDirector,
     isRoleMarketing,
     isRoleFinance,
-    isRoleInventory,
+    isRoleInventoryAdmin,
+    isRoleInventoryPurchase,
     isRoleService
   }
 }

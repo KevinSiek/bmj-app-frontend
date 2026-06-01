@@ -11,8 +11,8 @@ export const useSummaryStore = defineStore('summary', () => {
 
   async function getSummary (param) {
     const userRole = user.value.role.toLowerCase()
-    console.log('user', userRole)
-    const { data } = await summaryApi.getSummary(userRole, param)
+    const role = userRole === 'inventory admin' || userRole === 'inventory purchase' ? 'inventory' : userRole
+    const { data } = await summaryApi.getSummary(role, param)
     console.log('getSummary', data)
     summary.value = data
   }

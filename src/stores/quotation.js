@@ -146,11 +146,6 @@ export const useQuotationStore = defineStore('quotation', () => {
       grouped[key].versions.push(mapped)
     })
 
-    // Sort inside each group by version DESC
-    Object.values(grouped).forEach(group => {
-      group.versions.sort((a, b) => b.version - a.version)
-    })
-
     quotations.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false

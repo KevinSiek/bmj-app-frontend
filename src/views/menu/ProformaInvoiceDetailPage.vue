@@ -289,7 +289,7 @@ const trackStore = useTrackStore()
 
 const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
 
-const { isRoleDirector, isRoleMarketing, isRoleInventory, isRoleFinance, isRoleService } = useRole()
+const { isRoleDirector, isRoleFinance } = useRole()
 
 const isProcessing = ref(false)
 

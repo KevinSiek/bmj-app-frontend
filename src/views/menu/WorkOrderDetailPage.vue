@@ -276,12 +276,12 @@ const trackStore = useTrackStore()
 const modalStore = useModalStore()
 
 const { workOrder } = storeToRefs(workOrderStore)
-const { isRoleDirector, isRoleInventory, isRoleService } = useRole()
+const { isRoleDirector, isRoleService } = useRole()
 
 const isProcessing = ref(false)
 
 const isShowDone = computed(() =>
-  workOrder.value.currentStatus && ((isRoleInventory.value || isRoleService.value || isRoleDirector.value) &&
+  workOrder.value.currentStatus && ((isRoleService.value || isRoleDirector.value) &&
     workOrder.value.currentStatus !== common.status.work_order.done)
   // !workOrder.value.status.some(item => item.state === common.status.work_order.done)
 )

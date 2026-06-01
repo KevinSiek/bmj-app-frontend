@@ -13,15 +13,15 @@
             <div class="logo">
               <i :class="`bi bi-${iconMap['user']}`"></i>
             </div>
-            <div class="text text-role mx-2">{{ menu.name }}</div>
+            <div class="text text-role mx-2">{{ menu?.name }}</div>
           </div>
-          <router-link v-for="(feature) in menu.feature" :to="menuMapping[feature].path" class="menu-feature"
+          <router-link v-for="(feature) in menu?.feature" :to="menuMapping[feature].path" class="menu-feature"
             :key="menuMapping[feature]">
             <div class="feature">
               <div class="logo">
                 <i :class="`bi bi-${iconMap[feature]}`"></i>
               </div>
-              <div class="text text-feature">{{ menuMapping[feature].name }}</div>
+              <div class="text text-feature">{{ menuMapping[feature]?.name }}</div>
             </div>
           </router-link>
         </div>

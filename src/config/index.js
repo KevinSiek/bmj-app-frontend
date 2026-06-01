@@ -11,9 +11,13 @@ const menuMapping = {
     name: 'Menu Marketing',
     path: '/menu/marketing'
   },
-  menu_inventory: {
-    name: 'Menu Inventory',
-    path: '/menu/inventory'
+  menu_inventory_admin: {
+    name: 'Menu Inventory Admin',
+    path: '/menu/inventory-admin'
+  },
+  menu_inventory_purchase: {
+    name: 'Menu Inventory Purchase',
+    path: '/menu/inventory-purchase'
   },
   menu_finance: {
     name: 'Menu Finance',
@@ -232,7 +236,8 @@ const common = {
     purchase: {
       wait_review: 'Wait for Review',
       rejected: 'Rejected',
-      approved: 'Approved'
+      approved: 'Approved',
+      received: 'Received'
     }
   },
   modal: {
@@ -243,8 +248,9 @@ const common = {
     director: 'Director',
     marketing: 'Marketing',
     finance: 'Finance',
-    inventory: 'Inventory',
-    service: 'Service'
+    inventory_admin: 'Inventory Admin',
+    service: 'Service',
+    inventory_purchase: 'Inventory Purchase'
   },
   track: {
     po: 'Po',
@@ -290,11 +296,20 @@ const accessFeature = {
       'purchase_order'
     ]
   },
-  inventory: {
-    path: '/inventory',
-    name: 'Inventory',
+  'inventory admin': {
+    path: '/inventory-admin',
+    name: 'Inventory Admin',
     feature: [
       'purchase_order',
+      'spareparts',
+      'back_order',
+      'delivery_order'
+    ]
+  },
+  'inventory purchase': {
+    path: '/inventory-purchase',
+    name: 'Inventory Purchase',
+    feature: [
       'spareparts',
       'back_order',
       'purchase'

@@ -20,7 +20,7 @@
               placeholder="Project Type" disabled>
           </div>
         </div>
-        <div class="right">
+        <div v-if="hasPI" class="right">
           <div class="title">Proforma Invoice</div>
           <div class="input form-group col-12">
             <label for="name">No</label><br>
@@ -318,7 +318,7 @@ import { formatCurrency } from '@/utils/form-util'
 
 const router = useRouter()
 const route = useRoute()
-const { isRoleDirector, isRoleMarketing, isRoleInventory, isRoleFinance, isRoleService } = useRole()
+const { isRoleDirector, isRoleMarketing, isRoleInventoryAdmin, isRoleFinance, isRoleService } = useRole()
 const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
@@ -332,7 +332,7 @@ const isShowFullPaid = computed(() =>
   purchaseOrder.value.proformaInvoice.isDpPaid &&
   !purchaseOrder.value.proformaInvoice.isFullPaid
 )
-const isShowReady = computed(() => (isRoleInventory.value || isRoleDirector.value) &&
+const isShowReady = computed(() => (isRoleInventoryAdmin.value || isRoleDirector.value) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.ready)
 )
 const isShowCreatePi = computed(() =>
@@ -340,7 +340,7 @@ const isShowCreatePi = computed(() =>
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
 const isShowRelease = computed(() =>
-  (isRoleService.value || isRoleInventory.value || isRoleDirector.value) &&
+  (isRoleService.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
   purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.release)
@@ -357,6 +357,7 @@ const isShowReturn = computed(() =>
 )
 const isShowReject = computed(() => isRoleDirector.value)
 const isRejected = computed(() => purchaseOrder.value.currentStatus === common.status.rejected || purchaseOrder.value.status.some(item => item.state === common.status.rejected))
+const hasPI = computed(() => purchaseOrder.value.proformaInvoice.proformaInvoiceNumber && purchaseOrder.value.proformaInvoice.proformaInvoiceDate)
 
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)

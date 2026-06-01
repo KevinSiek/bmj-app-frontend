@@ -2,10 +2,10 @@
   <div class="menu">
     <div class="title">
       <div class="icon">
-        <i class="bi bi-receipt-cutoff"></i>
+        <i class="bi bi-truck"></i>
       </div>
       <div class="text">
-        Invoice
+        Delivery Order
       </div>
     </div>
     <!-- <div class="information">

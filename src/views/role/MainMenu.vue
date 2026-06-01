@@ -12,59 +12,62 @@
         Director
       </div>
     </div>
-    <div v-if="userRole === common.role.director" class="information">
-      <!-- QUOTATION -->
-      <div class="information__item">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
-            viewBox="0 0 16 16">
-            <path
-              d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5" />
-            <path
-              d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
-          </svg>
+    <div class="divider"></div>
+    <div v-if="userRole === common.role.director" class="info-wrapper">
+      <div class="information">
+        <!-- QUOTATION -->
+        <div class="information__item">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
+              viewBox="0 0 16 16">
+              <path
+                d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5" />
+              <path
+                d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+            </svg>
+          </div>
+          <div class="value">
+            : {{ summary?.quotation || 0 }}
+          </div>
         </div>
-        <div class="value">
-          : {{ summary?.quotation || 0 }}
+        <!-- PURCHASE ORDER -->
+        <div class="information__item">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-check"
+              viewBox="0 0 16 16">
+              <path
+                d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z" />
+              <path
+                d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+            </svg>
+          </div>
+          <div class="value">
+            : {{ summary?.purchase_order || 0 }}
+          </div>
         </div>
-      </div>
-      <!-- PURCHASE ORDER -->
-      <div class="information__item">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-check"
-            viewBox="0 0 16 16">
-            <path
-              d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z" />
-            <path
-              d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
-          </svg>
+        <!-- DELIVERY ORDER -->
+        <div class="information__item">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
+              <path
+                d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z" />
+            </svg>
+          </div>
+          <div class="value">
+            : {{ summary?.delivery_order || 0 }}
+          </div>
         </div>
-        <div class="value">
-          : {{ summary?.purchase_order || 0 }}
-        </div>
-      </div>
-      <!-- DELIVERY ORDER -->
-      <div class="information__item">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
-            <path
-              d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z" />
-          </svg>
-        </div>
-        <div class="value">
-          : {{ summary?.delivery_order || 0 }}
-        </div>
-      </div>
-      <!-- WORK ORDER -->
-      <div class="information__item">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
-            <path
-              d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z" />
-          </svg>
-        </div>
-        <div class="value">
-          : {{ summary?.work_order || 0 }}
+        <!-- WORK ORDER -->
+        <div class="information__item">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
+              <path
+                d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z" />
+            </svg>
+          </div>
+          <div class="value">
+            : {{ summary?.work_order || 0 }}
+          </div>
         </div>
       </div>
     </div>
@@ -81,24 +84,26 @@
         Marketing
       </div>
     </div>
+    <div class="divider"></div>
     <!-- QUOTATION APPROVE -->
-    <div v-if="userRole === common.role.marketing || userRole === common.role.director" class="information marketing">
-      <div class="information__item text-success">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
-            viewBox="0 0 16 16">
-            <path
-              d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5" />
-            <path
-              d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
-          </svg>
+    <div v-if="userRole === common.role.marketing || userRole === common.role.director" class="info-wrapper">
+      <div class="information">
+        <div class="information__item text-success">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
+              viewBox="0 0 16 16">
+              <path
+                d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5" />
+              <path
+                d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+            </svg>
+          </div>
+          <div class="value">
+            : {{ summary?.quotation?.approve || 0 }} / {{ summary?.quotation?.total || 0 }}
+          </div>
         </div>
-        <div class="value">
-          : {{ summary?.quotation?.approve || 0 }} / {{ summary?.quotation?.total || 0 }}
-        </div>
-      </div>
-      <!-- QUOTATION REJECT -->
-      <div class="information__item text-danger">
+        <!-- QUOTATION REJECT -->
+        <!-- <div class="information__item text-danger">
         <div class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
             viewBox="0 0 16 16">
@@ -111,52 +116,54 @@
         <div class="value">
           : {{ summary?.quotation?.reject || 0 }} / {{ summary?.quotation?.total || 0 }}
         </div>
-      </div>
-      <!-- PURCHASE ORDER DONE -->
-      <div class="information__item">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-check"
-            viewBox="0 0 16 16">
-            <path
-              d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z" />
-            <path
-              d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
-          </svg>
+      </div> -->
+        <!-- PURCHASE ORDER DONE -->
+        <div class="information__item">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-check"
+              viewBox="0 0 16 16">
+              <path
+                d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z" />
+              <path
+                d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+            </svg>
+          </div>
+          <div class="value">
+            : <span class="text-success">{{ summary?.purchase_order?.done || 0 }}</span>/<span class="text-danger">{{
+              summary?.purchase_order?.total || 0 }}</span>
+          </div>
         </div>
-        <div class="value">
-          : <span class="text-success">{{ summary?.purchase_order?.done || 0 }}</span>/<span class="text-danger">{{
-            summary?.purchase_order?.total || 0 }}</span>
+        <!-- DELIVERY ORDER DONE -->
+        <div class="information__item">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
+              <path
+                d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z" />
+            </svg>
+          </div>
+          <div class="value">
+            : <span class="text-success">{{ summary?.delivery_order?.done || 0 }}</span>/<span class="text-danger">{{
+              summary?.delivery_order?.total || 0 }}</span>
+          </div>
         </div>
-      </div>
-      <!-- DELIVERY ORDER DONE -->
-      <div class="information__item">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
-            <path
-              d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z" />
-          </svg>
-        </div>
-        <div class="value">
-          : <span class="text-success">{{ summary?.delivery_order?.done || 0 }}</span>/<span class="text-danger">{{
-            summary?.delivery_order?.total || 0 }}</span>
-        </div>
-      </div>
-      <!-- WORK ORDER DONE -->
-      <div class="information__item">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
-            <path
-              d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z" />
-          </svg>
-        </div>
-        <div class="value">
-          : <span class="text-success">{{ summary?.work_order?.done || 0 }}</span>/<span class="text-danger">{{
-            summary?.work_order?.total || 0 }}</span>
+        <!-- WORK ORDER DONE -->
+        <div class="information__item">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-tools" viewBox="0 0 16 16">
+              <path
+                d="M1 0 0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.27 3.27a.997.997 0 0 0 1.414 0l1.586-1.586a.997.997 0 0 0 0-1.414l-3.27-3.27a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3q0-.405-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814zm9.646 10.646a.5.5 0 0 1 .708 0l2.914 2.915a.5.5 0 0 1-.707.707l-2.915-2.914a.5.5 0 0 1 0-.708M3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026z" />
+            </svg>
+          </div>
+          <div class="value">
+            : <span class="text-success">{{ summary?.work_order?.done || 0 }}</span>/<span class="text-danger">{{
+              summary?.work_order?.total || 0 }}</span>
+          </div>
         </div>
       </div>
     </div>
   </router-link>
-  <router-link class="menu-item nav-link inventory" :to="menuConfig.menu_inventory.path">
+  <router-link class="menu-item nav-link inventory"
+    :to="userRole === common.role.inventory_admin || userRole === common.role.director ? menuConfig.menu_inventory_admin.path : menuConfig.menu_inventory_purchase.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
@@ -168,11 +175,16 @@
         Inventory
       </div>
     </div>
-    <div v-if="userRole === common.role.inventory || userRole === common.role.director" class="information inventory">
-      <div>Prepare: {{ summary?.purchase_order?.prepare || 0 }}</div>
-      <div>Ready: {{ summary?.purchase_order?.ready || 0 }}</div>
-      <div>Release: {{ summary?.purchase_order?.release || 0 }}</div>
-      <div>Total: {{ summary?.purchase_order?.total || 0 }}</div>
+    <div class="divider"></div>
+    <div
+      v-if="userRole === common.role.inventory_admin || userRole === common.role.inventory_purchase || userRole === common.role.director"
+      class="info-wrapper">
+      <div class="information inventory">
+        <div>Prepare: {{ summary?.purchase_order?.prepare || 0 }}</div>
+        <div>Ready: {{ summary?.purchase_order?.ready || 0 }}</div>
+        <div>Release: {{ summary?.purchase_order?.release || 0 }}</div>
+        <div>Total: {{ summary?.purchase_order?.total || 0 }}</div>
+      </div>
     </div>
   </router-link>
   <router-link class="menu-item nav-link finance" :to="menuConfig.menu_finance.path">
@@ -190,10 +202,13 @@
         Finance
       </div>
     </div>
-    <div v-if="userRole === common.role.finance || userRole === common.role.director" class="information finance">
-      <div>Waiting for payment: {{ summary?.purchase_order?.wait_for_payment || 0 }}</div>
-      <div>DP Paid: {{ summary?.purchase_order?.dp_paid || 0 }}</div>
-      <div>Full Paid: {{ summary?.purchase_order?.full_paid || 0 }}</div>
+    <div class="divider"></div>
+    <div v-if="userRole === common.role.finance || userRole === common.role.director" class="info-wrapper">
+      <div class="information finance">
+        <div>Waiting for payment: {{ summary?.purchase_order?.wait_for_payment || 0 }}</div>
+        <div>DP Paid: {{ summary?.purchase_order?.dp_paid || 0 }}</div>
+        <div>Full Paid: {{ summary?.purchase_order?.full_paid || 0 }}</div>
+      </div>
     </div>
   </router-link>
   <router-link class="menu-item nav-link service" :to="menuConfig.menu_service.path">
@@ -208,10 +223,13 @@
         Service
       </div>
     </div>
-    <div v-if="userRole === common.role.service || userRole === common.role.director" class="information service">
-      <div>On progress: {{ summary?.work_order?.on_progress || 0 }}</div>
-      <div>Done: {{ summary?.work_order?.done || 0 }}</div>
-      <div>Total: {{ summary?.work_order?.total || 0 }}</div>
+    <div class="divider"></div>
+    <div v-if="userRole === common.role.service || userRole === common.role.director" class="info-wrapper">
+      <div class="information service">
+        <div>On progress: {{ summary?.work_order?.on_progress || 0 }}</div>
+        <div>Done: {{ summary?.work_order?.done || 0 }}</div>
+        <div>Total: {{ summary?.work_order?.total || 0 }}</div>
+      </div>
     </div>
   </router-link>
 </template>
@@ -238,57 +256,92 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+$director-color: #4f46e5;
+$marketing-color: #059669;
+$inventory-color: #d97706;
+$finance-color: #0284c7;
+$service-color: #dc2626;
+
 .menu-item {
+  position: relative;
   width: 25%;
-  margin: 3%;
-  height: 26vh;
-  border-radius: 15px;
-  background-color: white;
+  margin: 1.5%;
+  min-height: 26vh;
+  border-radius: 16px;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  }
 
   .title {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 3%;
-    font-size: 2vw;
+    gap: 0.7vw;
+    padding: 3% 6% 2%;
+    font-size: 1.5vw;
+    font-weight: 700;
+    letter-spacing: 0.02em;
 
     .icon {
       width: 1.6vw;
-      margin-right: 1vw;
+      flex-shrink: 0;
+      opacity: 0.9;
     }
+  }
+
+  .divider {
+    height: 1px;
+    margin: 0 6%;
+    background: #f0f0f0;
+  }
+
+  .info-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .information {
-    display: flex;
-    min-width: 60%;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 2% 3%;
+    gap: 2%;
 
     &__item {
       display: flex;
-      margin: 4% 10%;
+      align-items: center;
+      align-self: center;
+      gap: 0.4vw;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 0.4vw 0.7vw;
+      margin: 0.3vw;
 
       .icon {
-        width: 1.6vw;
+        width: 1.1vw;
+        flex-shrink: 0;
+        opacity: 0.75;
       }
 
       .value {
-        font-size: 16px;
+        font-size: 0.85vw;
+        font-weight: 600;
+        white-space: nowrap;
       }
-    }
-  }
-
-  .marketing {
-    display: flex;
-    flex-wrap: wrap;
-
-    .information__item {
-      margin: 3% 5%;
     }
   }
 
@@ -297,8 +350,62 @@ onMounted(() => {
   .service {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
+    gap: 0;
+    padding: 2% 6%;
+    font-size: 0.7vw;
+
+    >div {
+      padding: 1.5% 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 }
 
-.director {}
+// Per-role accent colors
+.director {
+  border-top-color: $director-color;
+
+  .title {
+    color: $director-color;
+  }
+}
+
+.marketing {
+  border-top-color: $marketing-color;
+
+  .title {
+    color: $marketing-color;
+  }
+}
+
+.inventory {
+  border-top-color: $inventory-color;
+
+  .title {
+    color: $inventory-color;
+  }
+}
+
+.finance {
+  border-top-color: $finance-color;
+
+  .title {
+    color: $finance-color;
+  }
+}
+
+.service {
+  border-top-color: $service-color;
+
+  .title {
+    color: $service-color;
+  }
+}
 </style>

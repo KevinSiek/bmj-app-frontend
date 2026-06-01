@@ -1,24 +1,24 @@
 <template>
   <template v-for="(item, index) in componentList" :key="index">
     <router-link :to="item.path" class="menu-item nav-link">
-      <component :is="item.component" class="finance"></component>
+      <component :is="item.component" class="inventory"></component>
     </router-link>
   </template>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import MenuQuotation from '@/components/menu/MenuQuotation.vue'
+import MenuDeliveryOrder from '@/components/menu/MenuDeliveryOrder.vue'
+import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
+import MenuSparepart from '@/components/menu/MenuSparepart.vue'
 import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
-import MenuInvoice from '@/components/menu/MenuInvoice.vue'
-import MenuProformaInvoice from '@/components/menu/MenuProformaInvoice.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
   {
-    name: 'Quotation',
-    component: MenuQuotation,
-    path: menuConfig.quotation.path
+    name: 'Sparepart',
+    component: MenuSparepart,
+    path: menuConfig.spareparts.path
   },
   {
     name: 'Purchase Order',
@@ -26,14 +26,14 @@ const componentList = ref([
     path: menuConfig.purchase_order.path
   },
   {
-    name: 'Invoice',
-    component: MenuInvoice,
-    path: menuConfig.invoice.path
+    name: 'Delivery Order',
+    component: MenuDeliveryOrder,
+    path: menuConfig.delivery_order.path
   },
   {
-    name: 'Proforma Invoice',
-    component: MenuProformaInvoice,
-    path: menuConfig.proforma_invoice.path
+    name: 'Back Order',
+    component: MenuBackOrder,
+    path: menuConfig.back_order.path
   }
 ])
 </script>

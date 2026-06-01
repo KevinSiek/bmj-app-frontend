@@ -22,8 +22,8 @@
         </div>
         <div v-else class="list">
           <ItemComponent v-for="(employee, index) in employees" :key="index" :number="index + paginationData.from"
-            :item="employee" :first-section="employee.username" :second-section="employee.role"
-            @click="goToDetail(employee)" />
+            :item="employee" :first-section="employee.username" :second-section="employee.branch"
+            :third-section="employee.role" @click="goToDetail(employee)" />
         </div>
       </div>
     </div>

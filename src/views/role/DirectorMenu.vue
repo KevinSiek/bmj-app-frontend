@@ -1,7 +1,7 @@
 <template>
   <template v-for="(item, index) in componentList" :key="index">
     <router-link :to="item.path" class="menu-item nav-link">
-      <component :is="item.component"></component>
+      <component :is="item.component" class="director"></component>
     </router-link>
   </template>
 </template>
@@ -15,6 +15,7 @@ import MenuProformaInvoice from '@/components/menu/MenuProformaInvoice.vue'
 import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
 import MenuPurchase from '@/components/menu/MenuPurchase.vue'
+import MenuDeliveryOrder from '@/components/menu/MenuDeliveryOrder.vue'
 import MenuWorkOrder from '@/components/menu/MenuWorkOrder.vue'
 import MenuEmployee from '@/components/menu/MenuEmployee.vue'
 import MenuUpload from '@/components/menu/MenuUpload.vue'
@@ -55,6 +56,11 @@ const componentList = ref([
     name: 'Back Order',
     component: MenuBackOrder,
     path: menuConfig.back_order.path
+  },
+  {
+    name: 'Delivery Order',
+    component: MenuDeliveryOrder,
+    path: menuConfig.delivery_order.path
   },
   {
     name: 'Work Order',

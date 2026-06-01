@@ -107,7 +107,7 @@ $background-color: #f0f0f0;
 
       .page-title {
         display: flex;
-        font-size: 48px;
+        font-size: 38px;
         padding-left: 4vw;
         align-items: center;
 

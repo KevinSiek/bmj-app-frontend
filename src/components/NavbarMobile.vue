@@ -29,8 +29,7 @@
               </div>
             </div> -->
             <ul class="navbar-nav me-auto mb-2 py-3 mb-lg-0">
-              <li v-for="(menu) in menus" :key="menu.path" data-bs-toggle="collapse"
-                data-bs-target=".navbar-collapse.show">
+              <li data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">
                 <div class="role">
                   <div class="logo">
                     <i :class="`bi bi-${iconMap[menu.name.toLowerCase()]}`"></i>
@@ -80,7 +79,6 @@
                   </div>
                 </div>
               </li>
-
             </ul>
           </div>
         </div>
@@ -90,10 +88,20 @@
 </template>
 
 <script setup>
-import { menuMapping } from '@/config'
+import { menuMapping, accessFeature } from '@/config'
+import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted } from 'vue'
 
+const authStore = useAuthStore()
+
+const { user } = storeToRefs(authStore)
+
+const menu = computed(() => {
+  return accessFeature[user.value.role.toLowerCase()]
+})
 const iconMap = {
-  director: 'person-square',
+  user: 'person-square',
   dashboard: 'clipboard-data',
   quotation: 'file-text-fill',
   purchase_order: 'clipboard-check-fill',
@@ -103,64 +111,68 @@ const iconMap = {
   back_order: 'cart-plus',
   purchase: 'cart',
   employee: 'person-fill-gear',
-  work_order: 'person-workspace'
+  work_order: 'person-workspace',
+  delivery_order: 'truck',
+  general: 'sliders',
+  upload_data: 'file-earmark-arrow-up'
 }
 
-const menus = [
-  {
-    path: '/director',
-    name: 'Director',
-    feature: [
-      'dashboard',
-      'quotation',
-      'purchase_order',
-      'proforma_invoice',
-      'invoice',
-      'spareparts',
-      'back_order',
-      'purchase',
-      'employee',
-      'work_order'
-    ]
-  },
-  // {
-  //   path: '/marketing',
-  //   name: 'Marketing',
-  //   feature: [
-  //     'quotation',
-  //     'purchase_order'
-  //   ]
-  // },
-  // {
-  //   path: '/inventory',
-  //   name: 'Inventory',
-  //   feature: [
-  //     'purchase_order',
-  //     'spareparts',
-  //     'back_order',
-  //     'purchase'
-  //   ]
-  // },
-  // {
-  //   path: '/finance',
-  //   name: 'Finance',
-  //   feature: [
-  //     'quotation',
-  //     'purchase_order',
-  //     'proforma_invoice',
-  //     'invoice'
-  //   ]
-  // },
-  // {
-  //   path: '/service',
-  //   name: 'Service',
-  //   feature: [
-  //     'purchase_order',
-  //     'back_order',
-  //     'work_order'
-  //   ]
-  // }
-]
+
+// const menus = [
+// {
+//   path: '/director',
+//   name: 'Director',
+//   feature: [
+//     'dashboard',
+//     'quotation',
+//     'purchase_order',
+//     'proforma_invoice',
+//     'invoice',
+//     'spareparts',
+//     'back_order',
+//     'purchase',
+//     'employee',
+//     'work_order'
+//   ]
+// },
+// {
+//   path: '/marketing',
+//   name: 'Marketing',
+//   feature: [
+//     'quotation',
+//     'purchase_order'
+//   ]
+// },
+// {
+//   path: '/inventory',
+//   name: 'Inventory',
+//   feature: [
+//     'purchase_order',
+//     'spareparts',
+//     'back_order',
+//     'purchase'
+//   ]
+// },
+// {
+//   path: '/finance',
+//   name: 'Finance',
+//   feature: [
+//     'quotation',
+//     'purchase_order',
+//     'proforma_invoice',
+//     'invoice'
+//   ]
+// },
+// {
+//   path: '/service',
+//   name: 'Service',
+//   feature: [
+//     'purchase_order',
+//     'back_order',
+//     'work_order'
+//   ]
+// }
+// ]
 </script>
 
 <style scoped lang="scss">

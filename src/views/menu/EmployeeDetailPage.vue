@@ -155,7 +155,8 @@ const roles = [
   common.role.director,
   common.role.marketing,
   common.role.finance,
-  common.role.inventory,
+  common.role.inventory_admin,
+  common.role.inventory_purchase,
   common.role.service
 ]
 

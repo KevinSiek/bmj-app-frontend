@@ -1,16 +1,80 @@
+$director-color: #4f46e5;
+$marketing-color: #059669;
+$inventory-color: #d97706;
+$finance-color: #0284c7;
+$service-color: #dc2626;
+
+$role-colors: (
+  'director': $director-color,
+  'marketing': $marketing-color,
+  'inventory': $inventory-color,
+  'finance': $finance-color,
+  'service': $service-color,
+);
+
 .menu {
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   justify-content: center;
   align-items: center;
+  gap: 0.6vw;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.06);
+
+    .title .icon {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+
+    .title .text {
+      opacity: 1;
+    }
+  }
 
   .title {
     display: flex;
-    font-size: 25px;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6vw;
 
     .icon {
-      margin-right: 15px;
+      font-size: 1.9vw;
+      color: #4f46e5;
+      opacity: 0.82;
+      line-height: 1;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+
+      // icon background pill
+      background: rgba(79, 70, 229, 0.08);
+      border-radius: 50%;
+      padding: 0.5vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .text {
+      font-size: 0.9vw;
+      font-weight: 700;
+      color: #1e293b;
+      letter-spacing: 0.01em;
+      text-align: center;
+      opacity: 0.85;
+      transition: opacity 0.2s ease;
+    }
+  }
+
+  @each $role, $color in $role-colors {
+    &.#{$role} {
+      .title .icon {
+        color: $color;
+        background: rgba($color, 0.08);
+      }
     }
   }
 }

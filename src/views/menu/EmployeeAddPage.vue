@@ -58,13 +58,12 @@ const { employee } = storeToRefs(employeeStore)
 const isProcessing = ref(false)
 
 const roles = [
-  'Director',
-  'Marketing',
-  'Finance',
-  'Inventory',
-  'Service',
-  'Inventory Admin',
-  'Inventory Purchase'
+  common.role.director,
+  common.role.marketing,
+  common.role.finance,
+  common.role.inventory_admin,
+  common.role.inventory_purchase,
+  common.role.service
 ]
 
 const branches = [

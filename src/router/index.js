@@ -10,7 +10,8 @@ const MainMenuPage = () => import('@/views/role/MainMenu.vue')
 const MenuDirectorPage = () => import('@/views/role/DirectorMenu.vue')
 const MenuMarketingPage = () => import('@/views/role/MarketingMenu.vue')
 const MenuServicePage = () => import('@/views/role/ServiceMenu.vue')
-const MenuInventoryPage = () => import('@/views/role/InventoryMenu.vue')
+const MenuInventoryAdminPage = () => import('@/views/role/InventoryAdminMenu.vue')
+const MenuInventoryPurchasePage = () => import('@/views/role/InventoryPurchaseMenu.vue')
 const MenuFinancePage = () => import('@/views/role/FinanceMenu.vue')
 const ProfilePage = () => import('@/views/menu/ProfilePage.vue')
 const DashboardPage = () => import('@/views/menu/DashboardPage.vue')
@@ -101,10 +102,15 @@ const router = createRouter({
           component: MenuServicePage
         },
         {
-          path: menuConfig.menu_inventory.path,
-          name: menuConfig.menu_inventory.name,
-          component: MenuInventoryPage
+          path: menuConfig.menu_inventory_admin.path,
+          name: menuConfig.menu_inventory_admin.name,
+          component: MenuInventoryAdminPage
         },
+        {
+          path: menuConfig.menu_inventory_purchase.path,
+          name: menuConfig.menu_inventory_purchase.name,
+          component: MenuInventoryPurchasePage
+        }
       ]
     },
     {

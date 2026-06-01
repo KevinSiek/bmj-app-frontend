@@ -100,7 +100,6 @@
                 <td class="table-col table-name">{{ sparepart.unit }}</td>
                 <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
                 <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
-                <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>

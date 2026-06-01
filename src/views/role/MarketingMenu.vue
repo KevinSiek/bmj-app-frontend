@@ -1,7 +1,7 @@
 <template>
   <template v-for="(item, index) in componentList" :key="index">
     <router-link :to="item.path" class="menu-item nav-link">
-      <component :is="item.component"></component>
+      <component :is="item.component" class="marketing"></component>
     </router-link>
   </template>
 </template>

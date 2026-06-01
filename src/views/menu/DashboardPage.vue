@@ -9,24 +9,15 @@
       </div>
       <div class="filter-bar">
         <div class="interval-group">
-          <button
-            v-for="interval in intervalOptions"
-            :key="interval.value"
-            type="button"
-            :class="{ active: selectedInterval === interval.value }"
-            @click="selectInterval(interval.value)"
-          >
+          <button v-for="interval in intervalOptions" :key="interval.value" type="button"
+            :class="{ active: selectedInterval === interval.value }" @click="selectInterval(interval.value)">
             {{ interval.label }}
           </button>
         </div>
         <label class="branch-select">
           <span>Branch</span>
           <select :value="branchSelection" @change="selectBranch($event.target.value)">
-            <option
-              v-for="option in branchOptions"
-              :key="option.code"
-              :value="option.code"
-            >
+            <option v-for="option in branchOptions" :key="option.code" :value="option.code">
               {{ option.name }}
             </option>
           </select>
@@ -34,7 +25,7 @@
       </div>
     </div>
 
-    <div v-if="isLoading" class="status-card">
+    <div v-if="isLoading" class="status-card loading">
       <p>Loading dashboard data…</p>
     </div>
     <div v-else-if="!summary" class="status-card error">
@@ -42,18 +33,10 @@
     </div>
     <div v-else class="dashboard-content">
       <section class="headline-grid">
-        <article
-          v-for="headline in headlineCards"
-          :key="headline.label"
-          class="headline-card card"
-        >
+        <article v-for="headline in headlineCards" :key="headline.label" class="headline-card card">
           <span class="label">{{ headline.label }}</span>
           <div class="value">{{ formatHeadlineValue(headline) }}</div>
-          <span
-            v-if="headline.change_percent !== null"
-            class="change"
-            :class="changeClass(headline.change_percent)"
-          >
+          <span v-if="headline.change_percent !== null" class="change" :class="changeClass(headline.change_percent)">
             {{ formatChange(headline.change_percent) }}
           </span>
         </article>
@@ -73,11 +56,8 @@
             <div class="metric">
               <span class="metric-label">Quote → PO</span>
               <strong>{{ formatPercent(pipelineMetrics.quote_to_po_conversion) }}</strong>
-              <span
-                v-if="pipelineMetrics.quote_to_po_change !== null"
-                class="change"
-                :class="changeClass(pipelineMetrics.quote_to_po_change)"
-              >
+              <span v-if="pipelineMetrics.quote_to_po_change !== null" class="change"
+                :class="changeClass(pipelineMetrics.quote_to_po_change)">
                 {{ formatChange(pipelineMetrics.quote_to_po_change) }}
               </span>
             </div>
@@ -90,20 +70,13 @@
             </div>
           </div>
           <div class="funnel">
-            <div
-              v-for="stage in funnelStages"
-              :key="stage.stage"
-              class="funnel-stage"
-            >
+            <div v-for="stage in funnelStages" :key="stage.stage" class="funnel-stage">
               <div class="stage-header">
                 <span class="stage-title">{{ stage.stage }}</span>
                 <span class="stage-value">{{ stage.count }}</span>
               </div>
               <div class="progress">
-                <div
-                  class="progress-fill"
-                  :style="{ width: funnelWidth(stage.count) }"
-                />
+                <div class="progress-fill" :style="{ width: funnelWidth(stage.count) }" />
               </div>
             </div>
           </div>
@@ -161,10 +134,7 @@
             <p class="caption">Outstanding balance by bucket</p>
           </header>
           <div class="chart-wrapper">
-            <BarChart
-              :data="receivablesAgingData"
-              :options="receivablesAgingOptions"
-            />
+            <BarChart :data="receivablesAgingData" :options="receivablesAgingOptions" />
           </div>
         </div>
       </section>
@@ -175,11 +145,7 @@
           <p class="caption">Pipeline blockers and stock alerts</p>
         </header>
         <div class="operations-grid">
-          <div
-            v-for="item in operationCounters"
-            :key="item.key"
-            class="operations-tile"
-          >
+          <div v-for="item in operationCounters" :key="item.key" class="operations-tile">
             <span class="tile-label">{{ item.label }}</span>
             <span class="tile-value">{{ item.value }}</span>
           </div>
@@ -569,7 +535,7 @@ const receivablesAgingOptions = computed(() => ({
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem 2rem 0;
-  background-color: #f3f4f6;
+  background-color: #f0f0f0;
   height: 85vh;
   overflow-y: auto;
   box-sizing: border-box;
@@ -659,6 +625,13 @@ const receivablesAgingOptions = computed(() => ({
 
   &.error {
     color: #b91c1c;
+  }
+
+  &.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
   }
 }
 
@@ -872,7 +845,7 @@ const receivablesAgingOptions = computed(() => ({
     .empty-state {
       justify-content: center;
       color: #6b7280;
-      background-color: #f3f4f6;
+      background-color: #f0f0f0;
     }
   }
 }
@@ -1012,7 +985,7 @@ const receivablesAgingOptions = computed(() => ({
     }
 
     thead {
-      background-color: #f3f4f6;
+      background-color: #f0f0f0;
       color: #4b5563;
       text-transform: uppercase;
       font-size: 0.75rem;
@@ -1082,7 +1055,7 @@ const receivablesAgingOptions = computed(() => ({
     .empty-state {
       justify-content: center;
       color: #6b7280;
-      background-color: #f3f4f6;
+      background-color: #f0f0f0;
     }
   }
 }

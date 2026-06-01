@@ -7,7 +7,7 @@
       <button type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
-    <div class="right">
+    <div class="right" v-if="canCreatePO">
       <button type="button" class="btn btn-process" @click="processQuotationConfirmation"
         :disabled="isProcessing">Create PO</button>
     </div>
@@ -17,7 +17,7 @@
 <script setup>
 import { menuMapping as menuConfig, common } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import { useTrackStore } from '@/stores/track'
@@ -35,6 +35,8 @@ const modalStore = useModalStore()
 const { quotation } = storeToRefs(quotationStore)
 
 const isProcessing = ref(false)
+
+const canCreatePO = computed(() => !quotation.value?.status?.some(s => s.state === 'Po'))
 
 onBeforeMount(() => {
   if (!quotation.value) quotationStore.$resetQuotation()
