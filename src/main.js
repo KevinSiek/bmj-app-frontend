@@ -11,8 +11,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import './assets/css/base.css'
 
-axios.defaults.baseURL = 'http://localhost:8000';
-axios.defaults.headers.common['key'] = 'rest-api-test';
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+// axios.defaults.headers.common['key'] = 'rest-api-test';
 axios.defaults.withCredentials = true;
 
 const app = createApp(App)
