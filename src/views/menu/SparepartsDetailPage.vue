@@ -101,7 +101,6 @@ const { isRoleDirector, isRoleFinance } = useRole()
 
 onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()
-  console.log(sparepart.value)
 })
 onMounted(() => {
   sparepartStore.getSparepart(route.params.id)
@@ -119,7 +118,7 @@ const deleteSparepart = async () => {
 }
 
 const goToEdit = async () => {
-  router.push(`${menuConfig.spareparts.path}/${sparepart.id}/edit`)
+  router.push(`${menuConfig.spareparts.path}/${route.params.id}/edit`)
 }
 
 const deleteSparepartConfirmation = () => {

@@ -90,7 +90,7 @@
 
 <script setup>
 import { menuMapping as menuConfig } from '@/config'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores/modal'
@@ -98,6 +98,7 @@ import { onBeforeMount, onMounted, ref } from 'vue'
 import { common } from '@/config'
 import { useSellerStore } from '@/stores/seller'
 
+const route = useRoute()
 const router = useRouter()
 const sparepartStore = useSparepartStore()
 const modalStore = useModalStore()
@@ -110,10 +111,10 @@ const isProcessing = ref(false)
 
 onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()
-  console.log(sparepart.value)
 })
 
 onMounted(() => {
+  sparepartStore.getSparepart(route.params.id)
   sellerStore.getSellers()
 })
 
@@ -125,12 +126,16 @@ const addSeller = () => {
   })
 }
 
-const addSparepart = async () => {
+const removeSeller = (index) => {
+  sparepart.value.unitPriceSeller.splice(index, 1)
+}
+
+const editSparepart = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
     await sparepartStore.updateSparepart()
-    router.push(menuConfig.spareparts)
+    router.push(`${menuConfig.spareparts.path}/${route.params.id}`)
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
@@ -139,7 +144,7 @@ const addSparepart = async () => {
 }
 
 const editSparepartConfirmation = () => {
-  modalStore.openConfirmationModal('to edit this Sparepart ?', 'Edit Sparepart Success', addSparepart)
+  modalStore.openConfirmationModal('to edit this Sparepart ?', 'Edit Sparepart Success', editSparepart)
 }
 const back = () => {
   router.back()

@@ -163,7 +163,7 @@ const { backOrder } = storeToRefs(backOrderStore)
 
 const isProcessing = ref(false)
 
-const isReadyToProcess = computed(() => backOrder.value?.currentStatus !== 'rejected' && backOrder.value?.currentStatus !== 'ready')
+const isReadyToProcess = computed(() => backOrder.value?.currentStatus !== 'Rejected' && backOrder.value?.currentStatus !== 'Ready')
 
 onBeforeMount(() => {
   if (!backOrder.value) backOrderStore.$resetBackOrder()
