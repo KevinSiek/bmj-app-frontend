@@ -8,8 +8,8 @@ $primary-color: black;
     .left {
       display: flex;
       width: 50%;
+      gap: 20px;
       .review, .return {
-        margin-left: 8%;
         display: flex;
         align-items: center;
         .btn{

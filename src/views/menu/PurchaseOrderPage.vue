@@ -3,6 +3,7 @@
     <div class="upper">
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
+        <RefreshButton @refresh="fetchPurchaseOrder" />
         <div class="return">
           <router-link :to="menuConfig.return.path" class="nav-link">
             <button class="btn btn-primary">Return</button>
@@ -59,6 +60,7 @@
 import { menuMapping as menuConfig, common } from '@/config'
 import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'
+import RefreshButton from '@/components/RefreshButton.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
 import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'

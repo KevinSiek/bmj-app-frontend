@@ -3,6 +3,7 @@
     <div class="upper">
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
+        <RefreshButton @refresh="fetchEmployees" />
       </div>
       <div class="btn-add">
         <button class="btn btn-primary" @click="goToAdd">{{ addText }}</button>
@@ -34,6 +35,7 @@
 <script setup>
 import { menuMapping as menuConfig } from '@/config'
 import SearchBar from '@/components/SearchBar.vue'
+import RefreshButton from '@/components/RefreshButton.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
 import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'

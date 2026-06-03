@@ -3,6 +3,7 @@
     <div class="upper">
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
+        <RefreshButton @refresh="fetchBackOrder" />
       </div>
     </div>
     <div class="lower paginate shadow">
@@ -67,6 +68,7 @@ import debounce from '@/utils/debouncer'
 import { onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
+import RefreshButton from '@/components/RefreshButton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -122,12 +124,17 @@ const goToDetail = async (backOrder) => {
 <style lang="scss" scoped>
 @use '@/assets/css/page.scss';
 
-.item-child {
-  margin-left: 10%;
-}
+.left {
+  display: flex;
+  gap: 20px;
 
-.disabled {
-  background-color: rgb(219, 219, 219);
-  border-color: transparent;
+  .item-child {
+    margin-left: 10%;
+  }
+
+  .disabled {
+    background-color: rgb(219, 219, 219);
+    border-color: transparent;
+  }
 }
 </style>
