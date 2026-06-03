@@ -98,7 +98,7 @@ const reject = (id, param) => {
 
 // Return Purchase Order
 const getAllReturnPurchaseOrder = async (param) => {
-  return httpApi.getDataViaApi(`${api.quotation}/return/1`, param)
+  return httpApi.getDataViaApi(`${api.purchase_order}/return`, param)
 }
 
 const returnPurchaseOrder = (id, returnedItems) => {

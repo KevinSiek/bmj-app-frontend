@@ -67,7 +67,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   async function getAllPurchaseOrders(param) {
     isLoading.value = true
     const { data } = await purchaseOrderApi.getAllPurchaseOrder(param)
-    // Group by invoice number
+    // Group by purchase order number
     const grouped = {}
     data.data.forEach(item => {
       const key = item.purchase_order.purchase_order_number
@@ -86,7 +86,19 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   async function getAllReturnPurchaseOrders(param) {
     isLoading.value = true
     const { data } = await purchaseOrderApi.getAllReturnPurchaseOrder(param)
-    returnPurchaseOrders.value = data.data.map(mapPurchaseOrder)
+     // Group by purchase order number
+    const grouped = {}
+    data.data.forEach(item => {
+      const key = item.purchase_order.purchase_order_number
+      if (!grouped[key]) {
+        grouped[key] = {
+          purchaseOrderNumber: key,
+          versions: []
+        }
+      }
+      grouped[key].versions.push(mapPurchaseOrder(item))
+    })
+    returnPurchaseOrders.value = Object.values(grouped)
     paginationData.value = data
     isLoading.value = false
   }
