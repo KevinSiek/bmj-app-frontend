@@ -12,6 +12,10 @@
             Notes for {{ messages }}
           </div>
           <div class="text mt-4">
+            <div v-if="requirePoNumber" class="inputform-floating mb-3">
+              <input type="text" class="form-control" placeholder="No PO" style="width: 500px;"
+                v-model="poNumber">
+            </div>
             <div class="inputform-floating">
               <textarea class="form-control" placeholder="Notes" id="floatingTextarea2"
                 style="height: 150px; width: 500px;" v-model="notes"></textarea>
@@ -38,10 +42,16 @@ import { storeToRefs } from 'pinia'
 
 const modalStore = useModalStore()
 
-const { messages, notes } = storeToRefs(modalStore)
+const { messages, notes, poNumber, requirePoNumber } = storeToRefs(modalStore)
 const isLoading = ref(false)
 
 const event = async () => {
+  // When a PO number is required (moveToPo), don't fire the action with an empty value —
+  // the backend would 422, but blocking here gives the user an immediate, clearer signal.
+  if (requirePoNumber.value && !poNumber.value.trim()) {
+    modalStore.openMessageModal(common.modal.failed, 'No PO is required.')
+    return
+  }
   try {
     isLoading.value = true
     await modalStore.action()

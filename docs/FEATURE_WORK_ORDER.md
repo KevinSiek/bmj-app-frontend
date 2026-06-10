@@ -17,12 +17,18 @@ timelines, and sparepart usage.
 | `utils/pdf/work-order.js` | PDF generation (13KB — detailed) |
 
 ## Key Business Rules
-1. WO is created during PO **Release** action
-2. Status lifecycle: `Sparepart Ready → On Progress → Done`
-3. WO tracks: worker name, expected days, start/end dates, scope, units
-4. Includes safety fields: vaccine, APD, peduli_lindungi
-5. `WoUnit` child records track individual units being serviced
-6. WO can be processed (status transition) by Service role
+1. WO is created during PO **Release** action, in status **Wait On Progress**.
+2. Status lifecycle (updated Jun 9): `Wait On Progress → Progress → Done`.
+   - **Process** button (shown in Wait On Progress) → `POST /api/work-order/process/{id}` → Progress.
+   - **Done** button (shown in Progress) → `POST /api/work-order/done/{id}` → Done; propagates
+     DONE to the PO + quotation. (Legacy "On Progress" rows can still go straight to Done.)
+3. WO tracks: worker name, expected days, start/end dates, scope, units.
+4. (Removed Jun 9) the vaccine / APD / peduli_lindungi safety fields are gone from the UI,
+   responses, and model fillable (DB columns left dead/nullable).
+5. `WoUnit` child records track individual units being serviced.
+6. WO actions are gated to Service + Director roles.
+7. WO detail shows the related PO's "No Internal Request" (purchase_order_number) + "No PO"
+   (po_number).
 
 ## Data Model
 ```

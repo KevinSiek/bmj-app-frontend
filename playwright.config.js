@@ -5,6 +5,9 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
+  /* feature-verify.spec.js is a live-data-only walkthrough (run via playwright.verify.config.js
+   * against the running servers); exclude it from the regular migrate:fresh regression suite. */
+  testIgnore: /feature-verify.*\.spec\.js/,
   /* Run tests in files sequentially to preserve shared test variables */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

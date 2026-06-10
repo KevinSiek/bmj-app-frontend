@@ -59,7 +59,7 @@
         </div>
       </div>
       <div class="upper my-2">
-        <div class="title">Delivery Order</div>
+        <div class="title">Delivery Note</div>
         <div class="data">
           <div class="left">
             <div class="input form-group col-12">
@@ -117,9 +117,14 @@
         <div class="data">
           <div class="left">
             <div class="input form-group col-12">
-              <label for="">No</label><br>
+              <label for="">No Internal Request</label><br>
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.purchaseOrderNumber"
-                placeholder="No" disabled>
+                placeholder="No Internal Request" disabled>
+            </div>
+            <div class="input form-group col-12">
+              <label for="">No PO</label><br>
+              <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.poNumber"
+                placeholder="No PO" disabled>
             </div>
             <div class="input form-group col-12">
               <label for="">Date</label><br>
@@ -174,7 +179,8 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
+      <button type="button" class="btn btn-outline-dark mx-3" @click="printDeliveryOrder">Print Delivery Order</button>
+      <button type="button" class="btn btn-process mx-3" @click="printDeliveryNote">Print Delivery Note</button>
       <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation"
         :disabled="isProcessing">Done</button>
     </div>
@@ -236,8 +242,12 @@ const done = async () => {
 const setDoneConfirmation = () => {
   modalStore.openConfirmationModal('to this Puchase Order is Done ?', 'Purchase Order Done', done)
 }
-const download = () => {
-  createPdf(deliveryOrder.value)
+// Two prints from the same data — for now they differ only by the document title.
+const printDeliveryOrder = () => {
+  createPdf(deliveryOrder.value, 'DELIVERY ORDER')
+}
+const printDeliveryNote = () => {
+  createPdf(deliveryOrder.value, 'DELIVERY NOTE')
 }
 const back = () => {
   router.push(menuConfig.delivery_order.path)

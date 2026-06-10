@@ -163,7 +163,7 @@
     </div>
   </router-link>
   <router-link class="menu-item nav-link inventory"
-    :to="userRole === common.role.inventory_admin || userRole === common.role.director ? menuConfig.menu_inventory_admin.path : menuConfig.menu_inventory_purchase.path">
+    :to="userRole === common.role.inventory_admin || userRole === common.role.head_inventory || userRole === common.role.director ? menuConfig.menu_inventory_admin.path : menuConfig.menu_inventory_purchase.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
@@ -177,7 +177,7 @@
     </div>
     <div class="divider"></div>
     <div
-      v-if="userRole === common.role.inventory_admin || userRole === common.role.inventory_purchase || userRole === common.role.director"
+      v-if="userRole === common.role.inventory_admin || userRole === common.role.inventory_purchase || userRole === common.role.head_inventory || userRole === common.role.director"
       class="info-wrapper">
       <div class="information inventory">
         <div>Prepare: {{ summary?.purchase_order?.prepare || 0 }}</div>

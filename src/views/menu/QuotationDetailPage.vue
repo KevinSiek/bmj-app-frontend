@@ -50,11 +50,11 @@ const goToEdit = () => {
   router.push(`${menuConfig.quotation.path}/${quotation.value.slug}/edit`)
 }
 
-const processQuotation = async () => {
+const processQuotation = async (notes, poNumber) => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await quotationStore.processQuotation(route.params.id, modalStore.notes)
+    await quotationStore.processQuotation(route.params.id, notes, poNumber)
     router.push(menuConfig.purchase_order)
   } catch (error) {
     throw error.data.error || error.data.message
@@ -64,9 +64,13 @@ const processQuotation = async () => {
 }
 
 const processQuotationConfirmation = () => {
+  // moveToPo now collects both the notes and the real PO number ("No PO"). Capture them when
+  // the notes modal is submitted — the confirmation modal that follows resets the modal store.
   modalStore.openNotesModal('Create PO', () => {
-    modalStore.openConfirmationModal('to process this Quotation to Purchase Order ?', `Purchase Order Created with quotation ${quotation.value.project.quotationNumber}`, processQuotation)
-  })
+    const notes = modalStore.notes
+    const poNumber = modalStore.poNumber
+    modalStore.openConfirmationModal('to process this Quotation to Purchase Order ?', `Purchase Order Created with quotation ${quotation.value.project.quotationNumber}`, () => processQuotation(notes, poNumber))
+  }, { requirePo: true })
 }
 
 const download = () => {

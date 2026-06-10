@@ -22,6 +22,12 @@ pricing: sell price and buy price, plus seller-specific pricing.
 3. Stock is **per-branch** via `branch_spareparts` pivot table
 4. `DetailSparepart` records track seller-specific prices
 5. Bulk upload via Excel (see FEATURE_UPLOAD.md)
+6. **Role-based costing visibility** (Jun 9): Marketing may browse the sparepart list +
+   detail but sees ONLY number/name/stock — `SparepartController` nulls `unit_price_buy`,
+   `unit_price_sell`, and empties `unit_price_seller` for role Marketing (frontend also hides
+   the Selling Price block via `v-if="!isRoleMarketing"`). Inventory Admin/Purchase have
+   `unit_price_sell` hidden. (Fixed a latent bug: the old Inventory hide used a camelCase key
+   that didn't match the snake_case response, so it never took effect — now corrected.)
 
 ## Data Model
 ```

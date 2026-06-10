@@ -1,4 +1,11 @@
-# Feature: Delivery Order
+# Feature: Delivery Order (UI label: "Delivery Note")
+
+> **Naming (Jun 9):** USER-FACING labels say **"Delivery Note"** (menu, page titles, section
+> headings). The CODE is unchanged — route `/api/delivery-order`, table `delivery_orders`,
+> store `useDeliveryOrderStore`, URL `/delivery-order`, classes all still use "delivery-order".
+> The detail page has TWO print buttons — "Print Delivery Order" and "Print Delivery Note" —
+> that call the same `utils/pdf/delivery-note.js` createPdf(data, docTitle), differing only by
+> the PDF title for now.
 
 ## Overview
 Delivery Orders (DO) track the logistics of delivering goods to customers.

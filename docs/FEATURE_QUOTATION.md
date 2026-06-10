@@ -20,6 +20,17 @@ Purchase Orders.
 4. Quotations can be **returned** after becoming a PO (return workflow).
 5. The **review workflow** is role-gated: Director reviews quotation pricing.
 6. Discount and PPN (tax) values come from General settings.
+7. **Per-item review trigger** (existing): if any item's `unitPriceSell` falls below
+   `basePrice × (1 − general.discount)`, the quotation auto-enters On Review.
+   (`general.discount` is a fraction, e.g. 0.05 = 5%.)
+8. **Total discount %** (added Jun 9): a manual whole-quotation discount, entered as a
+   percentage below Total Amount (`price.totalDiscountPercent`, 0–100, column
+   `quotations.total_discount_percent`). It reduces the subtotal **before** PPN, and ANY
+   value > 0 forces the quotation into Director review. Independent of rule 7 (either triggers).
+9. **Currency inputs**: price fields use `components/CurrencyInput.vue` — shows `Rp 1.250.000`
+   while typing but `v-model` stays a raw Number, so calculations are unchanged.
+10. **PDF creator name**: the quotation PDF signature uses `created_by_name` (the creating
+    employee's `fullname`) from the get() response, not a hardcoded name.
 
 ## File Map
 

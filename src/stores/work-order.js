@@ -22,6 +22,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
       currentStatus: data?.current_status || '',
       purchaseOrder: {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        poNumber: data?.purchase_order?.po_number || '',
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || ''
       },
       proformaInvoice: {
@@ -59,9 +60,6 @@ export const useWorkOrderStore = defineStore('work-order', () => {
         spareparts: data?.additional?.spareparts || '',
         backupSparepart: data?.additional?.backup_sparepart || '',
         scope: data?.additional?.scope || '',
-        vaccine: data?.additional?.vaccine || '',
-        apd: data?.additional?.apd || '',
-        peduliLindungi: data?.additional?.peduli_lindungi || '',
         executionTime: data?.additional?.execution_time || ''
       },
       status: data?.status || []
@@ -101,7 +99,11 @@ export const useWorkOrderStore = defineStore('work-order', () => {
   }
 
   async function process(id) {
-    const response = await workOrderApi.process(id)
+    await workOrderApi.process(id)
+  }
+
+  async function done(id) {
+    await workOrderApi.done(id)
   }
 
   async function $resetWorkOrder () {
@@ -124,6 +126,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
     deleteWorkOrder,
     addWorkOrder,
     process,
+    done,
     $resetWorkOrder,
     $resetWorkOrders
   }

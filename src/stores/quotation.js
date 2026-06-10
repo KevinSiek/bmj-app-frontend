@@ -17,6 +17,7 @@ export const useQuotationStore = defineStore('quotation', () => {
       id: data?.id || '',
       slug: data?.slug || '',
       version: data?.version || 0,
+      createdByName: data?.created_by_name || '',
       customer: {
         companyName: data?.customer.company_name || '',
         address: data?.customer.address || '',
@@ -38,6 +39,7 @@ export const useQuotationStore = defineStore('quotation', () => {
       price: {
         amount: data?.price?.amount || 0,
         discount: data?.price?.discount || 0,
+        totalDiscountPercent: Number(data?.price?.total_discount_percent) || 0,
         ppn: data?.price?.ppn || 0,
         subtotal: data?.price?.subtotal || 0,
         grandTotal: data?.price?.grand_total || 0
@@ -192,10 +194,8 @@ export const useQuotationStore = defineStore('quotation', () => {
     await quotationApi.updateQuotation(quotation.value.slug, quotation.value)
   }
 
-  async function processQuotation(id, notes) {
-    console.log('ID', id)
-    const response = await quotationApi.processQuotation(id, { notes })
-    console.log('RES', response)
+  async function processQuotation(id, notes, poNumber) {
+    await quotationApi.processQuotation(id, { notes, poNumber })
   }
 
   async function approveQuotation(id) {

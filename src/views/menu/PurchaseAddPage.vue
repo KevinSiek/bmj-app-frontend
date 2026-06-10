@@ -69,8 +69,9 @@
                     @input="selectItem(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Unit Price"
-                    v-model="sparepart.unitPriceBuy" @change="selectItem(sparepartIndex, sparepart)">
+                  <CurrencyInput placeholder="Unit Price"
+                    v-model="sparepart.unitPriceBuy"
+                    @update:model-value="selectItem(sparepartIndex, sparepart)" />
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price"
@@ -118,6 +119,7 @@ import { computed, onBeforeMount, ref } from 'vue'
 import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
 import { formatCurrency } from '@/utils/form-util'
+import CurrencyInput from '@/components/CurrencyInput.vue'
 import { useRouter } from 'vue-router'
 
 const purchaseStore = usePurchaseStore()

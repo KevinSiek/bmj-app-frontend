@@ -396,10 +396,8 @@ const createPdf = async (data) => {
             ['1  LIST SPAREPART YANG AKAN DIGANTI', additional.spareparts !== '' && additional.spareparts !== '-' ? 'V' : '-'],
             ['2  LIST SPAREPART CADANGAN', additional.backupSparepart !== '' && additional.backupSparepart !== '-' ? 'V' : '-'],
             ['3  LINGKUP PEKERJAAN', additional.scope !== '' && additional.scope !== '-' ? 'V' : '-'],
-            ['4  APD', additional.apd !== '' && additional.apd !== '-' ? 'V' : '-'],
-            ['5  VAKSINASI', additional.vaccine !== '' && additional.vaccine !== '-' ? 'V' : '-'],
-            ['6  EKSEKUSI JAM KERJA / MALAM HARI', additional.executionTime !== '' && additional.executionTime !== '-' ? `V ${additional.executionTime}` : '-'],
-            ['7  FOTO DOKUMENTASI', 'V'],
+            ['4  EKSEKUSI JAM KERJA / MALAM HARI', additional.executionTime !== '' && additional.executionTime !== '-' ? `V ${additional.executionTime}` : '-'],
+            ['5  FOTO DOKUMENTASI', 'V'],
           ]
         },
         layout: {

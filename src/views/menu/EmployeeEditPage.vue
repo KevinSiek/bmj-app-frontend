@@ -63,6 +63,7 @@ const roles = [
   common.role.finance,
   common.role.inventory_admin,
   common.role.inventory_purchase,
+  common.role.head_inventory,
   common.role.service
 ]
 

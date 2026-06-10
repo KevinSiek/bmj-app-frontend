@@ -39,7 +39,7 @@
               <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceBuy" placeholder="Buy Price"
                 disabled>
             </div>
-            <div class="input form-group col-12">
+            <div v-if="!isRoleMarketing" class="input form-group col-12">
               <label for="">Selling Price</label><br>
               <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceSell" placeholder="Selling Price"
                 disabled>
@@ -97,7 +97,7 @@ const isProcessing = ref(false)
 
 const { sparepart } = storeToRefs(sparepartStore)
 
-const { isRoleDirector, isRoleFinance } = useRole()
+const { isRoleDirector, isRoleFinance, isRoleMarketing } = useRole()
 
 onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()
@@ -176,6 +176,7 @@ $secondary-color: rgb(98, 98, 98);
       }
     }
   }
+
 }
 
 .button {

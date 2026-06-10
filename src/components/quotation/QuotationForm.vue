@@ -250,8 +250,9 @@
                     @input="updateSparepartCalculation(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Unit Price"
-                    v-model="sparepart.unitPriceSell" @change="updateSparepartCalculation(sparepartIndex, sparepart)">
+                  <CurrencyInput placeholder="Unit Price"
+                    v-model="sparepart.unitPriceSell"
+                    @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price"
@@ -354,8 +355,9 @@
                     @input="selectService(serviceIndex, service)">
                 </div>
                 <div class="col-3">
-                  <input type="number" class="form-control mt-2" placeholder="Unit Price"
-                    v-model="service.unitPriceSell" @change="selectService(serviceIndex, service)">
+                  <CurrencyInput placeholder="Unit Price"
+                    v-model="service.unitPriceSell"
+                    @update:model-value="selectService(serviceIndex, service)" />
                 </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Total Price" v-model="service.totalPrice"
@@ -381,6 +383,15 @@
       <div class="amount type">
         <div class="label">Total Amount</div>
         <div>: {{ formatCurrency(quotation.price.amount) }}</div>
+      </div>
+      <div v-if="isTypeAdd || isTypeEdit" class="total-discount type">
+        <div class="label">Total Discount (%)</div>
+        <div class="d-flex align-items-center">
+          : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2"
+            style="width: 120px;" placeholder="0"
+            v-model.number="quotation.price.totalDiscountPercent">
+          <span class="ms-2 text-muted">Any value &gt; 0 requires Director review.</span>
+        </div>
       </div>
       <template v-if="!isTypeAdd && isTypeEdit">
         <div class="discount type">
@@ -420,6 +431,7 @@ import debounce from '@/utils/debouncer'
 import { formatCurrency } from '@/utils/form-util'
 import { useCustomerStore } from '@/stores/customer'
 import { useRole } from '@/composeable/useRole'
+import CurrencyInput from '@/components/CurrencyInput.vue'
 
 const quotationStore = useQuotationStore()
 const customerStore = useCustomerStore()

@@ -91,7 +91,7 @@ const createPdf = async (data, notes) => {
   const { project, customer, price, spareparts, services } = data
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
-
+  
   // Top Left
   const customerInfo = {
     table: {
@@ -292,11 +292,15 @@ const createPdf = async (data, notes) => {
   }
 
   const docDefinition = {
-    header: {
-      image: logoBase64, // your base64 logo string
-      width: 550,
-      margin: [25, 30, 30, 0]
-    },
+    header: [
+      {
+        image: logoBase64, // your base64 logo string
+        width: 550,
+        margin: [25, 30, 30, 0]
+      },
+      // Rev stamp floated into the top-right corner so it doesn't disturb the logo layout.
+      { text: data.version ? `Rev. ${data.version}` : '', fontSize: 9, bold: true, absolutePosition: { x: 480, y: 30 } },
+    ],
     content: [
       {
         text: `Quotation No : ${data.project.quotationNumber}`,
@@ -353,7 +357,7 @@ const createPdf = async (data, notes) => {
             stack: [
               { text: `Semarang, ${currentDate}` },
               { text: 'Hormat kami,' },
-              { text: `Yulia`, margin: [0, 50, 0, 0] },
+              { text: `${data.createdByName || ''}`, margin: [0, 50, 0, 0] },
               { text: `Admin Part PT. Berkat Megah Jaya` },
             ],
             margin: [0, 30, 0, 0]

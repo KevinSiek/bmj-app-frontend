@@ -17,6 +17,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
       project: {
         proformaInvoiceNumber: data?.project?.proforma_invoice_number || '',
         purchaseOrderNumber: data?.project?.purchase_order_number || '',
+        poNumber: data?.project?.po_number || '',
         purchaseOrderDate: data?.project?.purchase_order_date || '',
         date: data?.project?.date || '',
         type: data?.project?.type || ''

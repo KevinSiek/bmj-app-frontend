@@ -25,6 +25,10 @@ const InvoicePage = () => import('@/views/menu/InvoicePage.vue')
 const InvoiceDetailPage = () => import('@/views/menu/InvoiceDetailPage.vue')
 const BackOrderPage = () => import('@/views/menu/BackOrderPage.vue')
 const BackOrderDetailPage = () => import('@/views/menu/BackOrderDetailPage.vue')
+const BorrowPage = () => import('@/views/menu/BorrowPage.vue')
+const BorrowAddPage = () => import('@/views/menu/BorrowAddPage.vue')
+const BorrowDetailPage = () => import('@/views/menu/BorrowDetailPage.vue')
+const StockHistoryPage = () => import('@/views/menu/StockHistoryPage.vue')
 const PurchasePage = () => import('@/views/menu/PurchasePage.vue')
 const PurchaseAddPage = () => import('@/views/menu/PurchaseAddPage.vue')
 const PurchaseEditPage = () => import('@/views/menu/PurchaseEditPage.vue')
@@ -231,6 +235,45 @@ const router = createRouter({
                 useTrack: true
               }
             },
+          ]
+        },
+        // Borrow
+        {
+          path: menuConfig.borrow.path,
+          children: [
+            {
+              path: '',
+              name: menuConfig.borrow.name,
+              component: BorrowPage
+            },
+            {
+              path: menuConfig.borrow_add.path,
+              name: menuConfig.borrow_add.name,
+              component: BorrowAddPage,
+              meta: {
+                useBack: true
+              }
+            },
+            {
+              path: menuConfig.borrow_detail.path,
+              name: menuConfig.borrow_detail.name,
+              component: BorrowDetailPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            }
+          ]
+        },
+        // Stock History
+        {
+          path: menuConfig.stock_history.path,
+          children: [
+            {
+              path: '',
+              name: menuConfig.stock_history.name,
+              component: StockHistoryPage
+            }
           ]
         },
         // Purchase

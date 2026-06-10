@@ -233,11 +233,15 @@ const createPdf = async (data, notes) => {
   }
 
   const docDefinition = {
-    header: {
-      image: logoBase64, // your base64 logo string
-      width: 550,
-      margin: [25, 30, 30, 0]
-    },
+    header: [
+      {
+        image: logoBase64, // your base64 logo string
+        width: 550,
+        margin: [25, 30, 30, 0]
+      },
+      // Rev stamp floated into the top-right corner so it doesn't disturb the logo layout.
+      { text: data.version ? `Rev. ${data.version}` : '', fontSize: 9, bold: true, absolutePosition: { x: 480, y: 30 } },
+    ],
     content: [
       {
         text: 'PURCHASE ORDER',
@@ -355,6 +359,8 @@ const createPdf = async (data, notes) => {
           {
             width: '40%',
             stack: [
+              { text: 'Hormat kami,', alignment: 'center' },
+              { text: `${data.createdByName || ''}`, alignment: 'center', margin: [0, 50, 0, 0] },
               { text: 'PT. Berkat Megah Jaya', bold: true, alignment: 'center', decoration: 'underline' }
             ],
             margin: [0, 50, 0, 0]
