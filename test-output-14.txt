@@ -1,0 +1,115 @@
+
+[Global Setup] Resetting and seeding backend database...
+
+  Dropping all tables .................................................................................. 117.00ms DONE
+
+   INFO  Preparing database.  
+
+  Creating migration table ............................................................................... 9.02ms DONE
+
+   INFO  Running migrations.  
+
+  0001_01_01_000001_create_cache_table .................................................................. 10.46ms DONE
+  0001_01_01_000002_create_jobs_table ................................................................... 36.15ms DONE
+  2024_12_29_150440_create_access ........................................................................ 4.08ms DONE
+  2024_12_29_150440_create_employees .................................................................... 52.08ms DONE
+  2024_12_29_150441_create_detail_access ................................................................ 60.11ms DONE
+  2024_12_29_150447_create_customers ..................................................................... 5.18ms DONE
+  2024_12_29_150453_create_quotations ................................................................... 65.98ms DONE
+  2024_12_29_150456_create_spareparts ................................................................... 26.29ms DONE
+  2024_12_29_150459_create_detail_quotations ............................................................ 29.52ms DONE
+  2024_12_29_150510_create_purchase_orders .............................................................. 63.63ms DONE
+  2024_12_29_150515_create_proforma_invoices ............................................................ 66.30ms DONE
+  2024_12_29_150524_create_invoices ..................................................................... 88.85ms DONE
+  2024_12_29_150525_create_delivery_order ............................................................... 42.16ms DONE
+  2024_12_29_150525_create_work_orders .................................................................. 43.31ms DONE
+  2024_12_29_150528_create_work_orders_units ............................................................ 37.64ms DONE
+  2024_12_29_150530_create_back_orders .................................................................. 31.27ms DONE
+  2024_12_29_150531_create_detail_back_orders ........................................................... 61.43ms DONE
+  2024_12_29_150535_create_buys ......................................................................... 35.11ms DONE
+  2024_12_29_150538_create_sellers ...................................................................... 23.56ms DONE
+  2024_12_29_150539_create_detail_buys .................................................................. 54.04ms DONE
+  2024_12_29_150539_create_detail_spareparts ............................................................ 64.41ms DONE
+  2024_12_29_150540_create_general ....................................................................... 4.23ms DONE
+  2025_03_03_095456_create_personal_access_tokens_table ................................................. 31.31ms DONE
+  2025_07_13_174820_add_version_to_purchase_orders ....................................................... 5.51ms DONE
+  2025_09_20_000001_add_temp_pass_expires_to_employees ................................................... 4.63ms DONE
+  2025_10_19_162330_create_branches_table ............................................................... 26.52ms DONE
+  2025_10_19_162334_create_branch_sparepart_table ....................................................... 74.10ms DONE
+  2025_10_19_162338_add_branch_id_to_quotations_and_buys_table .......................................... 94.76ms DONE
+  2025_10_19_162341_drop_total_unit_and_branch_from_spareparts_table .................................... 18.30ms DONE
+
+
+   INFO  Seeding database.  
+
+  Database\Seeders\GeneralSeeder ............................................................................. RUNNING  
+  Database\Seeders\GeneralSeeder .......................................................................... 13 ms DONE  
+
+  Database\Seeders\AccessRoleSeeder .......................................................................... RUNNING  
+  Database\Seeders\AccessRoleSeeder ....................................................................... 44 ms DONE  
+
+  Database\Seeders\SellerSeeder .............................................................................. RUNNING  
+  Database\Seeders\SellerSeeder ............................................................................ 4 ms DONE  
+
+  Database\Seeders\BranchSeeder .............................................................................. RUNNING  
+  Database\Seeders\BranchSeeder ............................................................................ 2 ms DONE  
+
+  Database\Seeders\EmployeeSeeder ............................................................................ RUNNING  
+  Database\Seeders\EmployeeSeeder ...................................................................... 3,126 ms DONE  
+
+  Database\Seeders\CustomerSeeder ............................................................................ RUNNING  
+  Database\Seeders\CustomerSeeder ........................................................................ 202 ms DONE  
+
+  Database\Seeders\SparepartSeeder ........................................................................... RUNNING  
+  Database\Seeders\SparepartSeeder ....................................................................... 360 ms DONE  
+
+  Database\Seeders\QuotationSeeder ........................................................................... RUNNING  
+  Database\Seeders\QuotationSeeder ......................................................................... 0 ms DONE  
+
+  Database\Seeders\PurchaseOrderSeeder ....................................................................... RUNNING  
+  Database\Seeders\PurchaseOrderSeeder ..................................................................... 6 ms DONE  
+
+  Database\Seeders\BackOrderSeeder ........................................................................... RUNNING  
+  Database\Seeders\BackOrderSeeder ......................................................................... 3 ms DONE  
+
+  Database\Seeders\BuySeeder ................................................................................. RUNNING  
+  Database\Seeders\BuySeeder ............................................................................... 4 ms DONE  
+
+  Database\Seeders\ProformaInvoiceSeeder ..................................................................... RUNNING  
+  Database\Seeders\ProformaInvoiceSeeder .................................................................. 31 ms DONE  
+
+  Database\Seeders\WorkOrderSeeder ........................................................................... RUNNING  
+  Database\Seeders\WorkOrderSeeder ......................................................................... 6 ms DONE  
+
+  Database\Seeders\DeliveryOrderSeeder ....................................................................... RUNNING  
+  Database\Seeders\DeliveryOrderSeeder ..................................................................... 3 ms DONE  
+
+  Database\Seeders\InvoiceSeeder ............................................................................. RUNNING  
+  Database\Seeders\InvoiceSeeder ........................................................................... 2 ms DONE  
+
+[Global Setup] Database seeded successfully!
+
+
+Running 4 tests using 1 worker
+
+[1A[2K[1/4] [chromium] › e2e\quotation.spec.js:15:3 › Quotation E2E Tests (Live DB) › UI-QUOT-041 & UI-QUOT-042: Create Quotation and check pricing calculations
+[1A[2K  1) [chromium] › e2e\quotation.spec.js:15:3 › Quotation E2E Tests (Live DB) › UI-QUOT-041 & UI-QUOT-042: Create Quotation and check pricing calculations 
+
+    Error: page.evaluate: TypeError: Cannot read properties of null (reading 'click')
+        at eval (eval at evaluate (:302:30), <anonymous>:1:71)
+        at UtilityScript.evaluate (<anonymous>:304:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at eval (eval at evaluate (:302:30), <anonymous>:1:71)
+        at UtilityScript.evaluate (<anonymous>:304:16)
+        at UtilityScript.<anonymous> (<anonymous>:1:44)
+        at E:\Kerja\Kerja\Bkawan\PT_BerkatMegahJaya\Code\FrontEnd\bmj-app-frontend\e2e\quotation.spec.js:31:16
+
+    Error Context: test-results\quotation-Quotation-E2E-Te-1d6b7--check-pricing-calculations-chromium\error-context.md
+
+
+[1A[2K[2/4] [chromium] › e2e\quotation.spec.js:67:3 › Quotation E2E Tests (Live DB) › QUOT-API-028: Director approves quotation
+[1A[2K[3/4] [chromium] › e2e\quotation.spec.js:101:3 › Quotation E2E Tests (Live DB) › QUOT-API-034: Move to PO from approved quotation
+[1A[2K[4/4] [chromium] › e2e\quotation.spec.js:134:3 › Quotation E2E Tests (Live DB) › QUOT-API-030 & QUOT-API-032: Reject quotation
+[1A[2K  1 failed
+    [chromium] › e2e\quotation.spec.js:15:3 › Quotation E2E Tests (Live DB) › UI-QUOT-041 & UI-QUOT-042: Create Quotation and check pricing calculations 
+  3 did not run

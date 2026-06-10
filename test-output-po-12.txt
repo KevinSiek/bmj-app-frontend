@@ -1,0 +1,150 @@
+
+[Global Setup] Resetting and seeding backend database...
+
+  Dropping all tables ................................................................................... 72.21ms DONE
+
+   INFO  Preparing database.  
+
+  Creating migration table ............................................................................... 7.04ms DONE
+
+   INFO  Running migrations.  
+
+  0001_01_01_000001_create_cache_table ................................................................... 7.69ms DONE
+  0001_01_01_000002_create_jobs_table ................................................................... 40.33ms DONE
+  2024_12_29_150440_create_access ........................................................................ 3.06ms DONE
+  2024_12_29_150440_create_employees .................................................................... 36.36ms DONE
+  2024_12_29_150441_create_detail_access ................................................................ 37.75ms DONE
+  2024_12_29_150447_create_customers ..................................................................... 3.08ms DONE
+  2024_12_29_150453_create_quotations ................................................................... 53.26ms DONE
+  2024_12_29_150456_create_spareparts ................................................................... 19.40ms DONE
+  2024_12_29_150459_create_detail_quotations ............................................................ 27.19ms DONE
+  2024_12_29_150510_create_purchase_orders .............................................................. 47.10ms DONE
+  2024_12_29_150515_create_proforma_invoices ............................................................ 60.19ms DONE
+  2024_12_29_150524_create_invoices ..................................................................... 43.59ms DONE
+  2024_12_29_150525_create_delivery_order ............................................................... 28.59ms DONE
+  2024_12_29_150525_create_work_orders .................................................................. 27.10ms DONE
+  2024_12_29_150528_create_work_orders_units ............................................................ 19.82ms DONE
+  2024_12_29_150530_create_back_orders .................................................................. 26.75ms DONE
+  2024_12_29_150531_create_detail_back_orders ........................................................... 64.72ms DONE
+  2024_12_29_150535_create_buys ......................................................................... 22.68ms DONE
+  2024_12_29_150538_create_sellers ...................................................................... 18.01ms DONE
+  2024_12_29_150539_create_detail_buys .................................................................. 42.90ms DONE
+  2024_12_29_150539_create_detail_spareparts ............................................................ 42.32ms DONE
+  2024_12_29_150540_create_general ....................................................................... 2.63ms DONE
+  2025_03_03_095456_create_personal_access_tokens_table ................................................. 19.15ms DONE
+  2025_07_13_174820_add_version_to_purchase_orders ....................................................... 3.14ms DONE
+  2025_09_20_000001_add_temp_pass_expires_to_employees ................................................... 2.87ms DONE
+  2025_10_19_162330_create_branches_table ............................................................... 26.06ms DONE
+  2025_10_19_162334_create_branch_sparepart_table ....................................................... 49.77ms DONE
+  2025_10_19_162338_add_branch_id_to_quotations_and_buys_table .......................................... 67.62ms DONE
+  2025_10_19_162341_drop_total_unit_and_branch_from_spareparts_table .................................... 16.55ms DONE
+
+
+   INFO  Seeding database.  
+
+  Database\Seeders\GeneralSeeder ............................................................................. RUNNING  
+  Database\Seeders\GeneralSeeder .......................................................................... 11 ms DONE  
+
+  Database\Seeders\AccessRoleSeeder .......................................................................... RUNNING  
+  Database\Seeders\AccessRoleSeeder ....................................................................... 40 ms DONE  
+
+  Database\Seeders\SellerSeeder .............................................................................. RUNNING  
+  Database\Seeders\SellerSeeder ............................................................................ 2 ms DONE  
+
+  Database\Seeders\BranchSeeder .............................................................................. RUNNING  
+  Database\Seeders\BranchSeeder ............................................................................ 1 ms DONE  
+
+  Database\Seeders\EmployeeSeeder ............................................................................ RUNNING  
+  Database\Seeders\EmployeeSeeder ...................................................................... 2,506 ms DONE  
+
+  Database\Seeders\CustomerSeeder ............................................................................ RUNNING  
+  Database\Seeders\CustomerSeeder ......................................................................... 92 ms DONE  
+
+  Database\Seeders\SparepartSeeder ........................................................................... RUNNING  
+  Database\Seeders\SparepartSeeder ....................................................................... 183 ms DONE  
+
+  Database\Seeders\QuotationSeeder ........................................................................... RUNNING  
+  Database\Seeders\QuotationSeeder ......................................................................... 0 ms DONE  
+
+  Database\Seeders\PurchaseOrderSeeder ....................................................................... RUNNING  
+  Database\Seeders\PurchaseOrderSeeder ..................................................................... 5 ms DONE  
+
+  Database\Seeders\BackOrderSeeder ........................................................................... RUNNING  
+  Database\Seeders\BackOrderSeeder ......................................................................... 2 ms DONE  
+
+  Database\Seeders\BuySeeder ................................................................................. RUNNING  
+  Database\Seeders\BuySeeder ............................................................................... 2 ms DONE  
+
+  Database\Seeders\ProformaInvoiceSeeder ..................................................................... RUNNING  
+  Database\Seeders\ProformaInvoiceSeeder .................................................................. 22 ms DONE  
+
+  Database\Seeders\WorkOrderSeeder ........................................................................... RUNNING  
+  Database\Seeders\WorkOrderSeeder ......................................................................... 4 ms DONE  
+
+  Database\Seeders\DeliveryOrderSeeder ....................................................................... RUNNING  
+  Database\Seeders\DeliveryOrderSeeder ..................................................................... 2 ms DONE  
+
+  Database\Seeders\InvoiceSeeder ............................................................................. RUNNING  
+  Database\Seeders\InvoiceSeeder ........................................................................... 1 ms DONE  
+
+[Global Setup] Database seeded successfully!
+
+
+Running 6 tests using 1 worker
+
+[1A[2K[1/6] [chromium] › e2e\purchase-order.spec.js:17:3 › Purchase Order E2E Tests (Live DB) › PO-SETUP: Create a Purchase Order for testing
+[1A[2K[2/6] [chromium] › e2e\purchase-order.spec.js:71:3 › Purchase Order E2E Tests (Live DB) › UI-PO-031: PO detail page shows Track timeline
+[1A[2K[3/6] [chromium] › e2e\purchase-order.spec.js:89:3 › Purchase Order E2E Tests (Live DB) › PO-API-008: Move to PI (Finance)
+[1A[2K[4/6] [chromium] › e2e\purchase-order.spec.js:132:3 › Purchase Order E2E Tests (Live DB) › PO-API-012: Set to Ready (Inventory Admin)
+[1A[2K[5/6] [chromium] › e2e\purchase-order.spec.js:158:3 › Purchase Order E2E Tests (Live DB) › PO-API-019: Release Spareparts PO (Inventory Admin)
+[1A[2K  1) [chromium] › e2e\purchase-order.spec.js:158:3 › Purchase Order E2E Tests (Live DB) › PO-API-019: Release Spareparts PO (Inventory Admin) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Target page, context or browser has been closed
+    Call log:
+    [2m  - waiting for locator('button:has-text("Release")')[22m
+    [2m    - locator resolved to <button type="button" data-v-5084d75a="" class="btn btn-process mx-3">Release</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <div data-v-b45682d2="" class="modal-backdrop fade show"></div> from <div tabindex="-1" id="modalMessage" data-v-b45682d2="" data-v-7a7a37b1="" class="modal fade show">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is visible, enabled and stable[22m
+    [2m      - scrolling into view if needed[22m
+    [2m      - done scrolling[22m
+    [2m      - <div data-v-b45682d2="" class="modal-backdrop fade show"></div> from <div tabindex="-1" id="modalMessage" data-v-b45682d2="" data-v-7a7a37b1="" class="modal fade show">…</div> subtree intercepts pointer events[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    57 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is visible, enabled and stable[22m
+    [2m       - scrolling into view if needed[22m
+    [2m       - done scrolling[22m
+    [2m       - <div data-v-b45682d2="" class="modal-backdrop fade show"></div> from <div tabindex="-1" id="modalMessage" data-v-b45682d2="" data-v-7a7a37b1="" class="modal fade show">…</div> subtree intercepts pointer events[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      162 |     const releaseBtn = page.locator('button:has-text("Release")');
+      163 |     await expect(releaseBtn).toBeVisible({ timeout: 15000 });
+    > 164 |     await releaseBtn.click();
+          |                      ^
+      165 |     
+      166 |     // Should navigate to DO Add page
+      167 |     await expect(page).toHaveURL(/.*delivery-order\/add/);
+        at E:\Kerja\Kerja\Bkawan\PT_BerkatMegahJaya\Code\FrontEnd\bmj-app-frontend\e2e\purchase-order.spec.js:164:22
+
+    Error Context: test-results\purchase-order-Purchase-Or-43d32-reparts-PO-Inventory-Admin--chromium\error-context.md
+
+    Error Context: test-results\purchase-order-Purchase-Or-43d32-reparts-PO-Inventory-Admin--chromium\error-context.md
+
+
+[1A[2K[6/6] [chromium] › e2e\purchase-order.spec.js:184:3 › Purchase Order E2E Tests (Live DB) › PO-API-015: Done (Marketing)
+[1A[2K  1 failed
+    [chromium] › e2e\purchase-order.spec.js:158:3 › Purchase Order E2E Tests (Live DB) › PO-API-019: Release Spareparts PO (Inventory Admin) 
+  1 did not run
+  4 passed (1.7m)

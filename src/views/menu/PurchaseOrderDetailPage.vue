@@ -5,10 +5,15 @@
         <div class="left">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="">No</label><br>
+            <label for="">No Internal Request</label><br>
             <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderNumber"
-              placeholder="No" disabled>
+              placeholder="No Internal Request" disabled>
           </div>
+          <!-- <div class="input form-group col-12">
+            <label for="">No PO</label><br>
+            <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.poNumber"
+              placeholder="No PO" disabled>
+          </div> -->
           <div class="input form-group col-12">
             <label for="">Date</label><br>
             <input type="date" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderDate"
@@ -355,7 +360,7 @@ const isShowReturn = computed(() =>
   purchaseOrder.value.status.some(item => item.state === common.track.done) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.return)
 )
-const isShowReject = computed(() => isRoleDirector.value)
+const isShowReject = computed(() => isRoleDirector.value || isRoleFinance.value)
 const isRejected = computed(() => purchaseOrder.value.currentStatus === common.status.rejected || purchaseOrder.value.status.some(item => item.state === common.status.rejected))
 const hasPI = computed(() => purchaseOrder.value.proformaInvoice.proformaInvoiceNumber && purchaseOrder.value.proformaInvoice.proformaInvoiceDate)
 

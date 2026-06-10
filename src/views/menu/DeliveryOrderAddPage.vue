@@ -18,7 +18,7 @@
             <div class="input form-group col-12">
               <label for="">Picked by</label><br>
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.pickedBy"
-                placeholder="Received by">
+                placeholder="Picked by">
             </div>
             <div class="input form-group col-12">
               <label for="">Prepared by</label><br>

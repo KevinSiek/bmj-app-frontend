@@ -1,0 +1,131 @@
+
+[Global Setup] Resetting and seeding backend database...
+
+  Dropping all tables .................................................................................. 370.78ms DONE
+
+   INFO  Preparing database.  
+
+  Creating migration table .............................................................................. 62.00ms DONE
+
+   INFO  Running migrations.  
+
+  0001_01_01_000001_create_cache_table .................................................................. 72.83ms DONE
+  0001_01_01_000002_create_jobs_table .................................................................. 134.11ms DONE
+  2024_12_29_150440_create_access ........................................................................ 8.84ms DONE
+  2024_12_29_150440_create_employees ................................................................... 140.86ms DONE
+  2024_12_29_150441_create_detail_access ............................................................... 255.30ms DONE
+  2024_12_29_150447_create_customers ..................................................................... 6.46ms DONE
+  2024_12_29_150453_create_quotations .................................................................. 411.00ms DONE
+  2024_12_29_150456_create_spareparts ................................................................... 45.93ms DONE
+  2024_12_29_150459_create_detail_quotations ............................................................ 96.62ms DONE
+  2024_12_29_150510_create_purchase_orders ............................................................. 119.05ms DONE
+  2024_12_29_150515_create_proforma_invoices ........................................................... 166.58ms DONE
+  2024_12_29_150524_create_invoices .................................................................... 121.09ms DONE
+  2024_12_29_150525_create_delivery_order ............................................................... 81.55ms DONE
+  2024_12_29_150525_create_work_orders .................................................................. 85.86ms DONE
+  2024_12_29_150528_create_work_orders_units ............................................................ 64.39ms DONE
+  2024_12_29_150530_create_back_orders .................................................................. 98.69ms DONE
+  2024_12_29_150531_create_detail_back_orders .......................................................... 148.59ms DONE
+  2024_12_29_150535_create_buys ......................................................................... 75.47ms DONE
+  2024_12_29_150538_create_sellers ...................................................................... 48.63ms DONE
+  2024_12_29_150539_create_detail_buys ................................................................. 112.07ms DONE
+  2024_12_29_150539_create_detail_spareparts ........................................................... 156.86ms DONE
+  2024_12_29_150540_create_general ...................................................................... 11.31ms DONE
+  2025_03_03_095456_create_personal_access_tokens_table ................................................ 164.74ms DONE
+  2025_07_13_174820_add_version_to_purchase_orders ...................................................... 16.39ms DONE
+  2025_09_20_000001_add_temp_pass_expires_to_employees .................................................. 14.89ms DONE
+  2025_10_19_162330_create_branches_table ............................................................... 56.16ms DONE
+  2025_10_19_162334_create_branch_sparepart_table ...................................................... 216.93ms DONE
+  2025_10_19_162338_add_branch_id_to_quotations_and_buys_table ......................................... 519.59ms DONE
+  2025_10_19_162341_drop_total_unit_and_branch_from_spareparts_table ................................... 111.50ms DONE
+
+
+   INFO  Seeding database.  
+
+  Database\Seeders\GeneralSeeder ............................................................................. RUNNING  
+  Database\Seeders\GeneralSeeder .......................................................................... 58 ms DONE  
+
+  Database\Seeders\AccessRoleSeeder .......................................................................... RUNNING  
+  Database\Seeders\AccessRoleSeeder ...................................................................... 213 ms DONE  
+
+  Database\Seeders\SellerSeeder .............................................................................. RUNNING  
+  Database\Seeders\SellerSeeder ........................................................................... 99 ms DONE  
+
+  Database\Seeders\BranchSeeder .............................................................................. RUNNING  
+  Database\Seeders\BranchSeeder ........................................................................... 10 ms DONE  
+
+  Database\Seeders\EmployeeSeeder ............................................................................ RUNNING  
+  Database\Seeders\EmployeeSeeder ...................................................................... 6,235 ms DONE  
+
+  Database\Seeders\CustomerSeeder ............................................................................ RUNNING  
+  Database\Seeders\CustomerSeeder ........................................................................ 528 ms DONE  
+
+  Database\Seeders\SparepartSeeder ........................................................................... RUNNING  
+  Database\Seeders\SparepartSeeder ..................................................................... 1,240 ms DONE  
+
+  Database\Seeders\QuotationSeeder ........................................................................... RUNNING  
+  Database\Seeders\QuotationSeeder ......................................................................... 0 ms DONE  
+
+  Database\Seeders\PurchaseOrderSeeder ....................................................................... RUNNING  
+  Database\Seeders\PurchaseOrderSeeder .................................................................... 67 ms DONE  
+
+  Database\Seeders\BackOrderSeeder ........................................................................... RUNNING  
+  Database\Seeders\BackOrderSeeder ........................................................................ 54 ms DONE  
+
+  Database\Seeders\BuySeeder ................................................................................. RUNNING  
+  Database\Seeders\BuySeeder .............................................................................. 13 ms DONE  
+
+  Database\Seeders\ProformaInvoiceSeeder ..................................................................... RUNNING  
+  Database\Seeders\ProformaInvoiceSeeder ................................................................. 145 ms DONE  
+
+  Database\Seeders\WorkOrderSeeder ........................................................................... RUNNING  
+  Database\Seeders\WorkOrderSeeder ........................................................................ 78 ms DONE  
+
+  Database\Seeders\DeliveryOrderSeeder ....................................................................... RUNNING  
+  Database\Seeders\DeliveryOrderSeeder ................................................................... 101 ms DONE  
+
+  Database\Seeders\InvoiceSeeder ............................................................................. RUNNING  
+  Database\Seeders\InvoiceSeeder .......................................................................... 15 ms DONE  
+
+[Global Setup] Database seeded successfully!
+
+
+Running 6 tests using 1 worker
+
+[1A[2K[1/6] [chromium] › e2e\purchase-order.spec.js:17:3 › Purchase Order E2E Tests (Live DB) › PO-SETUP: Create a Purchase Order for testing
+[1A[2K  1) [chromium] › e2e\purchase-order.spec.js:17:3 › Purchase Order E2E Tests (Live DB) › PO-SETUP: Create a Purchase Order for testing 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/.*purchase-order/[39m
+    Received string:  [31m"http://localhost:5173/quotation/quot1bmj-megahjkt3vi2026-FqMPuB"[39m
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 5000ms[22m
+    [2m    6 × unexpected value "http://localhost:5173/quotation/quot1bmj-megahjkt3vi2026-FqMPuB"[22m
+
+
+      61 |     await page.click('.button-modal button:has-text("Create PO")');
+      62 |     await page.click('button:has-text("Yes")');
+    > 63 |     await expect(page).toHaveURL(/.*purchase-order/);
+         |                        ^
+      64 |     await page.click('button:has-text("Close")');
+      65 |
+      66 |     // Extract PO number for later tests
+        at E:\Kerja\Kerja\Bkawan\PT_BerkatMegahJaya\Code\FrontEnd\bmj-app-frontend\e2e\purchase-order.spec.js:63:24
+
+    Error Context: test-results\purchase-order-Purchase-Or-c9db3--Purchase-Order-for-testing-chromium\error-context.md
+
+    Error Context: test-results\purchase-order-Purchase-Or-c9db3--Purchase-Order-for-testing-chromium\error-context.md
+
+
+[1A[2K[2/6] [chromium] › e2e\purchase-order.spec.js:71:3 › Purchase Order E2E Tests (Live DB) › UI-PO-031: PO detail page shows Track timeline
+[1A[2K[3/6] [chromium] › e2e\purchase-order.spec.js:89:3 › Purchase Order E2E Tests (Live DB) › PO-API-008: Move to PI (Finance)
+[1A[2K[4/6] [chromium] › e2e\purchase-order.spec.js:132:3 › Purchase Order E2E Tests (Live DB) › PO-API-012: Set to Ready (Inventory Admin)
+[1A[2K[5/6] [chromium] › e2e\purchase-order.spec.js:161:3 › Purchase Order E2E Tests (Live DB) › PO-API-019: Release Spareparts PO (Inventory Admin)
+[1A[2K[6/6] [chromium] › e2e\purchase-order.spec.js:193:3 › Purchase Order E2E Tests (Live DB) › PO-API-015: Done (Marketing)
+[1A[2K  1 failed
+    [chromium] › e2e\purchase-order.spec.js:17:3 › Purchase Order E2E Tests (Live DB) › PO-SETUP: Create a Purchase Order for testing 
+  5 did not run

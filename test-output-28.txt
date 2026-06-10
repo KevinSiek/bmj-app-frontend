@@ -1,0 +1,152 @@
+
+[Global Setup] Resetting and seeding backend database...
+
+  Dropping all tables .................................................................................. 104.73ms DONE
+
+   INFO  Preparing database.  
+
+  Creating migration table ............................................................................... 8.85ms DONE
+
+   INFO  Running migrations.  
+
+  0001_01_01_000001_create_cache_table .................................................................. 13.82ms DONE
+  0001_01_01_000002_create_jobs_table ................................................................... 46.12ms DONE
+  2024_12_29_150440_create_access ........................................................................ 4.96ms DONE
+  2024_12_29_150440_create_employees .................................................................... 52.13ms DONE
+  2024_12_29_150441_create_detail_access ................................................................ 66.22ms DONE
+  2024_12_29_150447_create_customers ..................................................................... 3.95ms DONE
+  2024_12_29_150453_create_quotations ................................................................... 64.66ms DONE
+  2024_12_29_150456_create_spareparts ................................................................... 21.95ms DONE
+  2024_12_29_150459_create_detail_quotations ............................................................ 30.25ms DONE
+  2024_12_29_150510_create_purchase_orders .............................................................. 68.46ms DONE
+  2024_12_29_150515_create_proforma_invoices ............................................................ 66.64ms DONE
+  2024_12_29_150524_create_invoices ..................................................................... 60.17ms DONE
+  2024_12_29_150525_create_delivery_order ............................................................... 53.43ms DONE
+  2024_12_29_150525_create_work_orders .................................................................. 29.37ms DONE
+  2024_12_29_150528_create_work_orders_units ............................................................ 32.81ms DONE
+  2024_12_29_150530_create_back_orders .................................................................. 27.24ms DONE
+  2024_12_29_150531_create_detail_back_orders ........................................................... 66.10ms DONE
+  2024_12_29_150535_create_buys ......................................................................... 35.85ms DONE
+  2024_12_29_150538_create_sellers ...................................................................... 19.68ms DONE
+  2024_12_29_150539_create_detail_buys .................................................................. 63.02ms DONE
+  2024_12_29_150539_create_detail_spareparts ............................................................ 67.79ms DONE
+  2024_12_29_150540_create_general ....................................................................... 4.40ms DONE
+  2025_03_03_095456_create_personal_access_tokens_table ................................................. 20.01ms DONE
+  2025_07_13_174820_add_version_to_purchase_orders ....................................................... 4.15ms DONE
+  2025_09_20_000001_add_temp_pass_expires_to_employees ................................................... 3.76ms DONE
+  2025_10_19_162330_create_branches_table ............................................................... 62.60ms DONE
+  2025_10_19_162334_create_branch_sparepart_table ....................................................... 82.72ms DONE
+  2025_10_19_162338_add_branch_id_to_quotations_and_buys_table .......................................... 98.47ms DONE
+  2025_10_19_162341_drop_total_unit_and_branch_from_spareparts_table .................................... 23.37ms DONE
+
+
+   INFO  Seeding database.  
+
+  Database\Seeders\GeneralSeeder ............................................................................. RUNNING  
+  Database\Seeders\GeneralSeeder .......................................................................... 14 ms DONE  
+
+  Database\Seeders\AccessRoleSeeder .......................................................................... RUNNING  
+  Database\Seeders\AccessRoleSeeder ....................................................................... 61 ms DONE  
+
+  Database\Seeders\SellerSeeder .............................................................................. RUNNING  
+  Database\Seeders\SellerSeeder ............................................................................ 4 ms DONE  
+
+  Database\Seeders\BranchSeeder .............................................................................. RUNNING  
+  Database\Seeders\BranchSeeder ............................................................................ 2 ms DONE  
+
+  Database\Seeders\EmployeeSeeder ............................................................................ RUNNING  
+  Database\Seeders\EmployeeSeeder ...................................................................... 3,203 ms DONE  
+
+  Database\Seeders\CustomerSeeder ............................................................................ RUNNING  
+  Database\Seeders\CustomerSeeder ........................................................................ 199 ms DONE  
+
+  Database\Seeders\SparepartSeeder ........................................................................... RUNNING  
+  Database\Seeders\SparepartSeeder ....................................................................... 400 ms DONE  
+
+  Database\Seeders\QuotationSeeder ........................................................................... RUNNING  
+  Database\Seeders\QuotationSeeder ......................................................................... 0 ms DONE  
+
+  Database\Seeders\PurchaseOrderSeeder ....................................................................... RUNNING  
+  Database\Seeders\PurchaseOrderSeeder ..................................................................... 9 ms DONE  
+
+  Database\Seeders\BackOrderSeeder ........................................................................... RUNNING  
+  Database\Seeders\BackOrderSeeder ......................................................................... 3 ms DONE  
+
+  Database\Seeders\BuySeeder ................................................................................. RUNNING  
+  Database\Seeders\BuySeeder ............................................................................... 5 ms DONE  
+
+  Database\Seeders\ProformaInvoiceSeeder ..................................................................... RUNNING  
+  Database\Seeders\ProformaInvoiceSeeder .................................................................. 39 ms DONE  
+
+  Database\Seeders\WorkOrderSeeder ........................................................................... RUNNING  
+  Database\Seeders\WorkOrderSeeder ......................................................................... 8 ms DONE  
+
+  Database\Seeders\DeliveryOrderSeeder ....................................................................... RUNNING  
+  Database\Seeders\DeliveryOrderSeeder ..................................................................... 4 ms DONE  
+
+  Database\Seeders\InvoiceSeeder ............................................................................. RUNNING  
+  Database\Seeders\InvoiceSeeder ........................................................................... 2 ms DONE  
+
+[Global Setup] Database seeded successfully!
+
+
+Running 4 tests using 1 worker
+
+[1A[2K[1/4] [chromium] › e2e\quotation.spec.js:15:3 › Quotation E2E Tests (Live DB) › UI-QUOT-041 & UI-QUOT-042: Create Quotation and check pricing calculations
+[1A[2K[chromium] › e2e\quotation.spec.js:15:3 › Quotation E2E Tests (Live DB) › UI-QUOT-041 & UI-QUOT-042: Create Quotation and check pricing calculations
+POST VALIDATION: {
+  message: [32m'Quotation created successfully'[39m,
+  data: {
+    quotation_number: [32m'QUOT/1/BMJ-MEGAH/JKT/3/VI/2026'[39m,
+    version: [33m1[39m,
+    type: [32m'Spareparts'[39m,
+    date: [32m'2026-06-03T16:49:33.409024Z'[39m,
+    amount: [33m99470201.5[39m,
+    grand_total: [33m110411923.665[39m,
+    notes: [32m'Test quotation notes'[39m,
+    project: [32m'QUOT/1/BMJ-MEGAH/JKT/3/VI/2026'[39m,
+    discount: [33m0[39m,
+    ppn: [33m10941722.165000001[39m,
+    subtotal: [33m99470201.5[39m,
+    employee_id: [33m3[39m,
+    branch_id: [33m1[39m,
+    slug: [32m'quot1bmj-megahjkt3vi2026-0G3fNf'[39m,
+    review: [33mtrue[39m,
+    current_status: [32m'Approved'[39m,
+    customer_id: [33m51[39m,
+    updated_at: [32m'2026-06-03T16:49:33.000000Z'[39m,
+    created_at: [32m'2026-06-03T16:49:33.000000Z'[39m,
+    id: [33m1[39m
+  }
+}
+
+[1A[2KGET QUOTATIONS: {"message":"List of all quotations retrieved successfully","data":{"data":[{"quotation_number":"QUOT/1/BMJ-MEGAH/JKT/3/VI/2026","version":1,"slug":"quot1bmj-megahjkt3vi2026-0G3fNf","current_status":"Approved","status":null,"notes":"Test quotation notes","discount":"0.05","ppn":"0.11","project":{"quotation_number":"QUOT/1/BMJ-MEGAH/JKT/3/VI/2026","type":"Spareparts","date":"2026-06-03"},"price":{"amount":"99470201.50","discount":"0.00","subtotal":"99470201.50","ppn":"10941722.17","grand_total":"1
+
+[1A[2K[2/4] [chromium] › e2e\quotation.spec.js:95:3 › Quotation E2E Tests (Live DB) › QUOT-API-028: Director approves quotation
+[1A[2K  1) [chromium] › e2e\quotation.spec.js:95:3 › Quotation E2E Tests (Live DB) › QUOT-API-028: Director approves quotation 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Logout")')[22m
+
+
+       96 |     // Logout marketing user
+       97 |     await page.goto('/profile');
+    >  98 |     await page.click('button:has-text("Logout")');
+          |                ^
+       99 |     await page.waitForURL('**/login', { timeout: 8000 });
+      100 |
+      101 |     // Login as Director (from EmployeeSeeder.php)
+        at E:\Kerja\Kerja\Bkawan\PT_BerkatMegahJaya\Code\FrontEnd\bmj-app-frontend\e2e\quotation.spec.js:98:16
+
+    Error Context: test-results\quotation-Quotation-E2E-Te-43fa9-Director-approves-quotation-chromium\error-context.md
+
+
+[1A[2K[3/4] [chromium] › e2e\quotation.spec.js:129:3 › Quotation E2E Tests (Live DB) › QUOT-API-034: Move to PO from approved quotation
+[1A[2K[4/4] [chromium] › e2e\quotation.spec.js:162:3 › Quotation E2E Tests (Live DB) › QUOT-API-030 & QUOT-API-032: Reject quotation
+[1A[2K  1 failed
+    [chromium] › e2e\quotation.spec.js:95:3 › Quotation E2E Tests (Live DB) › QUOT-API-028: Director approves quotation 
+  2 did not run
+  1 passed (45.9s)
