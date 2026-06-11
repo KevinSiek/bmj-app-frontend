@@ -15,15 +15,42 @@
             </div>
             <div class="text text-role mx-2">{{ menu?.name }}</div>
           </div>
-          <router-link v-for="(feature) in menu?.feature" :to="menuMapping[feature].path" class="menu-feature"
-            :key="menuMapping[feature]">
-            <div class="feature">
-              <div class="logo">
-                <i :class="`bi bi-${iconMap[feature]}`"></i>
+          <template v-for="(feature, index) in menu?.feature" :key="index">
+            <!-- Submenu group -->
+            <template v-if="typeof feature === 'object'">
+              <div class="submenu-header" @click="toggleSubmenu(index)">
+                <div class="feature">
+                  <div class="logo">
+                    <i :class="`bi bi-${iconMap[feature.key]}`"></i>
+                  </div>
+                  <div class="text text-feature">{{ feature.label }}</div>
+                  <div class="chevron">
+                    <i :class="`bi bi-chevron-${openSubmenus.has(index) ? 'up' : 'down'}`"></i>
+                  </div>
+                </div>
               </div>
-              <div class="text text-feature">{{ menuMapping[feature]?.name }}</div>
-            </div>
-          </router-link>
+              <div v-if="openSubmenus.has(index)" class="submenu-children">
+                <router-link v-for="child in feature.feature" :to="menuMapping[child].path" :key="child"
+                  class="menu-feature">
+                  <div class="feature feature-child">
+                    <div class="logo">
+                      <i :class="`bi bi-${iconMap[child]}`"></i>
+                    </div>
+                    <div class="text text-feature">{{ menuMapping[child]?.name }}</div>
+                  </div>
+                </router-link>
+              </div>
+            </template>
+            <!-- Regular feature -->
+            <router-link v-else :to="menuMapping[feature].path" class="menu-feature">
+              <div class="feature">
+                <div class="logo">
+                  <i :class="`bi bi-${iconMap[feature]}`"></i>
+                </div>
+                <div class="text text-feature">{{ menuMapping[feature]?.name }}</div>
+              </div>
+            </router-link>
+          </template>
         </div>
       </div>
     </div>
@@ -34,7 +61,7 @@
 import { menuMapping, accessFeature } from '@/config'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const authStore = useAuthStore()
 
@@ -43,6 +70,18 @@ const { user } = storeToRefs(authStore)
 const menu = computed(() => {
   return accessFeature[user.value.role.toLowerCase()]
 })
+
+const openSubmenus = ref(new Set())
+
+const toggleSubmenu = (index) => {
+  const updated = new Set(openSubmenus.value)
+  if (updated.has(index)) {
+    updated.delete(index)
+  } else {
+    updated.add(index)
+  }
+  openSubmenus.value = updated
+}
 
 const iconMap = {
   user: 'person-square',
@@ -203,6 +242,7 @@ $dark-white: #D1D1D1;
 
       .feature {
         width: 100%;
+        box-sizing: border-box;
         display: flex;
         color: $dark-white;
         align-items: center;
@@ -217,6 +257,29 @@ $dark-white: #D1D1D1;
           flex-direction: row;
           font-weight: 500;
           width: 100%;
+        }
+      }
+
+      .submenu-header {
+        width: 100%;
+        cursor: pointer;
+
+        .feature {
+          .chevron {
+            margin-left: auto;
+            padding-right: 10%;
+          }
+        }
+      }
+
+      .submenu-children {
+        width: 100%;
+        overflow: hidden;
+
+        .feature-child {
+          padding-left: 18%;
+          width: calc(100% - 2%);
+          box-sizing: border-box;
         }
       }
     }
