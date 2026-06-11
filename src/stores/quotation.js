@@ -26,7 +26,8 @@ export const useQuotationStore = defineStore('quotation', () => {
         office: data?.customer.office || '',
         urban: data?.customer.urban || '',
         subdistrict: data?.customer?.subdistrict || '',
-        postalCode: data?.customer?.postal_code || ''
+        postalCode: data?.customer?.postal_code || '',
+        email: data?.customer?.email || ''
       },
       project: {
         quotationNumber: data?.project?.quotation_number || '',

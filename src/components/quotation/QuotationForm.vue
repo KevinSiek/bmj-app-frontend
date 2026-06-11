@@ -109,6 +109,11 @@
             <input type="text" class="form-control mt-2" v-model="quotation.customer.postalCode"
               placeholder="Postal Code" :disabled="disabled">
           </div>
+          <div class="input form-group col-12">
+            <label for="">Email <small class="text-muted">(optional)</small></label><br>
+            <input type="email" class="form-control mt-2" v-model="quotation.customer.email"
+              placeholder="Email" :disabled="disabled">
+          </div>
         </div>
       </div>
     </div>
