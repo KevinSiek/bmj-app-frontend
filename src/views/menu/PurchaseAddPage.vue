@@ -69,13 +69,12 @@
                     @input="selectItem(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
-                  <CurrencyInput placeholder="Unit Price"
-                    v-model="sparepart.unitPriceBuy"
+                  <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"
                     @update:model-value="selectItem(sparepartIndex, sparepart)" />
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Total Price"
-                    v-model="sparepart.totalPrice" disabled>
+                  <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
+                    @update:model-value="selectItem(sparepartIndex, sparepart)" :disabled="true" />
                 </div>
               </div>
             </div>

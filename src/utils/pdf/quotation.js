@@ -87,11 +87,11 @@ import { getBase64FromUrl } from '@/utils/pdf-util'
 //   ]
 // }
 
-const createPdf = async (data, notes) => {
+const createPdf = async (data, notes, user) => {
   const { project, customer, price, spareparts, services } = data
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
-  
+
   // Top Left
   const customerInfo = {
     table: {
@@ -184,7 +184,7 @@ const createPdf = async (data, notes) => {
               '',
               '',
               '',
-              { text: 'Ppn 11%', alignment: 'center', fontSize: 8 },
+              { text: 'PPN 11%', alignment: 'center', fontSize: 8 },
               { text: formatCurrency(price.ppn), alignment: 'right', fontSize: 8 },
               ''
             ],
@@ -263,7 +263,7 @@ const createPdf = async (data, notes) => {
               '',
               '',
               '',
-              { text: 'Ppn 11%', alignment: 'center', fontSize: 8 },
+              { text: 'PPN 11%', alignment: 'center', fontSize: 8 },
               { text: formatCurrency(price.ppn), alignment: 'right', fontSize: 8 },
             ],
             [
@@ -292,18 +292,14 @@ const createPdf = async (data, notes) => {
   }
 
   const docDefinition = {
-    header: [
-      {
-        image: logoBase64, // your base64 logo string
-        width: 550,
-        margin: [25, 30, 30, 0]
-      },
-      // Rev stamp floated into the top-right corner so it doesn't disturb the logo layout.
-      { text: data.version ? `Rev. ${data.version}` : '', fontSize: 9, bold: true, absolutePosition: { x: 480, y: 30 } },
-    ],
+    header: {
+      image: logoBase64, // your base64 logo string
+      width: 550,
+      margin: [25, 30, 30, 0]
+    },
     content: [
       {
-        text: `Quotation No : ${data.project.quotationNumber}`,
+        text: `Quotation No : ${data.project.quotationNumber}-Rev.${data.version}`,
         margin: [0, 3, 0, 0],
       },
 
@@ -357,7 +353,7 @@ const createPdf = async (data, notes) => {
             stack: [
               { text: `Semarang, ${currentDate}` },
               { text: 'Hormat kami,' },
-              { text: `${data.createdByName || ''}`, margin: [0, 50, 0, 0] },
+              { text: `${user.fullname || ''}`, margin: [0, 50, 0, 0] },
               { text: `Admin Part PT. Berkat Megah Jaya` },
             ],
             margin: [0, 30, 0, 0]
@@ -392,7 +388,7 @@ const createPdf = async (data, notes) => {
     pageSize: 'A4',
   }
 
-  pdfMake.createPdf(docDefinition).download(`Quotation_${data.id}.pdf`)
+  pdfMake.createPdf(docDefinition).download(`${data.project.quotationNumber}.pdf`)
 }
 
 

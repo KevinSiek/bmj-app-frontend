@@ -286,7 +286,7 @@ const createPdf = async (data, docTitle = 'DELIVERY NOTE') => {
     pageSize: 'A4',
   }
 
-  pdfMake.createPdf(docDefinition).download(`${docTitle.replace(/\s+/g, '_')}_${data.id}.pdf`)
+  pdfMake.createPdf(docDefinition).download(`${docTitle.replace(/\s+/g, '_')}_${deliveryOrder.deliveryOrderNumber}.pdf`)
 }
 
 

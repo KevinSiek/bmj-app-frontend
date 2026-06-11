@@ -34,7 +34,7 @@
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
-        <div class="text">Rp. {{ purchase.totalAmount }}</div>
+        <div class="text">{{ formatCurrency(purchase.totalAmount) }}</div>
       </div>
     </form>
   </div>

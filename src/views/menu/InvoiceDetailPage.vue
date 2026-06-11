@@ -166,7 +166,7 @@
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">2</td>
-                <td class="table-col table-name">PPN 11%</td>
+                <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
@@ -248,8 +248,10 @@ const route = useRoute()
 const router = useRouter()
 const invoiceStore = useInvoiceStore()
 const trackStore = useTrackStore()
+const generalStore = useGeneralStore()
 
 const { invoice } = storeToRefs(invoiceStore)
+const { ppn } = storeToRefs(generalStore)
 
 const isShowDownloadModal = ref(false)
 const termOfPayment = ref('')

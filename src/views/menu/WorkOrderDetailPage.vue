@@ -68,8 +68,8 @@
           </div>
           <div class="input form-group col-12">
             <label for="">No PO</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.purchaseOrder.poNumber"
-              placeholder="No PO" disabled>
+            <input type="text" class="form-control mt-2" v-model="workOrder.purchaseOrder.poNumber" placeholder="No PO"
+              disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -81,7 +81,8 @@
           <div class="title">Service Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.no" placeholder="No" disabled>
+            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.serviceOrderNumber"
+              placeholder="No" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>

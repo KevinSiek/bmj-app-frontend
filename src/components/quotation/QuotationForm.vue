@@ -1,40 +1,14 @@
 <template>
   <form class="row form" @click.capture="onRootClick">
-    <div class="upper my-2">
+    <div v-if="!isTypeEdit || isRoleDirector" class="upper my-2">
       <div class="title">Project</div>
       <div class="data">
-        <div v-if="!isTypeAdd" class="left">
-          <div class="input form-group col-12">
+        <div class="left">
+          <div v-if="isTypeView" class="input form-group col-12">
             <label for="">No Quotation</label><br>
             <input type="text" class="form-control mt-2" v-model="quotation.project.quotationNumber"
               placeholder="No Quotation" :disabled="disabled">
           </div>
-          <div class="input form-group col-12">
-            <label for="">Date Quotation</label><br>
-            <input type="date" class="form-control mt-2" v-model="quotation.project.date" placeholder="Date"
-              :disabled="disabled">
-          </div>
-        </div>
-        <div v-else-if="isRoleDirector" class="left">
-          <div class="input form-group col-12">
-            <label for="">Branch</label><br>
-            <select class="form-select mt-2" aria-label="Branch" v-model="quotation.project.branch"
-              :disabled="disabled">
-              <option value="" disabled selected>Select Branch</option>
-              <option value="Semarang">Semarang</option>
-              <option value="Jakarta">Jakarta</option>
-            </select>
-          </div>
-        </div>
-        <div v-else-if="isRoleMarketing" class="left">
-          <div class="input form-group col-12">
-            <label for="">Branch</label><br>
-            <input type="text" class="form-control mt-2" :value="quotation.project.branch" placeholder="Branch" disabled
-              readonly>
-            <small class="text-muted">Branch automatically set based on your profile</small>
-          </div>
-        </div>
-        <div class="right">
           <div class="input form-group col-12">
             <label for="">Project Type</label><br>
             <select class="form-select mt-2" aria-label="Project Type" v-model="quotation.project.type"
@@ -43,6 +17,28 @@
               <option value="Spareparts">Spareparts</option>
               <option value="Service">Service</option>
             </select>
+          </div>
+        </div>
+        <div class="right">
+          <div v-if="isRoleDirector" class="input form-group col-12">
+            <label for="">Branch</label><br>
+            <select class="form-select mt-2" aria-label="Branch" v-model="quotation.project.branch"
+              :disabled="disabled">
+              <option value="" disabled selected>Select Branch</option>
+              <option value="Semarang">Semarang</option>
+              <option value="Jakarta">Jakarta</option>
+            </select>
+          </div>
+          <div v-if="isRoleMarketing" class="input form-group col-12">
+            <label for="">Branch</label><br>
+            <input type="text" class="form-control mt-2" :value="quotation.project.branch" placeholder="Branch" disabled
+              readonly>
+            <small class="text-muted">Branch automatically set based on your profile</small>
+          </div>
+          <div v-if="isTypeView" class="input form-group col-12">
+            <label for="">Date Quotation</label><br>
+            <input type="date" class="form-control mt-2" v-model="quotation.project.date" placeholder="Date"
+              :disabled="disabled">
           </div>
         </div>
       </div>
@@ -114,7 +110,7 @@
     </div>
     <div v-if="quotation.project.type === 'Spareparts'" class="sparepart my-2">
       <div class="title">Sparepart</div>
-      <div v-if="isTypeEdit" class="table-placeholder">
+      <div v-if="isTypeView" class="table-placeholder">
         <table class="table table-hover">
           <thead>
             <tr class="align-middle">
@@ -142,6 +138,26 @@
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
+              <td class="table-col table-part-number">Amount</td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name">{{ formatCurrency(quotation.price.amount) }}</td>
+              <td class="table-col table-name"></td>
+            </tr>
+            <tr class="align-middle">
+              <td scope="row" class="table-col table-number"></td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-part-number">Discount</td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name"></td>
+              <td class="table-col table-name">{{ formatCurrency(quotation.price.discount) }}</td>
+              <td class="table-col table-name"></td>
+            </tr>
+            <tr class="align-middle">
+              <td scope="row" class="table-col table-number"></td>
+              <td class="table-col table-name"></td>
               <td class="table-col table-part-number">SubTotal</td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
@@ -152,7 +168,7 @@
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">PPN 11%</td>
+              <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
@@ -250,13 +266,14 @@
                     @input="updateSparepartCalculation(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
-                  <CurrencyInput placeholder="Unit Price"
-                    v-model="sparepart.unitPriceSell"
+                  <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
                     @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Total Price"
-                    v-model="sparepart.totalPrice" disabled>
+                  <!-- <input type="number" class="form-control mt-2" placeholder="Total Price"
+                    v-model="sparepart.totalPrice" disabled> -->
+                  <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
+                    @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true" />
                 </div>
               </div>
             </div>
@@ -276,7 +293,7 @@
     </div>
     <div v-if="quotation.project.type === 'Service'" class="service my-2">
       <div class="title">Service</div>
-      <div v-if="isTypeEdit" class="table-placeholder">
+      <div v-if="isTypeView" class="table-placeholder">
         <table class="table table-hover">
           <thead>
             <tr class="align-middle">
@@ -305,7 +322,7 @@
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">PPN 11%</td>
+              <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">{{ formatCurrency(quotation.price.ppn) }}</td>
             </tr>
@@ -355,8 +372,7 @@
                     @input="selectService(serviceIndex, service)">
                 </div>
                 <div class="col-3">
-                  <CurrencyInput placeholder="Unit Price"
-                    v-model="service.unitPriceSell"
+                  <CurrencyInput placeholder="Unit Price" v-model="service.unitPriceSell"
                     @update:model-value="selectService(serviceIndex, service)" />
                 </div>
                 <div class="col-2">
@@ -384,33 +400,30 @@
         <div class="label">Total Amount</div>
         <div>: {{ formatCurrency(quotation.price.amount) }}</div>
       </div>
-      <div v-if="isTypeAdd || isTypeEdit" class="total-discount type">
-        <div class="label">Total Discount (%)</div>
+      <div class="total-discount type">
+        <div class="label d-flex align-items-center">Total Discount (%)</div>
         <div class="d-flex align-items-center">
-          : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2"
-            style="width: 120px;" placeholder="0"
-            v-model.number="quotation.price.totalDiscountPercent">
-          <span class="ms-2 text-muted">Any value &gt; 0 requires Director review.</span>
+          : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2" style="width: 120px;"
+            placeholder="0" v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled">
+          <span class="ms-2 text-muted">Any value &gt; {{ discount }}% requires Director review.</span>
         </div>
       </div>
-      <template v-if="!isTypeAdd && isTypeEdit">
-        <div class="discount type">
-          <div class="label">Discount</div>
-          <div>: {{ formatCurrency(quotation.price.discount) }}</div>
-        </div>
-        <div class="subtotal type">
-          <div class="label">Subtotal</div>
-          <div>: {{ formatCurrency(quotation.price.subtotal) }}</div>
-        </div>
-        <div class="ppn type">
-          <div class="label">PPN</div>
-          <div>: {{ formatCurrency(quotation.price.ppn) }}</div>
-        </div>
-        <div class="grand-total type">
-          <div class="label">Grand Total</div>
-          <div>: {{ formatCurrency(quotation.price.grandTotal) }}</div>
-        </div>
-      </template>
+      <div v-if="isTypeView" class="discount type">
+        <div class="label">Discount</div>
+        <div>: {{ formatCurrency(quotation.price.discount) }}</div>
+      </div>
+      <div class="subtotal type">
+        <div class="label">Subtotal</div>
+        <div>: {{ formatCurrency(quotation.price.subtotal) }}</div>
+      </div>
+      <div class="ppn type">
+        <div class="label">PPN ({{ Math.trunc(ppn) }}%)</div>
+        <div>: {{ formatCurrency(quotation.price.ppn) }}</div>
+      </div>
+      <div class="grand-total type">
+        <div class="label">Grand Total</div>
+        <div>: {{ formatCurrency(quotation.price.grandTotal) }}</div>
+      </div>
     </div>
     <div class="notes my-2">
       <div class="title">Notes</div>
@@ -430,14 +443,17 @@ import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import { formatCurrency } from '@/utils/form-util'
 import { useCustomerStore } from '@/stores/customer'
+import { useGeneralStore } from '@/stores/general'
 import { useRole } from '@/composeable/useRole'
 import CurrencyInput from '@/components/CurrencyInput.vue'
 
 const quotationStore = useQuotationStore()
 const customerStore = useCustomerStore()
+const generalStore = useGeneralStore()
 
 const { quotation, searchedSpareparts } = storeToRefs(quotationStore)
 const { customers } = storeToRefs(customerStore)
+const { discount, ppn } = storeToRefs(generalStore)
 
 // FIXED: Import both isRoleDirector and isRoleMarketing
 const { isRoleDirector, isRoleMarketing, user } = useRole()
@@ -447,9 +463,9 @@ const props = defineProps({
   action: Function
 })
 
-const isTypeEdit = props.type == common.form.type.view
-const isTypeAdd = props.type == common.form.type.add
-const disabled = computed(() => isTypeEdit ? true : false)
+const isTypeEdit = props.type == common.form.type.edit
+const isTypeView = props.type == common.form.type.view
+const disabled = computed(() => isTypeView ? true : false)
 
 // FIXED: Dropdown visibility state per row index and field (name/number)
 // showDropdown[index] = { name: boolean, number: boolean }

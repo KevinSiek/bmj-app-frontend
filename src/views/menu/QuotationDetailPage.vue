@@ -22,6 +22,7 @@ import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import { useTrackStore } from '@/stores/track'
 import { useModalStore } from '@/stores/modal'
+import { useAuthStore } from '@/stores/auth'
 import { createPdf } from '@/utils/pdf/quotation'
 
 import QuotationForm from '@/components/quotation/QuotationForm.vue'
@@ -31,7 +32,9 @@ const router = useRouter()
 const quotationStore = useQuotationStore()
 const trackStore = useTrackStore()
 const modalStore = useModalStore()
+const authStore = useAuthStore()
 
+const { user } = storeToRefs(authStore)
 const { quotation } = storeToRefs(quotationStore)
 
 const isProcessing = ref(false)
@@ -75,7 +78,7 @@ const processQuotationConfirmation = () => {
 
 const download = () => {
   modalStore.openNotesModal('Print Quotation', async () => {
-    await createPdf(quotation.value, modalStore.notes)
+    await createPdf(quotation.value, modalStore.notes, user.value)
     modalStore.closeModal()
   })
 }

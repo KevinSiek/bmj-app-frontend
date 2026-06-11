@@ -126,7 +126,7 @@ const createPdf = async (data) => {
     pageSize: 'A4',
   }
 
-  pdfMake.createPdf(docDefinition).download(`Back_Order_${data.id}.pdf`)
+  pdfMake.createPdf(docDefinition).download(`${data.backOrderNumber}.pdf`)
 }
 
 export { createPdf }
