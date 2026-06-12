@@ -70,16 +70,16 @@ test.describe('Detail + Buy Extended API Tests', () => {
     expect(res.status()).toBe(201);
     const quotationSlug = body.data.slug;
 
-    await api.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve' } });
-    res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO' } });
+    await api.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     body = await res.json();
     expect(res.status()).toBe(200);
     const poId = body.data.id;
 
-    res = await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'PI' } });
+    res = await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     const piId = (await res.json()).data?.id;
     if (payDp && piId) {
-      await api.post(`/api/proforma-invoice/dpPaid/${piId}`, { data: {} });
+      await api.post(`/api/proforma-invoice/dpPaid/${piId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     }
     return { poId, piId, quotationSlug };
   }
@@ -197,12 +197,12 @@ test.describe('Detail + Buy Extended API Tests', () => {
     });
     expect(res.status()).toBe(201);
     const quotationSlug = (await res.json()).data.slug;
-    await api.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve' } });
-    res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO' } });
+    await api.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     const poId = (await res.json()).data.id;
-    res = await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'PI' } });
+    res = await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     const piId = (await res.json()).data?.id;
-    await api.post(`/api/proforma-invoice/dpPaid/${piId}`, { data: {} });
+    await api.post(`/api/proforma-invoice/dpPaid/${piId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
     const rel = await releaseWO(poId);
     expect(rel.status()).toBe(200);

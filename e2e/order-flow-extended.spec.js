@@ -46,8 +46,8 @@ test.describe('Order Flow Extended API Tests', () => {
     expect(res.status()).toBe(201);
     const quotationSlug = body.data.slug;
 
-    await api.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve' } });
-    res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO' } });
+    await api.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     body = await res.json();
     expect(res.status()).toBe(200);
     return { poId: body.data.id, quotationSlug };
@@ -92,20 +92,20 @@ test.describe('Order Flow Extended API Tests', () => {
     const { poId } = await createPO('PT OFE Invoice');
 
     // PO → PI
-    let res = await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Create PI' } });
+    let res = await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Create PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(200);
     const piId = (await res.json()).data.id;
     expect(piId).toBeDefined();
 
     // PI → Invoice
-    res = await api.post(`/api/proforma-invoice/moveToInvoice/${piId}`, { data: {} });
+    res = await api.post(`/api/proforma-invoice/moveToInvoice/${piId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(200);
     const inv = (await res.json()).data;
     expect(inv.invoice_number).toBeTruthy();
     expect(inv.proforma_invoice_id).toBe(piId);
 
     // Second attempt is rejected (invoice already exists)
-    res = await api.post(`/api/proforma-invoice/moveToInvoice/${piId}`, { data: {} });
+    res = await api.post(`/api/proforma-invoice/moveToInvoice/${piId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(400);
   });
 

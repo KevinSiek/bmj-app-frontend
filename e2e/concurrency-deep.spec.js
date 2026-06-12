@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import fs from 'fs';
 
 /**
  * Deeper concurrency. stock-concurrency.spec.js covers the 2-way moveToPo race; this adds
@@ -39,7 +40,7 @@ test.describe('Deep Concurrency / Stock Race Tests', () => {
     const q = (await (await api.post('/api/quotation', {
       data: { project: { type: 'Spareparts' }, customer: { ...customer, companyName: name }, price: { amount: qty * 50000 }, spareparts: [{ sparepartId: partId, quantity: qty, unitPriceSell: 50000 }] },
     })).json()).data;
-    await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a' } });
+    await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     return q.slug;
   }
 
@@ -47,7 +48,7 @@ test.describe('Deep Concurrency / Stock Race Tests', () => {
     const buy = (await (await api.post('/api/buy', {
       data: { totalAmount: qty * 1000, notes: 'race', branch: 'Jakarta', spareparts: [{ sparepartId: partId, quantity: qty, unitPriceBuy: 1000 }] },
     })).json()).data;
-    await api.post(`/api/buy/approve/${buy.id}`, { data: { notes: 'a' } });
+    await api.post(`/api/buy/approve/${buy.id}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     return buy.id;
   }
 
@@ -59,8 +60,14 @@ test.describe('Deep Concurrency / Stock Race Tests', () => {
     const slugs = [];
     for (let i = 0; i < qtys.length; i++) slugs.push(await approvedQuotation(`PT Race N${i}-${Date.now()}`, qtys[i]));
 
-    const results = await Promise.all(slugs.map((s) => api.post(`/api/quotation/moveToPo/${s}`, { data: { notes: 'po' } })));
-    for (const r of results) expect(r.status()).toBe(200);
+    const results = await Promise.all(slugs.map((s, i) => api.post(`/api/quotation/moveToPo/${s}`, { data: { notes: 'po', poNumber: `PO-CONC1-${Date.now()}-${i}` } })));
+    for (const r of results) {
+      if(r.status() !== 200) {
+        const body = await r.json();
+        fs.writeFileSync('e2e-error.json', JSON.stringify(body, null, 2));
+      }
+      expect(r.status()).toBe(200);
+    }
 
     const after = await stock();
     // No lost update: total decrement equals the sum of all ordered quantities.
@@ -73,7 +80,7 @@ test.describe('Deep Concurrency / Stock Race Tests', () => {
     const buyIds = [];
     for (const q of qtys) buyIds.push(await receivedBuy(q));
 
-    const results = await Promise.all(buyIds.map((id) => api.post(`/api/buy/done/${id}`, { data: { notes: 'recv' } })));
+    const results = await Promise.all(buyIds.map((id) => api.post(`/api/buy/done/${id}`, { data: { notes: 'recv', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } })));
     for (const r of results) expect(r.status()).toBe(200);
 
     const after = await stock();
@@ -91,9 +98,10 @@ test.describe('Deep Concurrency / Stock Race Tests', () => {
     const buyId = await receivedBuy(incQty);
 
     const [decRes, incRes] = await Promise.all([
-      api.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'po' } }),
-      api.post(`/api/buy/done/${buyId}`, { data: { notes: 'recv' } }),
+      api.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'po', poNumber: `PO-CONC3-${Date.now()}` } }),
+      api.post(`/api/buy/done/${buyId}`, { data: { notes: 'recv', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } }),
     ]);
+    if(decRes.status() !== 200) fs.writeFileSync('e2e-error3.json', JSON.stringify(await decRes.json(), null, 2));
     expect(decRes.status()).toBe(200);
     expect(incRes.status()).toBe(200);
 

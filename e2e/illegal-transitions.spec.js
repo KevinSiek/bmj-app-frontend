@@ -41,9 +41,9 @@ test.describe('Illegal State Transitions', () => {
     expect(res.status()).toBe(201);
     return (await res.json()).data;
   }
-  const approve = (slug) => api.post(`/api/quotation/approve/${slug}`, { data: { notes: 'Approve' } });
-  const moveToPo = (slug) => api.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'PO' } });
-  const moveToPi = (id) => api.post(`/api/purchase-order/moveToPi/${id}`, { data: { notes: 'PI' } });
+  const approve = (slug) => api.post(`/api/quotation/approve/${slug}`, { data: { notes: 'Approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+  const moveToPo = (slug) => api.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'PO', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+  const moveToPi = (id) => api.post(`/api/purchase-order/moveToPi/${id}`, { data: { notes: 'PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
   const releaseDO = (id) => api.post(`/api/purchase-order/release/${id}`, {
     data: { deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'C', shipMode: 'Land', orderType: 'N' }, notes: 'R' },
   });
@@ -88,7 +88,7 @@ test.describe('Illegal State Transitions', () => {
     await approve(q.slug);
     const poId = (await (await moveToPo(q.slug)).json()).data.id;
     await moveToPi(poId);
-    await api.post(`/api/purchase-order/decline/${poId}`, { data: { notes: 'decline' } });
+    await api.post(`/api/purchase-order/decline/${poId}`, { data: { notes: 'decline', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     const res = await releaseDO(poId);
     expect(res.status()).toBe(400);
     expect((await res.json()).message).toMatch(/rejected/i);

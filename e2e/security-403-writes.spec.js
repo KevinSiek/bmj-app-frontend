@@ -50,7 +50,7 @@ test.describe('RoleMiddleware Write-Path 403 Security Tests', () => {
 
   test('SECW-003: Marketing cannot POST work-order process (Service-only) → 403', async () => {
     const api = await ctxFor('citra.k@bmj.com'); // Marketing
-    const res = await api.post('/api/work-order/process/1', { data: {} });
+    const res = await api.post('/api/work-order/process/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
@@ -66,7 +66,7 @@ test.describe('RoleMiddleware Write-Path 403 Security Tests', () => {
 
   test('SECW-005: Service cannot POST proforma-invoice dpPaid (Finance-only) → 403', async () => {
     const api = await ctxFor('hadi.s@bmj.com'); // Service
-    const res = await api.post('/api/proforma-invoice/dpPaid/1', { data: {} });
+    const res = await api.post('/api/proforma-invoice/dpPaid/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });

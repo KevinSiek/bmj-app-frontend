@@ -9,7 +9,7 @@
         <div class="modal-body">
 
           <div class="text-header">
-            Notes for {{ messages }}
+            {{ noteLabel === 'Notes' ? 'Notes for ' + messages : noteLabel }}
           </div>
           <div class="text mt-4">
             <div v-if="requirePoNumber" class="inputform-floating mb-3">
@@ -17,8 +17,9 @@
                 v-model="poNumber">
             </div>
             <div class="inputform-floating">
-              <textarea class="form-control" placeholder="Notes" id="floatingTextarea2"
+              <textarea v-if="noteLabel === 'Notes'" class="form-control" :placeholder="noteLabel" id="floatingTextarea2"
                 style="height: 150px; width: 500px;" v-model="notes"></textarea>
+              <input v-else type="text" class="form-control" :placeholder="noteLabel" style="width: 500px;" v-model="notes">
             </div>
           </div>
           <div class="button-modal">
@@ -42,7 +43,7 @@ import { storeToRefs } from 'pinia'
 
 const modalStore = useModalStore()
 
-const { messages, notes, poNumber, requirePoNumber } = storeToRefs(modalStore)
+const { messages, notes, noteLabel, poNumber, requirePoNumber } = storeToRefs(modalStore)
 const isLoading = ref(false)
 
 const event = async () => {

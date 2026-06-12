@@ -59,6 +59,9 @@ const ReturnPage = () => import('@/views/menu/ReturnPage.vue')
 const ReturnDetailPage = () => import('@/views/menu/ReturnDetailPage.vue')
 const GeneralPage = () => import('@/views/menu/GeneralPage.vue')
 const UploadDataPage = () => import('@/views/menu/UploadDataPage.vue')
+const SparepartMovementPage = () => import('@/views/menu/SparepartMovementPage.vue')
+const SparepartMovementAddPage = () => import('@/views/menu/SparepartMovementAddPage.vue')
+const SparepartMovementDetailPage = () => import('@/views/menu/SparepartMovementDetailPage.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -255,6 +258,14 @@ const router = createRouter({
               }
             },
             {
+              path: menuConfig.borrow_edit.path,
+              name: menuConfig.borrow_edit.name,
+              component: BorrowAddPage,
+              meta: {
+                useBack: true
+              }
+            },
+            {
               path: menuConfig.borrow_detail.path,
               name: menuConfig.borrow_detail.name,
               component: BorrowDetailPage,
@@ -386,6 +397,33 @@ const router = createRouter({
               path: menuConfig.spareparts_edit.path,
               name: menuConfig.spareparts_edit.name,
               component: SparepartsEditPage,
+              meta: {
+                useBack: true
+              }
+            }
+          ]
+        },
+        // Sparepart Movement
+        {
+          path: menuConfig.sparepart_movement.path,
+          children: [
+            {
+              path: '',
+              name: menuConfig.sparepart_movement.name,
+              component: SparepartMovementPage
+            },
+            {
+              path: menuConfig.sparepart_movement_add.path,
+              name: menuConfig.sparepart_movement_add.name,
+              component: SparepartMovementAddPage,
+              meta: {
+                useBack: true
+              }
+            },
+            {
+              path: menuConfig.sparepart_movement_detail.path,
+              name: menuConfig.sparepart_movement_detail.name,
+              component: SparepartMovementDetailPage,
               meta: {
                 useBack: true
               }

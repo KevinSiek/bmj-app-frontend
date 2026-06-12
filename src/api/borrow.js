@@ -17,12 +17,28 @@ const updateBorrow = (id, borrow) => {
   return httpApi.putDataViaApi(`${api.borrow}/${id}`, borrow)
 }
 
-const borrowBorrow = (id) => {
-  return httpApi.postDataViaApi(`${api.borrow}/borrow/${id}`)
+const getPurchaseOrderOptions = (param) => {
+  return httpApi.getDataViaApi(`${api.borrow}/options/purchase-orders`, param)
 }
 
-const returnBorrow = (id) => {
-  return httpApi.postDataViaApi(`${api.borrow}/return/${id}`)
+const approveBorrow = (id) => {
+  return httpApi.postDataViaApi(`${api.borrow}/approve/${id}`)
+}
+
+const rejectBorrow = (id, payload) => {
+  return httpApi.postDataViaApi(`${api.borrow}/reject/${id}`, payload)
+}
+
+const sendBorrow = (id) => {
+  return httpApi.postDataViaApi(`${api.borrow}/send/${id}`)
+}
+
+const kembaliBorrow = (id, payload) => {
+  return httpApi.postDataViaApi(`${api.borrow}/kembali/${id}`, payload)
+}
+
+const doneBorrow = (id, payload) => {
+  return httpApi.postDataViaApi(`${api.borrow}/done/${id}`, payload)
 }
 
 const cancelBorrow = (id) => {
@@ -34,7 +50,11 @@ export default {
   addBorrow,
   getBorrowById,
   updateBorrow,
-  borrowBorrow,
-  returnBorrow,
+  getPurchaseOrderOptions,
+  approveBorrow,
+  rejectBorrow,
+  sendBorrow,
+  kembaliBorrow,
+  doneBorrow,
   cancelBorrow
 }

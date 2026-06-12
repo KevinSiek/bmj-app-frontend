@@ -111,14 +111,14 @@ test.describe('List-Filter Correctness', () => {
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }],
       },
     })).json()).data;
-    await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a' } });
-    const poId = (await (await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po' } })).json()).data.id;
-    await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi' } });
-    await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy' } });
+    await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const poId = (await (await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } })).json()).data.id;
+    await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     await api.post(`/api/purchase-order/release/${poId}`, {
       data: { deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'C', shipMode: 'Land', orderType: 'N' }, notes: 'r' },
     });
-    await api.post(`/api/purchase-order/done/${poId}`, { data: { notes: 'done' } });
+    await api.post(`/api/purchase-order/done/${poId}`, { data: { notes: 'done', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     await api.post(`/api/quotation/return/${poId}`, { data: { returned: [{ sparepart_id: sparepartId, quantity: 1 }], notes: 'ret' } });
 
     const inReturnState = await idSet('/api/quotation/return/0'); // !0 = is_return true

@@ -66,8 +66,8 @@
                     @update:model-value="selectItem(sparepartIndex, sparepart)" />
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Total Price"
-                    v-model="sparepart.totalPrice" disabled>
+                  <input type="text" class="form-control mt-2" placeholder="Total Price"
+                    :value="formatCurrency(sparepart.totalPrice)" disabled>
                 </div>
               </div>
             </div>

@@ -178,7 +178,7 @@ test.describe('BMJ App Backend Controllers - Rejection Behavior Analysis', () =>
 
   test('GUARD-RBA-011: Finance POST /api/employee/reset-password/{slug} (non-Director) → 403', async () => {
     const api = await ctxFor(FINANCE);
-    const res = await api.post(`/api/employee/reset-password/${MISSING_SLUG}`, { data: {} });
+    const res = await api.post(`/api/employee/reset-password/${MISSING_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
@@ -186,7 +186,7 @@ test.describe('BMJ App Backend Controllers - Rejection Behavior Analysis', () =>
   test('GUARD-RBA-012: Director POST /api/employee/reset-password/{nonexistent} → 404', async () => {
     const api = await ctxFor(DIRECTOR);
     // where('slug',$slug)->lockForUpdate()->first() null (line 136) → 404 (line 141).
-    const res = await api.post(`/api/employee/reset-password/${MISSING_SLUG}`, { data: {} });
+    const res = await api.post(`/api/employee/reset-password/${MISSING_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
@@ -266,7 +266,7 @@ test.describe('BMJ App Backend Controllers - Rejection Behavior Analysis', () =>
     const api = await ctxFor(FINANCE);
     // $request->validate() (line 106-110) requires code+name; omit both → 422 before the
     // 'code'-column lookup, so the {slug} value is irrelevant here.
-    const res = await api.put(`/api/seller/${MISSING_SLUG}`, { data: {} });
+    const res = await api.put(`/api/seller/${MISSING_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(422);
     await api.dispose();
   });

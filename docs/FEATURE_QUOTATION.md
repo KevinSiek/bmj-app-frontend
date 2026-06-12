@@ -20,17 +20,21 @@ Purchase Orders.
 4. Quotations can be **returned** after becoming a PO (return workflow).
 5. The **review workflow** is role-gated: Director reviews quotation pricing.
 6. Discount and PPN (tax) values come from General settings.
-7. **Per-item review trigger** (existing): if any item's `unitPriceSell` falls below
+7. **Per-item review trigger**: if any item's `unitPriceSell` falls below
    `basePrice × (1 − general.discount)`, the quotation auto-enters On Review.
    (`general.discount` is a fraction, e.g. 0.05 = 5%.)
-8. **Total discount %** (added Jun 9): a manual whole-quotation discount, entered as a
-   percentage below Total Amount (`price.totalDiscountPercent`, 0–100, column
-   `quotations.total_discount_percent`). It reduces the subtotal **before** PPN, and ANY
-   value > 0 forces the quotation into Director review. Independent of rule 7 (either triggers).
-9. **Currency inputs**: price fields use `components/CurrencyInput.vue` — shows `Rp 1.250.000`
-   while typing but `v-model` stays a raw Number, so calculations are unchanged.
+8. **Total discount % (added Jun 9)**: a manual whole-quotation discount, entered as a
+   percentage below the Total Amount field (`price.totalDiscountPercent`, 0–100, column
+   `quotations.total_discount_percent`). It reduces the subtotal **before** PPN is applied.
+   **ANY value > 0 forces the quotation into Director review**, independent of rule 7 —
+   either trigger (per-item OR total %) will cause On Review status and set review to false.
+9. **Currency inputs**: price fields use `components/CurrencyInput.vue` — displays formatted
+   as `Rp 1.250.000` while typing but `v-model` remains a raw Number, so all calculations
+   are unchanged.
 10. **PDF creator name**: the quotation PDF signature uses `created_by_name` (the creating
     employee's `fullname`) from the get() response, not a hardcoded name.
+11. **PDF version stamp**: the quotation PDF includes a "Version N" stamp alongside the creator
+    name to track document iterations.
 
 ## File Map
 
@@ -70,6 +74,7 @@ handles:
 - Sparepart search via `SparepartSelector` component
 - Branch selection
 - Both add and edit modes determined by `formType` prop
+- Total discount % input that forces review when > 0
 
 ### Key Props
 - `formType` — `'Add'` or `'Edit'`
@@ -78,6 +83,7 @@ handles:
 - `useQuotationStore` — quotation state
 - `useGeneralStore` — discount/ppn rates
 - `SparepartSelector` component — search and select spareparts
+- `CurrencyInput` component — realtime Rp formatting on all price inputs
 
 ## Store: `quotation.js`
 
@@ -92,15 +98,16 @@ handles:
 Maps backend snake_case to frontend camelCase:
 - `customer.*` → company info
 - `project.*` → quotation number, type, date, branch
-- `price.*` → amount, discount, ppn, subtotal, grandTotal
-- `spareparts[]` → sparepartId, sparepartName, quantity, unitPriceSell, totalPrice
+- `price.*` → amount, discount, ppn, subtotal, grandTotal, **totalDiscountPercent**
+- `created_by_name` → creating employee's full name
+- `spareparts[]` → sparepartId, sparepartName, quantity, unitPriceSell, unitPriceBuy (Director only), totalPrice
 - `services[]` → service name, quantity, unitPriceSell, totalPrice
 
 ### Key Actions
 - `getAllQuotation(param)` — fetch + group by quotation_number
 - `getQuotation(id)` — fetch single
 - `addQuotation()` / `editQuotation()` — create/update
-- `processQuotation(id, notes)` — move to PO
+- `processQuotation(id, notes, poNumber)` — move to PO (now requires poNumber)
 - `approveQuotation(id)` / `rejectQuotation(id)` / `needChangeQuotation(id)`
 - `getSpareparts(param)` — search spareparts for the form
 
@@ -120,6 +127,12 @@ All calls go to `config.api.quotation` = `/api/quotation`.
 | `rejectQuotation(slug)` | POST | `/api/quotation/reject/{slug}` |
 | `needChangeQuotation(slug)` | POST | `/api/quotation/needChange/{slug}` |
 
+### processQuotation Payload
+
+The `processQuotation` endpoint now requires:
+- `notes` — movement reason or comments
+- `poNumber` — the unique user-entered PO number (not the internal auto-generated request number)
+
 ## PDF Generation
 
 `utils/pdf/quotation.js` generates a quotation PDF using pdfmake with:
@@ -127,3 +140,5 @@ All calls go to `config.api.quotation` = `/api/quotation`.
 - Customer details
 - Line item table (spareparts and/or services)
 - Pricing summary with discount, subtotal, PPN, grand total
+- **Creator name** from `created_by_name` (employee's fullname)
+- **Version stamp** ("Version N") to track document iterations

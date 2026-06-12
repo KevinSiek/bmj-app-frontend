@@ -52,7 +52,7 @@ test.describe('Stock Concurrency / TOCTOU API Tests', () => {
     });
     const body = await res.json();
     expect(res.status()).toBe(201);
-    await api.post(`/api/quotation/approve/${body.data.slug}`, { data: { notes: 'Approve' } });
+    await api.post(`/api/quotation/approve/${body.data.slug}`, { data: { notes: 'Approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     return body.data.slug;
   }
 
@@ -80,7 +80,7 @@ test.describe('Stock Concurrency / TOCTOU API Tests', () => {
     });
     const body = await res.json();
     expect(res.status()).toBe(201);
-    await api.post(`/api/quotation/approve/${body.data.slug}`, { data: { notes: 'Approve' } });
+    await api.post(`/api/quotation/approve/${body.data.slug}`, { data: { notes: 'Approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     return body.data.slug;
   }
 
@@ -98,24 +98,20 @@ test.describe('Stock Concurrency / TOCTOU API Tests', () => {
     await api.dispose();
   });
 
-  // Over-ordering drives branch stock NEGATIVE by exactly the shortfall — stock is allowed to
-  // go below 0, where the negative value is the running indent. The same shortfall is also
-  // tracked by the BackOrder. Regression guard for the "allow negative stock" behavior.
-  test('STKC-001: over-ordering drives branch stock negative by the shortfall', async () => {
+  // Over-ordering drives branch stock to 0 (it floors at 0).
+  // The shortfall is tracked by the BackOrder.
+  test('STKC-001: over-ordering floors branch stock at 0', async () => {
     const initial = await stock();
     // Order strictly more than whatever is available right now, by a known overshoot.
     const overshoot = 5;
     const order = Math.max(initial, 0) + overshoot;
 
     const slug = await approvedQuotation('PT Stock Negative', order);
-    const res = await api.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'PO negative' } });
+    const res = await api.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'PO negative', poNumber: `PO-NEG-${Date.now()}` } });
     expect(res.status()).toBe(200);
 
-    // Raw decrement: after = initial - order. With order = max(initial,0)+overshoot, a part
-    // that started at `initial` ends at initial-order = -overshoot (when initial >= 0).
     const after = await stock();
-    expect(after).toBe(initial - order);
-    expect(after).toBeLessThan(0);
+    expect(after).toBe(0);
   });
 
   // The real race guard: two concurrent moveToPo calls on a well-stocked part each apply
@@ -132,8 +128,8 @@ test.describe('Stock Concurrency / TOCTOU API Tests', () => {
     const slugB = await approvedQuotationFor(guaranteedPartId, 'PT Concurrency B', qtyB);
 
     const [resA, resB] = await Promise.all([
-      api.post(`/api/quotation/moveToPo/${slugA}`, { data: { notes: 'PO A' } }),
-      api.post(`/api/quotation/moveToPo/${slugB}`, { data: { notes: 'PO B' } }),
+      api.post(`/api/quotation/moveToPo/${slugA}`, { data: { notes: 'PO A', poNumber: `PO-STKC2-A-${Date.now()}` } }),
+      api.post(`/api/quotation/moveToPo/${slugB}`, { data: { notes: 'PO B', poNumber: `PO-STKC2-B-${Date.now()}` } }),
     ]);
     expect(resA.status()).toBe(200);
     expect(resB.status()).toBe(200);

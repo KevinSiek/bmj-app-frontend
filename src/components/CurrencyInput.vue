@@ -13,6 +13,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import { formatMoney } from '@/utils/form-util'
 
 /**
  * Currency input that shows the value formatted as "Rp 1.250.000" while the user types, but
@@ -33,7 +34,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const format = (num) => {
   if (num === null || num === undefined || num === '' || isNaN(num)) return ''
-  return new Intl.NumberFormat('id-ID').format(num)
+  return formatMoney(num)
 }
 
 const display = ref(format(Number(props.modelValue) || 0 ? props.modelValue : ''))

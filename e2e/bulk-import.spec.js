@@ -104,8 +104,8 @@ test.describe('Sparepart Bulk Import — Success Path', () => {
       data: { totalAmount: 10000, notes: 'Stock bump for import test', branch: 'Jakarta', spareparts: [{ sparepartId: part.id, quantity: 10, unitPriceBuy: 1000 }] },
     });
     const buyId = (await buyRes.json()).data.id;
-    await api.post(`/api/buy/approve/${buyId}`, { data: { notes: 'a' } });
-    await api.post(`/api/buy/done/${buyId}`, { data: { notes: 'recv' } });
+    await api.post(`/api/buy/approve/${buyId}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    await api.post(`/api/buy/done/${buyId}`, { data: { notes: 'recv', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(await stockFor(part.id, 1)).toBe(10);
 
     // Re-import the same part → branch stock is reset to 0 (import is not additive).

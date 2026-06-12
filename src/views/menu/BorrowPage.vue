@@ -3,6 +3,10 @@
     <div class="upper">
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
+        <select class="form-select mx-2" v-model="sortDate" @change="handleSortChange">
+          <option value="desc">Newest First</option>
+          <option value="asc">Oldest First</option>
+        </select>
         <RefreshButton @refresh="fetchBorrow" />
       </div>
       <div class="right">
@@ -27,7 +31,8 @@
         </div>
         <div v-else class="list">
           <ItemComponent v-for="(borrow, index) in borrows" :key="index" :number="index + paginationData.from"
-            :item="borrow" :first-section="borrow.borrowNumber" :second-section="borrow.borrowerName"
+            :item="borrow" :first-section="borrow.borrowNumber"
+            :second-section="borrow.purchaseOrder.poNumber || borrow.purchaseOrder.purchaseOrderNumber"
             :current-status="borrow.currentStatus" @click="goToDetail(borrow)" />
         </div>
       </div>
@@ -46,7 +51,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useBorrowStore } from '@/stores/borrow'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onBeforeMount, onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch, ref } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 import RefreshButton from '@/components/RefreshButton.vue'
@@ -57,6 +62,7 @@ const borrowStore = useBorrowStore()
 const { selectedMonth, selectedYear } = useDate()
 
 const { borrows, paginationData, isLoading } = storeToRefs(borrowStore)
+const sortDate = ref(route.query.sort_date || 'desc')
 
 onBeforeMount(() => {
   isLoading.value = true
@@ -81,8 +87,12 @@ watch(() => route.query, (before, after) => {
 })
 
 const fetchBorrow = async () => {
-  const { page, search, month, year } = route.query
-  borrowStore.getAllBorrow({ page, search, month, year })
+  const { page, search, month, year, sort_date } = route.query
+  borrowStore.getAllBorrow({ page, search, month, year, sort_date })
+}
+
+const handleSortChange = () => {
+  updateQuery(router, route, { ...route.query, sort_date: sortDate.value, page: 1 })
 }
 
 const searchBorrow = (search) => {

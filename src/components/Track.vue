@@ -36,9 +36,9 @@ import { formatDateAndTime } from '@/utils/form-util'
 
 const trackStore = useTrackStore()
 
-const { trackData } = storeToRefs(trackStore)
+const { trackData, trackType } = storeToRefs(trackStore)
 
-const progressSteps = [
+const poSteps = [
   common.track.po,
   common.track.pi,
   common.track.dp_paid,
@@ -46,12 +46,24 @@ const progressSteps = [
   common.track.release,
   common.track.full_paid,
   common.track.done,
-  // common.track.return
 ]
 
+const borrowSteps = [
+  common.status.borrow.created,
+  common.status.borrow.approved,
+  common.status.borrow.borrowed,
+  common.status.borrow.returned,
+  common.status.borrow.done,
+]
+
+const progressSteps = computed(() =>
+  trackType.value === 'borrow' ? borrowSteps : poSteps
+)
+
 const trackProgress = computed(() => {
+  const steps = progressSteps.value
   if (trackData.value === null || trackData.value?.length === 0) {
-    return progressSteps.map(step => ({
+    return steps.map(step => ({
       state: step.toUpperCase(),
       employee: null,
       timestamp: null,
@@ -65,7 +77,7 @@ const trackProgress = computed(() => {
     active: true
   }))
 
-  progressSteps.forEach((step) => {
+  steps.forEach((step) => {
     const found = trackData.value?.find(item => item.state === step)
     if (!found) {
       activeSteps.push({

@@ -74,15 +74,15 @@ test.describe('Order Updates API Tests (PO, PI, WO, DO Updates)', () => {
       quotationSlug = body.data.slug;
       
       // 2. Approve Quotation
-      await apiContext.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve' } });
+      await apiContext.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       
       // 3. Move to PO
-      response = await apiContext.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO' } });
+      response = await apiContext.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       body = await response.json();
       poId = body.data.id;
       
       // 4. Move to PI
-      response = await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Move to PI' } });
+      response = await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Move to PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       body = await response.json();
       piId = body.data.id;
 
@@ -112,20 +112,20 @@ test.describe('Order Updates API Tests (PO, PI, WO, DO Updates)', () => {
       body = await response.json();
       let serviceQuotationSlug = body.data.slug;
       
-      await apiContext.post(`/api/quotation/approve/${serviceQuotationSlug}`, { data: { notes: 'Approve Service' } });
-      response = await apiContext.post(`/api/quotation/moveToPo/${serviceQuotationSlug}`, { data: { notes: 'Move to Service PO' } });
+      await apiContext.post(`/api/quotation/approve/${serviceQuotationSlug}`, { data: { notes: 'Approve Service', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+      response = await apiContext.post(`/api/quotation/moveToPo/${serviceQuotationSlug}`, { data: { notes: 'Move to Service PO', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       body = await response.json();
       let servicePoId = body.data.id;
 
       // Ensure Ready state to release
-      await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready SP' } });
-      await apiContext.post(`/api/purchase-order/ready/${servicePoId}`, { data: { notes: 'Ready SRV' } });
+      await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready SP', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+      await apiContext.post(`/api/purchase-order/ready/${servicePoId}`, { data: { notes: 'Ready SRV', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
       // Create PI for Service PO and Pay DP (required before releasing Work Order)
-      response = await apiContext.post(`/api/purchase-order/moveToPi/${servicePoId}`, { data: { notes: 'Move Service to PI' } });
+      response = await apiContext.post(`/api/purchase-order/moveToPi/${servicePoId}`, { data: { notes: 'Move Service to PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       body = await response.json();
       let servicePiId = body.data.id;
-      await apiContext.post(`/api/proforma-invoice/dpPaid/${servicePiId}`, { data: { notes: 'Pay DP Service' } });
+      await apiContext.post(`/api/proforma-invoice/dpPaid/${servicePiId}`, { data: { notes: 'Pay DP Service', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
       // 6. Release to DO and WO
       response = await apiContext.post(`/api/purchase-order/release/${poId}`, {

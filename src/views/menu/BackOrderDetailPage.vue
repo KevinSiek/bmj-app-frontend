@@ -143,8 +143,8 @@
   <div class="button">
     <div class="right">
       <button type="button" class="btn btn-process" @click="download">Print</button>
-      <button v-if="isReadyToProcess" type="button" class="btn btn-process" @click="processBackOrderConfirmation"
-        :disabled="isProcessing">Ready</button>
+      <button v-if="isReadyToProcess" type="button" class="btn btn-process m-1" @click="analyzeBackOrderAction"
+        :disabled="isProcessing">Analyze</button>
     </div>
   </div>
 </template>
@@ -156,6 +156,7 @@ import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { createPdf } from '@/utils/pdf/back-order'
+import { common } from '@/config'
 
 const route = useRoute()
 const backOrderStore = useBackOrderStore()
@@ -174,20 +175,27 @@ onMounted(() => {
   backOrderStore.getBackOrder(route.params.id)
 })
 
-const processBackOrder = async () => {
+const analyzeBackOrderAction = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await backOrderStore.processBackOrder(route.params.id)
+    await backOrderStore.analyzeBackOrder(route.params.id)
+    // If sufficient stock, prompt confirmation to process
+    modalStore.openConfirmationModal('to process this Back Order ?', 'Back Order Processed', processBackOrder)
   } catch (error) {
-    throw error.data.error || error.data.message
+    let errorMsg = error?.data?.message || error?.message || 'Quantity is not enough please contact purchasing to add the stock'
+    modalStore.openMessageModal(common.modal.failed, errorMsg)
   } finally {
     isProcessing.value = false
   }
 }
 
-const processBackOrderConfirmation = () => {
-  modalStore.openConfirmationModal('to process this Back Order ?', 'Back Order Processed', processBackOrder)
+const processBackOrder = async () => {
+  try {
+    await backOrderStore.processBackOrder(route.params.id)
+  } catch (error) {
+    throw error?.data?.error || error?.data?.message || error?.message || 'Process failed'
+  }
 }
 
 const download = () => {

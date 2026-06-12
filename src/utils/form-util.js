@@ -3,6 +3,7 @@ const validatePassword = (password, confirmPassword) => {
   return false
 }
 
+// Keeps "Rp" — used by PDF documents, which are official financial documents.
 const formatCurrency = (value) => {
   if(!value) return 0
   return new Intl.NumberFormat("id-ID", {
@@ -10,6 +11,10 @@ const formatCurrency = (value) => {
     currency: "IDR"
   }).format(value)
 }
+
+// No "Rp", Indonesian thousands grouping (1250000 -> "1.250.000"). Web UI display only.
+const formatMoney = (value) =>
+  new Intl.NumberFormat('id-ID').format(Number(value) || 0)
 
 const formatDate = (timestamp) => {
   if(!timestamp) return null
@@ -37,6 +42,7 @@ const formatDateAndTime = (timestamp) => {
 export {
   validatePassword,
   formatCurrency,
+  formatMoney,
   formatDate,
   formatDateAndTime
 }

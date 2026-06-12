@@ -21,6 +21,7 @@ import MenuDeliveryOrder from '@/components/menu/MenuDeliveryOrder.vue'
 import MenuWorkOrder from '@/components/menu/MenuWorkOrder.vue'
 import MenuEmployee from '@/components/menu/MenuEmployee.vue'
 import MenuUpload from '@/components/menu/MenuUpload.vue'
+import MenuSparepartMovement from '@/components/menu/MenuSparepartMovement.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
@@ -85,9 +86,14 @@ const componentList = ref([
     path: menuConfig.employee.path
   },
   {
-    name: 'Upload',
+    name: 'Upload Data',
     component: MenuUpload,
     path: menuConfig.upload_data.path
+  },
+  {
+    name: 'Stock Transfer',
+    component: MenuSparepartMovement,
+    path: menuConfig.sparepart_movement.path
   }
 ])
 </script>

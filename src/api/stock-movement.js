@@ -5,10 +5,16 @@ const getStockMovements = async (param) => {
   return httpApi.getDataViaApi(api.stock_movement, param)
 }
 
+const getSuggestions = async (q) => {
+  return httpApi.getDataViaApi(`${api.stock_movement}/suggestions`, { q })
+}
+
 export default {
-  getStockMovements
+  getStockMovements,
+  getSuggestions
 }
 
 export {
-  getStockMovements
+  getStockMovements,
+  getSuggestions
 }

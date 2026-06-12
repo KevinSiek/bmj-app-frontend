@@ -49,8 +49,8 @@ test.describe('Per-Field Validation — Target-Bound Endpoints', () => {
     const q = (await (await api.post('/api/quotation', {
       data: { project: { type: 'Spareparts' }, customer, price: { amount: 50000 }, spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }] },
     })).json()).data;
-    await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a' } });
-    const po = (await (await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po' } })).json()).data;
+    await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const po = (await (await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } })).json()).data;
     return { quotationSlug: q.slug, poId: po.id };
   }
 
@@ -81,7 +81,7 @@ test.describe('Per-Field Validation — Target-Bound Endpoints', () => {
     let piId;
     test.beforeAll(async () => {
       const { poId } = await makePO();
-      piId = (await (await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi' } })).json()).data.id;
+      piId = (await (await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } })).json()).data.id;
     });
     for (const inv of [DEL, '', -5, 'abc']) {
       const label = inv === DEL ? 'missing' : JSON.stringify(inv);
@@ -97,8 +97,8 @@ test.describe('Per-Field Validation — Target-Bound Endpoints', () => {
     let doId;
     test.beforeAll(async () => {
       const { poId } = await makePO();
-      await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi' } });
-      await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy' } });
+      await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+      await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       const rel = await api.post(`/api/purchase-order/release/${poId}`, {
         data: { deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'C', shipMode: 'Land', orderType: 'N' }, notes: 'r' },
       });
@@ -126,10 +126,10 @@ test.describe('Per-Field Validation — Target-Bound Endpoints', () => {
       const q = (await (await api.post('/api/quotation', {
         data: { project: { type: 'Service' }, customer, price: { amount: 5000000 }, services: [{ service: 'Repair', unitPriceSell: 5000000, quantity: 1 }] },
       })).json()).data;
-      await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a' } });
-      const po = (await (await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po' } })).json()).data;
-      const pi = (await (await api.post(`/api/purchase-order/moveToPi/${po.id}`, { data: { notes: 'pi' } })).json()).data;
-      await api.post(`/api/proforma-invoice/dpPaid/${pi.id}`, { data: {} });
+      await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+      const po = (await (await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } })).json()).data;
+      const pi = (await (await api.post(`/api/purchase-order/moveToPi/${po.id}`, { data: { notes: 'pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } })).json()).data;
+      await api.post(`/api/proforma-invoice/dpPaid/${pi.id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       const rel = await api.post(`/api/purchase-order/release/${po.id}`, {
         data: {
           serviceOrder: { receivedBy: 'R', startDate: '2026-06-06', endDate: '2026-06-10' },

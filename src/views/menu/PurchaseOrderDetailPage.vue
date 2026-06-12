@@ -5,15 +5,15 @@
         <div class="left">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="">No Internal Request</label><br>
+            <label for="">Internal Request Number</label><br>
             <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderNumber"
-              placeholder="No Internal Request" disabled>
+              placeholder="Internal Request Number" disabled>
           </div>
-          <!-- <div class="input form-group col-12">
-            <label for="">No PO</label><br>
+          <div class="input form-group col-12">
+            <label for="">Purchase Order Number</label><br>
             <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.poNumber"
-              placeholder="No PO" disabled>
-          </div> -->
+              placeholder="Purchase Order Number" disabled>
+          </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
             <input type="date" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderDate"

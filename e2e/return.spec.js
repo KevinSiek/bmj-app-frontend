@@ -64,20 +64,20 @@ test.describe('Return Flow E2E Tests (Live DB)', () => {
     const quotSlug = body.data.slug;
 
     // 2. Approve Quotation
-    await apiContext.post(`/api/quotation/approve/${quotSlug}`, { data: { notes: 'Approved for return test' } });
+    await apiContext.post(`/api/quotation/approve/${quotSlug}`, { data: { notes: 'Approved for return test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
     // 3. Move to PO
-    res = await apiContext.post(`/api/quotation/moveToPo/${quotSlug}`, { data: { notes: 'Move to PO for return test' } });
+    res = await apiContext.post(`/api/quotation/moveToPo/${quotSlug}`, { data: { notes: 'Move to PO for return test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     body = await res.json();
     expect(res.status()).toBe(200);
     poId = body.data.id;
 
     // 4. Move to PI
-    res = await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Create PI for return' } });
+    res = await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Create PI for return', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(200);
 
     // 5. Set Ready
-    res = await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready' } });
+    res = await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(200);
 
     // 6. Release DO (Requires deliveryOrder payload)
@@ -95,7 +95,7 @@ test.describe('Return Flow E2E Tests (Live DB)', () => {
     expect(res.status()).toBe(200);
 
     // 7. Mark Done (Marketing role in UI or Director via API)
-    res = await apiContext.post(`/api/purchase-order/done/${poId}`, { data: { notes: 'Done' } });
+    res = await apiContext.post(`/api/purchase-order/done/${poId}`, { data: { notes: 'Done', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(200);
 
     // 8. Now use UI (Marketing) to click Return

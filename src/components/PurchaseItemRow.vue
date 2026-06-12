@@ -63,6 +63,7 @@
 import { ref, computed, watch } from 'vue'
 import SparepartSelector from './SparepartSelector.vue'
 import CurrencyInput from '@/components/CurrencyInput.vue'
+import { formatCurrency } from '@/utils/form-util'
 
 const props = defineProps({
   item: {
@@ -112,14 +113,6 @@ const handleSparepartClear = () => {
 const updateTotals = () => {
   localItem.value.total_price = (localItem.value.quantity || 0) * (localItem.value.unit_price || 0)
   emit('update', localItem.value)
-}
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0
-  }).format(amount || 0)
 }
 
 watch(() => props.item, (newItem) => {

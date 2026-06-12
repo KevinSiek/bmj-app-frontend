@@ -42,8 +42,8 @@ test.describe('Stock History (standalone page) — runtime verification', () => 
       data: { borrowerName: 'History Tester', spareparts: [{ sparepartId: target, quantity: QTY }] },
     });
     const borrowId = (await create.json()).data.id;
-    await dir.post(`/api/borrow/borrow/${borrowId}`, { data: {} });
-    await dir.post(`/api/borrow/return/${borrowId}`, { data: {} });
+    await dir.post(`/api/borrow/borrow/${borrowId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    await dir.post(`/api/borrow/return/${borrowId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
     // global endpoint
     const all = (await (await dir.get('/api/stock-movement')).json()).data.data;

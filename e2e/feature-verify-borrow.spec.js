@@ -59,13 +59,13 @@ test.describe('Borrow (BOR) — runtime verification', () => {
     expect(afterCreate, 'Created must NOT change stock').toBe(before);
 
     // borrow (decrement)
-    const borrow = await dir.post(`/api/borrow/borrow/${minted.borrowId}`, { data: {} });
+    const borrow = await dir.post(`/api/borrow/borrow/${minted.borrowId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(borrow.status(), `borrow: ${await borrow.text()}`).toBe(200);
     const afterBorrow = await jakartaStock(dir, sp.id);
     expect(afterBorrow, 'Borrowed must decrement by qty').toBe(before - QTY);
 
     // return (restore)
-    const ret = await dir.post(`/api/borrow/return/${minted.borrowId}`, { data: {} });
+    const ret = await dir.post(`/api/borrow/return/${minted.borrowId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(ret.status(), `return: ${await ret.text()}`).toBe(200);
     const afterReturn = await jakartaStock(dir, sp.id);
     expect(afterReturn, 'Returned must restore stock').toBe(before);
@@ -86,10 +86,10 @@ test.describe('Borrow (BOR) — runtime verification', () => {
     expect(create.status()).toBe(201);
     minted.cancelId = (await create.json()).data.id;
 
-    await dir.post(`/api/borrow/borrow/${minted.cancelId}`, { data: {} });
+    await dir.post(`/api/borrow/borrow/${minted.cancelId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(await jakartaStock(dir, minted.sparepartId)).toBe(before - QTY);
 
-    const cancel = await dir.post(`/api/borrow/cancel/${minted.cancelId}`, { data: {} });
+    const cancel = await dir.post(`/api/borrow/cancel/${minted.cancelId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(cancel.status(), `cancel: ${await cancel.text()}`).toBe(200);
     expect(await jakartaStock(dir, minted.sparepartId), 'cancel-from-Borrowed restores stock').toBe(before);
 
@@ -110,7 +110,7 @@ test.describe('Borrow (BOR) — runtime verification', () => {
     expect(create.status()).toBe(201);
     const id = (await create.json()).data.id;
 
-    const borrow = await dir.post(`/api/borrow/borrow/${id}`, { data: {} });
+    const borrow = await dir.post(`/api/borrow/borrow/${id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(borrow.status(), 'over-borrow must be 422').toBe(422);
     // stock NOT touched
     expect(await jakartaStock(dir, minted.sparepartId), 'failed borrow must not change stock').toBe(before);
@@ -126,7 +126,7 @@ test.describe('Borrow (BOR) — runtime verification', () => {
       data: { borrowerName: 'Guard', spareparts: [{ sparepartId: minted.sparepartId, quantity: 1 }] },
     });
     const id = (await create.json()).data.id;
-    const ret = await dir.post(`/api/borrow/return/${id}`, { data: {} });
+    const ret = await dir.post(`/api/borrow/return/${id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(ret.status(), 'return-from-Created must be 400').toBe(400);
     await dir.dispose();
   });

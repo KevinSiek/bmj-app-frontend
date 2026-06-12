@@ -18,16 +18,16 @@ timelines, and sparepart usage.
 
 ## Key Business Rules
 1. WO is created during PO **Release** action, in status **Wait On Progress**.
-2. Status lifecycle (updated Jun 9): `Wait On Progress → Progress → Done`.
+2. Status lifecycle: `Wait On Progress → Process → Progress → Done`.
    - **Process** button (shown in Wait On Progress) → `POST /api/work-order/process/{id}` → Progress.
    - **Done** button (shown in Progress) → `POST /api/work-order/done/{id}` → Done; propagates
      DONE to the PO + quotation. (Legacy "On Progress" rows can still go straight to Done.)
 3. WO tracks: worker name, expected days, start/end dates, scope, units.
-4. (Removed Jun 9) the vaccine / APD / peduli_lindungi safety fields are gone from the UI,
-   responses, and model fillable (DB columns left dead/nullable).
+4. Vaccine, APD, and Peduli Lindungi safety fields have been removed from the UI,
+   API responses, and model fillable (DB columns remain but are no longer used).
 5. `WoUnit` child records track individual units being serviced.
 6. WO actions are gated to Service + Director roles.
-7. WO detail shows the related PO's "No Internal Request" (purchase_order_number) + "No PO"
+7. WO detail displays the related PO's "No Internal Request" (purchase_order_number) and "No PO"
    (po_number).
 
 ## Data Model

@@ -66,28 +66,28 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
 
   test('GUARD-PO-001: Inventory Purchase cannot POST ready (role not in group) → 403', async () => {
     const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase → inventory_purchase
-    const res = await api.post('/api/purchase-order/ready/1', { data: {} });
+    const res = await api.post('/api/purchase-order/ready/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-PO-002: Inventory Purchase cannot POST release → 403', async () => {
     const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase
-    const res = await api.post('/api/purchase-order/release/1', { data: {} });
+    const res = await api.post('/api/purchase-order/release/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-PO-003: Inventory Purchase cannot POST done → 403', async () => {
     const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase
-    const res = await api.post('/api/purchase-order/done/1', { data: {} });
+    const res = await api.post('/api/purchase-order/done/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-PO-004: Inventory Purchase cannot POST decline → 403', async () => {
     const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase
-    const res = await api.post('/api/purchase-order/decline/1', { data: { notes: 'x' } });
+    const res = await api.post('/api/purchase-order/decline/1', { data: { notes: 'x', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
@@ -131,7 +131,7 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
     const id = await firstPurchaseOrderId();
     test.skip(!id, 'No purchase orders seeded — cannot reach the validator on a real id');
     const api = await ctxFor('director.jkt@bmj.com'); // authorized; isolates the validator
-    const res = await api.post(`/api/purchase-order/status/${id}`, { data: {} });
+    const res = await api.post(`/api/purchase-order/status/${id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(422);
     await api.dispose();
   });
@@ -144,7 +144,7 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
     // Director passes the explicit Finance/Director role check (line 894), so the only
     // rejection left is the missing-notes validator (422), not the role-400.
     const api = await ctxFor('director.jkt@bmj.com');
-    const res = await api.post(`/api/purchase-order/decline/${id}`, { data: {} });
+    const res = await api.post(`/api/purchase-order/decline/${id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(422);
     await api.dispose();
   });
@@ -153,7 +153,7 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
 
   test('GUARD-PO-011: Director POST done to nonexistent id → 404', async () => {
     const api = await ctxFor('director.jkt@bmj.com'); // authorized; isolates findOrFail
-    const res = await api.post('/api/purchase-order/done/999999', { data: {} });
+    const res = await api.post('/api/purchase-order/done/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
@@ -166,7 +166,7 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
   // through the API alone.
   test('GUARD-PO-012: Director POST ready to nonexistent id → 404', async () => {
     const api = await ctxFor('director.jkt@bmj.com'); // authorized; isolates findOrFail
-    const res = await api.post('/api/purchase-order/ready/999999', { data: {} });
+    const res = await api.post('/api/purchase-order/ready/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
@@ -181,7 +181,7 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
     const id = await firstPurchaseOrderId();
     test.skip(!id, 'No purchase orders seeded — cannot reach the release guards on a real id');
     const api = await ctxFor('director.jkt@bmj.com'); // authorized; isolates the 400 guards
-    const res = await api.post(`/api/purchase-order/release/${id}`, { data: {} });
+    const res = await api.post(`/api/purchase-order/release/${id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(400);
     await api.dispose();
   });

@@ -51,7 +51,7 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
     // 2. Ensure Approved (create sets current_status=Approved when review passes).
     const got = await (await dir.get(`/api/quotation/${quot.slug}`)).json();
     if (got.data.current_status !== 'Approved') {
-      const ap = await dir.post(`/api/quotation/approve/${quot.slug}`, { data: { notes: 'approve' } });
+      const ap = await dir.post(`/api/quotation/approve/${quot.slug}`, { data: { notes: 'approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       expect(ap.status(), `approve: ${await ap.text()}`).toBe(200);
     }
 
@@ -65,7 +65,7 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
     expect(minted.poId).toBeTruthy();
 
     // 4. moveToPi.
-    const pi = await dir.post(`/api/purchase-order/moveToPi/${minted.poId}`, { data: { notes: 'move to pi' } });
+    const pi = await dir.post(`/api/purchase-order/moveToPi/${minted.poId}`, { data: { notes: 'move to pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(pi.status(), `moveToPi: ${await pi.text()}`).toBe(200);
 
     // Find the PI id (keyed off the PO).
@@ -83,11 +83,11 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
         ?? piList[0]?.id;
     }
     expect(dpTargetId, 'could not resolve PI id for dpPaid').toBeTruthy();
-    const dp = await dir.post(`/api/proforma-invoice/dpPaid/${dpTargetId}`, { data: {} });
+    const dp = await dir.post(`/api/proforma-invoice/dpPaid/${dpTargetId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(dp.status(), `dpPaid: ${await dp.text()}`).toBe(200);
 
     // 6. Ready (PO -> Ready). Service POs have no back order, so this passes directly.
-    const ready = await dir.post(`/api/purchase-order/ready/${minted.poId}`, { data: {} });
+    const ready = await dir.post(`/api/purchase-order/ready/${minted.poId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(ready.status(), `ready: ${await ready.text()}`).toBe(200);
 
     // 7. Release with the serviceOrder + poc + units payload -> mints the Work Order.
@@ -120,7 +120,7 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
     test.skip(!minted.woId, 'no WO minted');
     const dir = await apiContextFor(playwright, 'director.jkt@bmj.com');
 
-    const res = await dir.post(`/api/work-order/process/${minted.woId}`, { data: {} });
+    const res = await dir.post(`/api/work-order/process/${minted.woId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status(), `process: ${await res.text()}`).toBe(200);
 
     const wo = (await (await dir.get(`/api/work-order/${minted.woId}`)).json()).data;
@@ -143,7 +143,7 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
     test.skip(!minted.woId, 'no WO minted');
     const dir = await apiContextFor(playwright, 'director.jkt@bmj.com');
 
-    const res = await dir.post(`/api/work-order/done/${minted.woId}`, { data: {} });
+    const res = await dir.post(`/api/work-order/done/${minted.woId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status(), `done: ${await res.text()}`).toBe(200);
 
     const wo = (await (await dir.get(`/api/work-order/${minted.woId}`)).json()).data;
@@ -160,7 +160,7 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
   test('FV3-#9c: done() again is rejected (idempotency guard)', async ({ playwright }) => {
     test.skip(!minted.woId, 'no WO minted');
     const dir = await apiContextFor(playwright, 'director.jkt@bmj.com');
-    const res = await dir.post(`/api/work-order/done/${minted.woId}`, { data: {} });
+    const res = await dir.post(`/api/work-order/done/${minted.woId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(400);
     await dir.dispose();
   });
@@ -207,7 +207,7 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
 
     const got = await (await dir.get(`/api/quotation/${slug}`)).json();
     if (got.data.current_status !== 'Approved') {
-      await dir.post(`/api/quotation/approve/${slug}`, { data: { notes: 'approve' } });
+      await dir.post(`/api/quotation/approve/${slug}`, { data: { notes: 'approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     }
 
     const move = await dir.post(`/api/quotation/moveToPo/${slug}`, {

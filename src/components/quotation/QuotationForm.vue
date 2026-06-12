@@ -260,8 +260,8 @@
                     @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Total Price"
-                    v-model="sparepart.totalPrice" disabled>
+                  <input type="text" class="form-control mt-2" placeholder="Total Price"
+                    :value="formatCurrency(sparepart.totalPrice)" disabled>
                 </div>
               </div>
             </div>
@@ -365,7 +365,7 @@
                     @update:model-value="selectService(serviceIndex, service)" />
                 </div>
                 <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Total Price" v-model="service.totalPrice"
+                  <input type="text" class="form-control mt-2" placeholder="Total Price" :value="formatCurrency(service.totalPrice)"
                     disabled>
                 </div>
               </div>

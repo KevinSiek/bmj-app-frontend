@@ -17,16 +17,13 @@ Invoices, Work Orders, Delivery Orders, and Back Orders downstream.
 4. **Release** action creates Work Orders, Delivery Orders, and Back Orders.
 5. **Return** workflow allows partial item returns after completion.
 6. Director can decline POs.
-7. **Two PO numbers** (added Jun 9):
-   - `purchase_order_number` — the auto-generated number, now labelled **"No Internal
-     Request"** in the UI/PDF (format `PO/12/BMJ-MEGAH/JKT/1/VI/26`).
-   - `po_number` — the **real PO number**, entered by the user at `moveToPo`. It is
-     **required AND unique** (`moveToPo` validates `required|string|unique:purchase_orders,po_number`).
-     The Create-PO modal (`ModalNotes.vue`, `requirePoNumber` flag) collects it as "No PO"
-     alongside notes. PO + Delivery Order detail pages show BOTH numbers. Mapped as
-     `poNumber` in the PO/DO stores. Pre-Jun-9 POs have a null `po_number` (blank).
-8. **PDF creator name**: the PO PDF signature uses `created_by_name` (creating employee's
-   `fullname`) from the get() response.
+7. **Service role** can view and list POs (GET endpoints).
+8. **Two PO numbers**:
+   - `purchase_order_number` — the auto-generated internal request number, labelled **"No Internal Request"** in the UI/PDF (format `PO/12/BMJ-MEGAH/JKT/1/VI/26`).
+   - `po_number` — the **real PO number**, entered by the user at `moveToPo`. It is **required AND unique** per database constraint (`purchase_orders.po_number UNIQUE`). The `moveToPo` endpoint validates `required|string|unique:purchase_orders,po_number`. The Create-PO modal (`ModalNotes.vue`, `requirePoNumber` flag) collects it as "No PO" alongside notes. Both numbers appear on PO detail pages, Delivery Order detail, and in PDF exports. Mapped as `poNumber` in the PO/DO stores. Pre-implementation POs have a null `po_number` (blank).
+9. **PDF features**:
+   - Creator name: the PO PDF signature block uses `created_by_name` (the creating employee's fullname) from the get() response.
+   - Version stamp: PO PDFs include a version number for multi-version tracking.
 
 ## File Map
 
@@ -47,7 +44,8 @@ Invoices, Work Orders, Delivery Orders, and Back Orders downstream.
 - `returnPurchaseOrders` — POs with pending returns
 
 ### Key Mapping (`mapPurchaseOrder`)
-- `purchaseOrder.*` → PO number, date, type
+- `purchaseOrder.*` → PO number (both `purchaseOrderNumber` and `poNumber`), date, type
+- `purchaseOrder.createdByName` — creating employee's name (for PDF signature)
 - `proformaInvoice.*` → PI number, date, DP/full paid booleans
 - `customer.*` → company info
 - `price.*` → amount, discount, subtotal, ppn, grandTotal
@@ -73,6 +71,26 @@ Invoices, Work Orders, Delivery Orders, and Back Orders downstream.
 | `release(id, data)` | POST | `/api/purchase-order/release/{id}` |
 | `done(id)` | POST | `/api/purchase-order/done/{id}` |
 | `reject(id, data)` | POST | `/api/purchase-order/reject/{id}` |
+| `getAllReturn()` | GET | `/api/purchase-order/return` |
+
+## API Response Format
+
+GET `/api/purchase-order` and `/api/purchase-order/{id}` responses include:
+
+```json
+{
+  "id": "...",
+  "purchase_order_number": "PO/12/BMJ-MEGAH/JKT/1/VI/26",
+  "po_number": "PO-2024-001",
+  "created_by_name": "John Doe",
+  "purchase_order": {
+    "po_number": "PO-2024-001"
+  },
+  "...": "other fields"
+}
+```
+
+Delivery Order responses include `purchase_order.po_number` for PO number display.
 
 ## Track Component
 

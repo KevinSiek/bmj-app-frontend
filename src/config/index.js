@@ -111,6 +111,18 @@ const menuMapping = {
     name: 'Edit Spareparts',
     path: '/spareparts/:id/edit'
   },
+  sparepart_movement: {
+    name: 'Sparepart Movement',
+    path: '/sparepart-movement'
+  },
+  sparepart_movement_add: {
+    name: 'Add Sparepart Movement',
+    path: '/sparepart-movement/add'
+  },
+  sparepart_movement_detail: {
+    name: 'Detail Sparepart Movement',
+    path: '/sparepart-movement/:id'
+  },
   back_order: {
     name: 'Back Order',
     path: '/back-order'
@@ -126,6 +138,10 @@ const menuMapping = {
   borrow_add: {
     name: 'Add Borrow',
     path: '/borrow/add'
+  },
+  borrow_edit: {
+    name: 'Edit Borrow',
+    path: '/borrow/:id/edit'
   },
   borrow_detail: {
     name: 'Detail Borrow',
@@ -258,8 +274,17 @@ const common = {
     },
     borrow: {
       created: 'Created',
+      approved: 'Approved',
       borrowed: 'Borrowed',
       returned: 'Returned',
+      done: 'Done',
+      rejected: 'Rejected',
+      cancelled: 'Cancelled'
+    },
+    sparepart_movement: {
+      created: 'Created',
+      send: 'Send',
+      received: 'Received',
       cancelled: 'Cancelled'
     }
   },
@@ -311,7 +336,8 @@ const accessFeature = {
       'work_order',
       'delivery_order',
       'general',
-      'upload_data'
+      'upload_data',
+      'sparepart_movement'
     ]
   },
   marketing: {
@@ -319,7 +345,9 @@ const accessFeature = {
     name: 'Marketing',
     feature: [
       'quotation',
-      'purchase_order'
+      'purchase_order',
+      'spareparts',
+      'borrow'
     ]
   },
   'inventory admin': {
@@ -331,7 +359,8 @@ const accessFeature = {
       'back_order',
       'borrow',
       'stock_history',
-      'delivery_order'
+      'delivery_order',
+      'sparepart_movement'
     ]
   },
   'inventory purchase': {
@@ -342,7 +371,8 @@ const accessFeature = {
       'back_order',
       'borrow',
       'stock_history',
-      'purchase'
+      'purchase',
+      'sparepart_movement'
     ]
   },
   'head inventory': {
@@ -355,7 +385,8 @@ const accessFeature = {
       'borrow',
       'stock_history',
       'delivery_order',
-      'purchase'
+      'purchase',
+      'sparepart_movement'
     ]
   },
   finance: {
@@ -387,6 +418,7 @@ const api = {
   back_order: '/api/back-order',
   borrow: '/api/borrow',
   stock_movement: '/api/stock-movement',
+  sparepart_movement: '/api/sparepart-movement',
   invoice: '/api/invoice',
   sparepart: '/api/sparepart',
   work_order: '/api/work-order',

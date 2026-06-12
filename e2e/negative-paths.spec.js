@@ -37,7 +37,7 @@ test.describe('Negative Paths: Validation (422) and Not Found (404)', () => {
   ];
   for (const c of validationCases) {
     test(`${c.id}: POST ${c.name} with empty body → 422`, async () => {
-      const res = await api.post(c.path, { data: {} });
+      const res = await api.post(c.path, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       expect(res.status()).toBe(422);
       const body = await res.json();
       // Laravel validation responses carry an errors map.
@@ -106,7 +106,7 @@ test.describe('Negative Paths: Validation (422) and Not Found (404)', () => {
   });
 
   test('NEG-404-016: POST dpPaid on non-existent PI → 404', async () => {
-    const res = await api.post('/api/proforma-invoice/dpPaid/9999999', { data: {} });
+    const res = await api.post('/api/proforma-invoice/dpPaid/9999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
   });
 });

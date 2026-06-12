@@ -13,6 +13,7 @@ import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
 import MenuBorrow from '@/components/menu/MenuBorrow.vue'
 import MenuStockHistory from '@/components/menu/MenuStockHistory.vue'
+import MenuSparepartMovement from '@/components/menu/MenuSparepartMovement.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
@@ -35,6 +36,11 @@ const componentList = ref([
     name: 'Purchase',
     component: MenuPurchase,
     path: menuConfig.purchase.path
+  },
+  {
+    name: 'Stock Transfer',
+    component: MenuSparepartMovement,
+    path: menuConfig.sparepart_movement.path
   },
   {
     name: 'Back Order',

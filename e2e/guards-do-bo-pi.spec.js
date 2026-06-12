@@ -61,13 +61,13 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
 
   test('GUARD-HRE-001: Marketing POST delivery-order/process (inventory/director-only) → 403', async () => {
     const api = await ctxFor('citra.k@bmj.com'); // Marketing — forbidden by route middleware
-    const res = await api.post('/api/delivery-order/process/1', { data: {} });
+    const res = await api.post('/api/delivery-order/process/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-HRE-002: Unauthenticated POST delivery-order/process → 401', async () => {
-    const res = await anon.post('/api/delivery-order/process/1', { data: {} });
+    const res = await anon.post('/api/delivery-order/process/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(401);
   });
 
@@ -77,7 +77,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
     if (items.length === 0) {
       test.skip(true, 'No seeded delivery orders to exercise the authorized path');
     }
-    const res = await api.post(`/api/delivery-order/process/${items[0].id}`, { data: {} });
+    const res = await api.post(`/api/delivery-order/process/${items[0].id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     // Role IS authorized — outcome may be 200 (processed) or 400 (already Done), never 403.
     expect(res.status()).not.toBe(403);
     await api.dispose();
@@ -90,14 +90,14 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
     if (!done) {
       test.skip(true, "No seeded delivery order in 'Done' status to trigger the business-rule 400");
     }
-    const res = await api.post(`/api/delivery-order/process/${done.id}`, { data: {} });
+    const res = await api.post(`/api/delivery-order/process/${done.id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(400); // controller: current_status === 'Done' → HTTP_BAD_REQUEST
     await api.dispose();
   });
 
   test('GUARD-HRE-005: Inventory Admin POST delivery-order/process on nonexistent id → 404', async () => {
     const api = await ctxFor('eko.p@bmj.com'); // Inventory Admin — authorized
-    const res = await api.post('/api/delivery-order/process/999999', { data: {} });
+    const res = await api.post('/api/delivery-order/process/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
@@ -110,13 +110,13 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
 
   test('GUARD-HRE-006: Marketing POST back-order/process → 403', async () => {
     const api = await ctxFor('citra.k@bmj.com'); // Marketing — forbidden by route middleware
-    const res = await api.post('/api/back-order/process/1', { data: {} });
+    const res = await api.post('/api/back-order/process/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-HRE-007: Unauthenticated POST back-order/process → 401', async () => {
-    const res = await anon.post('/api/back-order/process/1', { data: {} });
+    const res = await anon.post('/api/back-order/process/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(401);
   });
 
@@ -126,7 +126,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
     if (items.length === 0) {
       test.skip(true, 'No seeded back orders to exercise the authorized path');
     }
-    const res = await api.post(`/api/back-order/process/${items[0].id}`, { data: {} });
+    const res = await api.post(`/api/back-order/process/${items[0].id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     // Role IS authorized — outcome may be 200/400, never 403.
     expect(res.status()).not.toBe(403);
     await api.dispose();
@@ -139,14 +139,14 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
     if (!stale) {
       test.skip(true, "No seeded back order in 'Ready' or 'Rejected' status to trigger the 400");
     }
-    const res = await api.post(`/api/back-order/process/${stale.id}`, { data: {} });
+    const res = await api.post(`/api/back-order/process/${stale.id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(400); // controller: current_status in [Ready, Rejected] → HTTP_BAD_REQUEST
     await api.dispose();
   });
 
   test('GUARD-HRE-010: Inventory Purchase POST back-order/process on nonexistent id → 404', async () => {
     const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized
-    const res = await api.post('/api/back-order/process/999999', { data: {} });
+    const res = await api.post('/api/back-order/process/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
@@ -157,13 +157,13 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
 
   test('GUARD-HRE-011: Service POST proforma-invoice/fullPaid (finance/director-only) → 403', async () => {
     const api = await ctxFor('hadi.s@bmj.com'); // Service — forbidden by route middleware
-    const res = await api.post('/api/proforma-invoice/fullPaid/1', { data: {} });
+    const res = await api.post('/api/proforma-invoice/fullPaid/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-HRE-012: Unauthenticated POST proforma-invoice/fullPaid → 401', async () => {
-    const res = await anon.post('/api/proforma-invoice/fullPaid/1', { data: {} });
+    const res = await anon.post('/api/proforma-invoice/fullPaid/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(401);
   });
 
@@ -175,7 +175,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
     let pos = await listItems(dir, '/api/purchase-order');
     const poId = pos.length ? pos[0].id : (await provisionQuotationAndPo(dir)).poId;
     await dir.dispose();
-    const res = await api.post(`/api/proforma-invoice/fullPaid/${poId}`, { data: {} });
+    const res = await api.post(`/api/proforma-invoice/fullPaid/${poId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     // Role IS authorized — outcome may be 200/400/404, never 403.
     expect(res.status()).not.toBe(403);
     await api.dispose();
@@ -191,14 +191,14 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
     if (!rejected) {
       test.skip(true, "No seeded purchase order in 'Rejected' status to trigger the fullPaid 400");
     }
-    const res = await api.post(`/api/proforma-invoice/fullPaid/${rejected.id}`, { data: {} });
+    const res = await api.post(`/api/proforma-invoice/fullPaid/${rejected.id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(400); // controller: PO current_status === 'Rejected' → HTTP_BAD_REQUEST
     await api.dispose();
   });
 
   test('GUARD-HRE-015: Finance POST proforma-invoice/fullPaid on nonexistent po_id → 404', async () => {
     const api = await ctxFor('fajar.n@bmj.com'); // Finance — authorized
-    const res = await api.post('/api/proforma-invoice/fullPaid/999999', { data: {} });
+    const res = await api.post('/api/proforma-invoice/fullPaid/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });

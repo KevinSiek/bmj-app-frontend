@@ -2,7 +2,7 @@
   <div class="contain">
     <div class="upper">
       <div class="left">
-        <SearchBar @searched="handleUpdateSearch" />
+        <SearchAutocomplete @searched="handleUpdateSearch" @selected="handleAutocompleteSelect" />
         <select class="form-select filter" v-model="branch" @change="applyFilter('branch', branch)">
           <option value="">All Branches</option>
           <option v-for="(name, key) in common.branch" :key="key" :value="name">
@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="lower paginate shadow">
-      <SelectDate />
+      <DateRangeFilter />
       <div v-if="isLoading">
         <div class="loading-text">
           Loading...
@@ -54,7 +54,19 @@
                 <td :class="movement.delta >= 0 ? 'delta-in' : 'delta-out'">
                   {{ movement.delta > 0 ? `+${movement.delta}` : movement.delta }}
                 </td>
-                <td>{{ movement.sourceType }}{{ movement.sourceId ? ` #${movement.sourceId}` : '' }}</td>
+                <td>
+                  {{ movement.sourceType }}
+                  <router-link
+                    v-if="movement.sourceId && getSourceRoute(movement.sourceType, movement.sourceId)"
+                    :to="getSourceRoute(movement.sourceType, movement.sourceId)"
+                    class="source-link"
+                  >
+                    #{{ movement.sourceId }}
+                  </router-link>
+                  <span v-else-if="movement.sourceId">
+                    #{{ movement.sourceId }}
+                  </span>
+                </td>
                 <td>{{ movement.reason || '-' }}</td>
                 <td>{{ movement.branch.name || '-' }}</td>
                 <td>{{ movement.employee.name || '-' }}</td>
@@ -69,9 +81,9 @@
 </template>
 
 <script setup>
-import { common } from '@/config'
-import SelectDate from '@/components/SelectDate.vue'
-import SearchBar from '@/components/SearchBar.vue'
+import { common, menuMapping } from '@/config'
+import DateRangeFilter from '@/components/DateRangeFilter.vue'
+import SearchAutocomplete from '@/components/SearchAutocomplete.vue'
 import Pagination from '@/components/Pagination.vue'
 import RefreshButton from '@/components/RefreshButton.vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -96,6 +108,23 @@ const sourceType = ref(route.query.source_type || '')
 
 const formatDate = (value) => (value ? new Date(value).toLocaleString() : '-')
 
+const getSourceRoute = (type, id) => {
+  if (!id) return null
+  const stringId = id.toString()
+  switch (type) {
+    case 'PurchaseOrder': return { name: menuMapping.purchase_order_detail.name, params: { id: stringId } }
+    case 'Buy': return { name: menuMapping.purchase_detail.name, params: { id: stringId } }
+    case 'BackOrder': return { name: menuMapping.back_order_detail.name, params: { id: stringId } }
+    case 'Return': return { name: menuMapping.return_detail.name, params: { id: stringId } }
+    case 'Borrow': return { name: menuMapping.borrow_detail.name, params: { id: stringId } }
+    case 'ManualEdit':
+    case 'Import':
+      return { name: menuMapping.spareparts_detail.name, params: { id: stringId } }
+    default:
+      return null
+  }
+}
+
 onBeforeMount(() => {
   isLoading.value = true
   stockMovementStore.$resetStockMovements()
@@ -119,8 +148,8 @@ watch(() => route.query, (before, after) => {
 })
 
 const fetchStockMovements = async () => {
-  const { page, search, branch: branchQuery, source_type, month, year } = route.query
-  stockMovementStore.getStockMovements({ page, search, branch: branchQuery, source_type, month, year })
+  const { page, search, branch: branchQuery, source_type, month, year, filter_type, filter_id, start_date, end_date } = route.query
+  stockMovementStore.getStockMovements({ page, search, branch: branchQuery, source_type, month, year, filter_type, filter_id, start_date, end_date })
 }
 
 const applyFilter = (key, value) => {
@@ -128,11 +157,22 @@ const applyFilter = (key, value) => {
 }
 
 const searchStockMovement = (search) => {
-  updateQuery(router, route, { ...route.query, page: 1, search })
+  // Clear specific autocomplete filters when doing a text search
+  const query = { ...route.query, page: 1, search }
+  delete query.filter_type
+  delete query.filter_id
+  updateQuery(router, route, query)
 }
 
 const handleUpdateSearch = (search) => {
-  debounce(() => searchStockMovement(search), 1000, 'search-stock-movement')
+  searchStockMovement(search)
+}
+
+const handleAutocompleteSelect = ({ filter_type, filter_id }) => {
+  // Use specific autocomplete filter instead of text search
+  const query = { ...route.query, page: 1, filter_type, filter_id }
+  delete query.search
+  updateQuery(router, route, query)
 }
 </script>
 
@@ -159,6 +199,7 @@ $secondary-color: rgb(98, 98, 98);
 }
 
 .list {
+  padding: 0 2vw;
   .table {
     font-size: 14px;
 
@@ -179,6 +220,15 @@ $secondary-color: rgb(98, 98, 98);
     .delta-out {
       color: #c0392b;
       font-weight: 600;
+    }
+
+    .source-link {
+      color: #0d6efd;
+      text-decoration: none;
+      font-weight: 500;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }

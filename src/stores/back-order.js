@@ -98,6 +98,10 @@ export const useBackOrderStore = defineStore('back-order', () => {
     const response = await backOrderApi.processBackOrder(id)
   }
 
+  async function analyzeBackOrder(id) {
+    return await backOrderApi.analyzeBackOrder(id)
+  }
+
   async function $resetBackOrder() {
     backOrder.value = mapBackOrder()
   }
@@ -117,6 +121,7 @@ export const useBackOrderStore = defineStore('back-order', () => {
     updateBackOrder,
     getBackOrder,
     processBackOrder,
+    analyzeBackOrder,
     $resetBackOrder,
     $resetBackOrders
   }

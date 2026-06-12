@@ -13,6 +13,7 @@ pricing: sell price and buy price, plus seller-specific pricing.
 | `views/menu/SparepartsDetailPage.vue` | Sparepart detail with stock per branch |
 | `views/menu/SparepartsEditPage.vue` | Edit sparepart |
 | `components/SparepartSelector.vue` | ★ Search + select sparepart (used in Quotation/Purchase forms) |
+| `components/CurrencyInput.vue` | Realtime Rp currency formatting for price fields |
 | `stores/sparepart.js` | Pinia store |
 | `api/sparepart.js` | API wrappers |
 
@@ -22,12 +23,16 @@ pricing: sell price and buy price, plus seller-specific pricing.
 3. Stock is **per-branch** via `branch_spareparts` pivot table
 4. `DetailSparepart` records track seller-specific prices
 5. Bulk upload via Excel (see FEATURE_UPLOAD.md)
-6. **Role-based costing visibility** (Jun 9): Marketing may browse the sparepart list +
-   detail but sees ONLY number/name/stock — `SparepartController` nulls `unit_price_buy`,
-   `unit_price_sell`, and empties `unit_price_seller` for role Marketing (frontend also hides
-   the Selling Price block via `v-if="!isRoleMarketing"`). Inventory Admin/Purchase have
-   `unit_price_sell` hidden. (Fixed a latent bug: the old Inventory hide used a camelCase key
-   that didn't match the snake_case response, so it never took effect — now corrected.)
+6. **Role-based costing visibility**: Marketing can view the sparepart list and detail
+   pages but sees ONLY number, name, and stock quantities. All pricing information
+   (sell price, buy price, and seller data) is hidden from Marketing via both backend
+   (`SparepartController` nulls these fields) and frontend (`v-if` guards). Inventory
+   Admin and Purchase roles have `unit_price_sell` hidden. (Fixed a latent bug: the old
+   Inventory hide used a camelCase key that didn't match the snake_case response, so it
+   never took effect — now corrected.)
+7. **Realtime currency formatting**: Price input fields use `CurrencyInput.vue` component
+   to display Rp (Indonesian Rupiah) currency formatting in real-time. The component
+   emits the raw numeric value to parent forms while displaying formatted text to users.
 
 ## Data Model
 ```
@@ -46,6 +51,14 @@ Reusable search component used in QuotationForm and PurchaseAdd pages:
 - Debounced search input
 - Displays sparepart name, number, stock per branch, sell price, seller prices
 - Emits selected sparepart to parent form
+- Price display respects role-based visibility (Marketing sees no prices)
+
+## CurrencyInput Component
+Shared component for all price inputs across the application:
+- Formats input value as Rp currency in real-time
+- Emits raw numeric value to parent form
+- Used in sparepart add/edit, quotation detail, purchase forms, and other price fields
+- Improves UX with visual thousand separators and currency symbol
 
 ## API Endpoints
 | Function | Method | Endpoint |

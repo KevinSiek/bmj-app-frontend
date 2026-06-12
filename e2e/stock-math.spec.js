@@ -75,18 +75,18 @@ test.describe('Stock Math and Invariants API Tests', () => {
     const quotationSlug = body.data.slug;
     const quotationId = body.data.id;
 
-    await apiContext.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve' } });
+    await apiContext.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'Approve', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
-    response = await apiContext.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO' } });
+    response = await apiContext.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'Move to PO', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     body = await response.json();
     expect(response.status()).toBe(200);
     const poId = body.data.id;
 
     // Move to PI (required for ready)
-    await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Create PI' } });
+    await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Create PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
     // Set Ready
-    const readyRes = await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready SP' } });
+    const readyRes = await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready SP', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(readyRes.status()).toBe(200);
 
     return { poId, quotationSlug, quotationId };
@@ -147,10 +147,10 @@ test.describe('Stock Math and Invariants API Tests', () => {
       const buyId = body.data.id;
 
       // Approve Buy
-      await apiContext.post(`/api/buy/approve/${buyId}`, { data: { notes: 'Approve Buy' } });
+      await apiContext.post(`/api/buy/approve/${buyId}`, { data: { notes: 'Approve Buy', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
       // Mark Done (Receive) - increments stock
-      response = await apiContext.post(`/api/buy/done/${buyId}`, { data: { notes: 'Received' } });
+      response = await apiContext.post(`/api/buy/done/${buyId}`, { data: { notes: 'Received', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       expect(response.status()).toBe(200);
 
       // Assert Stock Increased
@@ -183,7 +183,7 @@ test.describe('Stock Math and Invariants API Tests', () => {
       expect(stockAfterRelease).toBe(initialStock - qty);
 
       // 2. Mark PO as Done (so we can trigger return)
-      await apiContext.post(`/api/purchase-order/done/${poId}`, { data: { notes: 'Done' } });
+      await apiContext.post(`/api/purchase-order/done/${poId}`, { data: { notes: 'Done', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
       // 3. Return Quotation (POST /api/quotation/return/{id})
       const returnRes = await apiContext.post(`/api/quotation/return/${poId}`, { 

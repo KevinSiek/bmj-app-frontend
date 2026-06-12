@@ -139,9 +139,7 @@ test.describe('Quotation Extended API Tests (Update, Versioning, Return)', () =>
     test('QUOT-EXT-003: Request Change (needChange) flips status to Change', async () => {
       expect(v2Slug).toBeDefined();
       const response = await apiContext.post(`/api/quotation/needChange/${v2Slug}`, {
-        data: {
-          notes: 'Please revise the quantity.'
-        }
+        data: { notes: 'Please revise the quantity.', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` }
       });
       expect(response.status()).toBe(200);
 

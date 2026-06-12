@@ -67,7 +67,7 @@ test.describe('Buy Extended API Tests (Reject, needChange)', () => {
     test('BUY-EXT-002: Reject Buy', async () => {
       expect(buyId).toBeDefined();
       const response = await apiContext.post(`/api/buy/reject/${buyId}`, {
-        data: { notes: 'Rejected due to budget' }
+        data: { notes: 'Rejected due to budget', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` }
       });
       expect(response.status()).toBe(200);
 
@@ -106,7 +106,7 @@ test.describe('Buy Extended API Tests (Reject, needChange)', () => {
     test('BUY-EXT-004: needChange Buy', async () => {
       expect(buyId).toBeDefined();
       const response = await apiContext.post(`/api/buy/needChange/${buyId}`, {
-        data: { notes: 'Please review the quantity' }
+        data: { notes: 'Please review the quantity', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` }
       });
       expect(response.status()).toBe(200);
     });

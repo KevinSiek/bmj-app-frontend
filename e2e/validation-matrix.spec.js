@@ -208,8 +208,8 @@ test.describe('Per-Field Validation Matrix', () => {
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }],
       },
     })).json()).data;
-    await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a' } });
-    const res = await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: {} });
+    await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const res = await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(422);
   });
 });

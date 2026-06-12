@@ -9,6 +9,7 @@ export const useModalStore = defineStore('modal', () => {
   const type = ref('')
 	const messages = ref('')
   const notes = ref('')
+  const noteLabel = ref('Notes')
   // PO number field, only shown in the notes modal when requirePoNumber is true (moveToPo).
   const poNumber = ref('')
   const requirePoNumber = ref(false)
@@ -32,7 +33,7 @@ export const useModalStore = defineStore('modal', () => {
     action.value = cb
   }
 
-  const openNotesModal = (messageButton, cb, { requirePo = false } = {}) => {
+  const openNotesModal = (messageButton, cb, { requirePo = false, label = 'Notes' } = {}) => {
     isShowMessage.value = false
     isShowConfirmation.value = false
     isShowNotes.value = true
@@ -40,6 +41,7 @@ export const useModalStore = defineStore('modal', () => {
     notes.value = ''
     poNumber.value = ''
     requirePoNumber.value = requirePo
+    noteLabel.value = label
     action.value = cb
   }
 
@@ -53,6 +55,7 @@ export const useModalStore = defineStore('modal', () => {
     type.value = ''
     poNumber.value = ''
     requirePoNumber.value = false
+    noteLabel.value = 'Notes'
   }
 
   return {
@@ -64,6 +67,7 @@ export const useModalStore = defineStore('modal', () => {
     messages,
     action,
     notes,
+    noteLabel,
     poNumber,
     requirePoNumber,
     openConfirmationModal,

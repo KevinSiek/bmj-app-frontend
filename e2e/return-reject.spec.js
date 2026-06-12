@@ -43,15 +43,15 @@ test.describe('Quotation Return — Decline Flow', () => {
     });
     expect(res.status()).toBe(201);
     const quotationSlug = (await res.json()).data.slug;
-    await api.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'a' } });
-    res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'po' } });
+    await api.post(`/api/quotation/approve/${quotationSlug}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'po', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     const poId = (await res.json()).data.id;
-    await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi' } });
-    await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy' } });
+    await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     await api.post(`/api/purchase-order/release/${poId}`, {
       data: { deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'C', shipMode: 'Land', orderType: 'N' }, notes: 'r' },
     });
-    await api.post(`/api/purchase-order/done/${poId}`, { data: { notes: 'done' } });
+    await api.post(`/api/purchase-order/done/${poId}`, { data: { notes: 'done', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     return { quotationSlug, poId };
   }
 

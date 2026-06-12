@@ -77,12 +77,12 @@
           </div> -->
           <div class="input form-group col-12">
             <label for="">Sub Total</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.subTotal" placeholder="Sub Total"
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.subTotal)" placeholder="Sub Total"
               disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Grand Total</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.grandTotal" placeholder="Grand Total"
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.grandTotal)" placeholder="Grand Total"
               disabled>
           </div>
         </div>
@@ -105,7 +105,7 @@
           </div> -->
           <div class="input form-group col-12">
             <label for="">Discount</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.discount" placeholder="Discount"
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.purchaseOrder.discount)" placeholder="Discount"
               disabled>
           </div>
         </div>

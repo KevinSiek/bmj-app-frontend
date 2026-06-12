@@ -27,6 +27,7 @@ Created when a Purchase Order is **released**.
 3. Has `type` field matching the quotation type (Sparepart/Service)
 4. NPWP field for tax purposes
 5. Process action transitions status
+6. Detail view displays both **Internal Request** (IR) number and **PO number** from the linked Purchase Order
 
 ## API Endpoints
 | Function | Method | Endpoint |
@@ -35,3 +36,18 @@ Created when a Purchase Order is **released**.
 | `getDeliveryOrderById(id)` | GET | `/api/delivery-order/{id}` |
 | `updateDeliveryOrder(id, data)` | PUT | `/api/delivery-order/{id}` |
 | `processDeliveryOrder(id, data)` | POST | `/api/delivery-order/process/{id}` |
+
+## Print Modes
+The Delivery Order detail page provides two distinct print options:
+- **Print Delivery Order** — generates PDF with "Delivery Order" title (formal document reference)
+- **Print Delivery Note** — generates PDF with "Delivery Note" title (logistics/fulfillment context)
+
+Both modes use the same underlying PDF template (`utils/pdf/delivery-note.js`) and include the same data; they differ only in the document title stamp and version stamp ("Version N") applied to the PDF.
+
+## Response Data
+The API response for Delivery Order includes:
+- Standard delivery order fields (ship_mode, order_type, delivery_date, etc.)
+- Linked Purchase Order data including:
+  - `purchase_order.po_number` — user-entered PO number (unique)
+  - `purchase_order.purchase_order_number` — internal request (IR) number
+  - `created_by_name` — creator name

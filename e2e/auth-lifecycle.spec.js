@@ -104,7 +104,7 @@ test.describe('Auth Lifecycle', () => {
     await api.dispose();
 
     // Director resets → a fresh temp password is issued and works.
-    const reset = await director.post(`/api/employee/reset-password/${emp.slug}`, { data: {} });
+    const reset = await director.post(`/api/employee/reset-password/${emp.slug}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(reset.status()).toBe(200);
     const body = await reset.json();
     const newTemp = body.data?.temp_password ?? body.temp_password;

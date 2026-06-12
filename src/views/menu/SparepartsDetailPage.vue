@@ -36,12 +36,12 @@
             </div>
             <div v-if="isRoleDirector || isRoleFinance" class="input form-group col-12">
               <label for="">Buy Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceBuy" placeholder="Buy Price"
+              <input type="text" class="form-control mt-2" :value="formatCurrency(sparepart.unitPriceBuy)" placeholder="Buy Price"
                 disabled>
             </div>
-            <div v-if="!isRoleMarketing" class="input form-group col-12">
+            <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceSell" placeholder="Selling Price"
+              <input type="text" class="form-control mt-2" :value="formatCurrency(sparepart.unitPriceSell)" placeholder="Selling Price"
                 disabled>
             </div>
           </div>
@@ -57,7 +57,7 @@
             </div>
             <div class="input form-group col-3">
               <label for="">Puchase Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price" disabled>
+              <input type="text" class="form-control mt-2" :value="formatCurrency(list.price)" placeholder="Purchase Price" disabled>
             </div>
             <div class="input form-group col-3">
               <label for="">Quantity</label><br>
@@ -88,6 +88,7 @@ import { onBeforeMount, onMounted, ref } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { common } from '@/config'
 import { useRole } from '@/composeable/useRole'
+import { formatCurrency } from '@/utils/form-util'
 
 const route = useRoute()
 const router = useRouter()
@@ -97,7 +98,7 @@ const isProcessing = ref(false)
 
 const { sparepart } = storeToRefs(sparepartStore)
 
-const { isRoleDirector, isRoleFinance, isRoleMarketing } = useRole()
+const { isRoleDirector, isRoleFinance } = useRole()
 
 onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()

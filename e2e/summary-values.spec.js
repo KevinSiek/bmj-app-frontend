@@ -82,8 +82,8 @@ test.describe('Role Summary — Value Assertions', () => {
         spareparts: [{ sparepartId: sp.id, quantity: 1, unitPriceSell: 50000 }],
       },
     })).json()).data;
-    await director.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a' } });
-    const moved = await director.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po' } });
+    await director.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const moved = await director.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(moved.status()).toBe(200);
 
     const after = (await (await inv.get('/api/summary/inventory')).json()).data.purchase_order.total;
