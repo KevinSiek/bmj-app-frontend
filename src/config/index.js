@@ -292,6 +292,16 @@ const common = {
   },
 }
 
+const groupedFeature = {
+  sparepart: {
+    label: 'Spareparts',
+    key: 'spareparts',
+    feature: [
+      'spareparts'
+    ]
+  }
+}
+
 const accessFeature = {
   director: {
     path: '/director',
@@ -302,7 +312,7 @@ const accessFeature = {
       'purchase_order',
       'proforma_invoice',
       'invoice',
-      'spareparts',
+      groupedFeature.sparepart,
       'back_order',
       'borrow',
       'stock_history',
@@ -319,7 +329,8 @@ const accessFeature = {
     name: 'Marketing',
     feature: [
       'quotation',
-      'purchase_order'
+      'purchase_order',
+      groupedFeature.sparepart,
     ]
   },
   'inventory admin': {
@@ -327,7 +338,7 @@ const accessFeature = {
     name: 'Inventory Admin',
     feature: [
       'purchase_order',
-      'spareparts',
+      groupedFeature.sparepart,
       'back_order',
       'borrow',
       'stock_history',
@@ -338,7 +349,7 @@ const accessFeature = {
     path: '/inventory-purchase',
     name: 'Inventory Purchase',
     feature: [
-      'spareparts',
+      groupedFeature.sparepart,
       'back_order',
       'borrow',
       'stock_history',

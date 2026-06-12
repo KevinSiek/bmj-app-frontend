@@ -76,6 +76,16 @@
               placeholder="Term of Payment" disabled>
           </div> -->
           <div class="input form-group col-12">
+            <label for="">Invoice Type</label><br>
+            <input type="text" class="form-control mt-2" v-model="invoice.invoice.type"
+              placeholder="Invoice Type Not Set" disabled>
+          </div>
+          <div class="input form-group col-12">
+            <label for="">Down Payment (%)</label><br>
+            <input type="text" class="form-control mt-2" v-model="invoice.invoice.downPayment"
+              placeholder="Down Payment" disabled>
+          </div>
+          <div class="input form-group col-12">
             <label for="">Sub Total</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.invoice.subTotal" placeholder="Sub Total"
               disabled>
@@ -202,6 +212,10 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
+      <button v-if="isShowDPInvoice" type="button" class="btn btn-dp" @click="setDpInvoiceConfirmation"
+        :disabled="isProcessing">DP Invoice</button>
+      <button v-if="isInvoiceTypeNotSet" type="button" class="btn btn-final" @click="setFinalInvoiceConfirmation"
+        :disabled="isProcessing">Final Invoice</button>
       <button type="button" class="btn btn-process" @click="openDownloadModal">Download</button>
     </div>
   </div>
@@ -239,23 +253,33 @@
 import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoice'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref, computed } from 'vue'
 import { useTrackStore } from '@/stores/track'
 import { createPdf } from '@/utils/pdf/invoice'
 import { formatCurrency } from '@/utils/form-util'
+import { useModalStore } from '@/stores/modal'
 
 const route = useRoute()
 const router = useRouter()
 const invoiceStore = useInvoiceStore()
 const trackStore = useTrackStore()
 const generalStore = useGeneralStore()
+const modalStore = useModalStore()
 
 const { invoice } = storeToRefs(invoiceStore)
 const { ppn } = storeToRefs(generalStore)
 
+const isProcessing = ref(false)
 const isShowDownloadModal = ref(false)
 const termOfPayment = ref('')
 const paymentDue = ref('')
+
+const isInvoiceTypeNotSet = computed(() => invoice.value.invoice.invoiceNumber != '' && invoice.value.invoice.type === '')
+const isShowDPInvoice = computed(() =>
+  isInvoiceTypeNotSet.value ||
+  (invoice.value.invoice.type === 'DP' &&
+    invoice.value.invoice.version < 3)
+)
 
 onBeforeMount(() => {
   if (!invoice.value) invoiceStore.$resetInvoice()
@@ -274,6 +298,38 @@ const closeDownloadModal = () => {
 
 const back = () => {
   router.back()
+}
+
+const setDpInvoiceConfirmation = () => {
+  modalStore.openConfirmationModal('to create DP Invoice ?', `DP Invoice Created`, setDpInvoice)
+}
+
+const setFinalInvoiceConfirmation = () => {
+  modalStore.openConfirmationModal('to create Final Invoice ?', `Final Invoice Created`, setFinalInvoice)
+}
+
+const setDpInvoice = async () => {
+  if (isProcessing.value) return
+  try {
+    isProcessing.value = true
+    await invoiceStore.setInvoiceType(route.params.id, { type: 'DP' })
+  } catch (error) {
+    throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
+  }
+}
+
+const setFinalInvoice = async () => {
+  if (isProcessing.value) return
+  try {
+    isProcessing.value = true
+    await invoiceStore.setInvoiceType(route.params.id, { type: 'Final' })
+  } catch (error) {
+    throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
+  }
 }
 const download = () => {
   createPdf({ termOfPayment: termOfPayment.value, paymentDue: paymentDue.value, ...invoice.value })
@@ -334,6 +390,11 @@ $secondary-color: rgb(98, 98, 98);
   margin: 2% 4%;
   justify-content: space-between;
 
+  .right {
+    display: flex;
+    gap: 10px;
+  }
+
   .btn {
     padding: 1.5vh 3vw 1.5vh 3vw;
     font-weight: 500;
@@ -344,6 +405,14 @@ $secondary-color: rgb(98, 98, 98);
 
   .btn-edit {
     background-color: $secondary-color;
+  }
+
+  .btn-dp {
+    background-color: #0d6efd;
+  }
+
+  .btn-final {
+    background-color: #198754;
   }
 
   .btn-process {

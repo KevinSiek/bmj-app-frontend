@@ -23,9 +23,12 @@ export const useInvoiceStore = defineStore('invoice', () => {
       invoice: {
         invoiceNumber: data?.invoice?.invoice_number || '',
         date: data?.invoice?.date || '',
+        type: data?.invoice?.type || '',
         termOfPayment: data?.invoice?.term_of_payment || '',
-        subTotal: data?.invoice?.subtotal || '',
-        grandTotal: data?.invoice?.grand_total || ''
+        subTotal: Math.ceil(data?.invoice?.subtotal) || 0,
+        grandTotal: Math.ceil(data?.invoice?.grand_total) || 0,
+        version: data?.invoice?.version || 0,
+        downPayment: data?.invoice?.down_payment || 0
       },
       customer: {
         companyName: data?.customer?.company_name || '',
@@ -68,7 +71,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     // Group by invoice number
     const grouped = {}
     data.data.forEach(item => {
-      const key = item.invoice.invoice_number
+      const key = item.purchase_order.purchase_order_number
       if (!grouped[key]) {
         grouped[key] = {
           invoiceNumber: key,
@@ -105,6 +108,10 @@ export const useInvoiceStore = defineStore('invoice', () => {
     await invoiceApi.deleteInvoice(id)
   }
 
+  async function setInvoiceType(id, type) {
+    await invoiceApi.setInvoiceType(id, type)
+  }
+
   async function $resetInvoice() {
     invoice.value = mapInvoice()
   }
@@ -123,6 +130,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
     setInvoice,
     updateInvoice,
     deleteInvoice,
+    setInvoiceType,
     addInvoice,
     $resetInvoice,
     $resetInvoices

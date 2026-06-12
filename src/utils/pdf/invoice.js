@@ -214,6 +214,20 @@ const createPdf = async (data) => {
   }
 
   const type = purchaseOrder.purchaseOrderType === common.type.sparepart ? 'SPAREPART' : 'SERVICE'
+  const invoiceType = invoice.type
+
+  const dp = invoice.downPayment || 0
+  const grandTotalTypeDp = Math.ceil(price.subtotal - price.discount)
+  const subtotalTypeDp = invoice.type === 'DP' ? grandTotalTypeDp*dp/100 : grandTotalTypeDp*(100-dp)/100
+  const ppnTypeDp = Math.ceil(subtotalTypeDp * 0.11)
+  const grandTotalTypeDpWithPpn = subtotalTypeDp + ppnTypeDp
+
+  const totalDP = [
+    [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(grandTotalTypeDp), alignment: 'right', bold: true }],
+    [{ text: invoice.type === 'DP' ? 'Subtotal Termin 1' : 'Subtotal Termin 2', bold: true, margin: [0, 20, 0, 0] }, { text: formatCurrency(subtotalTypeDp), alignment: 'right', bold: true, margin: [0, 20, 0, 0] }],
+    [{ text: 'PPN 11%', bold: true }, { text: formatCurrency(ppnTypeDp), alignment: 'right', bold: true }],
+    [{ text: invoiceType === 'DP' ? 'Grand Total Termin 1' :'Total Termin 2', bold: true }, { text: formatCurrency(grandTotalTypeDpWithPpn), alignment: 'right', bold: true }]
+  ]
 
   const docDefinition = {
     header: {
@@ -261,7 +275,7 @@ const createPdf = async (data) => {
           body: [
             [
               '',
-              { text: 'Balance Payment', bold: true, margin: [55, 0, 0, 0], italics: true },
+              { text: invoice.type === 'DP' ? 'Termin 1' : invoice.type === 'DP2' ? 'Termin 2' : 'Balance Payment', bold: true, margin: [55, 0, 0, 0], italics: true },
               ''
             ],
             [
@@ -291,19 +305,24 @@ const createPdf = async (data) => {
           body: [
             ['SUB TOTAL', { text: formatCurrency(price.subtotal), alignment: 'right' }],
             ['DISC', { text: formatCurrency(price.discount), alignment: 'right' }],
-            ['PPN 11%', { text: formatCurrency(price.ppn), alignment: 'right' }],
-            [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(price.grandTotal), alignment: 'right', bold: true }]
+            ...(invoice.type === 'Final' ? [
+              ['PPN 11%', { text: formatCurrency(price.ppn), alignment: 'right' }],
+              [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(price.grandTotal), alignment: 'right', bold: true }]
+            ] : totalDP)
           ]
         },
         layout: {
-          hLineWidth: (i, node) => i === 3 ? 1 : 0,
+          hLineWidth: (i, node) => {
+            if (invoice.type === 'Final') return i === 3 ? 1 : 0
+            return i === 2 ? 1 : 0
+          },
           vLineWidth: () => 0,
           paddingTop: () => 3,
           paddingBottom: () => 3,
           paddingLeft: () => 3,
           paddingRight: () => 3
         },
-        margin: [250, 200, 30, 5],
+        margin: [250, 180, 30, 5],
       },
 
       // // Signature rows

@@ -71,11 +71,15 @@ const deleteInvoice = (id) => {
   return httpApi.deleteDataViaApi(`${api.invoice}/${id}`)
 }
 
+const setInvoiceType = (id, type) => {
+  return httpApi.postDataViaApi(`${api.invoice}/setType/${id}`, type)
+}
 
 export default {
 	getAllInvoice,
   addInvoice,
   getInvoiceById,
   updateInvoice,
-  deleteInvoice
+  deleteInvoice,
+  setInvoiceType
 }
