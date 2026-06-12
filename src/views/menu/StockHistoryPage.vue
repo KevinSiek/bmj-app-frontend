@@ -56,11 +56,8 @@
                 </td>
                 <td>
                   {{ movement.sourceType }}
-                  <router-link
-                    v-if="movement.sourceId && getSourceRoute(movement.sourceType, movement.sourceId)"
-                    :to="getSourceRoute(movement.sourceType, movement.sourceId)"
-                    class="source-link"
-                  >
+                  <router-link v-if="movement.sourceId && getSourceRoute(movement.sourceType, movement.sourceId)"
+                    :to="getSourceRoute(movement.sourceType, movement.sourceId)" class="source-link">
                     #{{ movement.sourceId }}
                   </router-link>
                   <span v-else-if="movement.sourceId">
@@ -200,6 +197,7 @@ $secondary-color: rgb(98, 98, 98);
 
 .list {
   padding: 0 2vw;
+
   .table {
     font-size: 14px;
 
@@ -226,6 +224,7 @@ $secondary-color: rgb(98, 98, 98);
       color: #0d6efd;
       text-decoration: none;
       font-weight: 500;
+
       &:hover {
         text-decoration: underline;
       }

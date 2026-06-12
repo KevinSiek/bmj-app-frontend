@@ -56,7 +56,11 @@ export const useBorrowStore = defineStore('borrow', () => {
     return {
       sparepartId: data?.sparepart_id || data?.id || '',
       sparepartNumber: data?.sparepart_number || '',
-      sparepartName: data?.sparepart_name || ''
+      sparepartName: data?.sparepart_name || '',
+      totalUnit: (data?.total_unit || Object.values(common.branch)).map(branch => ({
+        name: branch.name || branch,
+        stock: branch.stock || 0
+      })),
     }
   }
 

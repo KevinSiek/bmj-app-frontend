@@ -1,24 +1,14 @@
 <template>
   <div class="contain background shadow">
-    <form class="row form">
-      <div class="upper my-2">
+    <form class="form">
+      <div class="upper my-2 row">
         <div class="input form-group col-6">
           <div class="title">Service PO</div>
-          <PoSelect
-            type="Service"
-            placeholder="Search Service PO number"
-            @select="selectPurchaseOrder"
-          />
+          <PoSelect type="Service" placeholder="Search Service PO number" @select="selectPurchaseOrder" />
         </div>
         <div class="input form-group col-6">
           <div class="title">Work Order</div>
-          <input
-            type="text"
-            class="form-control mt-2"
-            :value="workOrderLabel"
-            placeholder="Work order (from PO)"
-            disabled
-          >
+          <input type="text" class="form-control" :value="workOrderLabel" placeholder="Work order (from PO)" disabled>
         </div>
       </div>
       <div class="my-2">
@@ -63,6 +53,9 @@
                     </li>
                   </ul>
                 </div>
+                <div v-show="false" class="col-2">
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity">
+                </div>
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity">
                 </div>
@@ -96,7 +89,8 @@
       <button type="button" class="btn btn-edit" @click="back" :disabled="isProcessing">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="doBorrowConfirmation" :disabled="isProcessing">{{ isEdit ? 'Save' : 'Add' }}</button>
+      <button type="button" class="btn btn-process" @click="doBorrowConfirmation" :disabled="isProcessing">{{ isEdit ?
+        'Save' : 'Add' }}</button>
     </div>
   </div>
 </template>
@@ -167,6 +161,7 @@ const addSparepart = () => {
     sparepartId: '',
     sparepartName: '',
     sparepartNumber: '',
+    totalUnit: [],
     quantity: 0,
     quantityReturn: null,
     stockInBranch: 0

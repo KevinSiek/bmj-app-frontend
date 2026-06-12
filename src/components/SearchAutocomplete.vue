@@ -1,33 +1,22 @@
 <template>
   <div class="search-autocomplete position-relative">
     <div class="input-group">
-      <input 
-        type="text" 
-        class="form-control input-search" 
-        v-model="search" 
-        @input="handleInput"
-        @keyup.enter="handleSearchClick"
-        @focus="isFocused = true"
-        @blur="handleBlur"
-        placeholder="Search Spareparts, PO, Employee, Customers..."
-      >
-      <button class="btn btn-primary search-btn" type="button" @click="handleSearchClick">
+      <input type="text" class="form-control input-search" v-model="search" @input="handleInput"
+        @keyup.enter="handleSearchClick" @focus="isFocused = true" @blur="handleBlur"
+        placeholder="Search Spareparts, PO, Employee, Customers...">
+      <button class="btn search-btn" type="button" @click="handleSearchClick">
         <i class="bi bi-search"></i>
       </button>
     </div>
-    
+
     <!-- Suggestions Dropdown -->
     <div v-if="isFocused && (isLoading || suggestions.length > 0)" class="suggestions-dropdown shadow rounded bg-white">
       <div v-if="isLoading" class="p-2 text-muted text-center small">
         Searching...
       </div>
       <div v-else class="suggestion-list">
-        <div 
-          v-for="(suggestion, index) in suggestions" 
-          :key="`${suggestion.type}-${suggestion.id}`"
-          class="suggestion-item p-2 border-bottom"
-          @mousedown="selectSuggestion(suggestion)"
-        >
+        <div v-for="(suggestion, index) in suggestions" :key="`${suggestion.type}-${suggestion.id}`"
+          class="suggestion-item p-2 border-bottom" @mousedown="selectSuggestion(suggestion)">
           <div class="fw-bold small" style="color: #0d6efd;">{{ suggestion.type }}</div>
           <div class="small">{{ suggestion.label }}</div>
         </div>
@@ -52,7 +41,7 @@ let pendingSelection = null
 const handleInput = () => {
   pendingSelection = null // clear pending selection if they type
   if (debounceTimeout) clearTimeout(debounceTimeout)
-  
+
   if (!search.value.trim()) {
     suggestions.value = []
     return
@@ -108,9 +97,14 @@ const handleBlur = () => {
   width: 100%;
   min-width: 250px;
   max-width: 400px;
-  
+
   .input-group {
     width: 100%;
+
+    .btn {
+      background-color: black;
+      color: white;
+    }
   }
 
   .suggestions-dropdown {
@@ -122,15 +116,15 @@ const handleBlur = () => {
     overflow-y: auto;
     z-index: 1000;
     margin-top: 4px;
-    
+
     .suggestion-item {
       cursor: pointer;
       transition: background-color 0.2s;
-      
+
       &:hover {
         background-color: #f8f9fa;
       }
-      
+
       &:last-child {
         border-bottom: none !important;
       }

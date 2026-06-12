@@ -162,8 +162,10 @@
       </div>
     </div>
   </router-link>
-  <router-link class="menu-item nav-link inventory"
-    :to="userRole === common.role.inventory_admin || userRole === common.role.head_inventory || userRole === common.role.director ? menuConfig.menu_inventory_admin.path : menuConfig.menu_inventory_purchase.path">
+  <router-link class="menu-item nav-link inventory" :to="userRole === common.role.inventory_admin ? menuConfig.menu_inventory_admin.path :
+    userRole === common.role.head_inventory ? menuConfig.menu_head_inventory.path :
+      userRole === common.role.director ? menuConfig.menu_inventory_admin.path :
+        menuConfig.menu_inventory_purchase.path">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">

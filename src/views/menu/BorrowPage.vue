@@ -3,7 +3,7 @@
     <div class="upper">
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
-        <select class="form-select mx-2" v-model="sortDate" @change="handleSortChange">
+        <select class="form-select filter" v-model="sortDate" @change="handleSortChange">
           <option value="desc">Newest First</option>
           <option value="asc">Oldest First</option>
         </select>
@@ -126,6 +126,10 @@ const goToAdd = () => {
 .left {
   display: flex;
   gap: 20px;
+
+  .filter {
+    width: max-content;
+  }
 }
 
 .btn-add {

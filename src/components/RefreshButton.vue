@@ -12,6 +12,10 @@ defineEmits(['refresh'])
 
 <style lang="scss" scoped>
 .refresh-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   .btn {
     background-color: white;
     display: flex;

@@ -12,6 +12,7 @@ const MenuMarketingPage = () => import('@/views/role/MarketingMenu.vue')
 const MenuServicePage = () => import('@/views/role/ServiceMenu.vue')
 const MenuInventoryAdminPage = () => import('@/views/role/InventoryAdminMenu.vue')
 const MenuInventoryPurchasePage = () => import('@/views/role/InventoryPurchaseMenu.vue')
+const MenuInventoryHeadPage = () => import('@/views/role/InventoryHeadMenu.vue')
 const MenuFinancePage = () => import('@/views/role/FinanceMenu.vue')
 const ProfilePage = () => import('@/views/menu/ProfilePage.vue')
 const DashboardPage = () => import('@/views/menu/DashboardPage.vue')
@@ -117,6 +118,11 @@ const router = createRouter({
           path: menuConfig.menu_inventory_purchase.path,
           name: menuConfig.menu_inventory_purchase.name,
           component: MenuInventoryPurchasePage
+        },
+        {
+          path: menuConfig.menu_inventory_head.path,
+          name: menuConfig.menu_inventory_head.name,
+          component: MenuInventoryHeadPage
         }
       ]
     },

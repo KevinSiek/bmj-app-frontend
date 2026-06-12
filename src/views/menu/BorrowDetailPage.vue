@@ -52,8 +52,8 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">
-                  <input v-if="canReconcile" type="number" class="form-control return-input"
-                    min="0" :max="sparepart.quantity" v-model.number="returnQuantities[index]">
+                  <input v-if="canReconcile" type="number" class="form-control return-input" min="0"
+                    :max="sparepart.quantity" v-model.number="returnQuantities[index]">
                   <span v-else>{{ sparepart.quantityReturn ?? '-' }}</span>
                 </td>
                 <td class="table-col table-name">{{ sparepart.stockInBranch }}</td>
@@ -90,21 +90,23 @@
   </div>
 
   <div class="button">
-    <div class="right">
+    <div class="left">
       <button v-if="canCancel" type="button" class="btn btn-edit" @click="goToEdit"
         :disabled="isProcessing">Edit</button>
       <button v-if="canCancel" type="button" class="btn btn-danger" @click="cancelConfirmation"
         :disabled="isProcessing">Cancel</button>
+      <button v-if="canHandover" type="button" class="btn btn-secondary" @click="printPdfPrompt"
+        :disabled="isProcessing">Print PDF</button>
+    </div>
+    <div class="right">
       <button v-if="canReview" type="button" class="btn btn-danger" @click="rejectPrompt"
         :disabled="isProcessing">Reject</button>
       <button v-if="canReview" type="button" class="btn btn-process" @click="approveConfirmation"
         :disabled="isProcessing">Approve</button>
-      <button v-if="canHandover" type="button" class="btn btn-secondary" @click="printPdfPrompt"
-        :disabled="isProcessing">Print PDF</button>
       <button v-if="canHandover" type="button" class="btn btn-process" @click="sendConfirmation"
         :disabled="isProcessing">Send</button>
-      <button v-if="canKembali" type="button" class="btn btn-success" @click="kembaliPrompt"
-        :disabled="isProcessing">Kembali</button>
+      <button v-if="canReturn" type="button" class="btn btn-success" @click="returnPrompt"
+        :disabled="isProcessing">Return</button>
       <button v-if="canReconcile" type="button" class="btn btn-process" @click="doneConfirmation"
         :disabled="isProcessing">Done</button>
     </div>
@@ -139,14 +141,14 @@ const returnQuantities = ref([])
 const sparepartPoId = ref('')
 
 const isInventory = computed(() =>
-  isRoleInventoryAdmin.value || isRoleInventoryPurchase.value || isRoleHeadInventory.value || isRoleDirector.value)
+  isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value)
 const isMarketing = computed(() => isRoleMarketing.value || isRoleDirector.value)
 const isReviewer = computed(() => isRoleHeadInventory.value || isRoleDirector.value)
 
 const canCancel = computed(() => isMarketing.value && borrow.value?.currentStatus === status.created)
 const canReview = computed(() => isReviewer.value && borrow.value?.currentStatus === status.created)
 const canHandover = computed(() => isInventory.value && borrow.value?.currentStatus === status.approved)
-const canKembali = computed(() => isMarketing.value && borrow.value?.currentStatus === status.borrowed)
+const canReturn = computed(() => isMarketing.value && borrow.value?.currentStatus === status.borrowed)
 const canReconcile = computed(() => isInventory.value && borrow.value?.currentStatus === status.returned)
 
 const hasShortfall = computed(() =>
@@ -187,9 +189,9 @@ const cancelConfirmation = () =>
   modalStore.openConfirmationModal('to Cancel this Borrow ?', 'Cancel Success',
     () => runAction(() => borrowStore.cancelBorrow(route.params.id)))
 
-const kembaliPrompt = () =>
-  modalStore.openNotesModal('Kembali', async () => {
-    await runAction(() => borrowStore.kembaliBorrow(route.params.id, modalStore.notes))
+const returnPrompt = () =>
+  modalStore.openNotesModal('Return', async () => {
+    await runAction(() => borrowStore.returnBorrow(route.params.id, modalStore.notes))
     modalStore.closeModal()
   })
 
@@ -295,8 +297,9 @@ $secondary-color: rgb(98, 98, 98);
 .button {
   display: flex;
   margin: 2% 4%;
-  justify-content: flex-end;
+  justify-content: space-between;
 
+  .left,
   .right {
     display: flex;
     gap: 15px;

@@ -19,6 +19,10 @@ const menuMapping = {
     name: 'Menu Inventory Purchase',
     path: '/menu/inventory-purchase'
   },
+  menu_inventory_head: {
+    name: 'Menu Inventory Head',
+    path: '/menu/inventory-head'
+  },
   menu_finance: {
     name: 'Menu Finance',
     path: '/menu/finance'
