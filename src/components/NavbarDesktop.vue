@@ -64,7 +64,6 @@ import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 
 const authStore = useAuthStore()
-const route = useRoute()
 
 const { user } = storeToRefs(authStore)
 

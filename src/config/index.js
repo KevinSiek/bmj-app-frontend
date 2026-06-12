@@ -297,7 +297,9 @@ const groupedFeature = {
     label: 'Spareparts',
     key: 'spareparts',
     feature: [
-      'spareparts'
+      'spareparts',
+      'borrow',
+      'stock_history',
     ]
   }
 }
@@ -314,8 +316,6 @@ const accessFeature = {
       'invoice',
       groupedFeature.sparepart,
       'back_order',
-      'borrow',
-      'stock_history',
       'purchase',
       'employee',
       'work_order',
@@ -340,8 +340,6 @@ const accessFeature = {
       'purchase_order',
       groupedFeature.sparepart,
       'back_order',
-      'borrow',
-      'stock_history',
       'delivery_order'
     ]
   },
@@ -351,8 +349,6 @@ const accessFeature = {
     feature: [
       groupedFeature.sparepart,
       'back_order',
-      'borrow',
-      'stock_history',
       'purchase'
     ]
   },
@@ -363,8 +359,6 @@ const accessFeature = {
       'purchase_order',
       'spareparts',
       'back_order',
-      'borrow',
-      'stock_history',
       'delivery_order',
       'purchase'
     ]
