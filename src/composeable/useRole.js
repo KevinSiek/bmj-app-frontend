@@ -17,6 +17,7 @@ export function useRole() {
   const isRoleInventoryAdmin = isRole(common.role.inventory_admin)
   const isRoleService = isRole(common.role.service)
   const isRoleInventoryPurchase = isRole(common.role.inventory_purchase)
+  const isRoleHeadInventory = isRole(common.role.head_inventory)
 
   return {
     user,
@@ -25,6 +26,7 @@ export function useRole() {
     isRoleFinance,
     isRoleInventoryAdmin,
     isRoleInventoryPurchase,
+    isRoleHeadInventory,
     isRoleService
   }
 }

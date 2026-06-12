@@ -82,6 +82,10 @@ const process = (id) => {
   return httpApi.postDataViaApi(`${api.work_order}/process/${id}`)
 }
 
+const done = (id) => {
+  return httpApi.postDataViaApi(`${api.work_order}/done/${id}`)
+}
+
 
 export default {
 	getAllWorkOrder,
@@ -89,5 +93,6 @@ export default {
   getWorkOrderById,
   updateWorkOrder,
   deleteWorkOrder,
-  process
+  process,
+  done
 }

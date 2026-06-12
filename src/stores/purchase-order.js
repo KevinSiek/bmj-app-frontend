@@ -17,6 +17,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
       purchaseOrderNumber: data?.purchase_order_number || '',
       purchaseOrder: {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        poNumber: data?.purchase_order?.po_number || '',
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
         type: data?.purchase_order?.type || ''
       },

@@ -2,7 +2,7 @@
   <div class="contain background shadow">
     <form class="row form">
       <div class="upper my-2">
-        <div class="title">Delivery Order</div>
+        <div class="title">Delivery Note</div>
         <div class="data">
           <div class="left">
             <div class="input form-group col-12">

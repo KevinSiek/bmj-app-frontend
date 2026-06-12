@@ -22,6 +22,16 @@
               <input type="text" class="form-control mt-2" v-model="proformaInvoice.project.type" placeholder="Type"
                 disabled>
             </div>
+            <div class="input form-group col-12">
+              <label for="">No Internal Request</label><br>
+              <input type="text" class="form-control mt-2" v-model="proformaInvoice.project.purchaseOrderNumber"
+                placeholder="No Internal Request" disabled>
+            </div>
+            <div class="input form-group col-12">
+              <label for="">No PO</label><br>
+              <input type="text" class="form-control mt-2" v-model="proformaInvoice.project.poNumber"
+                placeholder="No PO" disabled>
+            </div>
           </div>
         </div>
       </div>

@@ -62,9 +62,14 @@
         <div class="left">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="">No</label><br>
+            <label for="">No Internal Request</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.purchaseOrder.purchaseOrderNumber"
-              placeholder="No" disabled>
+              placeholder="No Internal Request" disabled>
+          </div>
+          <div class="input form-group col-12">
+            <label for="">No PO</label><br>
+            <input type="text" class="form-control mt-2" v-model="workOrder.purchaseOrder.poNumber" placeholder="No PO"
+              disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -76,7 +81,8 @@
           <div class="title">Service Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.no" placeholder="No" disabled>
+            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.serviceOrderNumber"
+              placeholder="No" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -209,25 +215,6 @@
                 <input type="text" class="form-control mt-2" v-model="workOrder.additional.scope"
                   placeholder="Scope of Work" disabled>
               </div>
-              <div class="col-6">
-                <label for="">APD</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.additional.apd" placeholder="APD"
-                  disabled>
-              </div>
-            </div>
-          </div>
-          <div class="input form-group col-12">
-            <div class="row">
-              <div class="col-6">
-                <label for="">Vaccine</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.additional.vaccine"
-                  placeholder="Vaccine" disabled>
-              </div>
-              <div class="col-6">
-                <label for="">Peduli Lindungi</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.additional.peduliLindungi"
-                  placeholder="Peduli Lindungi" disabled>
-              </div>
             </div>
           </div>
           <div class="input form-group col-12">
@@ -252,6 +239,8 @@
     </div>
     <div class="right">
       <button type="button" class="btn btn-process" @click="download">Print</button>
+      <button v-if="isShowProcess" type="button" class="btn btn-process" @click="setProcessConfirmation"
+        :disabled="isProcessing">Process</button>
       <button v-if="isShowDone" type="button" class="btn btn-process" @click="setDoneConfirmation"
         :disabled="isProcessing">Done</button>
     </div>
@@ -280,10 +269,14 @@ const { isRoleDirector, isRoleService } = useRole()
 
 const isProcessing = ref(false)
 
+const canAct = computed(() => isRoleService.value || isRoleDirector.value)
+// Process button: WO is in "Wait On Progress" -> advance to "On Progress".
+const isShowProcess = computed(() =>
+  canAct.value && workOrder.value.currentStatus === common.status.work_order.wait_on_progress
+)
+// Done button: WO is in "On Progress" -> finish it.
 const isShowDone = computed(() =>
-  workOrder.value.currentStatus && ((isRoleService.value || isRoleDirector.value) &&
-    workOrder.value.currentStatus !== common.status.work_order.done)
-  // !workOrder.value.status.some(item => item.state === common.status.work_order.done)
+  canAct.value && workOrder.value.currentStatus === common.status.work_order.on_progress
 )
 
 onBeforeMount(() => {
@@ -298,11 +291,11 @@ const fetchData = async () => {
   await trackStore.setTrackData(workOrder.value.status)
 }
 
-const done = async () => {
+const runAction = async (action) => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await workOrderStore.process(route.params.id)
+    await action(route.params.id)
     await fetchData()
   } catch (error) {
     throw error.data.error || error.data.message
@@ -311,8 +304,13 @@ const done = async () => {
   }
 }
 
+const setProcessConfirmation = () => {
+  modalStore.openConfirmationModal('to start processing this Work Order ?', 'Work Order In Progress',
+    () => runAction(workOrderStore.process))
+}
 const setDoneConfirmation = () => {
-  modalStore.openConfirmationModal('to this Puchase Order is Done ?', 'Purchase Order Done', done)
+  modalStore.openConfirmationModal('to mark this Work Order as Done ?', 'Work Order Done',
+    () => runAction(workOrderStore.done))
 }
 const download = () => {
   createPdf(workOrder.value)

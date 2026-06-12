@@ -93,7 +93,7 @@ import { getBase64FromUrl } from '../pdf-util'
 //   ]
 // }
 
-const createPdf = async (data, notes) => {
+const createPdf = async (data, notes, user) => {
   const { purchaseOrder, customer, price, spareparts, services } = data
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
@@ -133,7 +133,8 @@ const createPdf = async (data, notes) => {
     table: {
       widths: ['auto', 'auto','*'],
       body: [
-        ['PO No', ':', purchaseOrder.purchaseOrderNumber],
+        ['No PO', ':', `${purchaseOrder.poNumber}-Rev.${data.version}`],
+        ['No IR', ':', `${purchaseOrder.purchaseOrderNumber}-Rev.${data.version}`],
         ['Date', ':', purchaseOrder.purchaseOrderDate],
         ['Type', ':', purchaseOrder.type]
       ]
@@ -355,6 +356,8 @@ const createPdf = async (data, notes) => {
           {
             width: '40%',
             stack: [
+              { text: 'Hormat kami,', alignment: 'center' },
+              { text: `${user.fullname || ''}`, alignment: 'center', margin: [0, 50, 0, 0] },
               { text: 'PT. Berkat Megah Jaya', bold: true, alignment: 'center', decoration: 'underline' }
             ],
             margin: [0, 50, 0, 0]
@@ -380,7 +383,7 @@ const createPdf = async (data, notes) => {
     pageSize: 'A4',
   }
 
-  pdfMake.createPdf(docDefinition).download(`Purchase_Order_${data.id}.pdf`)
+  pdfMake.createPdf(docDefinition).download(`${data.purchaseOrder.purchaseOrderNumber}.pdf`)
 }
 
 

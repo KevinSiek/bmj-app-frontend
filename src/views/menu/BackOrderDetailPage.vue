@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="right">
-          <div class="title">Delivery Order</div>
+          <div class="title">Delivery Note</div>
           <div class="input form-group col-12">
             <label for="name">No</label><br>
             <input type="text" class="form-control mt-2" v-model="backOrder.deliveryOrder.no" placeholder="No" disabled>
@@ -114,7 +114,7 @@
                 <th scope="col-1" class="table-number">NO</th>
                 <th scope="col" class="table-name">DESCRIPTION</th>
                 <th scope="col" class="table-part-number">Order</th>
-                <th scope="col" class="table-name">Delivery Order</th>
+                <th scope="col" class="table-name">Delivery Note</th>
                 <th scope="col" class="table-name">Back Order</th>
               </tr>
             </thead>
@@ -140,9 +140,10 @@
       </div>
     </form>
   </div>
-  <div class="button" v-if="isReadyToProcess">
+  <div class="button">
     <div class="right">
-      <button type="button" class="btn btn-process" @click="processBackOrderConfirmation"
+      <button type="button" class="btn btn-process" @click="download">Print</button>
+      <button v-if="isReadyToProcess" type="button" class="btn btn-process" @click="processBackOrderConfirmation"
         :disabled="isProcessing">Ready</button>
     </div>
   </div>
@@ -154,6 +155,7 @@ import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { createPdf } from '@/utils/pdf/back-order'
 
 const route = useRoute()
 const backOrderStore = useBackOrderStore()
@@ -186,6 +188,10 @@ const processBackOrder = async () => {
 
 const processBackOrderConfirmation = () => {
   modalStore.openConfirmationModal('to process this Back Order ?', 'Back Order Processed', processBackOrder)
+}
+
+const download = () => {
+  createPdf(backOrder.value)
 }
 
 </script>
@@ -243,6 +249,11 @@ $secondary-color: rgb(98, 98, 98);
   display: flex;
   margin: 2% 4%;
   justify-content: flex-end;
+
+  .right {
+    display: flex;
+    gap: 20px;
+  }
 
   .btn {
     padding: 1.5vh 3vw 1.5vh 3vw;

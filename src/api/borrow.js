@@ -1,0 +1,40 @@
+import httpApi from '@/utils/http-api'
+import { api } from '@/config'
+
+const getAllBorrow = async (param) => {
+  return httpApi.getDataViaApi(api.borrow, param)
+}
+
+const addBorrow = (borrow) => {
+  return httpApi.postDataViaApi(api.borrow, borrow)
+}
+
+const getBorrowById = (id) => {
+  return httpApi.getDataByIdViaApi(`${api.borrow}/${id}`)
+}
+
+const updateBorrow = (id, borrow) => {
+  return httpApi.putDataViaApi(`${api.borrow}/${id}`, borrow)
+}
+
+const borrowBorrow = (id) => {
+  return httpApi.postDataViaApi(`${api.borrow}/borrow/${id}`)
+}
+
+const returnBorrow = (id) => {
+  return httpApi.postDataViaApi(`${api.borrow}/return/${id}`)
+}
+
+const cancelBorrow = (id) => {
+  return httpApi.postDataViaApi(`${api.borrow}/cancel/${id}`)
+}
+
+export default {
+  getAllBorrow,
+  addBorrow,
+  getBorrowById,
+  updateBorrow,
+  borrowBorrow,
+  returnBorrow,
+  cancelBorrow
+}

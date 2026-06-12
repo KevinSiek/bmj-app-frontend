@@ -119,6 +119,22 @@ const menuMapping = {
     name: 'Detail Back Order',
     path: '/back-order/:id'
   },
+  borrow: {
+    name: 'Borrow',
+    path: '/borrow'
+  },
+  borrow_add: {
+    name: 'Add Borrow',
+    path: '/borrow/add'
+  },
+  borrow_detail: {
+    name: 'Detail Borrow',
+    path: '/borrow/:id'
+  },
+  stock_history: {
+    name: 'Stock History',
+    path: '/stock-history'
+  },
   purchase: {
     name: 'Purchase',
     path: '/purchase'
@@ -230,6 +246,7 @@ const common = {
     },
     work_order: {
       ready: 'Sparepart Ready',
+      wait_on_progress: 'Wait On Progress',
       on_progress: 'On Progress',
       done: 'Done'
     },
@@ -238,6 +255,12 @@ const common = {
       rejected: 'Rejected',
       approved: 'Approved',
       received: 'Received'
+    },
+    borrow: {
+      created: 'Created',
+      borrowed: 'Borrowed',
+      returned: 'Returned',
+      cancelled: 'Cancelled'
     }
   },
   modal: {
@@ -250,7 +273,8 @@ const common = {
     finance: 'Finance',
     inventory_admin: 'Inventory Admin',
     service: 'Service',
-    inventory_purchase: 'Inventory Purchase'
+    inventory_purchase: 'Inventory Purchase',
+    head_inventory: 'Head Inventory'
   },
   track: {
     po: 'Po',
@@ -268,6 +292,18 @@ const common = {
   },
 }
 
+const groupedFeature = {
+  sparepart: {
+    label: 'Spareparts',
+    key: 'spareparts',
+    feature: [
+      'spareparts',
+      'borrow',
+      'stock_history',
+    ]
+  }
+}
+
 const accessFeature = {
   director: {
     path: '/director',
@@ -278,7 +314,7 @@ const accessFeature = {
       'purchase_order',
       'proforma_invoice',
       'invoice',
-      'spareparts',
+      groupedFeature.sparepart,
       'back_order',
       'purchase',
       'employee',
@@ -293,7 +329,8 @@ const accessFeature = {
     name: 'Marketing',
     feature: [
       'quotation',
-      'purchase_order'
+      'purchase_order',
+      groupedFeature.sparepart,
     ]
   },
   'inventory admin': {
@@ -301,7 +338,7 @@ const accessFeature = {
     name: 'Inventory Admin',
     feature: [
       'purchase_order',
-      'spareparts',
+      groupedFeature.sparepart,
       'back_order',
       'delivery_order'
     ]
@@ -310,8 +347,19 @@ const accessFeature = {
     path: '/inventory-purchase',
     name: 'Inventory Purchase',
     feature: [
+      groupedFeature.sparepart,
+      'back_order',
+      'purchase'
+    ]
+  },
+  'head inventory': {
+    path: '/head-inventory',
+    name: 'Head Inventory',
+    feature: [
+      'purchase_order',
       'spareparts',
       'back_order',
+      'delivery_order',
       'purchase'
     ]
   },
@@ -342,6 +390,8 @@ const api = {
   proforma_invoice: '/api/proforma-invoice',
   purchase_order: '/api/purchase-order',
   back_order: '/api/back-order',
+  borrow: '/api/borrow',
+  stock_movement: '/api/stock-movement',
   invoice: '/api/invoice',
   sparepart: '/api/sparepart',
   work_order: '/api/work-order',

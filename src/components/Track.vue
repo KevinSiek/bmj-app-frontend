@@ -8,7 +8,7 @@
           </div>
           <p class="label" :class="{ active: !!track?.active, rejected: isRejected(track) }">{{ track.state }}</p>
           <div class="info" :class="{ active: !!track?.active }">
-            <div class="employee">{{ track.employee }}</div>
+            <div class="employee">{{ track.employee ? `By ${track.employee}` : '' }}</div>
             <div class="date">{{ formatDateAndTime(track.timestamp) }}</div>
           </div>
         </template>
@@ -18,7 +18,7 @@
           </div>
           <p class="label" :class="{ active: !!track?.active, rejected: isRejected(track) }">{{ track.state }}</p>
           <div class="info" :class="{ active: !!track?.active }">
-            <div class="employee">{{ track.employee }}</div>
+            <div class="employee">{{ track.employee ? `By ${track.employee}` : '' }}</div>
             <div class="date">{{ formatDateAndTime(track.timestamp) }}</div>
           </div>
         </template>

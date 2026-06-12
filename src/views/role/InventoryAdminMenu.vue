@@ -11,6 +11,8 @@ import { ref } from 'vue'
 import MenuDeliveryOrder from '@/components/menu/MenuDeliveryOrder.vue'
 import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
+import MenuBorrow from '@/components/menu/MenuBorrow.vue'
+import MenuStockHistory from '@/components/menu/MenuStockHistory.vue'
 import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
 import { menuMapping as menuConfig } from '@/config'
 
@@ -21,12 +23,22 @@ const componentList = ref([
     path: menuConfig.spareparts.path
   },
   {
+    name: 'Borrow',
+    component: MenuBorrow,
+    path: menuConfig.borrow.path
+  },
+  {
+    name: 'Stock History',
+    component: MenuStockHistory,
+    path: menuConfig.stock_history.path
+  },
+  {
     name: 'Purchase Order',
     component: MenuPurchaseOrder,
     path: menuConfig.purchase_order.path
   },
   {
-    name: 'Delivery Order',
+    name: 'Delivery Note',
     component: MenuDeliveryOrder,
     path: menuConfig.delivery_order.path
   },

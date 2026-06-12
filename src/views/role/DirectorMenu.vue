@@ -14,6 +14,8 @@ import MenuInvoice from '@/components/menu/MenuInvoice.vue'
 import MenuProformaInvoice from '@/components/menu/MenuProformaInvoice.vue'
 import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
+import MenuBorrow from '@/components/menu/MenuBorrow.vue'
+import MenuStockHistory from '@/components/menu/MenuStockHistory.vue'
 import MenuPurchase from '@/components/menu/MenuPurchase.vue'
 import MenuDeliveryOrder from '@/components/menu/MenuDeliveryOrder.vue'
 import MenuWorkOrder from '@/components/menu/MenuWorkOrder.vue'
@@ -48,6 +50,16 @@ const componentList = ref([
     path: menuConfig.spareparts.path
   },
   {
+    name: 'Borrow',
+    component: MenuBorrow,
+    path: menuConfig.borrow.path
+  },
+  {
+    name: 'Stock History',
+    component: MenuStockHistory,
+    path: menuConfig.stock_history.path
+  },
+  {
     name: 'Purchase',
     component: MenuPurchase,
     path: menuConfig.purchase.path
@@ -58,7 +70,7 @@ const componentList = ref([
     path: menuConfig.back_order.path
   },
   {
-    name: 'Delivery Order',
+    name: 'Delivery Note',
     component: MenuDeliveryOrder,
     path: menuConfig.delivery_order.path
   },

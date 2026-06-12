@@ -54,7 +54,9 @@ import { getBase64FromUrl } from '../pdf-util'
 //   ]
 // }
 
-const createPdf = async (data) => {
+// `docTitle` lets the same layout print either a "DELIVERY ORDER" or a "DELIVERY NOTE" — for
+// now the two outputs differ only by this title (see DeliveryOrderDetailPage's two buttons).
+const createPdf = async (data, docTitle = 'DELIVERY NOTE') => {
   const { deliveryOrder, customer, spareparts, notes } = data
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
@@ -66,7 +68,7 @@ const createPdf = async (data) => {
       body: [
         [
           {
-            text: 'DELIVERY NOTE',
+            text: docTitle,
             alignment: 'center',
             margin: [0, 4, 0, 4],
             bold: true,
@@ -284,7 +286,7 @@ const createPdf = async (data) => {
     pageSize: 'A4',
   }
 
-  pdfMake.createPdf(docDefinition).download(`Delivery_Note_${data.id}.pdf`)
+  pdfMake.createPdf(docDefinition).download(`${docTitle.replace(/\s+/g, '_')}_${deliveryOrder.deliveryOrderNumber}.pdf`)
 }
 
 

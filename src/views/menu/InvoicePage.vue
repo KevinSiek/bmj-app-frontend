@@ -23,7 +23,7 @@
           <div v-for="(allInv, index) in invoices" :key="index">
             <template v-if="allInv.versions.length > 1">
               <ItemComponent :number="index + paginationData.from" :item="allInv.versions[allInv.versions.length - 1]"
-                :first-section="allInv.versions[allInv.versions.length - 1].invoice.invoiceNumber"
+                :first-section="allInv.versions[allInv.versions.length - 1].purchaseOrder.purchaseOrderNumber"
                 :second-section="allInv.versions[allInv.versions.length - 1].invoice.date"
                 :third-section="allInv.versions[allInv.versions.length - 1].invoice.type" wideRow
                 :current-status="allInv.versions[allInv.versions.length - 1].currentStatus" data-bs-toggle="collapse"
@@ -38,7 +38,7 @@
               </div>
             </template>
             <ItemComponent v-else :number="index + paginationData.from" :item="allInv.versions[0]"
-              :first-section="allInv.versions[0].invoice.invoiceNumber"
+              :first-section="allInv.versions[0].purchaseOrder.purchaseOrderNumber"
               :second-section="allInv.versions[0].invoice.date" :third-section="allInv.versions[0].invoice.type" wideRow
               :current-status="allInv.versions[0].currentStatus" @click="goToDetail(allInv.versions[0])" />
           </div>

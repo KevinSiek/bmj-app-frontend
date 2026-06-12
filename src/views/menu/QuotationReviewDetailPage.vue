@@ -117,7 +117,7 @@
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">PPN 11%</td>
+                <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
@@ -170,15 +170,18 @@ import { onBeforeMount, onMounted, ref } from 'vue'
 import { useTrackStore } from '@/stores/track'
 import { useRoute, useRouter } from 'vue-router'
 import { useModalStore } from '@/stores/modal'
+import { useGeneralStore } from '@/stores/general'
 import { formatCurrency } from '@/utils/form-util'
 
 const quotationStore = useQuotationStore()
 const trackStore = useTrackStore()
 const modalStore = useModalStore()
+const generalStore = useGeneralStore()
 
 const route = useRoute()
 const router = useRouter()
 const { quotationReview } = storeToRefs(quotationStore)
+const { ppn } = storeToRefs(generalStore)
 
 const isProcessing = ref(false)
 

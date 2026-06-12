@@ -9,11 +9,11 @@
             <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderNumber"
               placeholder="No Internal Request" disabled>
           </div>
-          <!-- <div class="input form-group col-12">
+          <div class="input form-group col-12">
             <label for="">No PO</label><br>
             <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.poNumber"
               placeholder="No PO" disabled>
-          </div> -->
+          </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
             <input type="date" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderDate"
@@ -318,6 +318,7 @@ import { common, menuMapping as menuConfig } from '@/config'
 import { useRole } from '@/composeable/useRole'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
+import { useAuthStore } from '@/stores/auth'
 import { createPdf } from '@/utils/pdf/purchase-order'
 import { formatCurrency } from '@/utils/form-util'
 
@@ -327,6 +328,7 @@ const { isRoleDirector, isRoleMarketing, isRoleInventoryAdmin, isRoleFinance, is
 const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
+const authStore = useAuthStore()
 
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
@@ -477,7 +479,7 @@ const rejectConfirmation = () => {
 
 const download = () => {
   modalStore.openNotesModal('Print PO', async () => {
-    await createPdf(purchaseOrder.value, modalStore.notes)
+    await createPdf(purchaseOrder.value, modalStore.notes, authStore.user)
     modalStore.closeModal()
   })
 }
