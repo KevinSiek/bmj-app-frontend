@@ -329,6 +329,8 @@ const groupedFeature = {
       'spareparts',
       'borrow',
       'stock_history',
+      'sparepart_movement',
+      'purchase'
     ]
   }
 }
@@ -345,7 +347,6 @@ const accessFeature = {
       'invoice',
       groupedFeature.sparepart,
       'back_order',
-      'purchase',
       'employee',
       'work_order',
       'delivery_order',
@@ -360,7 +361,14 @@ const accessFeature = {
     feature: [
       'quotation',
       'purchase_order',
-      groupedFeature.sparepart,
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'borrow'
+        ]
+      }
     ]
   },
   'inventory admin': {
@@ -368,7 +376,16 @@ const accessFeature = {
     name: 'Inventory Admin',
     feature: [
       'purchase_order',
-      groupedFeature.sparepart,
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'borrow',
+          'stock_history',
+          'sparepart_movement'
+        ]
+      },
       'back_order',
       'delivery_order'
     ]
@@ -377,7 +394,14 @@ const accessFeature = {
     path: '/inventory-purchase',
     name: 'Inventory Purchase',
     feature: [
-      groupedFeature.sparepart,
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'purchase'
+        ]
+      },
       'back_order',
       'purchase'
     ]
@@ -390,8 +414,17 @@ const accessFeature = {
       'spareparts',
       'back_order',
       'delivery_order',
-      'purchase',
-      'sparepart_movement'
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'borrow',
+          'stock_history',
+          'sparepart_movement',
+          'purchase'
+        ]
+      }
     ]
   },
   finance: {
