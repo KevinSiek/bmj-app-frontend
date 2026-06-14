@@ -114,7 +114,10 @@ const iconMap = {
   work_order: 'person-workspace',
   delivery_order: 'truck',
   general: 'sliders',
-  upload_data: 'file-earmark-arrow-up'
+  upload_data: 'file-earmark-arrow-up',
+  borrow: 'box-arrow-right',
+  stock_history: 'clock-history',
+  sparepart_movement: 'arrow-left-right'
 }
 
 

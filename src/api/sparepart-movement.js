@@ -1,26 +1,34 @@
-import { buildCrudApi } from '../utils/http-api'
-import { api as apiConfig } from '../config'
-import http from './http'
+import httpApi from '@/utils/http-api'
+import { api } from '@/config'
 
-const baseApi = buildCrudApi(apiConfig.sparepart_movement)
-
-const send = async (id) => {
-  const { data } = await http.post(`${apiConfig.sparepart_movement}/send/${id}`)
-  return data
+const getAll = async (param) => {
+  return httpApi.getDataViaApi(api.sparepart_movement, param)
 }
 
-const cancel = async (id) => {
-  const { data } = await http.post(`${apiConfig.sparepart_movement}/cancel/${id}`)
-  return data
+const get = (id) => {
+  return httpApi.getDataByIdViaApi(`${api.sparepart_movement}/${id}`)
 }
 
-const receive = async (id) => {
-  const { data } = await http.post(`${apiConfig.sparepart_movement}/receive/${id}`)
-  return data
+const create = (movement) => {
+  return httpApi.postDataViaApi(api.sparepart_movement, movement)
+}
+
+const send = (id) => {
+  return httpApi.postDataViaApi(`${api.sparepart_movement}/send/${id}`)
+}
+
+const cancel = (id) => {
+  return httpApi.postDataViaApi(`${api.sparepart_movement}/cancel/${id}`)
+}
+
+const receive = (id) => {
+  return httpApi.postDataViaApi(`${api.sparepart_movement}/receive/${id}`)
 }
 
 export default {
-  ...baseApi,
+  getAll,
+  get,
+  create,
   send,
   cancel,
   receive

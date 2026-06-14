@@ -7,14 +7,6 @@
         </button>
         <h3>Stock Movement Detail - {{ detail.movementNumber }}</h3>
       </div>
-      <div class="actions">
-        <button v-if="canCancel" class="btn btn-outline-danger me-2" @click="handleCancel">Cancel</button>
-        <button v-if="canSend" class="btn btn-primary me-2" @click="handleSend">Send</button>
-        <button v-if="canReceive" class="btn btn-success me-2" @click="handleReceive">Receive</button>
-        <button class="btn btn-outline-dark" @click="printPdf">
-          <i class="bi bi-printer"></i> Print PDF
-        </button>
-      </div>
     </div>
 
     <div class="card mb-4 shadow-sm">
@@ -88,14 +80,29 @@
   <div v-else class="p-5 text-center">
     Loading...
   </div>
+
+  <div v-if="detail" class="button">
+    <div class="left">
+      <button type="button" class="btn btn-edit" @click="printPdf">Print PDF</button>
+    </div>
+    <div class="right">
+      <button v-if="canCancel" type="button" class="btn btn-edit me-3" @click="handleCancel"
+        :disabled="isProcessing">Cancel</button>
+      <button v-if="canSend" type="button" class="btn btn-process" @click="handleSend"
+        :disabled="isProcessing">Send</button>
+      <button v-if="canReceive" type="button" class="btn btn-process" @click="handleReceive"
+        :disabled="isProcessing">Receive</button>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { onMounted, computed, onBeforeUnmount } from 'vue'
+import { onMounted, computed, onBeforeUnmount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSparepartMovementStore } from '@/stores/sparepart-movement'
 import { useAuthStore } from '@/stores/auth'
 import { useModalStore } from '@/stores/modal'
+import { common } from '@/config'
 import { generateSparepartMovementPdf } from '@/utils/pdf/sparepart-movement'
 
 const route = useRoute()
@@ -105,12 +112,13 @@ const authStore = useAuthStore()
 const modalStore = useModalStore()
 
 const detail = computed(() => store.detail)
+const isProcessing = ref(false)
 
 onMounted(async () => {
   try {
     await store.fetchDetail(route.params.id)
   } catch (error) {
-    modalStore.setModalMessage('Error', 'Failed to fetch detail', false)
+    modalStore.openMessageModal(common.modal.failed, 'Failed to fetch detail')
     router.back()
   }
 })
@@ -135,37 +143,31 @@ const canReceive = computed(() => {
   return detail.value?.currentStatus === 'Send' && (detail.value?.targetBranch === authStore.user?.branch || authStore.user?.role === 'Director')
 })
 
+const runTransition = async (fn, failMessage) => {
+  if (isProcessing.value) return
+  try {
+    isProcessing.value = true
+    await fn(route.params.id)
+  } catch (error) {
+    modalStore.openMessageModal(common.modal.failed, error.response?.data?.message || failMessage)
+  } finally {
+    isProcessing.value = false
+  }
+}
+
 const handleSend = () => {
-  modalStore.setModalConfirmation('Send Movement', 'Are you sure you want to send these spareparts?', async () => {
-    try {
-      await store.send(route.params.id)
-      modalStore.setModalMessage('Success', 'Movement sent successfully', true)
-    } catch (error) {
-      modalStore.setModalMessage('Failed', error.response?.data?.message || 'Failed to send', false)
-    }
-  })
+  modalStore.openConfirmationModal('to send these spareparts ?', 'Movement sent successfully',
+    () => runTransition(store.send, 'Failed to send'))
 }
 
 const handleCancel = () => {
-  modalStore.setModalConfirmation('Cancel Movement', 'Are you sure you want to cancel this movement?', async () => {
-    try {
-      await store.cancel(route.params.id)
-      modalStore.setModalMessage('Success', 'Movement cancelled successfully', true)
-    } catch (error) {
-      modalStore.setModalMessage('Failed', error.response?.data?.message || 'Failed to cancel', false)
-    }
-  })
+  modalStore.openConfirmationModal('to cancel this movement ?', 'Movement cancelled successfully',
+    () => runTransition(store.cancel, 'Failed to cancel'))
 }
 
 const handleReceive = () => {
-  modalStore.setModalConfirmation('Receive Movement', 'Are you sure you want to receive these spareparts? Stock will be updated.', async () => {
-    try {
-      await store.receive(route.params.id)
-      modalStore.setModalMessage('Success', 'Movement received and stock updated', true)
-    } catch (error) {
-      modalStore.setModalMessage('Failed', error.response?.data?.message || 'Failed to receive', false)
-    }
-  })
+  modalStore.openConfirmationModal('to receive these spareparts ? Stock will be updated.', 'Movement received and stock updated',
+    () => runTransition(store.receive, 'Failed to receive'))
 }
 
 const printPdf = () => {
@@ -177,10 +179,46 @@ const printPdf = () => {
 
 <style lang="scss" scoped>
 @use '@/assets/css/page.scss';
+$primary-color: black;
+$secondary-color: rgb(98, 98, 98);
+
 .contain {
   padding: 2rem;
 }
 .small {
   font-size: 0.8rem;
+}
+
+.button {
+  display: flex;
+  margin: 1% 2rem 2rem;
+  justify-content: space-between;
+
+  .btn {
+    padding: 1.3vh 2.2vw;
+    font-weight: 500;
+    color: white;
+    font-size: 1.1vw;
+    letter-spacing: 0.03vw;
+  }
+
+  .btn-edit {
+    background-color: $secondary-color;
+  }
+
+  .btn-process {
+    background-color: $primary-color;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .button {
+    margin: 4% 6%;
+
+    .btn {
+      padding: 1vh 4vw;
+      font-size: 3.5vw;
+    }
+  }
 }
 </style>

@@ -75,7 +75,7 @@ const menu = computed(() => {
 // sees the children it actually has access to. The group header reuses the parent feature's
 // label/icon (e.g. 'spareparts').
 const featureGroups = {
-  spareparts: { name: menuMapping.spareparts.name, children: ['spareparts', 'borrow', 'stock_history'] }
+  spareparts: { name: menuMapping.spareparts.name, children: ['spareparts', 'borrow', 'stock_history', 'sparepart_movement'] }
 }
 
 // Reverse lookup: feature key -> group key it belongs to.
@@ -133,7 +133,8 @@ const iconMap = {
   general: 'sliders',
   upload_data: 'file-earmark-arrow-up',
   borrow: 'box-arrow-right',
-  stock_history: 'clock-history'
+  stock_history: 'clock-history',
+  sparepart_movement: 'arrow-left-right'
 }
 
 // const menus = [
