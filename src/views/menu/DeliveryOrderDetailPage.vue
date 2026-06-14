@@ -179,7 +179,7 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-outline-dark mx-3" @click="printDeliveryOrder">Print Delivery Order</button>
+      <button type="button" class="btn btn-process mx-3" @click="printDeliveryOrder">Print Delivery Order</button>
       <button type="button" class="btn btn-process mx-3" @click="printDeliveryNote">Print Delivery Note</button>
       <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation"
         :disabled="isProcessing">Done</button>

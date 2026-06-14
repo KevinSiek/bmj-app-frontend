@@ -258,6 +258,11 @@ $secondary-color: rgb(98, 98, 98);
   margin: 2% 4%;
   justify-content: flex-end;
 
+  .right {
+    display: flex;
+    gap: 20px;
+  }
+
   .btn {
     padding: 1.5vh 3vw 1.5vh 3vw;
     font-weight: 500;

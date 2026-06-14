@@ -22,23 +22,24 @@
         <div v-else class="list">
           <div v-for="(workOrder, index) in workOrders" :key="index">
             <template v-if="workOrder?.versions?.length > 1">
-              <ItemComponent bigRow :number="index + paginationData.from"
+              <ItemComponent wideRow :number="index + paginationData.from"
                 :item="workOrder.versions[workOrder.versions.length - 1]"
-                :first-section="workOrder.versions[workOrder.versions.length - 1].serviceOrder.no"
+                :first-section="workOrder.versions[workOrder.versions.length - 1].serviceOrder.serviceOrderNumber"
                 :second-section="workOrder.versions[workOrder.versions.length - 1].date.startDate"
                 :current-status="workOrder.currentStatus" data-bs-toggle="collapse"
                 :data-bs-target="'#collapsChild' + index" />
               <div class="collapse" :id="'collapsChild' + index">
                 <div v-for="(woChild, versionIndex) in workOrder.versions" :key="versionIndex">
-                  <ItemComponent bigRow :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)"
-                    :item="woChild" :first-section="woChild.serviceOrder.no" :second-section="woChild.date.startDate"
-                    :current-status="woChild.currentStatus" class="item-child" @click="goToDetail(woChild)"
-                    :class="{ disabled: versionIndex != (workOrder.versions.length - 1) }" isChild />
+                  <ItemComponent wideRow :number="(index + paginationData.from) + ' - ' + (versionIndex + 1)"
+                    :item="woChild" :first-section="woChild.serviceOrder.serviceOrderNumber"
+                    :second-section="woChild.date.startDate" :current-status="woChild.currentStatus" class="item-child"
+                    @click="goToDetail(woChild)" :class="{ disabled: versionIndex != (workOrder.versions.length - 1) }"
+                    isChild />
                 </div>
               </div>
             </template>
-            <ItemComponent v-else :number="index + paginationData.from" :item="workOrder" bigRow
-              :first-section="workOrder.serviceOrder.no" :second-section="workOrder.date.startDate"
+            <ItemComponent v-else :number="index + paginationData.from" :item="workOrder" wideRow
+              :first-section="workOrder.serviceOrder.serviceOrderNumber" :second-section="workOrder.date.startDate"
               :current-status="workOrder.currentStatus" @click="goToDetail(workOrder)" />
           </div>
         </div>

@@ -8,27 +8,27 @@ export const useGeneralStore = defineStore('general', () => {
   const ppn = ref(0)
 
   const processData = {
-    toPercentage: (data) => {
-      discount.value = data.discount * 100
+    save: (data) => {
+      discount.value = data.discount
       currencyConverter.value = data.currency_converter
-      ppn.value = data.ppn * 100
+      ppn.value = data.ppn
     },
-    toNormal: () => {
+    post: () => {
       return {
-        discount: discount.value / 100,
+        discount: discount.value,
         currency_converter: currencyConverter.value,
-        ppn: ppn.value / 100
+        ppn: ppn.value
       }
     }
   }
 
   async function getGeneralData () {
     const { data } = await generalApi.getGeneralData()
-    processData.toPercentage(data)
+    processData.save(data)
   }
 
   async function updateGeneralData () {
-    await generalApi.updateGeneralData(processData.toNormal())
+    await generalApi.updateGeneralData(processData.post())
   }
   return { discount, currencyConverter, ppn, getGeneralData, updateGeneralData }
 })

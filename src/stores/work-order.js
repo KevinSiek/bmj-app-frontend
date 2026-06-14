@@ -11,9 +11,8 @@ export const useWorkOrderStore = defineStore('work-order', () => {
   function mapWorkOrder (data) {
     return {
       id: data?.id || '',
-      workOrderNumber: data?.work_order_number || '',
       serviceOrder: {
-        no: data?.service_order?.no || '',
+        serviceOrderNumber: data?.service_order?.service_order_number || '',
         date: data?.service_order?.date || '',
         receivedBy: data?.service_order?.received_by || '',
         startDate: data?.service_order?.start_date || '',
