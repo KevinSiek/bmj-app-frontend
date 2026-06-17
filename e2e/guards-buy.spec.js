@@ -72,14 +72,14 @@ test.describe('BuyController Guards — negative-path & authz', () => {
   });
 
   test('GUARD-BUY-003: approve with non-existent id → 404 (Buy::find returns null)', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized, so 404 is the body guard, not authz
+    const api = await ctxFor('headinv.jkt@bmj.com'); // Head Inventory — authorized, so 404 is the body guard, not authz
     const res = await api.post(`/api/buy/approve/${MISSING_ID}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
 
-  test('GUARD-BUY-004: ALLOW — Inventory Purchase POST buy/approve is NOT 403', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized
+  test('GUARD-BUY-004: ALLOW — Head Inventory POST buy/approve is NOT 403', async () => {
+    const api = await ctxFor('headinv.jkt@bmj.com'); // Head Inventory — authorized
     const id = await firstBuyId(api);
     test.skip(id === null, 'No buy rows seeded to exercise the allow-case');
     const res = await api.post(`/api/buy/approve/${id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
@@ -99,7 +99,7 @@ test.describe('BuyController Guards — negative-path & authz', () => {
   });
 
   test('GUARD-BUY-006: reject with non-existent id → 404 (Buy::find returns null)', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized
+    const api = await ctxFor('headinv.jkt@bmj.com'); // Head Inventory — authorized
     const res = await api.post(`/api/buy/reject/${MISSING_ID}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
@@ -125,14 +125,14 @@ test.describe('BuyController Guards — negative-path & authz', () => {
   });
 
   test('GUARD-BUY-009: needChange with non-existent id → 404 (Buy::find returns null)', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized
+    const api = await ctxFor('headinv.jkt@bmj.com'); // Head Inventory — authorized
     const res = await api.post(`/api/buy/needChange/${MISSING_ID}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
 
-  test('GUARD-BUY-010: ALLOW — Inventory Purchase POST buy/needChange is NOT 403', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized
+  test('GUARD-BUY-010: ALLOW — Head Inventory POST buy/needChange is NOT 403', async () => {
+    const api = await ctxFor('headinv.jkt@bmj.com'); // Head Inventory — authorized
     const id = await firstBuyId(api);
     test.skip(id === null, 'No buy rows seeded to exercise the allow-case');
     const res = await api.post(`/api/buy/needChange/${id}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });

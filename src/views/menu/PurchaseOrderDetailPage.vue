@@ -330,7 +330,7 @@ import { formatCurrency } from '@/utils/form-util'
 
 const router = useRouter()
 const route = useRoute()
-const { isRoleDirector, isRoleMarketing, isRoleInventoryAdmin, isRoleFinance, isRoleService } = useRole()
+const { isRoleDirector, isRoleMarketing, isRoleInventoryAdmin, isRoleHeadInventory, isRoleFinance, isRoleService } = useRole()
 const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
