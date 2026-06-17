@@ -184,6 +184,7 @@ test.describe('Quotation E2E Tests (Live DB)', () => {
     
     // Notes modal appears
     await page.fill('.modal-body textarea', 'Test Move to PO');
+    await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
     
     // Confirmation modal appears

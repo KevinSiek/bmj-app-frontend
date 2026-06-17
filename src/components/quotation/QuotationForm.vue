@@ -1,5 +1,5 @@
 <template>
-  <form class="row form" @click.capture="onRootClick">
+  <form class="row form" @click.capture="onRootClick" autocomplete="off">
     <div v-if="!isTypeEdit || isRoleDirector" class="upper my-2">
       <div class="title">Project</div>
       <div class="data">

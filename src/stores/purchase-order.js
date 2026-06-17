@@ -162,6 +162,10 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     const response = await purchaseOrderApi.reject(id, { notes })
   }
 
+  async function updateNotes(id, notes) {
+    await purchaseOrderApi.updatePurchaseOrder(id, { notes })
+  }
+
   async function returnPurchaseOrder(id, returnedItems) {
     const response = await purchaseOrderApi.returnPurchaseOrder(id, returnedItems)
   }
@@ -197,6 +201,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     returnPurchaseOrder,
     approveReturn,
     rejectReturn,
+    updateNotes,
     $resetPurchaseOrder,
     $resetPurchaseOrders
   }

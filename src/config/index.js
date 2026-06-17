@@ -402,8 +402,7 @@ const accessFeature = {
           'purchase'
         ]
       },
-      'back_order',
-      'purchase'
+      'back_order'
     ]
   },
   'head inventory': {

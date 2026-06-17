@@ -28,8 +28,7 @@
             <input :type="isPassShow ? 'text' : 'password'" class="input form-control" v-model="user.password"
               placeholder="Password">
             <span class="input input-group-text">
-              <button type="button" @mousedown="showHidePass(true)" @mouseup="showHidePass(false)"
-                @mouseleave="showHidePass(false)" class="showHideBtn">
+              <button type="button" @click="showHidePass(!isPassShow)" class="showHideBtn">
                 <svg v-if="!isPassShow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                   class="bi bi-eye" viewBox="0 0 16 16">
                   <path
@@ -55,8 +54,7 @@
             <input :type="isConfPassShow ? 'text' : 'password'" class="input form-control"
               v-model="user.confirm_password" placeholder="Retype Password">
             <span class="input input-group-text">
-              <button type="button" @mousedown="showHideConfPass(true)" @mouseup="showHideConfPass(false)"
-                @mouseleave="showHideConfPass(false)" class="showHideBtn">
+              <button type="button" @click="showHideConfPass(!isConfPassShow)" class="showHideBtn">
                 <svg v-if="!isConfPassShow" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                   fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                   <path

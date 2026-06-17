@@ -16,6 +16,8 @@ test.describe('Master Data E2E Tests', () => {
 
   test('EMP-API-009: Create Employee (Director)', async () => {
     await page.goto('/login');
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
     await page.fill('input[type="email"]', 'director.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
@@ -39,7 +41,11 @@ test.describe('Master Data E2E Tests', () => {
     await closeModal(page);
     await page.goto('/employee');
     await page.waitForSelector('.list .item');
-    await expect(page.locator(`text="pw_user_${ts}"`)).toBeVisible();
+    
+    // Navigate directly with search query param to avoid debounce timing issues
+    await page.goto(`/employee?page=1&search=pw_user_${ts}`);
+    await page.waitForLoadState('networkidle', { timeout: 15000 });
+    await expect(page.locator(`text="pw_user_${ts}"`)).toBeVisible({ timeout: 10000 });
 
     await page.screenshot({ path: 'e2e/screenshots/emp-api-009-list.png', fullPage: true });
   });

@@ -74,6 +74,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await expect(createPoBtn).toBeVisible({ timeout: 15000 });
     await createPoBtn.click();
     await page.fill('.modal-body textarea', 'Move to PO setup');
+    await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
     // Await the moveToPo API response so the assertion doesn't race the navigation.
     await Promise.all([
@@ -298,6 +299,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await page.locator('.list .item').first().click();
     await page.click('button:has-text("Create PO")');
     await page.fill('.modal-body textarea', 'Move to Service PO');
+    await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
     
     const [poResponse] = await Promise.all([

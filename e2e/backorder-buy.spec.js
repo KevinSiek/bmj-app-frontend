@@ -60,6 +60,7 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
     await page.locator('.list .item').first().click();
     await page.click('button:has-text("Create PO")');
     await page.fill('.modal-body textarea', 'Move to PO setup for BO');
+    await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
     
     const [poResponse] = await Promise.all([
@@ -166,7 +167,7 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
     await page.screenshot({ path: 'e2e/screenshots/bo-setup-success.png', fullPage: true });
   });
 
-  test('BO-API-003: Move Back Order to Buy', async () => {
+  test('BO-API-003: Analyze and Process Back Order', async () => {
     // Inventory role (Eko is Inventory Admin, which has access)
     await page.goto('/back-order');
     await page.locator('.list .item').first().click();
@@ -174,28 +175,17 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
     await page.screenshot({ path: 'e2e/screenshots/bo-api-003-detail.png', fullPage: true });
 
     // Click Process Buy
-    const buyBtn = page.locator('button:has-text("Ready")');
+    const buyBtn = page.locator('button:has-text("Analyze")');
     await expect(buyBtn).toBeVisible();
     await buyBtn.click();
     
-    await expect(page.locator('#modalConfirmation')).toBeVisible({ timeout: 10000 });
-    await page.click('#modalConfirmation button:has-text("Yes")');
-
-    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
+    // With 0 stock, we expect a warning modal
+    await expect(page.locator('#modalMessage')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#modalMessage .text-header')).toHaveText(/Warning/i);
+    await expect(page.locator('#modalMessage .modal-body > .text')).toHaveText(/Nothing change or back order preocessed but nothing new/i);
     await closeModal(page);
 
-    await page.screenshot({ path: 'e2e/screenshots/bo-api-003-buy-created.png', fullPage: true });
-    
-    // Verify Buy exists
-    await page.evaluate(() => localStorage.clear());
-    await page.goto('/login');
-    await page.fill('input[type="email"]', 'director.jkt@bmj.com');
-    await page.fill('input[type="password"]', 'password');
-    await page.click('button[type="submit"]');
-    await page.waitForURL('**/menu', { timeout: 20000 });
-
-    await page.goto('/purchase');
-    await expect(page.locator('.list .item').first()).toBeVisible();
+    await page.screenshot({ path: 'e2e/screenshots/bo-api-003-warning.png', fullPage: true });
   });
 
   test('BUY-API-007 & 008: Approve and Receive Buy (Director & Inventory)', async () => {
@@ -205,28 +195,28 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
         console.error(`API Failed: ${res.url()} - ${res.status()} - ${await res.text()}`);
       }
     });
-    // 0. Inventory Purchase creates a Manual Buy
+    // 0. Director Jakarta creates a Manual Buy
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'indah.s@bmj.com');
+    await page.fill('input[type="email"]', 'director.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
 
     await page.goto('/purchase/add');
-    await page.selectOption('select[aria-label="Branch"]', 'Jakarta');
+    await page.selectOption('select[aria-label="Branch"]', 'Semarang');
     await page.fill('textarea[placeholder="Description"]', 'Manual Buy for Review Test');
     await page.click('button:has-text("Add Sparepart")');
     const firstRow = page.locator('.list.row').first();
     const partNameInput = firstRow.locator('input[placeholder="Part Name"]');
     const searchPromise = page.waitForResponse(res => res.url().includes('/api/sparepart') && res.status() === 200);
-    await partNameInput.pressSequentially('E2E Guaranteed Stock Sparepart', { delay: 50 });
+    await partNameInput.pressSequentially('E2E Low Stock Sparepart', { delay: 50 });
     await searchPromise;
     await partNameInput.click();
-    await expect(firstRow.locator('.dropdown-item', { hasText: 'E2E Guaranteed Stock Sparepart' }).first()).toBeVisible({ timeout: 10000 });
-    await firstRow.locator('.dropdown-item', { hasText: 'E2E Guaranteed Stock Sparepart' }).first().click();
-    await firstRow.locator('input[placeholder="Quantity"]').fill('1');
-    await firstRow.locator('input[placeholder="Unit Price"]').fill('5000');
+    await expect(firstRow.locator('.dropdown-item', { hasText: 'E2E Low Stock Sparepart' }).first()).toBeVisible({ timeout: 10000 });
+    await firstRow.locator('.dropdown-item', { hasText: 'E2E Low Stock Sparepart' }).first().click();
+    await firstRow.locator('input[placeholder="Quantity"]').fill('40');
+    await firstRow.locator('input[placeholder="Unit Price"]').fill('50000');
     
     await page.click('button.btn-process:has-text("Add")');
     await page.click('#modalConfirmation button:has-text("Yes")');
@@ -258,10 +248,10 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
 
     await page.screenshot({ path: 'e2e/screenshots/buy-approved.png', fullPage: true });
 
-    // 2. Inventory Purchase Receive Buy
+    // 2. Director Jakarta Receive Buy
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'indah.s@bmj.com');
+    await page.fill('input[type="email"]', 'director.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -281,6 +271,35 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
 
     await page.screenshot({ path: 'e2e/screenshots/buy-received.png', fullPage: true });
     await expect(page.locator('.status')).toContainText('Received');
+  });
+
+  test('BO-API-003-PART2: Fulfill Back Order with received stock', async () => {
+    // Login as Inventory Admin (Eko)
+    await page.evaluate(() => localStorage.clear());
+    await page.goto('/login');
+    await page.fill('input[type="email"]', 'eko.p@bmj.com');
+    await page.fill('input[type="password"]', 'password');
+    await page.click('button[type="submit"]');
+    await page.waitForURL('**/menu', { timeout: 20000 });
+
+    await page.goto('/back-order');
+    await page.locator('.list .item').first().click();
+
+    await page.screenshot({ path: 'e2e/screenshots/bo-api-003-part2-detail.png', fullPage: true });
+
+    // Click Analyze
+    const buyBtn = page.locator('button:has-text("Analyze")');
+    await expect(buyBtn).toBeVisible();
+    await buyBtn.click();
+    
+    // Now with sufficient stock, we expect the confirmation modal
+    await expect(page.locator('#modalConfirmation')).toBeVisible({ timeout: 10000 });
+    await page.click('#modalConfirmation button:has-text("Yes")');
+
+    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
+    await closeModal(page);
+
+    await page.screenshot({ path: 'e2e/screenshots/bo-api-003-part2-success.png', fullPage: true });
   });
 
   test('BO-API-004: Role Security (Marketing blocked from Back Order)', async () => {

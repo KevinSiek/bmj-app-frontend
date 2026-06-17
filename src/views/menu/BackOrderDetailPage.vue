@@ -179,13 +179,19 @@ const analyzeBackOrderAction = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await backOrderStore.analyzeBackOrder(route.params.id)
-    // If sufficient stock, prompt confirmation to process
-    modalStore.openConfirmationModal('to process this Back Order ?', 'Back Order Processed', processBackOrder)
+    const response = await backOrderStore.analyzeBackOrder(route.params.id)
+    
+    if (response?.total_available === 0) {
+      modalStore.openMessageModal('Warning', 'Nothing change or back order preocessed but nothing new')
+    } else {
+      // If sufficient stock, prompt confirmation to process
+      modalStore.openConfirmationModal('to process this Back Order ?', 'Back Order Processed', processBackOrder)
+    }
   } catch (error) {
     let errorMsg = error?.data?.message || error?.message || 'Quantity is not enough please contact purchasing to add the stock'
     modalStore.openMessageModal(common.modal.failed, errorMsg)
   } finally {
+    await backOrderStore.getBackOrder(route.params.id)
     isProcessing.value = false
   }
 }
@@ -193,6 +199,7 @@ const analyzeBackOrderAction = async () => {
 const processBackOrder = async () => {
   try {
     await backOrderStore.processBackOrder(route.params.id)
+    await backOrderStore.getBackOrder(route.params.id)
   } catch (error) {
     throw error?.data?.error || error?.data?.message || error?.message || 'Process failed'
   }

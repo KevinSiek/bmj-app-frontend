@@ -3,11 +3,15 @@
     <form class="row form">
       <div class="input form-group col-4 my-2">
         <div class="title">Branch</div>
-        <select class="form-select mt-2" aria-label="Branch" v-model="purchase.branch">
+        <select v-if="isRoleDirector" class="form-select mt-2" aria-label="Branch" v-model="purchase.branch">
           <option value="" disabled selected>Select Branch</option>
           <option value="Semarang">Semarang</option>
           <option value="Jakarta">Jakarta</option>
         </select>
+        <div v-if="isRoleInventoryPurchase">
+          <input type="text" class="form-control mt-2" :value="purchase.branch" placeholder="Branch" disabled readonly>
+          <small class="text-muted">Branch automatically set based on your profile</small>
+        </div>
       </div>
       <div class="my-2">
         <div class="title">Purchase List</div>
@@ -15,13 +19,16 @@
           <div class="row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                   <label for="">Sparepart Name</label>
                 </div>
                 <div class="col-2">
                   <label for="">Part Number</label>
                 </div>
                 <div class="col-2">
+                  <label for="">Seller</label>
+                </div>
+                <div class="col-1">
                   <label for="">Quantity</label>
                 </div>
                 <div class="col-2">
@@ -41,7 +48,7 @@
           <div v-for="(sparepart, sparepartIndex) in purchase.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                     data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
                     @keyup="handleInputSearch(sparepart.sparepartName)">
@@ -65,6 +72,15 @@
                   </ul>
                 </div>
                 <div class="col-2">
+                  <select class="form-select mt-2" v-model="sparepart.selectedSellerPrice" 
+                    @change="(e) => { sparepart.unitPriceBuy = Number(e.target.value); selectItem(sparepartIndex, sparepart); }">
+                    <option :value="undefined" disabled selected>Select Seller</option>
+                    <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx" :value="sellerOption.price">
+                      {{ sellerOption.seller }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-1">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
                     @input="selectItem(sparepartIndex, sparepart)">
                 </div>
@@ -120,6 +136,9 @@ import { useModalStore } from '@/stores/modal'
 import { formatCurrency } from '@/utils/form-util'
 import CurrencyInput from '@/components/CurrencyInput.vue'
 import { useRouter } from 'vue-router'
+import { useRole } from '@/composeable/useRole'
+
+const { isRoleDirector, isRoleInventoryPurchase, user } = useRole()
 
 const purchaseStore = usePurchaseStore()
 const modalStore = useModalStore()
@@ -133,6 +152,11 @@ const totalPurchase = computed(() => purchase.value.spareparts.reduce((sum, item
 
 onBeforeMount(() => {
   if (!purchase.value) purchaseStore.$resetPurchase()
+
+  if (isRoleInventoryPurchase.value && user.value) {
+    const userBranch = user.value.branch || 'Semarang'
+    purchase.value.branch = userBranch
+  }
 })
 
 const searchSparepart = (search) => {
@@ -161,7 +185,9 @@ const addSparepart = () => {
     unitPriceSell: 0,
     unitPriceBuy: 0,
     totalPrice: 0,
-    stock: ''
+    stock: '',
+    unitPriceSeller: [],
+    selectedSellerPrice: undefined
   })
 }
 const removeSparepart = (index) => {

@@ -64,6 +64,7 @@ test.describe('Purchase Order Decline & Negative Flow', () => {
     await expect(createPoBtn).toBeVisible({ timeout: 15000 });
     await createPoBtn.click();
     await page.fill('.modal-body textarea', 'Move to PO negative setup');
+    await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
     await page.click('button:has-text("Yes")');
     

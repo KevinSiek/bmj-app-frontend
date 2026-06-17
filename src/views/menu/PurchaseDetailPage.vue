@@ -99,8 +99,8 @@ const receive = async () => {
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
+    await purchaseStore.getPurchase(route.params.id)
     isProcessing.value = false
-    purchaseStore.getPurchase(route.params.id)
   }
 }
 const receiveConfirmation = () => {

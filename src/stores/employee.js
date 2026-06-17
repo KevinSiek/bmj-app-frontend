@@ -18,7 +18,9 @@ export const useEmployeeStore = defineStore('employee', () => {
       email: data?.email || '',
       role: data?.role || '',
       password: data?.password || '',
-      passwordConfirmation: data?.password_confirmation || ''
+      passwordConfirmation: data?.password_confirmation || '',
+      tempPassword: data?.temp_password || '',
+      mustChangePassword: data?.must_change_password || false
     }
   }
 

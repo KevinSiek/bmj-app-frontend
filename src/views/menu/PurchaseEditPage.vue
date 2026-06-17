@@ -7,13 +7,16 @@
           <div class="row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                   <label for="">Sparepart Name</label>
                 </div>
                 <div class="col-2">
                   <label for="">Part Number</label>
                 </div>
                 <div class="col-2">
+                  <label for="">Seller</label>
+                </div>
+                <div class="col-1">
                   <label for="">Quantity</label>
                 </div>
                 <div class="col-2">
@@ -33,7 +36,7 @@
           <div v-for="(sparepart, sparepartIndex) in purchase.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                     data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
                     @keyup="handleInputSearch(sparepart.sparepartName)">
@@ -57,6 +60,15 @@
                   </ul>
                 </div>
                 <div class="col-2">
+                  <select class="form-select mt-2" v-model="sparepart.selectedSellerPrice" 
+                    @change="(e) => { sparepart.unitPriceBuy = Number(e.target.value); selectItem(sparepartIndex, sparepart); }">
+                    <option :value="undefined" disabled selected>Select Seller</option>
+                    <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx" :value="sellerOption.price">
+                      {{ sellerOption.seller }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-1">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
                     @input="selectItem(sparepartIndex, sparepart)">
                 </div>
@@ -158,7 +170,9 @@ const addSparepart = () => {
     unitPriceSell: 0,
     unitPriceBuy: 0,
     totalPrice: 0,
-    stock: ''
+    stock: '',
+    unitPriceSeller: [],
+    selectedSellerPrice: undefined
   })
 }
 const removeSparepart = (index) => {

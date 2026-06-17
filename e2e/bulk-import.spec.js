@@ -58,7 +58,7 @@ test.describe('Sparepart Bulk Import — Success Path', () => {
   test('IMP-001: valid import creates a new sparepart (new_records=1)', async () => {
     const num = `IMP-A-${Date.now()}`;
     const buf = xlsxBuffer([
-      ['HDR', 'number', 'name', 'price', 'seller', 'branch'],
+      ['HDR', 'sparepart_number', 'sparepart_name', 'purchase_price', 'seller', 'branch'],
       ['', num, `Imported ${num}`, 123456, '', 'JKT'],
     ]);
     const res = await upload(buf, `e2e-a-${Date.now()}`);
@@ -74,7 +74,7 @@ test.describe('Sparepart Bulk Import — Success Path', () => {
   test('IMP-002: imported sparepart has a record on every branch', async () => {
     const num = `IMP-B-${Date.now()}`;
     const buf = xlsxBuffer([
-      ['HDR', 'number', 'name', 'price', 'seller', 'branch'],
+      ['HDR', 'sparepart_number', 'sparepart_name', 'purchase_price', 'seller', 'branch'],
       ['', num, `Imported ${num}`, 50000, '', 'JKT'],
     ]);
     expect((await upload(buf, `e2e-b-${Date.now()}`)).status()).toBe(200);
@@ -91,7 +91,7 @@ test.describe('Sparepart Bulk Import — Success Path', () => {
   test('IMP-003: re-importing an existing part resets its branch stock to 0 (not additive)', async () => {
     const num = `IMP-C-${Date.now()}`;
     const buf = xlsxBuffer([
-      ['HDR', 'number', 'name', 'price', 'seller', 'branch'],
+      ['HDR', 'sparepart_number', 'sparepart_name', 'purchase_price', 'seller', 'branch'],
       ['', num, `Imported ${num}`, 50000, '', 'JKT'],
     ]);
     expect((await upload(buf, `e2e-c1-${Date.now()}`)).status()).toBe(200);
@@ -110,7 +110,7 @@ test.describe('Sparepart Bulk Import — Success Path', () => {
 
     // Re-import the same part → branch stock is reset to 0 (import is not additive).
     const buf2 = xlsxBuffer([
-      ['HDR', 'number', 'name', 'price', 'seller', 'branch'],
+      ['HDR', 'sparepart_number', 'sparepart_name', 'purchase_price', 'seller', 'branch'],
       ['', num, `Imported ${num}`, 60000, '', 'JKT'],
     ]);
     const res2 = await upload(buf2, `e2e-c2-${Date.now()}`);
@@ -123,7 +123,7 @@ test.describe('Sparepart Bulk Import — Success Path', () => {
     const goodNum = `IMP-D-${Date.now()}`;
     // Second data row has an empty required sparepart_number → validation fails for the chunk.
     const buf = xlsxBuffer([
-      ['HDR', 'number', 'name', 'price', 'seller', 'branch'],
+      ['HDR', 'sparepart_number', 'sparepart_name', 'purchase_price', 'seller', 'branch'],
       ['', goodNum, `Good ${goodNum}`, 1000, '', 'JKT'],
       ['', '', 'Missing Number Row', 2000, '', 'JKT'],
     ]);

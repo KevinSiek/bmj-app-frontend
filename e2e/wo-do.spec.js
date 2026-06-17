@@ -54,6 +54,7 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.locator('.list .item').first().click();
     await page.click('button:has-text("Create PO")');
     await page.fill('.modal-body textarea', 'Move to Service PO');
+    await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
     
     const [poResponse] = await Promise.all([
@@ -212,6 +213,15 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
 
     await page.screenshot({ path: 'e2e/screenshots/wo-api-003-detail.png', fullPage: true });
 
+    // Click Process first to transition status
+    const processBtn = page.locator('button:has-text("Process")');
+    await expect(processBtn).toBeVisible();
+    await processBtn.click();
+    await page.click('button:has-text("Yes")');
+    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
+    await closeModal(page);
+    await page.waitForTimeout(1000);
+
     // Click Done
     const doneBtn = page.locator('button:has-text("Done")');
     await expect(doneBtn).toBeVisible();
@@ -269,6 +279,7 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.locator('.list .item').first().click();
     await page.click('button:has-text("Create PO")');
     await page.fill('.modal-body textarea', 'Move to DO setup');
+    await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
     await page.click('button:has-text("Yes")');
     await closeModal(page);

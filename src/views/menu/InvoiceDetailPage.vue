@@ -258,6 +258,7 @@ import { useTrackStore } from '@/stores/track'
 import { createPdf } from '@/utils/pdf/invoice'
 import { formatCurrency } from '@/utils/form-util'
 import { useModalStore } from '@/stores/modal'
+import { useGeneralStore } from '@/stores/general'
 
 const route = useRoute()
 const router = useRouter()

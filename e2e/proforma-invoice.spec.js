@@ -62,6 +62,7 @@ test.describe('Proforma Invoice E2E Tests (Live DB)', () => {
     await page.locator('.list .item').first().click();
     await page.click('button:has-text("Create PO")');
     await page.fill('.modal-body textarea', 'Move to PO setup for PI');
+    await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
     await page.click('button:has-text("Yes")');
     await closeModal(page);
