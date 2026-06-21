@@ -37,6 +37,7 @@ export const useBorrowStore = defineStore('borrow', () => {
         worker: data?.work_order?.worker || ''
       },
       sparepartPoId: data?.sparepart_po_id || '',
+      sparepartPoNumber: data?.sparepart_po_number || '',
       status: data?.status || [],
       notes: data?.notes || '',
       returnNotes: data?.return_notes || '',
@@ -57,10 +58,9 @@ export const useBorrowStore = defineStore('borrow', () => {
       sparepartId: data?.sparepart_id || data?.id || '',
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
-      totalUnit: (data?.total_unit || Object.values(common.branch)).map(branch => ({
-        name: branch.name || branch,
-        stock: branch.stock || 0
-      })),
+      totalUnit: Object.fromEntries(
+        (data?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
+      ),
     }
   }
 
@@ -156,12 +156,16 @@ export const useBorrowStore = defineStore('borrow', () => {
     return borrowApi.sendBorrow(id)
   }
 
-  async function kembaliBorrow(id, notes) {
-    return borrowApi.kembaliBorrow(id, { notes })
+  async function returnBorrow(id, payload) {
+    return borrowApi.returnBorrow(id, payload)
   }
 
-  async function doneBorrow(id, payload) {
-    return borrowApi.doneBorrow(id, payload)
+  async function receiveBorrow(id, payload) {
+    return borrowApi.receiveBorrow(id, payload)
+  }
+
+  async function doneBorrow(id) {
+    return borrowApi.doneBorrow(id)
   }
 
   async function cancelBorrow(id) {
@@ -196,9 +200,10 @@ export const useBorrowStore = defineStore('borrow', () => {
     approveBorrow,
     rejectBorrow,
     sendBorrow,
-    kembaliBorrow,
-    doneBorrow,
+    returnBorrow,
+    receiveBorrow,
     cancelBorrow,
+    doneBorrow,
     $resetBorrow,
     $resetBorrows
   }

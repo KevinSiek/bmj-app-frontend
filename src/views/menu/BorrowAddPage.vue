@@ -17,10 +17,10 @@
           <div class="row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4"><label>Sparepart Name</label></div>
+                <div class="col-3"><label>Sparepart Name</label></div>
                 <div class="col-3"><label>Part Number</label></div>
-                <div class="col-2"><label>Quantity</label></div>
-                <div class="col-3"><label>Quantity Return</label></div>
+                <div class="col-3"><label>Stock</label></div>
+                <div class="col-3"><label>Quantity</label></div>
               </div>
             </div>
             <div class="col-1">
@@ -32,7 +32,7 @@
           <div v-for="(sparepart, sparepartIndex) in borrow.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                     data-bs-toggle="dropdown" aria-expanded="false" @keyup="handleInputSearch(sparepart.sparepartName)">
                   <ul class="dropdown-menu">
@@ -53,14 +53,13 @@
                     </li>
                   </ul>
                 </div>
-                <div v-show="false" class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity">
-                </div>
-                <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity">
+                <div class="col-3">
+                  <input type="text" class="form-control mt-2"
+                    :value="isSearching ? 'Loading...' : (sparepart.totalUnit?.[user?.branch?.name] ?? '')"
+                    :placeholder="isSearching ? 'Loading...' : 'Stock'" disabled>
                 </div>
                 <div class="col-3">
-                  <input type="number" class="form-control mt-2" placeholder="Filled on return" disabled>
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity">
                 </div>
               </div>
             </div>
@@ -104,15 +103,19 @@ import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
 import { useRoute, useRouter } from 'vue-router'
 import PoSelect from '@/components/borrow/PoSelect.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const borrowStore = useBorrowStore()
 const modalStore = useModalStore()
 const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
 
+const { user } = storeToRefs(authStore)
 const { borrow, searchedSpareparts } = storeToRefs(borrowStore)
 
 const isProcessing = ref(false)
+const isSearching = ref(false)
 const isEdit = computed(() => Boolean(route.params.id))
 
 const workOrderLabel = computed(() => {
@@ -144,8 +147,12 @@ const selectPurchaseOrder = (po) => {
   }
 }
 
-const searchSparepart = (search) => {
-  if (search !== '') borrowStore.getSpareparts({ page: 1, search })
+const searchSparepart = async (search) => {
+  if (search !== '') {
+    isSearching.value = true
+    await borrowStore.getSpareparts({ page: 1, search })
+    isSearching.value = false
+  }
 }
 
 const handleInputSearch = (search) => {
@@ -161,7 +168,7 @@ const addSparepart = () => {
     sparepartId: '',
     sparepartName: '',
     sparepartNumber: '',
-    totalUnit: [],
+    totalUnit: {},
     quantity: 0,
     quantityReturn: null,
     stockInBranch: 0
@@ -271,6 +278,7 @@ $secondary-color: rgb(98, 98, 98);
 }
 
 .dropdown-menu {
-  text-align: center;
+  overflow-y: auto;
+  max-height: 300px;
 }
 </style>

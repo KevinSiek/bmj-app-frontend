@@ -33,12 +33,16 @@ const sendBorrow = (id) => {
   return httpApi.postDataViaApi(`${api.borrow}/send/${id}`)
 }
 
-const kembaliBorrow = (id, payload) => {
-  return httpApi.postDataViaApi(`${api.borrow}/kembali/${id}`, payload)
+const returnBorrow = (id, payload) => {
+  return httpApi.postDataViaApi(`${api.borrow}/return/${id}`, payload)
 }
 
-const doneBorrow = (id, payload) => {
-  return httpApi.postDataViaApi(`${api.borrow}/done/${id}`, payload)
+const receiveBorrow = (id, payload) => {
+  return httpApi.postDataViaApi(`${api.borrow}/receive/${id}`, payload)
+}
+
+const doneBorrow = (id) => {
+  return httpApi.postDataViaApi(`${api.borrow}/done/${id}`)
 }
 
 const cancelBorrow = (id) => {
@@ -54,7 +58,8 @@ export default {
   approveBorrow,
   rejectBorrow,
   sendBorrow,
-  kembaliBorrow,
+  returnBorrow,
+  receiveBorrow,
   doneBorrow,
   cancelBorrow
 }

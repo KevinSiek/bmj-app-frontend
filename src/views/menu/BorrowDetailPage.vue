@@ -52,7 +52,7 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">
-                  <input v-if="canReconcile" type="number" class="form-control return-input" min="0"
+                  <input v-if="canReturn" type="number" class="form-control return-input" min="0"
                     :max="sparepart.quantity" v-model.number="returnQuantities[index]">
                   <span v-else>{{ sparepart.quantityReturn ?? '-' }}</span>
                 </td>
@@ -63,13 +63,16 @@
         </div>
       </div>
 
-      <div v-if="canReconcile && hasShortfall" class="shortfall my-3">
+      <div v-if="(canReturn && hasShortfall) || borrow.sparepartPoId" class="shortfall my-3">
         <div class="title">Sparepart PO (shortfall justification)</div>
         <p class="text-muted small">
           Returned quantity is less than borrowed — select a Sparepart PO that covers the missing
           items (sold spareparts).
         </p>
-        <PoSelect type="Spareparts" placeholder="Search Sparepart PO" @select="selectSparepartPo" />
+        <input v-if="borrow.sparepartPoId" type="text" class="form-control mt-2" :value="borrow.sparepartPoNumber"
+          disabled>
+        <PoSelect v-else type="Spareparts" placeholder="Search Sparepart PO" @select="selectSparepartPo"
+          :disabled="isDone || isReceived" />
       </div>
 
       <div class="notes my-2">
@@ -77,9 +80,10 @@
         <textarea class="form-control" v-model="borrow.notes" style="height: 100px" disabled></textarea>
       </div>
 
-      <div v-if="borrow.returnNotes" class="notes my-2">
+      <div v-if="borrow.returnNotes || canReturn" class="notes my-2">
         <div class="title">Return Notes</div>
-        <textarea class="form-control" v-model="borrow.returnNotes" style="height: 80px" disabled></textarea>
+        <textarea class="form-control" v-model="borrow.returnNotes" style="height: 80px"
+          :disabled="!canReturn"></textarea>
       </div>
 
       <div v-if="borrow.rejectNotes" class="notes my-2">
@@ -105,10 +109,12 @@
         :disabled="isProcessing">Approve</button>
       <button v-if="canHandover" type="button" class="btn btn-process" @click="sendConfirmation"
         :disabled="isProcessing">Send</button>
-      <button v-if="canReturn" type="button" class="btn btn-success" @click="returnPrompt"
+      <button v-if="canReturn" type="button" class="btn btn-success" @click="returnConfirmation"
         :disabled="isProcessing">Return</button>
-      <button v-if="canReconcile" type="button" class="btn btn-process" @click="doneConfirmation"
-        :disabled="isProcessing">Done</button>
+      <button v-if="canReceive" type="button" class="btn btn-process" @click="receiveConfirmation"
+        :disabled="isProcessing">Receive</button>
+      <button v-if="canFinished" type="button" class="btn btn-process" @click="finishedConfirmation"
+        :disabled="isProcessing">Finish</button>
     </div>
   </div>
 </template>
@@ -123,6 +129,7 @@ import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { common, menuMapping as menuConfig } from '@/config'
 import { createPdf } from '@/utils/pdf/borrow'
+import PoSelect from '@/components/borrow/PoSelect.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -144,19 +151,23 @@ const isInventory = computed(() =>
   isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value)
 const isMarketing = computed(() => isRoleMarketing.value || isRoleDirector.value)
 const isReviewer = computed(() => isRoleHeadInventory.value || isRoleDirector.value)
+const isReceived = computed(() => borrow.value?.currentStatus === status.received)
+const isDone = computed(() => borrow.value?.currentStatus === status.done)
 
 const canCancel = computed(() => isMarketing.value && borrow.value?.currentStatus === status.created)
 const canReview = computed(() => isReviewer.value && borrow.value?.currentStatus === status.created)
 const canHandover = computed(() => isInventory.value && borrow.value?.currentStatus === status.approved)
 const canReturn = computed(() => isMarketing.value && borrow.value?.currentStatus === status.borrowed)
-const canReconcile = computed(() => isInventory.value && borrow.value?.currentStatus === status.returned)
+const canReceive = computed(() => isInventory.value && borrow.value?.currentStatus === status.returned)
+const canFinished = computed(() => isRoleDirector.value && borrow.value?.currentStatus === status.received)
 
 const hasShortfall = computed(() =>
   borrow.value?.spareparts?.some((sp, i) => Number(returnQuantities.value[i]) < Number(sp.quantity)))
 
 const fetchData = async () => {
   await borrowStore.getBorrow(route.params.id)
-  await trackStore.setTrackData(borrow.value.status, 'borrow')
+  await trackStore.setTrackData(borrow.value.status, 'Borrow')
+
   // Seed reconciliation inputs with the borrowed quantity (assume full return by default).
   returnQuantities.value = borrow.value.spareparts.map(sp => sp.quantityReturn ?? sp.quantity)
   sparepartPoId.value = ''
@@ -176,7 +187,7 @@ const runAction = async (fn) => {
     await fn()
     await fetchData()
   } catch (error) {
-    throw error.data?.error || error.data?.message || 'Action failed'
+    throw error.data?.error || error.data?.message || error.message || 'Action failed'
   } finally {
     isProcessing.value = false
   }
@@ -188,12 +199,6 @@ const goToEdit = () => router.push(menuConfig.borrow_edit.path.replace(':id', ro
 const cancelConfirmation = () =>
   modalStore.openConfirmationModal('to Cancel this Borrow ?', 'Cancel Success',
     () => runAction(() => borrowStore.cancelBorrow(route.params.id)))
-
-const returnPrompt = () =>
-  modalStore.openNotesModal('Return', async () => {
-    await runAction(() => borrowStore.returnBorrow(route.params.id, modalStore.notes))
-    modalStore.closeModal()
-  })
 
 // --- Reviewer ---
 const approveConfirmation = () =>
@@ -221,34 +226,43 @@ const sendConfirmation = () =>
 const selectSparepartPo = (po) => { sparepartPoId.value = po.id }
 
 // --- Inventory: reconciliation ---
-const doDone = async () => {
+const doReturn = async () => {
   const payload = {
     returned: borrow.value.spareparts.map((sp, i) => ({
       sparepartId: sp.sparepartId,
       quantityReturn: Number(returnQuantities.value[i] ?? 0)
-    }))
+    })),
+    returnNotes: borrow.value.returnNotes || ''
   }
   if (hasShortfall.value) {
     if (!sparepartPoId.value) {
-      throw 'A Sparepart PO is required when returned quantity is less than borrowed.'
+      throw new Error('Create and select a Sparepart PO.')
     }
     payload.sparepartPoId = sparepartPoId.value
   }
-  await borrowStore.doneBorrow(route.params.id, payload)
+  await borrowStore.returnBorrow(route.params.id, payload)
 }
 
-const doneConfirmation = () => {
+const returnConfirmation = () => {
   const invalid = borrow.value.spareparts.some((sp, i) => {
     const q = Number(returnQuantities.value[i])
     return Number.isNaN(q) || q < 0 || q > Number(sp.quantity)
   })
   if (invalid) {
+    console.log('Invalid return quantities', returnQuantities.value)
     modalStore.openMessageModal(common.modal.failed, 'Each returned quantity must be between 0 and the borrowed quantity.')
-    return
   }
-  modalStore.openConfirmationModal('to mark this Borrow as Done ?', 'Done Success',
-    () => runAction(doDone))
+  modalStore.openConfirmationModal('to mark this Borrow as Returned ?', 'Return Success',
+    () => runAction(doReturn))
 }
+
+const receiveConfirmation = () =>
+  modalStore.openConfirmationModal('to mark this Borrow as Received ?', 'Receive Success',
+    () => runAction(() => borrowStore.receiveBorrow(route.params.id, {})))
+
+const finishedConfirmation = () =>
+  modalStore.openConfirmationModal('to mark this Borrow as Finished ?', 'Finish Success',
+    () => runAction(() => borrowStore.doneBorrow(route.params.id)))
 </script>
 
 <style lang="scss" scoped>
