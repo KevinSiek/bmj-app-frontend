@@ -132,6 +132,7 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: HomePage,
+      redirect: '/menu',
       meta: {
         requireAuth: true,
       },
