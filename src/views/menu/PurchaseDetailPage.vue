@@ -14,6 +14,7 @@
                 <th scope="col-1" class="table-number">No</th>
                 <th scope="col" class="table-name">Sparepart Name</th>
                 <th scope="col" class="table-part-number">Sparepart Number</th>
+                <th scope="col" class="table-name">Seller</th>
                 <th scope="col" class="table-name">Quantity</th>
                 <th scope="col" class="table-name">Unit Price</th>
                 <th scope="col" class="table-name">Total Price</th>
@@ -24,6 +25,7 @@
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
+                <td class="table-col table-name">{{ sparepart.seller || '-' }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceBuy) }}</td>
                 <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>

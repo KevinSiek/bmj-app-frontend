@@ -28,6 +28,7 @@ export const usePurchaseStore = defineStore('purchase', () => {
         unitPriceBuy: sparepart?.unit_price_buy || 0,
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
+        seller: sparepart?.seller_name || sparepart?.seller || '',
         stock: sparepart?.stock || ''
       }))
     }

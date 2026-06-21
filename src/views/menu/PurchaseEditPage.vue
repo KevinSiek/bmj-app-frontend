@@ -15,96 +15,93 @@
       </div>
       <div class="my-2">
         <div class="title">Purchase List</div>
-        <div class="input form-group col-12 mx-3">
-          <div class="row">
-            <div class="col-11">
-              <div class="row">
-                <div class="col-3">
-                  <label for="">Sparepart Name</label>
-                </div>
-                <div class="col-2">
-                  <label for="">Part Number</label>
-                </div>
-                <div class="col-2">
-                  <label for="">Seller</label>
-                </div>
-                <div class="col-1">
-                  <label for="">Quantity</label>
-                </div>
-                <div class="col-2">
-                  <label for="">Unit Price</label>
-                </div>
-                <div class="col-2">
-                  <label for="">Total Price</label>
-                </div>
+        <div class="purchase-scroll">
+          <div class="input form-group col-12 mx-3">
+            <div class="row flex-nowrap">
+              <div class="col-3">
+                <label for="">Sparepart Name</label>
+              </div>
+              <div class="col-3">
+                <label for="">Part Number</label>
+              </div>
+              <div class="col-3">
+                <label for="">Seller</label>
+              </div>
+              <div class="col-2">
+                <label for="">Quantity</label>
+              </div>
+              <div class="col-3">
+                <label for="">Unit Price</label>
+              </div>
+              <div class="col-3">
+                <label for="">Total Price</label>
+              </div>
+              <div class="col-1">
+                <div class="button-placeholder"></div>
               </div>
             </div>
-            <div class="col-1">
-              <div class="button-placeholder"></div>
-            </div>
           </div>
-        </div>
-        <div class="input form-group col-12 mx-3">
-          <div v-for="(sparepart, sparepartIndex) in purchase.spareparts" :key="sparepartIndex" class="list row">
-            <div class="col-11">
-              <div class="row">
-                <div class="col-3">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
-                    data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
-                    @keyup="handleInputSearch(sparepart.sparepartName)">
-                  <ul class="dropdown-menu">
-                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
-                      @click="selectItem(sparepartIndex, sparepart, item)">
-                      {{ item.sparepartName }}
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-2">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
-                    placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
-                    @change="handleInputSearch(sparepart.sparepartNumber)"
-                    @keyup="handleInputSearch(sparepart.sparepartNumber)">
-                  <ul class="dropdown-menu">
-                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
-                      @click="selectItem(sparepartIndex, sparepart, item)">
-                      {{ item.sparepartNumber }}
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-2">
-                  <select class="form-select mt-2" v-model="sparepart.selectedSellerPrice"
-                    @change="(e) => { sparepart.unitPriceBuy = Number(e.target.value); selectItem(sparepartIndex, sparepart); }">
-                    <option :value="undefined" disabled selected>Select Seller</option>
-                    <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx"
-                      :value="sellerOption.price">
-                      {{ sellerOption.seller }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-1">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                    @input="selectItem(sparepartIndex, sparepart)">
-                </div>
-                <div class="col-2">
-                  <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"
-                    @update:model-value="selectItem(sparepartIndex, sparepart)" />
-                </div>
-                <div class="col-2">
-                  <input type="text" class="form-control mt-2" placeholder="Total Price"
-                    :value="formatCurrency(sparepart.totalPrice)" disabled>
-                </div>
+          <div class="input form-group col-12 mx-3">
+            <div v-for="(sparepart, sparepartIndex) in purchase.spareparts" :key="sparepartIndex"
+              class="row flex-nowrap">
+              <div class="col-3">
+                <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
+                  data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
+                  @keyup="handleInputSearch(sparepart.sparepartName)">
+                <ul class="dropdown-menu">
+                  <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
+                    @click="selectItem(sparepartIndex, sparepart, item)">
+                    {{ item.sparepartName }}
+                  </li>
+                </ul>
+              </div>
+              <div class="col-3">
+                <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
+                  placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
+                  @change="handleInputSearch(sparepart.sparepartNumber)"
+                  @keyup="handleInputSearch(sparepart.sparepartNumber)">
+                <ul class="dropdown-menu">
+                  <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
+                    @click="selectItem(sparepartIndex, sparepart, item)">
+                    {{ item.sparepartNumber }}
+                  </li>
+                </ul>
+              </div>
+              <div class="col-3">
+                <select v-if="sparepart.isNew" class="form-select mt-2" v-model="sparepart.seller"
+                  @change="selectItem(sparepartIndex, sparepart)">
+                  <option value="" disabled selected>Select Seller</option>
+                  <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx"
+                    :value="sellerOption.seller">
+                    {{ sellerOption.seller }}
+                  </option>
+                </select>
+                <input v-else type="text" class="form-control mt-2" placeholder="Seller" v-model="sparepart.seller"
+                  disabled>
+              </div>
+              <div class="col-2">
+                <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
+                  @input="selectItem(sparepartIndex, sparepart)">
+              </div>
+              <div class="col-3">
+                <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"
+                  @update:model-value="selectItem(sparepartIndex, sparepart)" />
+              </div>
+              <div class="col-3">
+                <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
+                  @update:model-value="selectItem(sparepartIndex, sparepart)" :disabled="true" />
+              </div>
+              <div class="col-1 d-flex justify-content-center align-items-end">
+                <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
+                    class="bi bi-trash3"></i></button>
               </div>
             </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
-                  class="bi bi-trash3"></i></button>
+            <div class="add-btn mt-3">
+              <button type="button" class="btn btn-outline-dark" @click="addSparepart">
+                <i class="bi bi-plus-lg"></i>
+                <span class="mx-2">Add Sparepart</span>
+              </button>
             </div>
-          </div>
-          <div class="add-btn mt-3">
-            <button type="button" class="btn btn-outline-dark" @click="addSparepart">
-              <i class="bi bi-plus-lg"></i>
-              <span class="mx-2">Add Sparepart</span>
-            </button>
           </div>
         </div>
       </div>
@@ -131,7 +128,7 @@
 import { menuMapping as menuConfig } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
 import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
 import { formatCurrency } from '@/utils/form-util'
@@ -169,6 +166,7 @@ const selectItem = (index, purchaseData, sparepartData) => {
     ...purchaseData,
     ...sparepartData
   }
+  data.unitPriceBuy = data.unitPriceSeller?.find(s => s.seller === data.seller)?.price ?? data.unitPriceBuy
   data.totalPrice = data.quantity * data.unitPriceBuy
   purchase.value.spareparts.splice(index, 1, data)
 }
@@ -184,7 +182,9 @@ const addSparepart = () => {
     totalPrice: 0,
     stock: '',
     unitPriceSeller: [],
-    selectedSellerPrice: undefined
+    selectedSeller: undefined,
+    seller: '',
+    isNew: true
   })
 }
 const removeSparepart = (index) => {
@@ -267,6 +267,11 @@ $secondary-color: rgb(98, 98, 98);
   .btn-process {
     background-color: $primary-color;
   }
+}
+
+.purchase-scroll {
+  overflow-x: auto;
+  width: 100%;
 }
 
 .button-placeholder {
