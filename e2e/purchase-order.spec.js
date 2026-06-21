@@ -432,14 +432,8 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await closeModal(page);
     await page.waitForTimeout(2000);
 
-    // Login as Service to Release
-    await page.evaluate(() => localStorage.clear());
-    await page.goto('/login');
-    await page.fill('input[type="email"]', 'hadi.s@bmj.com');
-    await page.fill('input[type="password"]', 'password');
-    await page.click('button[type="submit"]');
-    await page.waitForURL('**/menu', { timeout: 20000 });
-    
+    // We are already logged in as Director from the previous steps.
+    // Navigate directly to the Service PO by ID (or fallback to list)
     if (usePOId) {
       await page.goto(`/purchase-order/${usePOId}`);
     } else {
