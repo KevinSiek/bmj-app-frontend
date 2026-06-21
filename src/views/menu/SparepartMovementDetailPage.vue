@@ -1,11 +1,8 @@
 <template>
   <div class="contain" v-if="detail">
-    <div class="header mb-4 d-flex justify-content-between align-items-center">
+    <div class="header mb-2 d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center">
-        <button class="btn btn-outline-secondary me-3" @click="goBack">
-          <i class="bi bi-arrow-left"></i>
-        </button>
-        <h3>Stock Movement Detail - {{ detail.movementNumber }}</h3>
+        <h3>{{ detail.movementNumber }}</h3>
       </div>
     </div>
 
@@ -32,19 +29,19 @@
             <span class="text-muted d-block text-uppercase small">Target Branch</span>
             <strong>{{ detail.targetBranch }}</strong>
           </div>
-          <div class="col-md-4 mb-2">
-            <span class="text-muted d-block text-uppercase small">Reason</span>
-            <strong>{{ detail.reason || '-' }}</strong>
-          </div>
+        </div>
+        <div class="row">
+          <span class="text-muted d-block text-uppercase small">Reason</span>
+          <strong>{{ detail.reason || '-' }}</strong>
         </div>
       </div>
     </div>
 
     <div class="card shadow-sm mb-4">
       <div class="card-header bg-white">
-        <h5 class="mb-0">Items</h5>
+        <h5 class="mb-0">Spareparts</h5>
       </div>
-      <div class="card-body p-0">
+      <div class="card-body p-0" style="height: 33vh; overflow-y: auto;">
         <table class="table table-hover mb-0">
           <thead class="table-light">
             <tr>
@@ -63,21 +60,8 @@
         </table>
       </div>
     </div>
-    
-    <div class="card shadow-sm">
-      <div class="card-header bg-white">
-        <h5 class="mb-0">History</h5>
-      </div>
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item px-0" v-for="(hist, idx) in detail.status" :key="idx">
-            <strong>{{ hist.status }}</strong> by {{ hist.by }} at {{ new Date(hist.date).toLocaleString('id-ID') }}
-          </li>
-        </ul>
-      </div>
-    </div>
   </div>
-  <div v-else class="p-5 text-center">
+  <div v-else class="loading-text">
     Loading...
   </div>
 
@@ -100,23 +84,31 @@
 import { onMounted, computed, onBeforeUnmount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSparepartMovementStore } from '@/stores/sparepart-movement'
-import { useAuthStore } from '@/stores/auth'
 import { useModalStore } from '@/stores/modal'
+import { useTrackStore } from '@/stores/track'
+import { useRole } from '@/composeable/useRole'
 import { common } from '@/config'
 import { generateSparepartMovementPdf } from '@/utils/pdf/sparepart-movement'
 
 const route = useRoute()
 const router = useRouter()
-const store = useSparepartMovementStore()
-const authStore = useAuthStore()
+const sparepartMovementStore = useSparepartMovementStore()
 const modalStore = useModalStore()
+const trackStore = useTrackStore()
 
-const detail = computed(() => store.detail)
+const { isRoleDirector, isRoleHeadInventory, isRoleInventoryAdmin } = useRole()
+
+const detail = computed(() => sparepartMovementStore.detail)
 const isProcessing = ref(false)
+
+const fetchData = async () => {
+  await sparepartMovementStore.fetchDetail(route.params.id)
+  await trackStore.setTrackData(detail.value.status, 'SparepartMovement')
+}
 
 onMounted(async () => {
   try {
-    await store.fetchDetail(route.params.id)
+    await fetchData()
   } catch (error) {
     modalStore.openMessageModal(common.modal.failed, 'Failed to fetch detail')
     router.back()
@@ -124,24 +116,21 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-  store.$resetDetail()
+  sparepartMovementStore.$resetDetail()
 })
 
 const goBack = () => {
   router.back()
 }
 
-const canSend = computed(() => {
-  return detail.value?.currentStatus === 'Created' && detail.value?.sourceBranch === authStore.user?.branch
-})
+const isInventory = computed(() =>
+  isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value)
 
-const canCancel = computed(() => {
-  return detail.value?.currentStatus === 'Created' && detail.value?.sourceBranch === authStore.user?.branch
-})
+const canSend = computed(() => isInventory.value && detail.value?.currentStatus === 'Created')
 
-const canReceive = computed(() => {
-  return detail.value?.currentStatus === 'Send' && (detail.value?.targetBranch === authStore.user?.branch || authStore.user?.role === 'Director')
-})
+const canCancel = computed(() => isInventory.value && detail.value?.currentStatus === 'Created')
+
+const canReceive = computed(() => isInventory.value && detail.value?.currentStatus === 'Send')
 
 const runTransition = async (fn, failMessage) => {
   if (isProcessing.value) return
@@ -149,25 +138,26 @@ const runTransition = async (fn, failMessage) => {
     isProcessing.value = true
     await fn(route.params.id)
   } catch (error) {
-    modalStore.openMessageModal(common.modal.failed, error.response?.data?.message || failMessage)
+    throw error?.data?.message || failMessage
   } finally {
     isProcessing.value = false
+    fetchData()
   }
 }
 
 const handleSend = () => {
   modalStore.openConfirmationModal('to send these spareparts ?', 'Movement sent successfully',
-    () => runTransition(store.send, 'Failed to send'))
+    () => runTransition(sparepartMovementStore.send, 'Failed to send'))
 }
 
 const handleCancel = () => {
   modalStore.openConfirmationModal('to cancel this movement ?', 'Movement cancelled successfully',
-    () => runTransition(store.cancel, 'Failed to cancel'))
+    () => runTransition(sparepartMovementStore.cancel, 'Failed to cancel'))
 }
 
 const handleReceive = () => {
   modalStore.openConfirmationModal('to receive these spareparts ? Stock will be updated.', 'Movement received and stock updated',
-    () => runTransition(store.receive, 'Failed to receive'))
+    () => runTransition(sparepartMovementStore.receive, 'Failed to receive'))
 }
 
 const printPdf = () => {
@@ -183,8 +173,9 @@ $primary-color: black;
 $secondary-color: rgb(98, 98, 98);
 
 .contain {
-  padding: 2rem;
+  padding: 0 2rem;
 }
+
 .small {
   font-size: 0.8rem;
 }
@@ -209,6 +200,14 @@ $secondary-color: rgb(98, 98, 98);
   .btn-process {
     background-color: $primary-color;
   }
+}
+
+.loading-text {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
 }
 
 @media only screen and (max-width: 767px) {

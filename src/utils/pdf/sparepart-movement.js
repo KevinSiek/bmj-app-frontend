@@ -1,12 +1,11 @@
 import pdfMake from 'pdfmake/build/pdfmake'
 import pdfFonts from 'pdfmake/build/vfs_fonts'
-import { toDataURL } from './utils'
-import LOGO_BERKAT from '@/assets/images/logo-berkat.png'
+import { getBase64FromUrl } from '@/utils/pdf-util'
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs
+// pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 export const generateSparepartMovementPdf = async (data) => {
-  const logo = await toDataURL(LOGO_BERKAT)
+  const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
   const itemsBody = data.details.map((item, index) => [
     index + 1,
@@ -22,7 +21,7 @@ export const generateSparepartMovementPdf = async (data) => {
       {
         columns: [
           {
-            image: logo,
+            image: logoBase64,
             width: 150
           },
           {

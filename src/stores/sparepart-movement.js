@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../api/sparepart-movement'
+import { getAllSparepart } from '@/api/sparepart'
 
 export const useSparepartMovementStore = defineStore('sparepartMovement', () => {
   const list = ref([])
   const detail = ref(null)
   const meta = ref(null)
+  const searchedSpareparts = ref([])
 
   const mapToModel = (item) => {
     return {
@@ -29,6 +31,24 @@ export const useSparepartMovementStore = defineStore('sparepartMovement', () => 
     }
   }
 
+  const mapSparepart = (data) => {
+    return {
+      sparepartId: data?.sparepart_id || data?.id || '',
+      slug: data?.slug || '',
+      sparepartNumber: data?.sparepart_number || '',
+      sparepartName: data?.sparepart_name || '',
+      totalUnit: Object.fromEntries(
+        (data?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
+      ),
+      unitPriceBuy: data?.unit_price_buy || 0,
+      unitPriceSell: data?.unit_price_sell || 0,
+      unitPriceSeller: (data?.unit_price_seller || []).map(seller => ({
+        seller: seller?.seller || '',
+        price: seller?.price || 0
+      }))
+    }
+  }
+
   const fetchList = async (params = {}) => {
     const data = await api.getAll(params)
     list.value = data.data.map(mapToModel)
@@ -43,6 +63,11 @@ export const useSparepartMovementStore = defineStore('sparepartMovement', () => 
   const fetchDetail = async (id) => {
     const data = await api.get(id)
     detail.value = mapToModel(data)
+  }
+
+  const getSpareparts = async (param) => {
+    const { data } = await getAllSparepart(param)
+    searchedSpareparts.value = data.data.map(mapSparepart)
   }
 
   const create = async (payload) => {
@@ -81,9 +106,11 @@ export const useSparepartMovementStore = defineStore('sparepartMovement', () => 
     list,
     detail,
     meta,
+    searchedSpareparts,
     fetchList,
     fetchDetail,
     create,
+    getSpareparts,
     send,
     cancel,
     receive,
