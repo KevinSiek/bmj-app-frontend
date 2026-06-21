@@ -72,6 +72,10 @@ const analyzeBackOrder = (id) => {
   return httpApi.getDataViaApi(`${api.back_order}/analyze/${id}`)
 }
 
+const adjustBackOrder = (id, bo) => {
+  return httpApi.postDataViaApi(`${api.back_order}/adjust/${id}`, bo)
+}
+
 
 export default {
 	getAllBackOrder,
@@ -80,5 +84,6 @@ export default {
   updateBackOrder,
   deleteBackOrder,
   processBackOrder,
-  analyzeBackOrder
+  analyzeBackOrder,
+  adjustBackOrder
 }

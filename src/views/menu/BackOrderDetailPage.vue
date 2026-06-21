@@ -19,9 +19,14 @@
             <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.orderType"
               placeholder="Order Type" disabled>
           </div>
+          <div class="input form-group col-12">
+            <label for="">Branch</label><br>
+            <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.branch" placeholder="Branch"
+              disabled>
+          </div>
         </div>
         <div class="right">
-          <div class="title">Delivery Note</div>
+          <div class="title">Delivery Order</div>
           <div class="input form-group col-12">
             <label for="name">No</label><br>
             <input type="text" class="form-control mt-2" v-model="backOrder.deliveryOrder.no" placeholder="No" disabled>
@@ -114,7 +119,7 @@
                 <th scope="col-1" class="table-number">NO</th>
                 <th scope="col" class="table-name">DESCRIPTION</th>
                 <th scope="col" class="table-part-number">Order</th>
-                <th scope="col" class="table-name">Delivery Note</th>
+                <th scope="col" class="table-name">Delivery Order</th>
                 <th scope="col" class="table-name">Back Order</th>
               </tr>
             </thead>
@@ -141,8 +146,12 @@
     </form>
   </div>
   <div class="button">
+    <div class="left">
+      <button v-if="isReadyToProcess" type="button" class="btn btn-process m-1" @click="adjustBackOrderAction"
+        :disabled="isProcessing">Adjust</button>
+    </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="download">Print</button>
+      <button type="button" class="btn btn-process m-1" @click="download">Print</button>
       <button v-if="isReadyToProcess" type="button" class="btn btn-process m-1" @click="analyzeBackOrderAction"
         :disabled="isProcessing">Analyze</button>
     </div>
@@ -152,14 +161,17 @@
 <script setup>
 import { useBackOrderStore } from '@/stores/back-order'
 import { useModalStore } from '@/stores/modal'
+import { useTrackStore } from '@/stores/track'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { createPdf } from '@/utils/pdf/back-order'
-import { common } from '@/config'
+import { common, menuMapping } from '@/config'
 
 const route = useRoute()
+const router = useRouter()
 const backOrderStore = useBackOrderStore()
+const trackStore = useTrackStore()
 const modalStore = useModalStore()
 
 const { backOrder } = storeToRefs(backOrderStore)
@@ -168,21 +180,24 @@ const isProcessing = ref(false)
 
 const isReadyToProcess = computed(() => backOrder.value?.currentStatus !== 'Rejected' && backOrder.value?.currentStatus !== 'Ready')
 
+const fetchData = async () => {
+  await backOrderStore.getBackOrder(route.params.id)
+  await trackStore.setTrackData(backOrder.value.status)
+}
+
 onBeforeMount(() => {
   if (!backOrder.value) backOrderStore.$resetBackOrder()
 })
-onMounted(() => {
-  backOrderStore.getBackOrder(route.params.id)
-})
+onMounted(fetchData)
 
 const analyzeBackOrderAction = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
     const response = await backOrderStore.analyzeBackOrder(route.params.id)
-    
+
     if (response?.total_available === 0) {
-      modalStore.openMessageModal('Warning', 'Nothing change or back order preocessed but nothing new')
+      modalStore.openMessageModal('Warning', 'Nothing change or back order processed but nothing new')
     } else {
       // If sufficient stock, prompt confirmation to process
       modalStore.openConfirmationModal('to process this Back Order ?', 'Back Order Processed', processBackOrder)
@@ -194,6 +209,10 @@ const analyzeBackOrderAction = async () => {
     await backOrderStore.getBackOrder(route.params.id)
     isProcessing.value = false
   }
+}
+
+const adjustBackOrderAction = async () => {
+  router.push(`${menuMapping.back_order_adjustment.path.replace(':id', route.params.id)}`)
 }
 
 const processBackOrder = async () => {
@@ -263,7 +282,7 @@ $secondary-color: rgb(98, 98, 98);
 .button {
   display: flex;
   margin: 2% 4%;
-  justify-content: flex-end;
+  justify-content: space-between;
 
   .right {
     display: flex;

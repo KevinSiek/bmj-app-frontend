@@ -1,12 +1,15 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import backOrderApi from '@/api/back-order'
+import { getAllSparepart } from '@/api/sparepart'
 
 export const useBackOrderStore = defineStore('back-order', () => {
   const backOrder = ref(null)
   const backOrders = ref([])
   const paginationData = ref({})
   const isLoading = ref(false)
+  const newBackOrder = ref([])
+  const searchedSpareparts = ref([])
 
   function mapBackOrder(data) {
     return {
@@ -15,10 +18,12 @@ export const useBackOrderStore = defineStore('back-order', () => {
       currentStatus: data?.current_status || '',
       backOrderNumber: data?.back_order_number || '',
       status: data?.status || [],
+      origin: data?.origin || '',
       purchaseOrder: {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
-        orderType: data?.purchase_order?.order_type || ''
+        orderType: data?.purchase_order?.order_type || '',
+        branch: data?.purchase_order?.branch || ''
       },
       deliveryOrder: {
         no: data?.delivery_order?.delivery_order_number || '',
@@ -39,17 +44,35 @@ export const useBackOrderStore = defineStore('back-order', () => {
       },
       notes: data?.notes || '',
       spareparts: (data?.spareparts || []).map(sparepart => ({
+        sparepartId: sparepart?.sparepart_id || sparepart?.id || '',
         sparepartName: sparepart?.sparepart_name || '',
         sparepartNumber: sparepart?.sparepart_number || '',
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
-        totalUnit: (data?.total_unit || []).map(branch => ({
-          name: branch?.name || '',
-          stock: branch?.stock || 0
-        })),
+        totalUnit: Object.fromEntries(
+          (sparepart?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
+        ),
         order: sparepart?.order || 0,
         deliveryOrder: sparepart?.delivery_order || 0,
         backOrder: sparepart?.back_order || 0
+      }))
+    }
+  }
+
+  function mapSparepart (data) {
+    return {
+      sparepartId: data?.sparepart_id || data?.id || '',
+      slug: data?.slug || '',
+      sparepartNumber: data?.sparepart_number || '',
+      sparepartName: data?.sparepart_name || '',
+      totalUnit: Object.fromEntries(
+        (data?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
+      ),
+      unitPriceBuy: data?.unit_price_buy || 0,
+      unitPriceSell: data?.unit_price_sell || 0,
+      unitPriceSeller: (data?.unit_price_seller || []).map(seller => ({
+        seller: seller?.seller || '',
+        price: seller?.price || 0
       }))
     }
   }
@@ -80,6 +103,12 @@ export const useBackOrderStore = defineStore('back-order', () => {
     console.log(data)
     backOrder.value = mapBackOrder(data)
     console.log(backOrder.value)
+    return data
+  }
+
+  async function getBackOrderForAdjustment(id) {
+    const backOrder = await getBackOrder(id)
+    newBackOrder.value = mapBackOrder(backOrder)
   }
 
   async function setBackOrder(selectedBackOrder) {
@@ -87,7 +116,7 @@ export const useBackOrderStore = defineStore('back-order', () => {
   }
 
   async function addBackOrder() {
-    const response = await backOrderApi.addBackOrder(backOrder)
+    const response = await backOrderApi.addBackOrder(backOrder.value)
   }
 
   async function updateBackOrder() {
@@ -102,8 +131,19 @@ export const useBackOrderStore = defineStore('back-order', () => {
     return await backOrderApi.analyzeBackOrder(id)
   }
 
+  async function getSpareparts (param) {
+    const { data } = await getAllSparepart(param)
+    searchedSpareparts.value = data.data.map(mapSparepart)
+    console.log('searchedSpareparts', searchedSpareparts.value)
+  }
+
+  async function adjustBackOrder(id) {
+    const response = await backOrderApi.adjustBackOrder(id, newBackOrder.value)
+  }
+
   async function $resetBackOrder() {
     backOrder.value = mapBackOrder()
+    newBackOrder.value = mapBackOrder()
   }
 
   async function $resetBackOrders() {
@@ -113,6 +153,8 @@ export const useBackOrderStore = defineStore('back-order', () => {
   return {
     backOrder,
     backOrders,
+    newBackOrder,
+    searchedSpareparts,
     paginationData,
     isLoading,
     getAllBackOrder,
@@ -122,6 +164,9 @@ export const useBackOrderStore = defineStore('back-order', () => {
     getBackOrder,
     processBackOrder,
     analyzeBackOrder,
+    getSpareparts,
+    getBackOrderForAdjustment,
+    adjustBackOrder,
     $resetBackOrder,
     $resetBackOrders
   }
