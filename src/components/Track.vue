@@ -53,12 +53,26 @@ const borrowSteps = [
   common.status.borrow.approved,
   common.status.borrow.borrowed,
   common.status.borrow.returned,
+  common.status.borrow.received,
   common.status.borrow.done,
 ]
 
-const progressSteps = computed(() =>
-  trackType.value === 'borrow' ? borrowSteps : poSteps
-)
+const movementSteps = [
+  common.status.sparepart_movement.created,
+  common.status.sparepart_movement.send,
+  common.status.sparepart_movement.received
+]
+
+const progressSteps = computed(() => {
+  switch (trackType.value) {
+    case 'Borrow':
+      return borrowSteps
+    case 'SparepartMovement':
+      return movementSteps
+    default:
+      return poSteps
+  }
+})
 
 const trackProgress = computed(() => {
   const steps = progressSteps.value
@@ -107,8 +121,9 @@ $primary-color: black;
 .main {
   width: 100%;
   min-height: 70vh;
+  overflow-y: auto;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
 }
