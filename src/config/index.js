@@ -135,6 +135,10 @@ const menuMapping = {
     name: 'Detail Back Order',
     path: '/back-order/:id'
   },
+  back_order_adjustment: {
+    name: 'Adjust Back Order',
+    path: '/back-order/:id/adjustment'
+  },
   borrow: {
     name: 'Borrow',
     path: '/borrow'
@@ -150,6 +154,10 @@ const menuMapping = {
   borrow_detail: {
     name: 'Detail Borrow',
     path: '/borrow/:id'
+  },
+  borrow_return: {
+    name: 'Return Borrow',
+    path: '/borrow/:id/return'
   },
   stock_history: {
     name: 'Stock History',
@@ -254,7 +262,8 @@ const common = {
       on_review: 'On Review',
       po: 'PO',
       cancelled: 'Cancelled',
-      revised: 'Revised'
+      revised: 'Revised',
+      change: 'Change'
     },
     po: {
       release: 'Release',
@@ -281,6 +290,7 @@ const common = {
       approved: 'Approved',
       borrowed: 'Borrowed',
       returned: 'Returned',
+      received: 'Received',
       done: 'Done',
       rejected: 'Rejected',
       cancelled: 'Cancelled'
@@ -307,6 +317,7 @@ const common = {
   },
   track: {
     po: 'Po',
+    bo: 'Bo',
     pi: 'Pi',
     dp_paid: 'DP Paid',
     full_paid: 'Full Paid',
@@ -318,6 +329,17 @@ const common = {
   branch: {
     jakarta: 'Jakarta',
     semarang: 'Semarang'
+  },
+  sourceTypes: ['PurchaseOrder', 'Buy', 'BackOrder', 'Return', 'Borrow', 'ManualEdit', 'Import', 'SparepartMovement'],
+  sourceRouteMap: {
+    PurchaseOrder: 'purchase_order_detail',
+    Buy: 'purchase_detail',
+    BackOrder: 'back_order_detail',
+    Return: 'return_detail',
+    Borrow: 'borrow_detail',
+    ManualEdit: 'spareparts_detail',
+    Import: 'spareparts_detail',
+    SparepartMovement: 'sparepart_movement_detail',
   },
 }
 
@@ -351,8 +373,7 @@ const accessFeature = {
       'work_order',
       'delivery_order',
       'general',
-      'upload_data',
-      'sparepart_movement'
+      'upload_data'
     ]
   },
   marketing: {
@@ -410,9 +431,6 @@ const accessFeature = {
     name: 'Head Inventory',
     feature: [
       'purchase_order',
-      'spareparts',
-      'back_order',
-      'delivery_order',
       {
         label: 'Spareparts',
         key: 'spareparts',
@@ -423,7 +441,9 @@ const accessFeature = {
           'sparepart_movement',
           'purchase'
         ]
-      }
+      },
+      'back_order',
+      'delivery_order'
     ]
   },
   finance: {
@@ -441,7 +461,7 @@ const accessFeature = {
     name: 'Service',
     feature: [
       'purchase_order',
-      'back_order',
+      'spareparts',
       'work_order'
     ]
   }
