@@ -26,9 +26,11 @@ const InvoicePage = () => import('@/views/menu/InvoicePage.vue')
 const InvoiceDetailPage = () => import('@/views/menu/InvoiceDetailPage.vue')
 const BackOrderPage = () => import('@/views/menu/BackOrderPage.vue')
 const BackOrderDetailPage = () => import('@/views/menu/BackOrderDetailPage.vue')
+const BackOrderAdjustmentPage = () => import('@/views/menu/BackOrderAdjustmentPage.vue')
 const BorrowPage = () => import('@/views/menu/BorrowPage.vue')
 const BorrowAddPage = () => import('@/views/menu/BorrowAddPage.vue')
 const BorrowDetailPage = () => import('@/views/menu/BorrowDetailPage.vue')
+const BorrowReturnPage = () => import('@/views/menu/BorrowReturnPage.vue')
 const StockHistoryPage = () => import('@/views/menu/StockHistoryPage.vue')
 const PurchasePage = () => import('@/views/menu/PurchasePage.vue')
 const PurchaseAddPage = () => import('@/views/menu/PurchaseAddPage.vue')
@@ -244,6 +246,15 @@ const router = createRouter({
                 useTrack: true
               }
             },
+            {
+              path: menuConfig.back_order_adjustment.path,
+              name: menuConfig.back_order_adjustment.name,
+              component: BackOrderAdjustmentPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            }
           ]
         },
         // Borrow
@@ -269,6 +280,15 @@ const router = createRouter({
               component: BorrowAddPage,
               meta: {
                 useBack: true
+              }
+            },
+            {
+              path: menuConfig.borrow_return.path,
+              name: menuConfig.borrow_return.name,
+              component: BorrowReturnPage,
+              meta: {
+                useBack: true,
+                useTrack: true
               }
             },
             {
@@ -431,7 +451,8 @@ const router = createRouter({
               name: menuConfig.sparepart_movement_detail.name,
               component: SparepartMovementDetailPage,
               meta: {
-                useBack: true
+                useBack: true,
+                useTrack: true
               }
             }
           ]
