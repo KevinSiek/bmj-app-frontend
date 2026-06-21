@@ -59,7 +59,7 @@
         </div>
       </div>
       <div class="upper my-2">
-        <div class="title">Delivery Note</div>
+        <div class="title">Delivery Order</div>
         <div class="data">
           <div class="left">
             <div class="input form-group col-12">

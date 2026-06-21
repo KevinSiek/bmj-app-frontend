@@ -71,7 +71,7 @@ const componentList = ref([
     path: menuConfig.back_order.path
   },
   {
-    name: 'Delivery Note',
+    name: 'Delivery Order',
     component: MenuDeliveryOrder,
     path: menuConfig.delivery_order.path
   },

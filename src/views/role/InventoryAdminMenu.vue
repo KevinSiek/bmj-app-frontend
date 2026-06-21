@@ -39,7 +39,7 @@ const componentList = ref([
     path: menuConfig.purchase_order.path
   },
   {
-    name: 'Delivery Note',
+    name: 'Delivery Order',
     component: MenuDeliveryOrder,
     path: menuConfig.delivery_order.path
   },
