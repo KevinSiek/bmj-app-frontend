@@ -1,6 +1,10 @@
 <template>
   <div class="contain background shadow">
     <form class="row form">
+      <div class="notes my-2">
+        <div class="title">Branch</div>
+        <div class="text">{{ purchase.branch }}</div>
+      </div>
       <div class="my-2">
         <div class="title">Purchase List</div>
         <div class="table-placeholder">

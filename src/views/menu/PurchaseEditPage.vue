@@ -1,6 +1,18 @@
 <template>
   <div class="contain background shadow">
     <form class="row form">
+      <div class="input form-group col-4 my-2">
+        <div class="title">Branch</div>
+        <select class="form-select mt-2" aria-label="Branch" v-model="purchase.branch">
+          <option value="" disabled selected>Select Branch</option>
+          <option value="Semarang">Semarang</option>
+          <option value="Jakarta">Jakarta</option>
+        </select>
+        <!-- <div v-if="isRoleInventoryPurchase">
+          <input type="text" class="form-control mt-2" :value="purchase.branch" placeholder="Branch" disabled readonly>
+          <small class="text-muted">Branch automatically set based on your profile</small>
+        </div> -->
+      </div>
       <div class="my-2">
         <div class="title">Purchase List</div>
         <div class="input form-group col-12 mx-3">
@@ -60,10 +72,11 @@
                   </ul>
                 </div>
                 <div class="col-2">
-                  <select class="form-select mt-2" v-model="sparepart.selectedSellerPrice" 
+                  <select class="form-select mt-2" v-model="sparepart.selectedSellerPrice"
                     @change="(e) => { sparepart.unitPriceBuy = Number(e.target.value); selectItem(sparepartIndex, sparepart); }">
                     <option :value="undefined" disabled selected>Select Seller</option>
-                    <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx" :value="sellerOption.price">
+                    <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx"
+                      :value="sellerOption.price">
                       {{ sellerOption.seller }}
                     </option>
                   </select>
@@ -73,8 +86,7 @@
                     @input="selectItem(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
-                  <CurrencyInput placeholder="Unit Price"
-                    v-model="sparepart.unitPriceBuy"
+                  <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"
                     @update:model-value="selectItem(sparepartIndex, sparepart)" />
                 </div>
                 <div class="col-2">
@@ -262,7 +274,8 @@ $secondary-color: rgb(98, 98, 98);
 }
 
 .dropdown-menu {
-  text-align: center;
+  overflow-y: auto;
+  max-height: 300px;
 }
 
 @media only screen and (max-width: 767px) {}
