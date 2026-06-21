@@ -23,6 +23,14 @@
         </select>
       </div>
       <div class="input form-group col-12">
+        <label>Group</label><br>
+        <input type="text" class="form-control mt-2" v-model="employee.group" placeholder="Group" autocomplete="off"
+          data-bs-toggle="dropdown" aria-expanded="false">
+        <ul class="dropdown-menu">
+          <li v-for="g in filteredGroupOptions" :key="g" class="dropdown-item" @click="employee.group = g">{{ g }}</li>
+        </ul>
+      </div>
+      <div class="input form-group col-12">
         <label for="branch">Branch</label><br>
         <select class="form-select mt-2" id="branch" v-model="employee.branch">
           <option value="" disabled selected>Select Branch</option>
@@ -45,7 +53,7 @@ import { menuMapping as menuConfig } from '@/config'
 import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { common } from '@/config'
 
@@ -53,9 +61,12 @@ const router = useRouter()
 const modalStore = useModalStore()
 const employeeStore = useEmployeeStore()
 
-const { employee } = storeToRefs(employeeStore)
+const { employee, groupOptions } = storeToRefs(employeeStore)
 
 const isProcessing = ref(false)
+const filteredGroupOptions = computed(() =>
+  groupOptions.value.filter(g => g.toLowerCase().includes((employee.value?.group || '').toLowerCase()))
+)
 
 const roles = [
   common.role.director,
@@ -74,6 +85,7 @@ const branches = [
 
 onBeforeMount(() => {
   employeeStore.$resetEmployee()
+  employeeStore.getGroups()
 })
 
 const addEmployee = async () => {

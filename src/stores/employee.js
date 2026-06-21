@@ -17,6 +17,7 @@ export const useEmployeeStore = defineStore('employee', () => {
       username: data?.username || '',
       email: data?.email || '',
       role: data?.role || '',
+      group: data?.group || '',
       password: data?.password || '',
       passwordConfirmation: data?.password_confirmation || '',
       tempPassword: data?.temp_password || '',
@@ -63,6 +64,13 @@ export const useEmployeeStore = defineStore('employee', () => {
     })
   }
 
+  const groupOptions = ref([])
+
+  async function getGroups () {
+    const { data } = await employeeApi.getGroups()
+    groupOptions.value = Object.values(data).map(g => g.name)
+  }
+
   async function $resetEmployee () {
     employee.value = mapEmployee()
   }
@@ -75,6 +83,8 @@ export const useEmployeeStore = defineStore('employee', () => {
     employee,
     employees,
     paginationData,
+    groupOptions,
+    getGroups,
     isLoading,
     getAllEmployee,
     getEmployee,
