@@ -98,7 +98,7 @@ const { selectedMonth, selectedYear } = useDate()
 
 const { stockMovements, paginationData, isLoading } = storeToRefs(stockMovementStore)
 
-const sourceTypes = ['PurchaseOrder', 'Buy', 'BackOrder', 'Return', 'Borrow', 'ManualEdit', 'Import']
+const sourceTypes = common.sourceTypes
 
 const branch = ref(route.query.branch || '')
 const sourceType = ref(route.query.source_type || '')
@@ -107,19 +107,9 @@ const formatDate = (value) => (value ? new Date(value).toLocaleString() : '-')
 
 const getSourceRoute = (type, id) => {
   if (!id) return null
-  const stringId = id.toString()
-  switch (type) {
-    case 'PurchaseOrder': return { name: menuMapping.purchase_order_detail.name, params: { id: stringId } }
-    case 'Buy': return { name: menuMapping.purchase_detail.name, params: { id: stringId } }
-    case 'BackOrder': return { name: menuMapping.back_order_detail.name, params: { id: stringId } }
-    case 'Return': return { name: menuMapping.return_detail.name, params: { id: stringId } }
-    case 'Borrow': return { name: menuMapping.borrow_detail.name, params: { id: stringId } }
-    case 'ManualEdit':
-    case 'Import':
-      return { name: menuMapping.spareparts_detail.name, params: { id: stringId } }
-    default:
-      return null
-  }
+  const key = common.sourceRouteMap[type]
+  if (!key || !menuMapping[key]) return null
+  return { name: menuMapping[key].name, params: { id: id.toString() } }
 }
 
 onBeforeMount(() => {
