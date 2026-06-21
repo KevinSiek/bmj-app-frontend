@@ -203,12 +203,12 @@ export const useQuotationStore = defineStore('quotation', () => {
     await quotationApi.approveQuotation(id)
   }
 
-  async function needChangeQuotation(id) {
-    await quotationApi.needChangeQuotation(id)
+  async function needChangeQuotation(id, notes) {
+    await quotationApi.needChangeQuotation(id, notes)
   }
 
-  async function rejectQuotation(id) {
-    await quotationApi.rejectQuotation(id)
+  async function rejectQuotation(id, notes) {
+    await quotationApi.rejectQuotation(id, notes)
   }
 
   async function getSpareparts(param) {

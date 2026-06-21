@@ -441,7 +441,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount, reactive } from 'vue'
+import { computed, onBeforeMount, reactive, watch } from 'vue'
 import { common } from '@/config'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
@@ -451,17 +451,20 @@ import { useCustomerStore } from '@/stores/customer'
 import { useGeneralStore } from '@/stores/general'
 import { useRole } from '@/composeable/useRole'
 import CurrencyInput from '@/components/CurrencyInput.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const quotationStore = useQuotationStore()
 const customerStore = useCustomerStore()
 const generalStore = useGeneralStore()
+const authStore = useAuthStore()
 
 const { quotation, searchedSpareparts } = storeToRefs(quotationStore)
 const { customers } = storeToRefs(customerStore)
 const { discount, ppn } = storeToRefs(generalStore)
+const { user } = storeToRefs(authStore)
 
 // FIXED: Import both isRoleDirector and isRoleMarketing
-const { isRoleDirector, isRoleMarketing, user } = useRole()
+const { isRoleDirector, isRoleMarketing } = useRole()
 
 const props = defineProps({
   type: String,
@@ -546,14 +549,13 @@ const selectItemCustomer = (customerData) => {
 
 // FIXED: Auto-populate branch for Marketing users based on user profile
 onBeforeMount(() => {
-  console.log('quotation review', quotation.value)
   if (!quotation.value) quotationStore.$resetQuotation()
-
-  if (isRoleMarketing.value && user.value) {
-    const userBranch = user.value.branch || 'Semarang'
-    quotation.value.project.branch = userBranch
-  }
 })
+watch(user, (val) => {
+  if (isRoleMarketing.value && val?.branch?.name && !quotation.value?.project?.branch) {
+    quotation.value.project.branch = val.branch.name
+  }
+}, { immediate: true })
 
 const amount = computed(() => {
   if (quotation.value.project.type === 'Spareparts') {
