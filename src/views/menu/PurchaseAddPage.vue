@@ -69,6 +69,7 @@
               </div>
               <div class="col-3">
                 <select class="form-select mt-2" v-model="sparepart.seller"
+                  @click="loadSellers(sparepart, sparepartIndex)"
                   @change="selectItem(sparepartIndex, sparepart)">
                   <option value="" disabled selected>Select Seller</option>
                   <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx"
@@ -123,7 +124,7 @@
 </template>
 
 <script setup>
-import { menuMapping as menuConfig } from '@/config'
+import { menuMapping as menuConfig, common } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, ref } from 'vue'
@@ -158,6 +159,10 @@ const handleInputSearch = (search) => {
   debounce(() => searchSparepart(search), 500, 'search-purchase-sparepart')
 }
 
+const loadSellers = (sparepart, index) => {
+  purchaseStore.loadSparePartSellers(sparepart.sparepartId, index)
+}
+
 const selectItem = (index, purchaseData, sparepartData) => {
   const data = {
     ...purchaseData,
@@ -179,7 +184,6 @@ const addSparepart = () => {
     totalPrice: 0,
     stock: '',
     unitPriceSeller: [],
-    selectedSeller: undefined,
     seller: ''
   })
 }
@@ -200,7 +204,11 @@ const doPurchase = async () => {
 }
 
 const doPurchaseConfirmation = () => {
-  purchase.value.spareparts = purchase.value.spareparts.filter((item) => item.quantity > 0)
+  const hasZeroQuantity = purchase.value.spareparts.some((item) => item.quantity <= 0)
+  if (hasZeroQuantity) {
+    modalStore.openMessageModal(common.modal.failed, 'All spareparts must have quantity greater than 0.')
+    return
+  }
   modalStore.openConfirmationModal(`to Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Success', doPurchase)
 }
 

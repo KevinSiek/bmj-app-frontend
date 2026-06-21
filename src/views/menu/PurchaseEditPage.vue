@@ -68,16 +68,15 @@
                 </ul>
               </div>
               <div class="col-3">
-                <select v-if="sparepart.isNew" class="form-select mt-2" v-model="sparepart.seller"
-                  @change="selectItem(sparepartIndex, sparepart)">
+                <select class="form-select mt-2" v-model="sparepart.seller"
+                  @click="loadSellers(sparepart, sparepartIndex)" @change="selectItem(sparepartIndex, sparepart)">
                   <option value="" disabled selected>Select Seller</option>
+                  <option v-if="!sparepart.unitPriceSeller">{{ sparepart.seller }}</option>
                   <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx"
                     :value="sellerOption.seller">
                     {{ sellerOption.seller }}
                   </option>
                 </select>
-                <input v-else type="text" class="form-control mt-2" placeholder="Seller" v-model="sparepart.seller"
-                  disabled>
               </div>
               <div class="col-2">
                 <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
@@ -125,7 +124,7 @@
 </template>
 
 <script setup>
-import { menuMapping as menuConfig } from '@/config'
+import { menuMapping as menuConfig, common } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
@@ -161,6 +160,10 @@ const handleInputSearch = (search) => {
   debounce(() => searchSparepart(search), 500, 'search-purchase-sparepart')
 }
 
+const loadSellers = (sparepart, index) => {
+  purchaseStore.loadSparePartSellers(sparepart.sparepartId, index)
+}
+
 const selectItem = (index, purchaseData, sparepartData) => {
   const data = {
     ...purchaseData,
@@ -182,9 +185,7 @@ const addSparepart = () => {
     totalPrice: 0,
     stock: '',
     unitPriceSeller: [],
-    selectedSeller: undefined,
-    seller: '',
-    isNew: true
+    seller: ''
   })
 }
 const removeSparepart = (index) => {
@@ -205,7 +206,11 @@ const doPurchase = async () => {
 }
 
 const doPurchaseConfirmation = () => {
-  purchase.value.spareparts = purchase.value.spareparts.filter((item) => item.quantity > 0)
+  const hasZeroQuantity = purchase.value.spareparts.some((item) => item.quantity <= 0)
+  if (hasZeroQuantity) {
+    modalStore.openMessageModal(common.modal.failed, 'All spareparts must have quantity greater than 0.')
+    return
+  }
   modalStore.openConfirmationModal(`to Update Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Updated', doPurchase)
 }
 

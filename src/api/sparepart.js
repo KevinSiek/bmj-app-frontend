@@ -44,6 +44,9 @@ const addSparepartInBulk = (spareparts) => {
   return httpApi.postDataViaApi(`${api.sparepart}/updateAllData`, spareparts)
 }
 
+export const getSparepartDetails = (id) => {
+  return httpApi.getDataByIdViaApi(`${api.sparepart}/${id}/sellers`)
+}
 
 export default {
 	getAllSparepart,
@@ -51,5 +54,6 @@ export default {
   getSparepartById,
   updateSparepart,
   deleteSparepart,
-  addSparepartInBulk
+  addSparepartInBulk,
+  getSparepartDetails
 }
