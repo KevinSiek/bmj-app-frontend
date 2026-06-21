@@ -25,10 +25,11 @@
           </div>
         </div>
         <div v-else class="list">
-          <ItemComponent v-for="(item, index) in store.list" :key="index" :number="index + (store.meta?.current_page ? (store.meta.current_page - 1) * store.meta.per_page + 1 : 1)"
+          <ItemComponent v-for="(item, index) in store.list" :key="index"
+            :number="index + (store.meta?.current_page ? (store.meta.current_page - 1) * store.meta.per_page + 1 : 1)"
             :item="item" :first-section="item.movementNumber"
-            :second-section="`${item.sourceBranch} -> ${item.targetBranch}`"
-            :current-status="item.currentStatus" @click="goToDetail(item)" />
+            :second-section="`${item.sourceBranch} -> ${item.targetBranch}`" :current-status="item.currentStatus"
+            @click="goToDetail(item)" />
         </div>
       </div>
     </div>
@@ -105,6 +106,10 @@ const goToAdd = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.list {
+  margin: 3.5% 0%;
 }
 
 .left {

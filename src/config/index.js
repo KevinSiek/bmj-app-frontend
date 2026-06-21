@@ -343,20 +343,6 @@ const common = {
   },
 }
 
-const groupedFeature = {
-  sparepart: {
-    label: 'Spareparts',
-    key: 'spareparts',
-    feature: [
-      'spareparts',
-      'borrow',
-      'stock_history',
-      'sparepart_movement',
-      'purchase'
-    ]
-  }
-}
-
 const accessFeature = {
   director: {
     path: '/director',
@@ -367,7 +353,17 @@ const accessFeature = {
       'purchase_order',
       'proforma_invoice',
       'invoice',
-      groupedFeature.sparepart,
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'borrow',
+          'stock_history',
+          'sparepart_movement',
+          'purchase'
+        ]
+      },
       'back_order',
       'employee',
       'work_order',
