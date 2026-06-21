@@ -155,7 +155,7 @@ onMounted(async () => {
 const returnedSparepart = ref([])
 const listSparepart = computed(() => {
   return purchaseOrder.value.spareparts.map(sparepart => ({
-    id: sparepart.id,  // Add sparepart ID
+    id: sparepart.sparepartId,  // Add sparepart ID
     sparepartName: sparepart.sparepartName,
     sparepartNumber: sparepart.sparepartNumber,
     quantity: sparepart.quantity,
