@@ -1,14 +1,6 @@
 <template>
-  <input
-    type="text"
-    inputmode="numeric"
-    :class="inputClass"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    :value="display"
-    @input="onInput"
-    @blur="onBlur"
-  >
+  <input type="text" inputmode="numeric" :class="inputClass" :placeholder="placeholder" :disabled="disabled"
+    :value="display" @input="onInput" @blur="onBlur">
 </template>
 
 <script setup>
@@ -37,7 +29,7 @@ const format = (num) => {
   return formatMoney(num)
 }
 
-const display = ref(format(Number(props.modelValue) || 0 ? props.modelValue : ''))
+const display = ref(format(props.modelValue ?? 0))
 
 // Keep the display in sync when the bound value changes from the outside (e.g. form reset,
 // loading an existing record, a calculation overwriting the field).
