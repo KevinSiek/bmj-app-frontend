@@ -78,10 +78,9 @@ export const useQuotationStore = defineStore('quotation', () => {
       slug: data?.slug || '',
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
-      totalUnit: (data?.total_unit || []).map(branch => ({
-        name: branch?.name || '',
-        stock: branch?.stock || 0
-      })),
+      totalUnit: Object.fromEntries(
+        (data?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
+      ),
       unitPriceSell: data?.unit_price_sell || 0,
       unitPriceSeller: (data?.unit_price_seller || []).map(buy => ({
         seller: buy?.seller || '',
