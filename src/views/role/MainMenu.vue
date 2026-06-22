@@ -1,5 +1,7 @@
 <template>
-  <router-link class="menu-item nav-link director" :to="menuConfig.menu_director.path">
+  <component :is="canAccess([common.role.director]) ? 'RouterLink' : 'div'" class="menu-item nav-link director"
+    :class="{ 'no-access': !canAccess([common.role.director]) }"
+    v-bind="canAccess([common.role.director]) ? { to: menuConfig.menu_director.path } : {}">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
@@ -71,8 +73,11 @@
         </div>
       </div>
     </div>
-  </router-link>
-  <router-link class="menu-item nav-link marketing" :to="menuConfig.menu_marketing.path">
+  </component>
+  <component :is="canAccess([common.role.marketing, common.role.director]) ? 'RouterLink' : 'div'"
+    class="menu-item nav-link marketing"
+    :class="{ 'no-access': !canAccess([common.role.marketing, common.role.director]) }"
+    v-bind="canAccess([common.role.marketing, common.role.director]) ? { to: menuConfig.menu_marketing.path } : {}">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
@@ -102,21 +107,6 @@
             : {{ summary?.quotation?.approve || 0 }} / {{ summary?.quotation?.total || 0 }}
           </div>
         </div>
-        <!-- QUOTATION REJECT -->
-        <!-- <div class="information__item text-danger">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-text"
-            viewBox="0 0 16 16">
-            <path
-              d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5" />
-            <path
-              d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
-          </svg>
-        </div>
-        <div class="value">
-          : {{ summary?.quotation?.reject || 0 }} / {{ summary?.quotation?.total || 0 }}
-        </div>
-      </div> -->
         <!-- PURCHASE ORDER DONE -->
         <div class="information__item">
           <div class="icon">
@@ -161,11 +151,12 @@
         </div>
       </div>
     </div>
-  </router-link>
-  <router-link class="menu-item nav-link inventory" :to="userRole === common.role.inventory_admin ? menuConfig.menu_inventory_admin.path :
-    userRole === common.role.head_inventory ? menuConfig.menu_head_inventory.path :
-      userRole === common.role.director ? menuConfig.menu_inventory_admin.path :
-        menuConfig.menu_inventory_purchase.path">
+  </component>
+  <component
+    :is="canAccess([common.role.inventory_admin, common.role.inventory_purchase, common.role.head_inventory, common.role.director]) ? 'RouterLink' : 'div'"
+    class="menu-item nav-link inventory"
+    :class="{ 'no-access': !canAccess([common.role.inventory_admin, common.role.inventory_purchase, common.role.head_inventory, common.role.director]) }"
+    v-bind="canAccess([common.role.inventory_admin, common.role.inventory_purchase, common.role.head_inventory, common.role.director]) ? { to: inventoryMenuPath } : {}">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
@@ -188,8 +179,10 @@
         <div>Total: {{ summary?.purchase_order?.total || 0 }}</div>
       </div>
     </div>
-  </router-link>
-  <router-link class="menu-item nav-link finance" :to="menuConfig.menu_finance.path">
+  </component>
+  <component :is="canAccess([common.role.finance, common.role.director]) ? 'RouterLink' : 'div'"
+    class="menu-item nav-link finance" :class="{ 'no-access': !canAccess([common.role.finance, common.role.director]) }"
+    v-bind="canAccess([common.role.finance, common.role.director]) ? { to: menuConfig.menu_finance.path } : {}">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-file-earmark-bar-graph"
@@ -212,8 +205,10 @@
         <div>Full Paid: {{ summary?.purchase_order?.full_paid || 0 }}</div>
       </div>
     </div>
-  </router-link>
-  <router-link class="menu-item nav-link service" :to="menuConfig.menu_service.path">
+  </component>
+  <component :is="canAccess([common.role.service, common.role.director]) ? 'RouterLink' : 'div'"
+    class="menu-item nav-link service" :class="{ 'no-access': !canAccess([common.role.service, common.role.director]) }"
+    v-bind="canAccess([common.role.service, common.role.director]) ? { to: menuConfig.menu_service.path } : {}">
     <div class="title">
       <div class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
@@ -233,7 +228,7 @@
         <div>Total: {{ summary?.work_order?.total || 0 }}</div>
       </div>
     </div>
-  </router-link>
+  </component>
 </template>
 
 <script setup>
@@ -250,6 +245,14 @@ const { user } = storeToRefs(authStore)
 const { summary } = storeToRefs(summaryStore)
 
 const userRole = computed(() => user.value?.role || 'guest')
+
+const canAccess = (roles) => roles.includes(userRole.value)
+
+const inventoryMenuPath = computed(() => {
+  if (userRole.value === common.role.head_inventory || userRole.value === common.role.director) return menuConfig.menu_inventory_head.path
+  if (userRole.value === common.role.inventory_admin) return menuConfig.menu_inventory_admin.path
+  return menuConfig.menu_inventory_purchase.path
+})
 
 onMounted(() => {
   summaryStore.getSummary()
@@ -286,6 +289,16 @@ $service-color: #dc2626;
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  }
+
+  &.no-access {
+    cursor: default;
+    opacity: 0.45;
+
+    &:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
   }
 
   .title {

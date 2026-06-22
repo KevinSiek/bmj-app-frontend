@@ -23,24 +23,9 @@ const componentList = ref([
     path: menuConfig.spareparts.path
   },
   {
-    name: 'Borrow',
-    component: MenuBorrow,
-    path: menuConfig.borrow.path
-  },
-  {
-    name: 'Stock History',
-    component: MenuStockHistory,
-    path: menuConfig.stock_history.path
-  },
-  {
     name: 'Purchase',
     component: MenuPurchase,
     path: menuConfig.purchase.path
-  },
-  {
-    name: 'Stock Transfer',
-    component: MenuSparepartMovement,
-    path: menuConfig.sparepart_movement.path
   },
   {
     name: 'Back Order',
