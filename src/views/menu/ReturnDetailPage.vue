@@ -3,7 +3,6 @@
     <form class="row form">
       <div class="upper my-2">
         <div class="left">
-          TESTING
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
