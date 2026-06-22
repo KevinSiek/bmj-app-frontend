@@ -181,6 +181,8 @@
     <div class="right">
       <button type="button" class="btn btn-process mx-3" @click="printDeliveryOrder">Print Delivery Order</button>
       <button type="button" class="btn btn-process mx-3" @click="printDeliveryNote">Print Delivery Note</button>
+      <button v-if="isShowProcess" type="button" class="btn btn-process mx-3" @click="setProcessConfirmation"
+        :disabled="isProcessing">Process</button>
       <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation"
         :disabled="isProcessing">Done</button>
     </div>
@@ -211,8 +213,12 @@ const isProcessing = ref(false)
 
 const isShowDone = computed(() =>
   (isRoleInventoryAdmin.value || isRoleService.value || isRoleDirector.value) &&
-  deliveryOrder.value.currentStatus !== common.status.work_order.done
-  // !workOrder.value.status.some(item => item.state === common.status.work_order.done)
+  deliveryOrder.value.currentStatus === common.status.work_order.on_progress
+)
+
+const isShowProcess = computed(() =>
+  (isRoleInventoryAdmin.value || isRoleService.value || isRoleDirector.value) &&
+  deliveryOrder.value.currentStatus === common.status.work_order.wait_on_progress
 )
 
 onBeforeMount(() => {
@@ -231,6 +237,18 @@ const done = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
+    await deliveryOrderStore.setDone(route.params.id)
+    await fetchData()
+  } catch (error) {
+    throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
+  }
+}
+const processDone = async () => {
+  if (isProcessing.value) return
+  try {
+    isProcessing.value = true
     await deliveryOrderStore.process(route.params.id)
     await fetchData()
   } catch (error) {
@@ -240,7 +258,10 @@ const done = async () => {
   }
 }
 const setDoneConfirmation = () => {
-  modalStore.openConfirmationModal('to this Puchase Order is Done ?', 'Purchase Order Done', done)
+  modalStore.openConfirmationModal('to set this Delivery Order as Done ?', 'Delivery Order Done', done)
+}
+const setProcessConfirmation = () => {
+  modalStore.openConfirmationModal('to set this Delivery Order as Process ?', 'Delivery Order Processed', processDone)
 }
 // Two prints from the same data — for now they differ only by the document title.
 const printDeliveryOrder = () => {

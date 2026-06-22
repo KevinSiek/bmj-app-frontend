@@ -99,6 +99,10 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     const response = await deliveryOrderApi.process(id)
   }
 
+  async function setDone(id) {
+    await deliveryOrderApi.done(id)
+  }
+
   async function $resetDeliveryOrder() {
     deliveryOrder.value = mapDeliveryOrder()
   }
@@ -119,6 +123,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     deleteDeliveryOrder,
     addDeliveryOrder,
     process,
+    setDone,
     $resetDeliveryOrder,
     $resetDeliveryOrders
   }

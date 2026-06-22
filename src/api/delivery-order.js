@@ -25,6 +25,10 @@ const process = (id) => {
   return httpApi.postDataViaApi(`${api.delivery_order}/process/${id}`)
 }
 
+const done = (id) => {
+  return httpApi.postDataViaApi(`${api.delivery_order}/done/${id}`)
+}
+
 
 export default {
 	getAllDeliveryOrder,
@@ -32,5 +36,6 @@ export default {
   getDeliveryOrderById,
   updateDeliveryOrder,
   deleteDeliveryOrder,
-  process
+  process,
+  done
 }
