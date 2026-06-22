@@ -194,105 +194,105 @@
         </table>
       </div>
       <div v-else class="add-sparepart">
-        <div class="form-group col-12 mx-3">
-          <div class="row">
-            <div class="col-11">
-              <div class="row">
-                <div class="col-3">
-                  <label for="">Sparepart Name</label>
-                </div>
-                <div class="col-3">
-                  <label for="">Part Number</label>
-                </div>
-                <div class="col-2">
-                  <label for="">Quantity</label>
-                </div>
-                <div class="col-2">
-                  <label for="">Unit Price</label>
-                </div>
-                <div class="col-2">
-                  <label for="">Total Price</label>
-                </div>
+        <div class="sparepart-scroll">
+          <div class="form-group col-12 mx-3">
+            <div class="row flex-nowrap">
+              <div class="col-3">
+                <label for="">Sparepart Name</label>
+              </div>
+              <div class="col-3">
+                <label for="">Part Number</label>
+              </div>
+              <div class="col-2">
+                <label for="">Stock</label>
+              </div>
+              <div class="col-2">
+                <label for="">Quantity</label>
+              </div>
+              <div class="col-2">
+                <label for="">Unit Price</label>
+              </div>
+              <div class="col-2">
+                <label for="">Total Price</label>
+              </div>
+              <div class="col-1">
+                <div class="button-placeholder"></div>
               </div>
             </div>
-            <div class="col-1">
-              <div class="button-placeholder"></div>
-            </div>
           </div>
-        </div>
-        <div class="form-group col-12 mx-3">
-          <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex" class="list row">
-            <div class="col-11">
-              <div class="row">
-                <!-- FIXED: Sparepart Name with Controlled Dropdown -->
-                <div class="col-3 sparepart-container" :data-index="sparepartIndex">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
-                    @focus="openDropdown(sparepartIndex, 'name')"
-                    @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
-                    @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')" @blur="onNameBlur(sparepartIndex)"
-                    :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }" />
+          <div class="form-group col-12 mx-3">
+            <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex"
+              class="list row flex-nowrap">
+              <!-- FIXED: Sparepart Name with Controlled Dropdown -->
+              <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+                <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
+                  @focus="openDropdown(sparepartIndex, 'name')"
+                  @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
+                  @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')" @blur="onNameBlur(sparepartIndex)"
+                  :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }" />
 
-                  <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
-                  <ul
-                    v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].name && searchedSpareparts.length > 0"
-                    class="dropdown-menu" style="display: block;">
-                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
-                      @mousedown.prevent @click="onSelect(sparepartIndex, sparepart, item)">
-                      {{ item.sparepartName }}
-                    </li>
-                  </ul>
+                <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
+                <ul
+                  v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].name && searchedSpareparts.length > 0"
+                  class="dropdown-menu" style="display: block;">
+                  <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item" @mousedown.prevent
+                    @click="onSelect(sparepartIndex, sparepart, item)">
+                    {{ item.sparepartName }}
+                  </li>
+                </ul>
 
-                  <div v-if="!sparepart.sparepartId && sparepart.sparepartName" class="invalid-feedback">
-                    Please select from suggestions to link sparepart ID
-                  </div>
-                </div>
-
-                <!-- FIXED: Part Number with Controlled Dropdown -->
-                <div class="col-3 sparepart-container" :data-index="sparepartIndex">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
-                    placeholder="Part Number" @focus="openDropdown(sparepartIndex, 'number')"
-                    @input="onNumberInput(sparepartIndex, sparepart.sparepartNumber)"
-                    @keydown.esc.prevent="closeDropdown(sparepartIndex, 'number')"
-                    @blur="onNumberBlur(sparepartIndex)" />
-
-                  <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
-                  <ul
-                    v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].number && searchedSpareparts.length > 0"
-                    class="dropdown-menu" style="display: block;">
-                    <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
-                      @mousedown.prevent @click="onSelect(sparepartIndex, sparepart, item)">
-                      {{ item.sparepartNumber }}
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="col-2">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                    @wheel.prevent
-                    @input="updateSparepartCalculation(sparepartIndex, sparepart)">
-                </div>
-                <div class="col-2">
-                  <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
-                    @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
-                </div>
-                <div class="col-2">
-                  <!-- <input type="number" class="form-control mt-2" placeholder="Total Price"
-                    v-model="sparepart.totalPrice" disabled> -->
-                  <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
-                    @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true" />
+                <div v-if="!sparepart.sparepartId && sparepart.sparepartName" class="invalid-feedback">
+                  Please select from suggestions to link sparepart ID
                 </div>
               </div>
+
+              <!-- FIXED: Part Number with Controlled Dropdown -->
+              <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+                <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
+                  placeholder="Part Number" @focus="openDropdown(sparepartIndex, 'number')"
+                  @input="onNumberInput(sparepartIndex, sparepart.sparepartNumber)"
+                  @keydown.esc.prevent="closeDropdown(sparepartIndex, 'number')" @blur="onNumberBlur(sparepartIndex)" />
+
+                <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
+                <ul
+                  v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].number && searchedSpareparts.length > 0"
+                  class="dropdown-menu" style="display: block;">
+                  <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item" @mousedown.prevent
+                    @click="onSelect(sparepartIndex, sparepart, item)">
+                    {{ item.sparepartNumber }}
+                  </li>
+                </ul>
+              </div>
+
+              <div class="col-2">
+                <input type="number" class="form-control mt-2" placeholder="Stock" v-model="sparepart.stock"
+                  @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)" disabled>
+              </div>
+              <div class="col-2">
+                <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
+                  @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)">
+              </div>
+              <div class="col-2">
+                <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
+                  @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
+              </div>
+              <div class="col-2">
+                <!-- <input type="number" class="form-control mt-2" placeholder="Total Price"
+                v-model="sparepart.totalPrice" disabled> -->
+                <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
+                  @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true" />
+              </div>
+              <div class="col-1">
+                <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
+                    class="bi bi-trash3"></i></button>
+              </div>
             </div>
-            <div class="col-1">
-              <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
-                  class="bi bi-trash3"></i></button>
+            <div class="add-btn mt-3">
+              <button type="button" class="btn btn-outline-dark" @click="addSparepart">
+                <i class="bi bi-plus-lg"></i>
+                <span class="mx-2">Add Sparepart</span>
+              </button>
             </div>
-          </div>
-          <div class="add-btn mt-3">
-            <button type="button" class="btn btn-outline-dark" @click="addSparepart">
-              <i class="bi bi-plus-lg"></i>
-              <span class="mx-2">Add Sparepart</span>
-            </button>
           </div>
         </div>
       </div>
@@ -375,8 +375,7 @@
                 </div>
                 <div class="col-3">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="service.quantity"
-                    @wheel.prevent
-                    @input="selectService(serviceIndex, service)">
+                    @wheel.prevent @input="selectService(serviceIndex, service)">
                 </div>
                 <div class="col-3">
                   <CurrencyInput placeholder="Unit Price" v-model="service.unitPriceSell"
@@ -587,7 +586,7 @@ const onSelect = (index, purchaseData, sparepartData) => {
     sparepartNumber: sparepartData.sparepartNumber || sparepartData.sparepart_number || sparepartData.part_number,
     unitPriceSell: sparepartData.unitPriceSell || sparepartData.unit_price_sell || sparepartData.selling_price || purchaseData.unitPriceSell || 0,
     quantity: purchaseData.quantity || 1,
-    stock: sparepartData.stock || sparepartData.available_stock || 'available'
+    stock: sparepartData.totalUnit?.[quotation.value.project.branch] || 0
   }
 
   // Calculate total price
@@ -646,7 +645,7 @@ const addSparepart = () => {
     quantity: 0,
     unitPriceSell: 0,
     totalPrice: 0,
-    stock: ''
+    stock: 0
   })
 }
 
@@ -688,6 +687,11 @@ $secondary-color: rgb(98, 98, 98);
 
 .sparepart,
 .service {
+  .sparepart-scroll {
+    overflow-x: auto;
+    width: 100%;
+  }
+
   .list {
     display: flex;
     align-items: flex-end;
