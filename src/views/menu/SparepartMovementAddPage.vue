@@ -73,7 +73,7 @@
 
           <div class="col-2">
             <input type="number" class="form-control mt-2" placeholder="Quantity" v-model.number="item.quantity"
-              min="1" />
+              min="1" @wheel.prevent />
           </div>
 
           <div class="col-1 d-flex align-items-end">

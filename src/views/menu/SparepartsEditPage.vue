@@ -57,7 +57,7 @@
                 </div>
                 <div class="input form-group col-3">
                   <label for="">Quantity</label><br>
-                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
+                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity" @wheel.prevent>
                 </div>
               </div>
             </div>

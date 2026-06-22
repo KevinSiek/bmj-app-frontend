@@ -14,7 +14,7 @@
               <div class="input form-group col-12">
                 <div class="branch">
                   <label for="">Stock {{ branch.name }}</label><br>
-                  <input type="number" class="form-control mt-2" v-model="branch.stock" placeholder="Stock">
+                  <input type="number" class="form-control mt-2" v-model="branch.stock" placeholder="Stock" @wheel.prevent>
                 </div>
               </div>
             </template>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="input form-group col-3">
                   <label for="">Quantity</label><br>
-                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
+                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity" @wheel.prevent>
                 </div>
               </div>
             </div>

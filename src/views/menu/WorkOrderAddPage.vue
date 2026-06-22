@@ -57,7 +57,7 @@
                     <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType">
                   </div>
                   <div class="col-3">
-                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity">
+                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity" @wheel.prevent>
                   </div>
                 </div>
               </div>

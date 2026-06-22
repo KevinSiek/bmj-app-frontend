@@ -268,6 +268,7 @@
 
                 <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
+                    @wheel.prevent
                     @input="updateSparepartCalculation(sparepartIndex, sparepart)">
                 </div>
                 <div class="col-2">
@@ -374,6 +375,7 @@
                 </div>
                 <div class="col-3">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="service.quantity"
+                    @wheel.prevent
                     @input="selectService(serviceIndex, service)">
                 </div>
                 <div class="col-3">
@@ -409,7 +411,7 @@
         <div class="label d-flex align-items-center">Total Discount (%)</div>
         <div class="d-flex align-items-center">
           : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2" style="width: 120px;"
-            placeholder="0" v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled">
+            placeholder="0" v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled" @wheel.prevent>
           <span class="ms-2 text-muted">Any value &gt; {{ discount }}% requires Director review.</span>
         </div>
       </div>

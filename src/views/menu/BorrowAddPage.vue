@@ -59,7 +59,7 @@
                     :placeholder="isSearching ? 'Loading...' : 'Stock'" disabled>
                 </div>
                 <div class="col-3">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity">
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity" @wheel.prevent>
                 </div>
               </div>
             </div>

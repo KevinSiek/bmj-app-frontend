@@ -78,7 +78,7 @@
                 </td>
                 <td>
                   <input type="number" class="form-control" placeholder="Order" v-model="sparepart.order"
-                    @input="selectItem(sparepartIndex, sparepart)">
+                    @wheel.prevent @input="selectItem(sparepartIndex, sparepart)">
                 </td>
                 <td>
                   <input type="number" class="form-control" placeholder="Back Order" v-model="sparepart.backOrder"

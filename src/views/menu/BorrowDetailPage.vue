@@ -53,7 +53,7 @@
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">
                   <input v-if="canReturn" type="number" class="form-control return-input" min="0"
-                    :max="sparepart.quantity" v-model.number="returnQuantities[index]">
+                    :max="sparepart.quantity" v-model.number="returnQuantities[index]" @wheel.prevent>
                   <span v-else>{{ sparepart.quantityReturn ?? '-' }}</span>
                 </td>
                 <td class="table-col table-name">{{ sparepart.stockInBranch }}</td>

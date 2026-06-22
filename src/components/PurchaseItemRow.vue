@@ -16,6 +16,7 @@
       <input
         v-model.number="localItem.quantity"
         @input="updateTotals"
+        @wheel.prevent
         type="number"
         class="form-control"
         placeholder="Qty"

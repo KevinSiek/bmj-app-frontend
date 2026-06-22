@@ -80,7 +80,7 @@
               </div>
               <div class="col-2">
                 <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                  @input="selectItem(sparepartIndex, sparepart)">
+                  @wheel.prevent @input="selectItem(sparepartIndex, sparepart)">
               </div>
               <div class="col-3">
                 <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"
