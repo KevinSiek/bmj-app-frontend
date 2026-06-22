@@ -87,21 +87,26 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Sub Total</label><br>
-            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.subTotal)" placeholder="Sub Total"
-              disabled>
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.subTotal)"
+              placeholder="Sub Total" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Grand Total</label><br>
-            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.grandTotal)" placeholder="Grand Total"
-              disabled>
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.grandTotal)"
+              placeholder="Grand Total" disabled>
           </div>
         </div>
         <div class="right">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="name">No</label><br>
+            <label for="">Internal Request Number</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.purchaseOrderNumber"
               placeholder="No" disabled>
+          </div>
+          <div class="input form-group col-12">
+            <label for="">Purchase Order Number</label><br>
+            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.poNumber" placeholder="No"
+              disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -115,8 +120,8 @@
           </div> -->
           <div class="input form-group col-12">
             <label for="">Discount</label><br>
-            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.purchaseOrder.discount)" placeholder="Discount"
-              disabled>
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.purchaseOrder.discount)"
+              placeholder="Discount" disabled>
           </div>
         </div>
       </div>

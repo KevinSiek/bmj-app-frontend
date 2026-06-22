@@ -15,6 +15,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
       version: data?.version || 0,
       purchaseOrder: {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        poNumber: data?.purchase_order?.po_number || '',
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
         purchaseOrderType: data?.purchase_order?.purchase_order_type || '',
         paymentDue: data?.purchase_order?.payment_due || '',

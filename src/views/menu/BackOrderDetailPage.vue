@@ -5,9 +5,14 @@
         <div class="left">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="">No</label><br>
+            <label for="">Internal Request Number</label><br>
             <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.purchaseOrderNumber"
               placeholder="No" disabled>
+          </div>
+          <div class="input form-group col-12">
+            <label for="">Purchase Order Number</label><br>
+            <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.poNumber" placeholder="No"
+              disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -178,7 +183,11 @@ const { backOrder } = storeToRefs(backOrderStore)
 
 const isProcessing = ref(false)
 
-const isReadyToProcess = computed(() => backOrder.value?.currentStatus !== 'Rejected' && backOrder.value?.currentStatus !== 'Ready')
+const isReadyToProcess = computed(() =>
+  backOrder.value?.currentStatus !== 'Rejected' &&
+  backOrder.value?.currentStatus !== 'Ready' &&
+  backOrder.value?.spareparts?.some(s => s.backOrder !== 0)
+)
 
 const fetchData = async () => {
   await backOrderStore.getBackOrder(route.params.id)
