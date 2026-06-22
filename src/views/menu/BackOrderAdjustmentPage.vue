@@ -77,8 +77,8 @@
                     @input="selectItem(sparepartIndex, sparepart)" disabled>
                 </td>
                 <td>
-                  <input type="number" class="form-control" placeholder="Order" v-model="sparepart.order"
-                    @wheel.prevent @input="selectItem(sparepartIndex, sparepart)">
+                  <input type="number" class="form-control" placeholder="Order" v-model="sparepart.order" @wheel.prevent
+                    @input="selectItem(sparepartIndex, sparepart)">
                 </td>
                 <td>
                   <input type="number" class="form-control" placeholder="Back Order" v-model="sparepart.backOrder"
@@ -105,10 +105,6 @@
         <textarea class="form-control" placeholder="Description" id="floatingTextarea2" style="height: 100px"
           v-model="backOrder.notes"></textarea>
       </div>
-      <div class="total my-2">
-        <div class="title">Total New Back Order</div>
-        <div class="text">{{ formatCurrency(totalPurchase) }}</div>
-      </div>
     </form>
   </div>
   <div class="button">
@@ -125,7 +121,6 @@ import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
-import { formatCurrency } from '@/utils/form-util'
 import CurrencyInput from '@/components/CurrencyInput.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useRole } from '@/composeable/useRole'
