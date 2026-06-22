@@ -114,7 +114,8 @@ const createPdf = async (data, handOverName = '', receiverName = '') => {
     pageSize: 'A4',
   }
 
-  pdfMake.createPdf(docDefinition).download(`Pinjaman_${data.borrowNumber || data.id}.pdf`)
+  // pdfMake.createPdf(docDefinition).download(`Pinjaman_${data.borrowNumber || data.id}.pdf`)
+  pdfMake.createPdf(docDefinition).print()
 }
 
 export { createPdf }

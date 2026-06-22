@@ -17,21 +17,19 @@ export const generateSparepartMovementPdf = async (data) => {
   const docDefinition = {
     pageSize: 'A4',
     pageMargins: [40, 40, 40, 40],
+    header: {
+      image: logoBase64, // your base64 logo string
+      width: 550,
+      margin: [25, 30, 30, 0]
+    },
     content: [
       {
-        columns: [
-          {
-            image: logoBase64,
-            width: 150
-          },
-          {
-            text: 'STOCK MOVEMENT / TRANSFER',
-            style: 'header',
-            alignment: 'right'
-          }
-        ]
+        text: 'STOCK MOVEMENT / TRANSFER',
+        alignment: 'center',
+        bold: true,
+        fontSize: 18,
+        margin: [0, 70, 0, 30],
       },
-      { text: '\n' },
       {
         columns: [
           {
@@ -98,5 +96,6 @@ export const generateSparepartMovementPdf = async (data) => {
     }
   }
 
-  pdfMake.createPdf(docDefinition).open()
+  // pdfMake.createPdf(docDefinition).download(`Sparepart_Movement_${data.movementNumber}.pdf`).open()
+  pdfMake.createPdf(docDefinition).print()
 }

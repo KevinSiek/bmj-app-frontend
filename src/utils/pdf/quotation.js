@@ -388,7 +388,8 @@ const createPdf = async (data, notes, user) => {
     pageSize: 'A4',
   }
 
-  pdfMake.createPdf(docDefinition).download(`${data.project.quotationNumber}.pdf`)
+  // pdfMake.createPdf(docDefinition).download(`${data.project.quotationNumber}.pdf`)
+  pdfMake.createPdf(docDefinition).print()
 }
 
 
