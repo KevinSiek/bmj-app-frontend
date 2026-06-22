@@ -221,7 +221,7 @@
         :disabled="isProcessing">DP Invoice</button>
       <button v-if="isInvoiceTypeNotSet" type="button" class="btn btn-final" @click="setFinalInvoiceConfirmation"
         :disabled="isProcessing">Final Invoice</button>
-      <button type="button" class="btn btn-process" @click="openDownloadModal">Download</button>
+      <button type="button" class="btn btn-process" @click="openDownloadModal">Print</button>
     </div>
   </div>
   <transition name="fade">
@@ -230,7 +230,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Download Invoice</h5>
+            <h5 class="modal-title">Print Invoice</h5>
           </div>
           <div class="modal-body">
             <div class="input form-group col-12 my-2">
@@ -245,7 +245,7 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
               @click="closeDownloadModal">Close</button>
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" @click="download">Download</button>
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" @click="download">Print</button>
           </div>
         </div>
       </div>
