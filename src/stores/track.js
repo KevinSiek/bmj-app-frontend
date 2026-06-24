@@ -13,13 +13,17 @@ export const useTrackStore = defineStore('track', () => {
     isShowTrack.value = false
   }
 
-  const setTrackData = async (data) => {
+  const trackType = ref(null)
+
+  const setTrackData = async (data, type = null) => {
     trackData.value = data
+    trackType.value = type
   }
 
   return {
     isShowTrack,
     trackData,
+    trackType,
     openTrackModal,
     closeModal,
     setTrackData

@@ -28,3 +28,12 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+  
+# Playwright  
+e2e/screenshots/  
+playwright-report/  
+test-results/  
+*.png  
+*.jpg  
+*.jpeg 
+test-*.txt

@@ -25,7 +25,8 @@ export const useQuotationStore = defineStore('quotation', () => {
         office: data?.customer.office || '',
         urban: data?.customer.urban || '',
         subdistrict: data?.customer?.subdistrict || '',
-        postalCode: data?.customer?.postal_code || ''
+        postalCode: data?.customer?.postal_code || '',
+        email: data?.customer?.email || ''
       },
       project: {
         quotationNumber: data?.project?.quotation_number || '',
@@ -38,6 +39,7 @@ export const useQuotationStore = defineStore('quotation', () => {
       price: {
         amount: data?.price?.amount || 0,
         discount: data?.price?.discount || 0,
+        totalDiscountPercent: Number(data?.price?.total_discount_percent) || 0,
         ppn: data?.price?.ppn || 0,
         subtotal: data?.price?.subtotal || 0,
         grandTotal: data?.price?.grand_total || 0
@@ -52,6 +54,9 @@ export const useQuotationStore = defineStore('quotation', () => {
         quantity: sparepart?.quantity || 0,
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
+        totalUnit: Object.fromEntries(
+          (sparepart?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
+        ),
         stock: sparepart?.stock || ''
       })),
       services: (data?.services || []).map(service => ({
@@ -76,10 +81,9 @@ export const useQuotationStore = defineStore('quotation', () => {
       slug: data?.slug || '',
       sparepartNumber: data?.sparepart_number || '',
       sparepartName: data?.sparepart_name || '',
-      totalUnit: (data?.total_unit || []).map(branch => ({
-        name: branch?.name || '',
-        stock: branch?.stock || 0
-      })),
+      totalUnit: Object.fromEntries(
+        (data?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
+      ),
       unitPriceSell: data?.unit_price_sell || 0,
       unitPriceSeller: (data?.unit_price_seller || []).map(buy => ({
         seller: buy?.seller || '',
@@ -153,7 +157,6 @@ export const useQuotationStore = defineStore('quotation', () => {
 
   async function getQuotation(id) {
     const { data } = await quotationApi.getQuotationyId(id)
-    console.log('GET QUOTATION', data)
     quotation.value = mapQuotation(data)
   }
 
@@ -192,10 +195,8 @@ export const useQuotationStore = defineStore('quotation', () => {
     await quotationApi.updateQuotation(quotation.value.slug, quotation.value)
   }
 
-  async function processQuotation(id, notes) {
-    console.log('ID', id)
-    const response = await quotationApi.processQuotation(id, { notes })
-    console.log('RES', response)
+  async function processQuotation(id, notes, poNumber) {
+    await quotationApi.processQuotation(id, { notes, poNumber })
   }
 
   async function approveQuotation(id) {
@@ -203,12 +204,12 @@ export const useQuotationStore = defineStore('quotation', () => {
     await quotationApi.approveQuotation(id)
   }
 
-  async function needChangeQuotation(id) {
-    await quotationApi.needChangeQuotation(id)
+  async function needChangeQuotation(id, notes) {
+    await quotationApi.needChangeQuotation(id, notes)
   }
 
-  async function rejectQuotation(id) {
-    await quotationApi.rejectQuotation(id)
+  async function rejectQuotation(id, notes) {
+    await quotationApi.rejectQuotation(id, notes)
   }
 
   async function getSpareparts(param) {

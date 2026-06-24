@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import purchaseApi from '@/api/purchase'
-import { getAllSparepart } from '@/api/sparepart'
+import { getAllSparepart, getSparepartDetails } from '@/api/sparepart'
 
 export const usePurchaseStore = defineStore('purchase', () => {
   const purchase = ref(null)
@@ -28,6 +28,7 @@ export const usePurchaseStore = defineStore('purchase', () => {
         unitPriceBuy: sparepart?.unit_price_buy || 0,
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
+        seller: sparepart?.seller_name || sparepart?.seller || '',
         stock: sparepart?.stock || ''
       }))
     }
@@ -97,6 +98,14 @@ export const usePurchaseStore = defineStore('purchase', () => {
     console.log('searchedSpareparts', searchedSpareparts.value)
   }
 
+  async function loadSparePartSellers (sparepartId, sparepartIndex) {
+    if (!sparepartId) return
+    const { data } = await getSparepartDetails(sparepartId)
+    if (purchase.value?.spareparts?.[sparepartIndex] !== undefined) {
+      purchase.value.spareparts[sparepartIndex].unitPriceSeller = data
+    }
+  }
+
   async function receive (id) {
     const response = await purchaseApi.done(id)
     return response
@@ -138,6 +147,7 @@ export const usePurchaseStore = defineStore('purchase', () => {
     setPurchase,
     getPurchase,
     getSpareparts,
+    loadSparePartSellers,
     receive,
     $resetPurchase,
     $resetPurchases,

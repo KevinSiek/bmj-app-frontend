@@ -11,7 +11,10 @@ import { ref } from 'vue'
 import MenuDeliveryOrder from '@/components/menu/MenuDeliveryOrder.vue'
 import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
+import MenuBorrow from '@/components/menu/MenuBorrow.vue'
+import MenuStockHistory from '@/components/menu/MenuStockHistory.vue'
 import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
+import MenuSparepartMovement from '@/components/menu/MenuSparepartMovement.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
@@ -19,6 +22,16 @@ const componentList = ref([
     name: 'Sparepart',
     component: MenuSparepart,
     path: menuConfig.spareparts.path
+  },
+  {
+    name: 'Borrow',
+    component: MenuBorrow,
+    path: menuConfig.borrow.path
+  },
+  {
+    name: 'Stock History',
+    component: MenuStockHistory,
+    path: menuConfig.stock_history.path
   },
   {
     name: 'Purchase Order',
@@ -34,6 +47,11 @@ const componentList = ref([
     name: 'Back Order',
     component: MenuBackOrder,
     path: menuConfig.back_order.path
+  },
+  {
+    name: 'Stock Transfer',
+    component: MenuSparepartMovement,
+    path: menuConfig.sparepart_movement.path
   }
 ])
 </script>

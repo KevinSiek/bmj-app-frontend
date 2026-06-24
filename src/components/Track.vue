@@ -8,7 +8,7 @@
           </div>
           <p class="label" :class="{ active: !!track?.active, rejected: isRejected(track) }">{{ track.state }}</p>
           <div class="info" :class="{ active: !!track?.active }">
-            <div class="employee">{{ track.employee }}</div>
+            <div class="employee">{{ track.employee ? `By ${track.employee}` : '' }}</div>
             <div class="date">{{ formatDateAndTime(track.timestamp) }}</div>
           </div>
         </template>
@@ -18,7 +18,7 @@
           </div>
           <p class="label" :class="{ active: !!track?.active, rejected: isRejected(track) }">{{ track.state }}</p>
           <div class="info" :class="{ active: !!track?.active }">
-            <div class="employee">{{ track.employee }}</div>
+            <div class="employee">{{ track.employee ? `By ${track.employee}` : '' }}</div>
             <div class="date">{{ formatDateAndTime(track.timestamp) }}</div>
           </div>
         </template>
@@ -36,9 +36,9 @@ import { formatDateAndTime } from '@/utils/form-util'
 
 const trackStore = useTrackStore()
 
-const { trackData } = storeToRefs(trackStore)
+const { trackData, trackType } = storeToRefs(trackStore)
 
-const progressSteps = [
+const poSteps = [
   common.track.po,
   common.track.pi,
   common.track.dp_paid,
@@ -46,12 +46,38 @@ const progressSteps = [
   common.track.release,
   common.track.full_paid,
   common.track.done,
-  // common.track.return
 ]
 
+const borrowSteps = [
+  common.status.borrow.created,
+  common.status.borrow.approved,
+  common.status.borrow.borrowed,
+  common.status.borrow.returned,
+  common.status.borrow.received,
+  common.status.borrow.done,
+]
+
+const movementSteps = [
+  common.status.sparepart_movement.created,
+  common.status.sparepart_movement.send,
+  common.status.sparepart_movement.received
+]
+
+const progressSteps = computed(() => {
+  switch (trackType.value) {
+    case 'Borrow':
+      return borrowSteps
+    case 'SparepartMovement':
+      return movementSteps
+    default:
+      return poSteps
+  }
+})
+
 const trackProgress = computed(() => {
+  const steps = progressSteps.value
   if (trackData.value === null || trackData.value?.length === 0) {
-    return progressSteps.map(step => ({
+    return steps.map(step => ({
       state: step.toUpperCase(),
       employee: null,
       timestamp: null,
@@ -65,7 +91,7 @@ const trackProgress = computed(() => {
     active: true
   }))
 
-  progressSteps.forEach((step) => {
+  steps.forEach((step) => {
     const found = trackData.value?.find(item => item.state === step)
     if (!found) {
       activeSteps.push({
@@ -95,8 +121,9 @@ $primary-color: black;
 .main {
   width: 100%;
   min-height: 70vh;
+  overflow-y: auto;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
 }

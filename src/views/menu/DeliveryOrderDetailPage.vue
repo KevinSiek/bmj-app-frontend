@@ -117,9 +117,14 @@
         <div class="data">
           <div class="left">
             <div class="input form-group col-12">
-              <label for="">No</label><br>
+              <label for="">No Internal Request</label><br>
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.purchaseOrderNumber"
-                placeholder="No" disabled>
+                placeholder="No Internal Request" disabled>
+            </div>
+            <div class="input form-group col-12">
+              <label for="">No PO</label><br>
+              <input type="text" class="form-control mt-2" v-model="deliveryOrder.purchaseOrder.poNumber"
+                placeholder="No PO" disabled>
             </div>
             <div class="input form-group col-12">
               <label for="">Date</label><br>
@@ -174,7 +179,10 @@
       <button type="button" class="btn btn-edit" @click="back">Back</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
+      <button type="button" class="btn btn-process mx-3" @click="printDeliveryOrder">Print Delivery Order</button>
+      <button type="button" class="btn btn-process mx-3" @click="printDeliveryNote">Print Delivery Note</button>
+      <button v-if="isShowProcess" type="button" class="btn btn-process mx-3" @click="setProcessConfirmation"
+        :disabled="isProcessing">Process</button>
       <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation"
         :disabled="isProcessing">Done</button>
     </div>
@@ -199,14 +207,18 @@ const trackStore = useTrackStore()
 const modalStore = useModalStore()
 
 const { deliveryOrder } = storeToRefs(deliveryOrderStore)
-const { isRoleDirector, isRoleInventoryAdmin, isRoleService } = useRole()
+const { isRoleDirector, isRoleInventoryAdmin, isRoleHeadInventory } = useRole()
 
 const isProcessing = ref(false)
 
 const isShowDone = computed(() =>
-  (isRoleInventoryAdmin.value || isRoleService.value || isRoleDirector.value) &&
-  deliveryOrder.value.currentStatus !== common.status.work_order.done
-  // !workOrder.value.status.some(item => item.state === common.status.work_order.done)
+  (isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value) &&
+  deliveryOrder.value.currentStatus === common.status.work_order.on_progress
+)
+
+const isShowProcess = computed(() =>
+  (isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value) &&
+  deliveryOrder.value.currentStatus === common.status.work_order.wait_on_progress
 )
 
 onBeforeMount(() => {
@@ -225,6 +237,18 @@ const done = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
+    await deliveryOrderStore.setDone(route.params.id)
+    await fetchData()
+  } catch (error) {
+    throw error.data.error || error.data.message
+  } finally {
+    isProcessing.value = false
+  }
+}
+const processDone = async () => {
+  if (isProcessing.value) return
+  try {
+    isProcessing.value = true
     await deliveryOrderStore.process(route.params.id)
     await fetchData()
   } catch (error) {
@@ -234,10 +258,17 @@ const done = async () => {
   }
 }
 const setDoneConfirmation = () => {
-  modalStore.openConfirmationModal('to this Puchase Order is Done ?', 'Purchase Order Done', done)
+  modalStore.openConfirmationModal('to set this Delivery Order as Done ?', 'Delivery Order Done', done)
 }
-const download = () => {
-  createPdf(deliveryOrder.value)
+const setProcessConfirmation = () => {
+  modalStore.openConfirmationModal('to set this Delivery Order as Process ?', 'Delivery Order Processed', processDone)
+}
+// Two prints from the same data — for now they differ only by the document title.
+const printDeliveryOrder = () => {
+  createPdf(deliveryOrder.value, 'DELIVERY ORDER')
+}
+const printDeliveryNote = () => {
+  createPdf(deliveryOrder.value, 'DELIVERY NOTE')
 }
 const back = () => {
   router.push(menuConfig.delivery_order.path)

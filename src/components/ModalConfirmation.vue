@@ -14,7 +14,7 @@
           <div class="text-header">
             Are you sure
           </div>
-          <div class="text mt-1">
+          <div class="text mt-1 text-center">
             {{ modalStore.confirmationMessages }}
           </div>
           <div class="button-modal">

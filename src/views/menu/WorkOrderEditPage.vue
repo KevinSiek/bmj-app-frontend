@@ -72,7 +72,8 @@
           <div class="title">Service Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.no" placeholder="No">
+            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.serviceOrderNumber"
+              placeholder="No">
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -133,7 +134,8 @@
                     <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType">
                   </div>
                   <div class="col-3">
-                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity">
+                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity"
+                      @wheel.prevent>
                   </div>
                 </div>
               </div>

@@ -75,6 +75,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import axios from 'axios'
+import { formatCurrency } from '@/utils/form-util'
 
 const props = defineProps({
   branchId: {
@@ -162,13 +163,6 @@ const handleSearch = () => {
   }
 }
 
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0
-  }).format(amount)
-}
 
 // Watchers
 watch(() => props.branchId, () => {

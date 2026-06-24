@@ -24,7 +24,8 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
         npwp: data?.delivery_order?.npwp || ''
       },
       purchaseOrder: {
-        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '', // This is for Internal Request Number
+        poNumber: data?.purchase_order?.po_number || '', // This is PO From Customer
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
         type: data?.purchase_order?.type || ''
       },
@@ -98,6 +99,10 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     const response = await deliveryOrderApi.process(id)
   }
 
+  async function setDone(id) {
+    await deliveryOrderApi.done(id)
+  }
+
   async function $resetDeliveryOrder() {
     deliveryOrder.value = mapDeliveryOrder()
   }
@@ -118,6 +123,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     deleteDeliveryOrder,
     addDeliveryOrder,
     process,
+    setDone,
     $resetDeliveryOrder,
     $resetDeliveryOrders
   }

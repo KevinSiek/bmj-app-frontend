@@ -43,7 +43,8 @@
                     disabled>
                 </div>
                 <div class="col-3">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.return">
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.return"
+                    @wheel.prevent>
                 </div>
               </div>
             </div>

@@ -11,9 +11,8 @@ export const useWorkOrderStore = defineStore('work-order', () => {
   function mapWorkOrder (data) {
     return {
       id: data?.id || '',
-      workOrderNumber: data?.work_order_number || '',
       serviceOrder: {
-        no: data?.service_order?.no || '',
+        serviceOrderNumber: data?.service_order?.service_order_number || '',
         date: data?.service_order?.date || '',
         receivedBy: data?.service_order?.received_by || '',
         startDate: data?.service_order?.start_date || '',
@@ -21,7 +20,8 @@ export const useWorkOrderStore = defineStore('work-order', () => {
       },
       currentStatus: data?.current_status || '',
       purchaseOrder: {
-        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '', // This is for Internal Request Number
+        poNumber: data?.purchase_order?.po_number || '', // This is PO From Customer
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || ''
       },
       proformaInvoice: {
@@ -59,9 +59,6 @@ export const useWorkOrderStore = defineStore('work-order', () => {
         spareparts: data?.additional?.spareparts || '',
         backupSparepart: data?.additional?.backup_sparepart || '',
         scope: data?.additional?.scope || '',
-        vaccine: data?.additional?.vaccine || '',
-        apd: data?.additional?.apd || '',
-        peduliLindungi: data?.additional?.peduli_lindungi || '',
         executionTime: data?.additional?.execution_time || ''
       },
       status: data?.status || []
@@ -101,7 +98,11 @@ export const useWorkOrderStore = defineStore('work-order', () => {
   }
 
   async function process(id) {
-    const response = await workOrderApi.process(id)
+    await workOrderApi.process(id)
+  }
+
+  async function done(id) {
+    await workOrderApi.done(id)
   }
 
   async function $resetWorkOrder () {
@@ -124,6 +125,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
     deleteWorkOrder,
     addWorkOrder,
     process,
+    done,
     $resetWorkOrder,
     $resetWorkOrders
   }

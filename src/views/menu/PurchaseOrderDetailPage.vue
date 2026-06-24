@@ -5,9 +5,14 @@
         <div class="left">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="">No</label><br>
+            <label for="">Internal Request Number</label><br>
             <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.purchaseOrderNumber"
-              placeholder="No" disabled>
+              placeholder="Internal Request Number" disabled>
+          </div>
+          <div class="input form-group col-12">
+            <label for="">Purchase Order Number</label><br>
+            <input type="text" class="form-control mt-2" v-model="purchaseOrder.purchaseOrder.poNumber"
+              placeholder="Purchase Order Number" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -265,7 +270,13 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="purchaseOrder.notes" disabled></textarea>
+            v-model="editableNotes"></textarea>
+        </div>
+        <div class="notes-action mt-2">
+          <button type="button" class="btn btn-save-notes" @click="saveNotesConfirmation" :disabled="isSavingNotes">
+            <span v-if="isSavingNotes" class="spinner-border spinner-border-sm me-1" role="status"></span>
+            Save Notes
+          </button>
         </div>
       </div>
     </form>
@@ -313,26 +324,30 @@ import { common, menuMapping as menuConfig } from '@/config'
 import { useRole } from '@/composeable/useRole'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
+import { useAuthStore } from '@/stores/auth'
 import { createPdf } from '@/utils/pdf/purchase-order'
 import { formatCurrency } from '@/utils/form-util'
 
 const router = useRouter()
 const route = useRoute()
-const { isRoleDirector, isRoleMarketing, isRoleInventoryAdmin, isRoleFinance, isRoleService } = useRole()
+const { isRoleDirector, isRoleMarketing, isRoleInventoryAdmin, isRoleHeadInventory, isRoleFinance, isRoleService } = useRole()
 const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
+const authStore = useAuthStore()
 
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
 const isProcessing = ref(false)
+const isSavingNotes = ref(false)
+const editableNotes = ref('')
 
 const isShowFullPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
   purchaseOrder.value.proformaInvoice.isDpPaid &&
   !purchaseOrder.value.proformaInvoice.isFullPaid
 )
-const isShowReady = computed(() => (isRoleInventoryAdmin.value || isRoleDirector.value) &&
+const isShowReady = computed(() => (isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.ready)
 )
 const isShowCreatePi = computed(() =>
@@ -340,28 +355,29 @@ const isShowCreatePi = computed(() =>
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
 const isShowRelease = computed(() =>
-  (isRoleService.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
+  (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
   purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.release)
 )
-const isShowDone = computed(() => false
-  // (isRoleMarketing.value || isRoleDirector.value) &&
-  // purchaseOrder.value.status.some(item => item.state === common.track.release) &&
-  // !purchaseOrder.value.status.some(item => item.state === common.track.done)
+const isShowDone = computed(() =>
+  (isRoleMarketing.value || isRoleDirector.value) &&
+  purchaseOrder.value.status.some(item => item.state === common.track.release) &&
+  !purchaseOrder.value.status.some(item => item.state === common.track.done)
 )
 const isShowReturn = computed(() =>
   (isRoleMarketing.value || isRoleDirector.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.done) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.return)
 )
-const isShowReject = computed(() => isRoleDirector.value)
+const isShowReject = computed(() => isRoleDirector.value || isRoleFinance.value)
 const isRejected = computed(() => purchaseOrder.value.currentStatus === common.status.rejected || purchaseOrder.value.status.some(item => item.state === common.status.rejected))
 const hasPI = computed(() => purchaseOrder.value.proformaInvoice.proformaInvoiceNumber && purchaseOrder.value.proformaInvoice.proformaInvoiceDate)
 
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
   await trackStore.setTrackData(purchaseOrder.value.status)
+  editableNotes.value = purchaseOrder.value.notes || ''
 }
 onBeforeMount(() => {
   if (!purchaseOrder.value) purchaseOrderStore.$resetPurchaseOrder()
@@ -470,9 +486,27 @@ const rejectConfirmation = () => {
   })
 }
 
+const saveNotes = async () => {
+  if (isSavingNotes.value) return
+  try {
+    isSavingNotes.value = true
+    await purchaseOrderStore.updateNotes(route.params.id, editableNotes.value)
+    purchaseOrder.value.notes = editableNotes.value
+    modalStore.openMessageModal(common.modal.success, 'Notes updated successfully')
+  } catch (error) {
+    modalStore.openMessageModal(common.modal.failed, error?.data?.message || 'Failed to update notes')
+  } finally {
+    isSavingNotes.value = false
+  }
+}
+
+const saveNotesConfirmation = () => {
+  modalStore.openConfirmationModal('Save Notes?', 'Notes updated', saveNotes)
+}
+
 const download = () => {
   modalStore.openNotesModal('Print PO', async () => {
-    await createPdf(purchaseOrder.value, modalStore.notes)
+    await createPdf(purchaseOrder.value, modalStore.notes, authStore.user)
     modalStore.closeModal()
   })
 }
@@ -516,6 +550,30 @@ $secondary-color: rgb(98, 98, 98);
     .left,
     .right {
       width: 48%;
+    }
+  }
+
+  .notes-action {
+    display: flex;
+    justify-content: flex-end;
+
+    .btn-save-notes {
+      background-color: $primary-color;
+      color: white;
+      padding: 0.6vh 2vw;
+      font-size: 0.95vw;
+      font-weight: 500;
+      border-radius: 8px;
+      letter-spacing: 0.03vw;
+
+      &:hover:not(:disabled) {
+        opacity: 0.85;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
     }
   }
 

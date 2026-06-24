@@ -34,11 +34,16 @@ const resetPassword = (id) => {
   return httpApi.postDataViaApi(`${api.employee}/reset-password/${id}`)
 }
 
+const getGroups = () => {
+  return httpApi.getDataViaApi(`${api.employee}/groups`)
+}
+
 export default {
 	getAllEmployee,
   addEmployee,
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
-  resetPassword
+  resetPassword,
+  getGroups
 }

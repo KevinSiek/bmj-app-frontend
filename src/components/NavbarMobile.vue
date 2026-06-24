@@ -36,7 +36,7 @@
                   </div>
                   <div class="text text-role">{{ menu.name }}</div>
                 </div>
-                <router-link v-for="(feature) in menu.feature" :to="menuMapping[feature].path" class="nav-link"
+                <router-link v-for="(feature) in flatFeatures" :to="menuMapping[feature].path" class="nav-link"
                   :key="menuMapping[feature]">
                   <div class="nav">
                     <div class="logo">
@@ -100,6 +100,20 @@ const { user } = storeToRefs(authStore)
 const menu = computed(() => {
   return accessFeature[user.value.role.toLowerCase()]
 })
+
+const flatFeatures = computed(() => {
+  const result = []
+  if (menu.value?.feature) {
+    menu.value.feature.forEach(item => {
+      if (typeof item === 'object') {
+        result.push(...item.feature)
+      } else {
+        result.push(item)
+      }
+    })
+  }
+  return result
+})
 const iconMap = {
   user: 'person-square',
   dashboard: 'clipboard-data',
@@ -114,7 +128,10 @@ const iconMap = {
   work_order: 'person-workspace',
   delivery_order: 'truck',
   general: 'sliders',
-  upload_data: 'file-earmark-arrow-up'
+  upload_data: 'file-earmark-arrow-up',
+  borrow: 'box-arrow-right',
+  stock_history: 'clock-history',
+  sparepart_movement: 'arrow-left-right'
 }
 
 

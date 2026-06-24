@@ -86,22 +86,27 @@
               placeholder="Down Payment" disabled>
           </div>
           <div class="input form-group col-12">
-            <label for="">Sub Total</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.subTotal" placeholder="Sub Total"
-              disabled>
+            <label for="">Sub Total {{ invoice.invoice.type && `(${invoice.invoice.type})` }}</label><br>
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.subTotal)"
+              placeholder="Sub Total" disabled>
           </div>
           <div class="input form-group col-12">
-            <label for="">Grand Total</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.invoice.grandTotal" placeholder="Grand Total"
-              disabled>
+            <label for="">Grand Total {{ invoice.invoice.type && `(${invoice.invoice.type})` }}</label><br>
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.grandTotal)"
+              placeholder="Grand Total" disabled>
           </div>
         </div>
         <div class="right">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="name">No</label><br>
+            <label for="">Internal Request Number</label><br>
             <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.purchaseOrderNumber"
               placeholder="No" disabled>
+          </div>
+          <div class="input form-group col-12">
+            <label for="">Purchase Order Number</label><br>
+            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.poNumber" placeholder="No"
+              disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -115,8 +120,8 @@
           </div> -->
           <div class="input form-group col-12">
             <label for="">Discount</label><br>
-            <input type="text" class="form-control mt-2" v-model="invoice.purchaseOrder.discount" placeholder="Discount"
-              disabled>
+            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.purchaseOrder.discount)"
+              placeholder="Discount" disabled>
           </div>
         </div>
       </div>
@@ -176,7 +181,7 @@
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">2</td>
-                <td class="table-col table-name">PPN 11%</td>
+                <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
@@ -216,7 +221,7 @@
         :disabled="isProcessing">DP Invoice</button>
       <button v-if="isInvoiceTypeNotSet" type="button" class="btn btn-final" @click="setFinalInvoiceConfirmation"
         :disabled="isProcessing">Final Invoice</button>
-      <button type="button" class="btn btn-process" @click="openDownloadModal">Download</button>
+      <button type="button" class="btn btn-process" @click="openDownloadModal">Print</button>
     </div>
   </div>
   <transition name="fade">
@@ -225,7 +230,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Download Invoice</h5>
+            <h5 class="modal-title">Print Invoice</h5>
           </div>
           <div class="modal-body">
             <div class="input form-group col-12 my-2">
@@ -240,7 +245,7 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
               @click="closeDownloadModal">Close</button>
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" @click="download">Download</button>
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal" @click="download">Print</button>
           </div>
         </div>
       </div>
@@ -258,14 +263,17 @@ import { useTrackStore } from '@/stores/track'
 import { createPdf } from '@/utils/pdf/invoice'
 import { formatCurrency } from '@/utils/form-util'
 import { useModalStore } from '@/stores/modal'
+import { useGeneralStore } from '@/stores/general'
 
 const route = useRoute()
 const router = useRouter()
 const invoiceStore = useInvoiceStore()
 const trackStore = useTrackStore()
+const generalStore = useGeneralStore()
 const modalStore = useModalStore()
 
 const { invoice } = storeToRefs(invoiceStore)
+const { ppn } = storeToRefs(generalStore)
 
 const isProcessing = ref(false)
 const isShowDownloadModal = ref(false)

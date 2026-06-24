@@ -16,6 +16,7 @@
       <input
         v-model.number="localItem.quantity"
         @input="updateTotals"
+        @wheel.prevent
         type="number"
         class="form-control"
         placeholder="Qty"
@@ -26,11 +27,10 @@
     
     <!-- Unit Price (Auto-filled from sparepart) -->
     <td>
-      <input
-        v-model.number="localItem.unit_price"
-        @input="updateTotals"
-        type="number"
-        class="form-control"
+      <CurrencyInput
+        v-model="localItem.unit_price"
+        @update:model-value="updateTotals"
+        input-class="form-control"
         placeholder="Unit Price"
         :disabled="!localItem.sparepartId"
       />
@@ -63,6 +63,8 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import SparepartSelector from './SparepartSelector.vue'
+import CurrencyInput from '@/components/CurrencyInput.vue'
+import { formatCurrency } from '@/utils/form-util'
 
 const props = defineProps({
   item: {
@@ -112,14 +114,6 @@ const handleSparepartClear = () => {
 const updateTotals = () => {
   localItem.value.total_price = (localItem.value.quantity || 0) * (localItem.value.unit_price || 0)
   emit('update', localItem.value)
-}
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0
-  }).format(amount || 0)
 }
 
 watch(() => props.item, (newItem) => {

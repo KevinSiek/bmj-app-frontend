@@ -11,6 +11,9 @@ import { ref } from 'vue'
 import MenuPurchase from '@/components/menu/MenuPurchase.vue'
 import MenuBackOrder from '@/components/menu/MenuBackOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
+import MenuBorrow from '@/components/menu/MenuBorrow.vue'
+import MenuStockHistory from '@/components/menu/MenuStockHistory.vue'
+import MenuSparepartMovement from '@/components/menu/MenuSparepartMovement.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([

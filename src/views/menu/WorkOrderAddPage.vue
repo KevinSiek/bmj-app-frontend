@@ -57,7 +57,7 @@
                     <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType">
                   </div>
                   <div class="col-3">
-                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity">
+                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity" @wheel.prevent>
                   </div>
                 </div>
               </div>
@@ -134,24 +134,6 @@
                 <label for="">Scope of Work</label><br>
                 <input type="text" class="form-control mt-2" v-model="workOrder.additional.scope"
                   placeholder="Scope of Work">
-              </div>
-              <div class="col-6">
-                <label for="">APD</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.additional.apd" placeholder="APD">
-              </div>
-            </div>
-          </div>
-          <div class="input form-group col-12">
-            <div class="row">
-              <div class="col-6">
-                <label for="">Vaccine</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.additional.vaccine"
-                  placeholder="Vaccine">
-              </div>
-              <div class="col-6">
-                <label for="">Peduli Lindungi</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.additional.peduliLindungi"
-                  placeholder="Peduli Lindungi">
               </div>
             </div>
           </div>

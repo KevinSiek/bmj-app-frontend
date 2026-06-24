@@ -1,6 +1,10 @@
 <template>
   <div class="contain background shadow">
     <form class="row form">
+      <div class="notes my-2">
+        <div class="title">Branch</div>
+        <div class="text">{{ purchase.branch }}</div>
+      </div>
       <div class="my-2">
         <div class="title">Purchase List</div>
         <div class="table-placeholder">
@@ -10,6 +14,7 @@
                 <th scope="col-1" class="table-number">No</th>
                 <th scope="col" class="table-name">Sparepart Name</th>
                 <th scope="col" class="table-part-number">Sparepart Number</th>
+                <th scope="col" class="table-name">Seller</th>
                 <th scope="col" class="table-name">Quantity</th>
                 <th scope="col" class="table-name">Unit Price</th>
                 <th scope="col" class="table-name">Total Price</th>
@@ -20,6 +25,7 @@
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
+                <td class="table-col table-name">{{ sparepart.seller || '-' }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceBuy) }}</td>
                 <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
@@ -34,7 +40,7 @@
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
-        <div class="text">Rp. {{ purchase.totalAmount }}</div>
+        <div class="text">{{ formatCurrency(purchase.totalAmount) }}</div>
       </div>
     </form>
   </div>
@@ -99,8 +105,8 @@ const receive = async () => {
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
+    await purchaseStore.getPurchase(route.params.id)
     isProcessing.value = false
-    purchaseStore.getPurchase(route.params.id)
   }
 }
 const receiveConfirmation = () => {

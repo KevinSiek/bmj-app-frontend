@@ -14,13 +14,13 @@
         </div>
       </div>
       <div v-else>
-        <div v-if="backOrders?.length == 0">
+        <div v-if="filteredBackOrders?.length == 0">
           <div class="no-data-text">
             No Data
           </div>
         </div>
         <div v-else class="list">
-          <div v-for="(allBackOrder, index) in backOrders" :key="index">
+          <div v-for="(allBackOrder, index) in filteredBackOrders" :key="index">
             <template v-if="allBackOrder.versions.length > 1">
               <ItemComponent :number="index + paginationData.from"
                 :item="allBackOrder.versions[allBackOrder.versions.length - 1]"
@@ -65,7 +65,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useBackOrderStore } from '@/stores/back-order'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onBeforeMount, onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch, computed } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 import RefreshButton from '@/components/RefreshButton.vue'
@@ -76,6 +76,13 @@ const backOrderStore = useBackOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
 const { backOrders, paginationData, isLoading } = storeToRefs(backOrderStore)
+
+const filteredBackOrders = computed(() =>
+  (backOrders.value || []).filter(item => {
+    const latest = item.versions?.[item.versions.length - 1]
+    return latest?.origin === 'processed'
+  })
+)
 
 onBeforeMount(() => {
   isLoading.value = true

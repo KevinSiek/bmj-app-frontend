@@ -48,7 +48,6 @@ const { isShowTrack } = storeToRefs(trackStore)
   height: 100%;
   padding: 20px;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
-  overflow-y: auto;
   border-radius: 20px;
   display: flex;
   flex-direction: column;

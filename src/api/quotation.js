@@ -68,14 +68,14 @@ const processQuotation = (id, param) => {
   return httpApi.postDataViaApi(`${api.quotation}/moveToPo/${id}`, param)
 }
 
-const approveQuotation = (id) => {
-  return httpApi.postDataViaApi(`${api.quotation}/approve/${id}`)
+const approveQuotation = (id, notes) => {
+  return httpApi.postDataViaApi(`${api.quotation}/approve/${id}`, { notes })
 }
-const rejectQuotation = (id) => {
-  return httpApi.postDataViaApi(`${api.quotation}/reject/${id}`)
+const rejectQuotation = (id, notes) => {
+  return httpApi.postDataViaApi(`${api.quotation}/reject/${id}`, { notes })
 }
-const needChangeQuotation = (id) => {
-  return httpApi.postDataViaApi(`${api.quotation}/needChange/${id}`)
+const needChangeQuotation = (id, notes) => {
+  return httpApi.postDataViaApi(`${api.quotation}/needChange/${id}`, { notes })
 }
 
 

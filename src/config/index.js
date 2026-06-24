@@ -19,6 +19,10 @@ const menuMapping = {
     name: 'Menu Inventory Purchase',
     path: '/menu/inventory-purchase'
   },
+  menu_inventory_head: {
+    name: 'Menu Inventory Head',
+    path: '/menu/inventory-head'
+  },
   menu_finance: {
     name: 'Menu Finance',
     path: '/menu/finance'
@@ -111,6 +115,18 @@ const menuMapping = {
     name: 'Edit Spareparts',
     path: '/spareparts/:id/edit'
   },
+  sparepart_movement: {
+    name: 'Sparepart Movement',
+    path: '/sparepart-movement'
+  },
+  sparepart_movement_add: {
+    name: 'Add Sparepart Movement',
+    path: '/sparepart-movement/add'
+  },
+  sparepart_movement_detail: {
+    name: 'Detail Sparepart Movement',
+    path: '/sparepart-movement/:id'
+  },
   back_order: {
     name: 'Back Order',
     path: '/back-order'
@@ -118,6 +134,34 @@ const menuMapping = {
   back_order_detail: {
     name: 'Detail Back Order',
     path: '/back-order/:id'
+  },
+  back_order_adjustment: {
+    name: 'Adjust Back Order',
+    path: '/back-order/:id/adjustment'
+  },
+  borrow: {
+    name: 'Borrow',
+    path: '/borrow'
+  },
+  borrow_add: {
+    name: 'Add Borrow',
+    path: '/borrow/add'
+  },
+  borrow_edit: {
+    name: 'Edit Borrow',
+    path: '/borrow/:id/edit'
+  },
+  borrow_detail: {
+    name: 'Detail Borrow',
+    path: '/borrow/:id'
+  },
+  borrow_return: {
+    name: 'Return Borrow',
+    path: '/borrow/:id/return'
+  },
+  stock_history: {
+    name: 'Stock History',
+    path: '/stock-history'
   },
   purchase: {
     name: 'Purchase',
@@ -218,7 +262,8 @@ const common = {
       on_review: 'On Review',
       po: 'PO',
       cancelled: 'Cancelled',
-      revised: 'Revised'
+      revised: 'Revised',
+      change: 'Change'
     },
     po: {
       release: 'Release',
@@ -230,6 +275,7 @@ const common = {
     },
     work_order: {
       ready: 'Sparepart Ready',
+      wait_on_progress: 'Wait On Progress',
       on_progress: 'On Progress',
       done: 'Done'
     },
@@ -238,6 +284,22 @@ const common = {
       rejected: 'Rejected',
       approved: 'Approved',
       received: 'Received'
+    },
+    borrow: {
+      created: 'Created',
+      approved: 'Approved',
+      borrowed: 'Borrowed',
+      returned: 'Returned',
+      received: 'Received',
+      done: 'Done',
+      rejected: 'Rejected',
+      cancelled: 'Cancelled'
+    },
+    sparepart_movement: {
+      created: 'Created',
+      send: 'Send',
+      received: 'Received',
+      cancelled: 'Cancelled'
     }
   },
   modal: {
@@ -250,10 +312,12 @@ const common = {
     finance: 'Finance',
     inventory_admin: 'Inventory Admin',
     service: 'Service',
-    inventory_purchase: 'Inventory Purchase'
+    inventory_purchase: 'Inventory Purchase',
+    head_inventory: 'Head Inventory'
   },
   track: {
     po: 'Po',
+    bo: 'Bo',
     pi: 'Pi',
     dp_paid: 'DP Paid',
     full_paid: 'Full Paid',
@@ -266,16 +330,17 @@ const common = {
     jakarta: 'Jakarta',
     semarang: 'Semarang'
   },
-}
-
-const groupedFeature = {
-  sparepart: {
-    label: 'Spareparts',
-    key: 'spareparts',
-    feature: [
-      'spareparts'
-    ]
-  }
+  sourceTypes: ['PurchaseOrder', 'Buy', 'BackOrder', 'Return', 'Borrow', 'ManualEdit', 'Import', 'SparepartMovement'],
+  sourceRouteMap: {
+    PurchaseOrder: 'purchase_order_detail',
+    Buy: 'purchase_detail',
+    BackOrder: 'back_order_detail',
+    Return: 'return_detail',
+    Borrow: 'borrow_detail',
+    ManualEdit: 'spareparts_detail',
+    Import: 'spareparts_detail',
+    SparepartMovement: 'sparepart_movement_detail',
+  },
 }
 
 const accessFeature = {
@@ -288,9 +353,18 @@ const accessFeature = {
       'purchase_order',
       'proforma_invoice',
       'invoice',
-      groupedFeature.sparepart,
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'borrow',
+          'stock_history',
+          'sparepart_movement',
+          'purchase'
+        ]
+      },
       'back_order',
-      'purchase',
       'employee',
       'work_order',
       'delivery_order',
@@ -304,7 +378,14 @@ const accessFeature = {
     feature: [
       'quotation',
       'purchase_order',
-      groupedFeature.sparepart,
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'borrow'
+        ]
+      }
     ]
   },
   'inventory admin': {
@@ -312,18 +393,55 @@ const accessFeature = {
     name: 'Inventory Admin',
     feature: [
       'purchase_order',
-      groupedFeature.sparepart,
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'borrow',
+          'stock_history',
+          'sparepart_movement'
+        ]
+      },
       'back_order',
-      'delivery_order'
+      'delivery_order',
+      'work_order'
     ]
   },
   'inventory purchase': {
     path: '/inventory-purchase',
     name: 'Inventory Purchase',
     feature: [
-      groupedFeature.sparepart,
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'purchase'
+        ]
+      },
+      'back_order'
+    ]
+  },
+  'head inventory': {
+    path: '/head-inventory',
+    name: 'Head Inventory',
+    feature: [
+      'purchase_order',
+      {
+        label: 'Spareparts',
+        key: 'spareparts',
+        feature: [
+          'spareparts',
+          'borrow',
+          'stock_history',
+          'sparepart_movement',
+          'purchase'
+        ]
+      },
       'back_order',
-      'purchase'
+      'delivery_order',
+      'work_order'
     ]
   },
   finance: {
@@ -341,7 +459,7 @@ const accessFeature = {
     name: 'Service',
     feature: [
       'purchase_order',
-      'back_order',
+      'spareparts',
       'work_order'
     ]
   }
@@ -353,6 +471,9 @@ const api = {
   proforma_invoice: '/api/proforma-invoice',
   purchase_order: '/api/purchase-order',
   back_order: '/api/back-order',
+  borrow: '/api/borrow',
+  stock_movement: '/api/stock-movement',
+  sparepart_movement: '/api/sparepart-movement',
   invoice: '/api/invoice',
   sparepart: '/api/sparepart',
   work_order: '/api/work-order',

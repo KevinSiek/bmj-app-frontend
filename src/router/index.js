@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { menuMapping as menuConfig } from '@/config'
+import { menuMapping as menuConfig, accessFeature } from '@/config'
 import { useAuthStore } from '@/stores/auth'
 import { getToken } from '@/utils/local-storage'
 
@@ -12,6 +12,7 @@ const MenuMarketingPage = () => import('@/views/role/MarketingMenu.vue')
 const MenuServicePage = () => import('@/views/role/ServiceMenu.vue')
 const MenuInventoryAdminPage = () => import('@/views/role/InventoryAdminMenu.vue')
 const MenuInventoryPurchasePage = () => import('@/views/role/InventoryPurchaseMenu.vue')
+const MenuInventoryHeadPage = () => import('@/views/role/InventoryHeadMenu.vue')
 const MenuFinancePage = () => import('@/views/role/FinanceMenu.vue')
 const ProfilePage = () => import('@/views/menu/ProfilePage.vue')
 const DashboardPage = () => import('@/views/menu/DashboardPage.vue')
@@ -25,6 +26,12 @@ const InvoicePage = () => import('@/views/menu/InvoicePage.vue')
 const InvoiceDetailPage = () => import('@/views/menu/InvoiceDetailPage.vue')
 const BackOrderPage = () => import('@/views/menu/BackOrderPage.vue')
 const BackOrderDetailPage = () => import('@/views/menu/BackOrderDetailPage.vue')
+const BackOrderAdjustmentPage = () => import('@/views/menu/BackOrderAdjustmentPage.vue')
+const BorrowPage = () => import('@/views/menu/BorrowPage.vue')
+const BorrowAddPage = () => import('@/views/menu/BorrowAddPage.vue')
+const BorrowDetailPage = () => import('@/views/menu/BorrowDetailPage.vue')
+const BorrowReturnPage = () => import('@/views/menu/BorrowReturnPage.vue')
+const StockHistoryPage = () => import('@/views/menu/StockHistoryPage.vue')
 const PurchasePage = () => import('@/views/menu/PurchasePage.vue')
 const PurchaseAddPage = () => import('@/views/menu/PurchaseAddPage.vue')
 const PurchaseEditPage = () => import('@/views/menu/PurchaseEditPage.vue')
@@ -55,6 +62,9 @@ const ReturnPage = () => import('@/views/menu/ReturnPage.vue')
 const ReturnDetailPage = () => import('@/views/menu/ReturnDetailPage.vue')
 const GeneralPage = () => import('@/views/menu/GeneralPage.vue')
 const UploadDataPage = () => import('@/views/menu/UploadDataPage.vue')
+const SparepartMovementPage = () => import('@/views/menu/SparepartMovementPage.vue')
+const SparepartMovementAddPage = () => import('@/views/menu/SparepartMovementAddPage.vue')
+const SparepartMovementDetailPage = () => import('@/views/menu/SparepartMovementDetailPage.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,32 +94,44 @@ const router = createRouter({
         {
           path: menuConfig.menu_director.path,
           name: menuConfig.menu_director.name,
-          component: MenuDirectorPage
+          component: MenuDirectorPage,
+          meta: { allowedRoles: ['Director'] }
         },
         {
           path: menuConfig.menu_marketing.path,
           name: menuConfig.menu_marketing.name,
-          component: MenuMarketingPage
+          component: MenuMarketingPage,
+          meta: { allowedRoles: ['Marketing', 'Director'] }
         },
         {
           path: menuConfig.menu_finance.path,
           name: menuConfig.menu_finance.name,
-          component: MenuFinancePage
+          component: MenuFinancePage,
+          meta: { allowedRoles: ['Finance', 'Director'] }
         },
         {
           path: menuConfig.menu_service.path,
           name: menuConfig.menu_service.name,
-          component: MenuServicePage
+          component: MenuServicePage,
+          meta: { allowedRoles: ['Service', 'Director'] }
         },
         {
           path: menuConfig.menu_inventory_admin.path,
           name: menuConfig.menu_inventory_admin.name,
-          component: MenuInventoryAdminPage
+          component: MenuInventoryAdminPage,
+          meta: { allowedRoles: ['Inventory Admin', 'Director'] }
         },
         {
           path: menuConfig.menu_inventory_purchase.path,
           name: menuConfig.menu_inventory_purchase.name,
-          component: MenuInventoryPurchasePage
+          component: MenuInventoryPurchasePage,
+          meta: { allowedRoles: ['Inventory Purchase', 'Director'] }
+        },
+        {
+          path: menuConfig.menu_inventory_head.path,
+          name: menuConfig.menu_inventory_head.name,
+          component: MenuInventoryHeadPage,
+          meta: { allowedRoles: ['Head Inventory', 'Director'] }
         }
       ]
     },
@@ -117,6 +139,7 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: HomePage,
+      redirect: '/menu',
       meta: {
         requireAuth: true,
       },
@@ -124,7 +147,8 @@ const router = createRouter({
         {
           path: menuConfig.general.path,
           name: menuConfig.general.name,
-          component: GeneralPage
+          component: GeneralPage,
+          meta: { feature: 'general' }
         },
         {
           path: menuConfig.profile.path,
@@ -134,16 +158,19 @@ const router = createRouter({
         {
           path: menuConfig.dashboard.path,
           name: menuConfig.dashboard.name,
-          component: DashboardPage
+          component: DashboardPage,
+          meta: { feature: 'dashboard' }
         },
         {
           path: menuConfig.upload_data.path,
           name: menuConfig.upload_data.name,
-          component: UploadDataPage
+          component: UploadDataPage,
+          meta: { feature: 'upload_data' }
         },
         // Quotation
         {
           path: menuConfig.quotation.path,
+          meta: { feature: 'quotation' },
           children: [
             {
               path: '',
@@ -196,6 +223,7 @@ const router = createRouter({
         // Invoice
         {
           path: menuConfig.invoice.path,
+          meta: { feature: 'invoice' },
           children: [
             {
               path: '',
@@ -216,6 +244,7 @@ const router = createRouter({
         // Back Order
         {
           path: menuConfig.back_order.path,
+          meta: { feature: 'back_order' },
           children: [
             {
               path: '',
@@ -231,11 +260,79 @@ const router = createRouter({
                 useTrack: true
               }
             },
+            {
+              path: menuConfig.back_order_adjustment.path,
+              name: menuConfig.back_order_adjustment.name,
+              component: BackOrderAdjustmentPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            }
+          ]
+        },
+        // Borrow
+        {
+          path: menuConfig.borrow.path,
+          meta: { feature: 'borrow' },
+          children: [
+            {
+              path: '',
+              name: menuConfig.borrow.name,
+              component: BorrowPage
+            },
+            {
+              path: menuConfig.borrow_add.path,
+              name: menuConfig.borrow_add.name,
+              component: BorrowAddPage,
+              meta: {
+                useBack: true
+              }
+            },
+            {
+              path: menuConfig.borrow_edit.path,
+              name: menuConfig.borrow_edit.name,
+              component: BorrowAddPage,
+              meta: {
+                useBack: true
+              }
+            },
+            {
+              path: menuConfig.borrow_return.path,
+              name: menuConfig.borrow_return.name,
+              component: BorrowReturnPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            },
+            {
+              path: menuConfig.borrow_detail.path,
+              name: menuConfig.borrow_detail.name,
+              component: BorrowDetailPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            }
+          ]
+        },
+        // Stock History
+        {
+          path: menuConfig.stock_history.path,
+          meta: { feature: 'stock_history' },
+          children: [
+            {
+              path: '',
+              name: menuConfig.stock_history.name,
+              component: StockHistoryPage
+            }
           ]
         },
         // Purchase
         {
           path: menuConfig.purchase.path,
+          meta: { feature: 'purchase' },
           children: [
             {
               path: '',
@@ -266,7 +363,8 @@ const router = createRouter({
               component: PurchaseReviewPage,
               meta: {
                 useBack: true,
-                useTrack: false
+                useTrack: false,
+                allowedRoles: ['Director', 'Head Inventory']
               }
             },
             {
@@ -284,7 +382,8 @@ const router = createRouter({
               component: PurchaseReviewDetailPage,
               meta: {
                 useBack: true,
-                useTrack: false
+                useTrack: false,
+                allowedRoles: ['Director', 'Head Inventory']
               }
             },
           ]
@@ -292,6 +391,7 @@ const router = createRouter({
         // Work Order
         {
           path: menuConfig.work_order.path,
+          meta: { feature: 'work_order' },
           children: [
             {
               path: '',
@@ -317,6 +417,7 @@ const router = createRouter({
         // Spareparts
         {
           path: menuConfig.spareparts.path,
+          meta: { feature: 'spareparts' },
           children: [
             {
               path: '',
@@ -349,9 +450,39 @@ const router = createRouter({
             }
           ]
         },
+        // Sparepart Movement
+        {
+          path: menuConfig.sparepart_movement.path,
+          meta: { feature: 'sparepart_movement' },
+          children: [
+            {
+              path: '',
+              name: menuConfig.sparepart_movement.name,
+              component: SparepartMovementPage
+            },
+            {
+              path: menuConfig.sparepart_movement_add.path,
+              name: menuConfig.sparepart_movement_add.name,
+              component: SparepartMovementAddPage,
+              meta: {
+                useBack: true
+              }
+            },
+            {
+              path: menuConfig.sparepart_movement_detail.path,
+              name: menuConfig.sparepart_movement_detail.name,
+              component: SparepartMovementDetailPage,
+              meta: {
+                useBack: true,
+                useTrack: true
+              }
+            }
+          ]
+        },
         // Employee
         {
           path: menuConfig.employee.path,
+          meta: { feature: 'employee' },
           children: [
             {
               path: '',
@@ -387,6 +518,7 @@ const router = createRouter({
         // Proforma Invoice
         {
           path: menuConfig.proforma_invoice.path,
+          meta: { feature: 'proforma_invoice' },
           children: [
             {
               path: '',
@@ -415,6 +547,7 @@ const router = createRouter({
         // Purchase Order
         {
           path: menuConfig.purchase_order.path,
+          meta: { feature: 'purchase_order' },
           children: [
             {
               path: '',
@@ -464,6 +597,7 @@ const router = createRouter({
         // Delivery Order
         {
           path: menuConfig.delivery_order.path,
+          meta: { feature: 'delivery_order' },
           children: [
             {
               path: '',
@@ -495,12 +629,41 @@ const router = createRouter({
   ],
 })
 
+const getAllowedFeatures = (role) => {
+  const roleKey = role.toLowerCase()
+  const access = accessFeature[roleKey]
+  if (!access) return []
+  const features = []
+  for (const item of access.feature) {
+    if (typeof item === 'string') {
+      features.push(item)
+    } else {
+      features.push(item.key)
+      features.push(...item.feature)
+    }
+  }
+  return features
+}
+
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const token = getToken('token-bmj')
 
   if (token && !authStore.user) {
     await authStore.getUser()
+  }
+
+  if (to.meta.feature && authStore.user) {
+    const allowed = getAllowedFeatures(authStore.user.role)
+    if (!allowed.includes(to.meta.feature)) {
+      return next('/menu')
+    }
+  }
+
+  if (to.meta.allowedRoles && authStore.user) {
+    if (!to.meta.allowedRoles.includes(authStore.user.role)) {
+      return next('/menu')
+    }
   }
 
   if(to.meta.requireAuth){

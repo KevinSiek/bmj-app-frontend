@@ -5,9 +5,14 @@
         <div class="left">
           <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="">No</label><br>
+            <label for="">Internal Request Number</label><br>
             <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.purchaseOrderNumber"
               placeholder="No" disabled>
+          </div>
+          <div class="input form-group col-12">
+            <label for="">Purchase Order Number</label><br>
+            <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.poNumber" placeholder="No"
+              disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Date</label><br>
@@ -18,6 +23,11 @@
             <label for="">Order Type</label><br>
             <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.orderType"
               placeholder="Order Type" disabled>
+          </div>
+          <div class="input form-group col-12">
+            <label for="">Branch</label><br>
+            <input type="text" class="form-control mt-2" v-model="backOrder.purchaseOrder.branch" placeholder="Branch"
+              disabled>
           </div>
         </div>
         <div class="right">
@@ -140,10 +150,15 @@
       </div>
     </form>
   </div>
-  <div class="button" v-if="isReadyToProcess">
+  <div class="button">
+    <div class="left">
+      <button v-if="isReadyToProcess" type="button" class="btn btn-process m-1" @click="adjustBackOrderAction"
+        :disabled="isProcessing">Adjust</button>
+    </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="processBackOrderConfirmation"
-        :disabled="isProcessing">Ready</button>
+      <button type="button" class="btn btn-process m-1" @click="download">Print</button>
+      <button v-if="isReadyToProcess" type="button" class="btn btn-process m-1" @click="analyzeBackOrderAction"
+        :disabled="isProcessing">Analyze</button>
     </div>
   </div>
 </template>
@@ -151,41 +166,75 @@
 <script setup>
 import { useBackOrderStore } from '@/stores/back-order'
 import { useModalStore } from '@/stores/modal'
+import { useTrackStore } from '@/stores/track'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { createPdf } from '@/utils/pdf/back-order'
+import { common, menuMapping } from '@/config'
 
 const route = useRoute()
+const router = useRouter()
 const backOrderStore = useBackOrderStore()
+const trackStore = useTrackStore()
 const modalStore = useModalStore()
 
 const { backOrder } = storeToRefs(backOrderStore)
 
 const isProcessing = ref(false)
 
-const isReadyToProcess = computed(() => backOrder.value?.currentStatus !== 'Rejected' && backOrder.value?.currentStatus !== 'Ready')
+const isReadyToProcess = computed(() =>
+  backOrder.value?.currentStatus !== 'Rejected' &&
+  backOrder.value?.currentStatus !== 'Ready' &&
+  backOrder.value?.spareparts?.some(s => s.backOrder !== 0)
+)
+
+const fetchData = async () => {
+  await backOrderStore.getBackOrder(route.params.id)
+  await trackStore.setTrackData(backOrder.value.status)
+}
 
 onBeforeMount(() => {
   if (!backOrder.value) backOrderStore.$resetBackOrder()
 })
-onMounted(() => {
-  backOrderStore.getBackOrder(route.params.id)
-})
+onMounted(fetchData)
 
-const processBackOrder = async () => {
+const analyzeBackOrderAction = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await backOrderStore.processBackOrder(route.params.id)
+    const response = await backOrderStore.analyzeBackOrder(route.params.id)
+
+    if (response?.total_available === 0) {
+      modalStore.openMessageModal('Warning', 'Nothing change or back order processed but nothing new')
+    } else {
+      // If sufficient stock, prompt confirmation to process
+      modalStore.openConfirmationModal('to process this Back Order ?', 'Back Order Processed', processBackOrder)
+    }
   } catch (error) {
-    throw error.data.error || error.data.message
+    let errorMsg = error?.data?.message || error?.message || 'Quantity is not enough please contact purchasing to add the stock'
+    modalStore.openMessageModal(common.modal.failed, errorMsg)
   } finally {
+    await backOrderStore.getBackOrder(route.params.id)
     isProcessing.value = false
   }
 }
 
-const processBackOrderConfirmation = () => {
-  modalStore.openConfirmationModal('to process this Back Order ?', 'Back Order Processed', processBackOrder)
+const adjustBackOrderAction = async () => {
+  router.push(`${menuMapping.back_order_adjustment.path.replace(':id', route.params.id)}`)
+}
+
+const processBackOrder = async () => {
+  try {
+    await backOrderStore.processBackOrder(route.params.id)
+    await backOrderStore.getBackOrder(route.params.id)
+  } catch (error) {
+    throw error?.data?.error || error?.data?.message || error?.message || 'Process failed'
+  }
+}
+
+const download = () => {
+  createPdf(backOrder.value)
 }
 
 </script>
@@ -242,7 +291,12 @@ $secondary-color: rgb(98, 98, 98);
 .button {
   display: flex;
   margin: 2% 4%;
-  justify-content: flex-end;
+  justify-content: space-between;
+
+  .right {
+    display: flex;
+    gap: 20px;
+  }
 
   .btn {
     padding: 1.5vh 3vw 1.5vh 3vw;

@@ -34,20 +34,20 @@
               <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber" placeholder="Part Number"
                 disabled>
             </div>
-            <div v-if="isRoleDirector || isRoleFinance" class="input form-group col-12">
+            <div v-if="canSeePurchasePrice" class="input form-group col-12">
               <label for="">Buy Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceBuy" placeholder="Buy Price"
-                disabled>
+              <input type="text" class="form-control mt-2" :value="formatCurrency(sparepart.unitPriceBuy)"
+                placeholder="Buy Price" disabled>
             </div>
             <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="sparepart.unitPriceSell" placeholder="Selling Price"
-                disabled>
+              <input type="text" class="form-control mt-2" :value="formatCurrency(sparepart.unitPriceSell)"
+                placeholder="Selling Price" disabled>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="isRoleDirector || isRoleFinance" class="lower my-2">
+      <div v-if="canSeePurchasePrice" class="lower my-2">
         <div class="title">Purchase Price</div>
         <div class="data row">
           <div class="lists" v-for="(list, index) in sparepart.unitPriceSeller" :key="index">
@@ -57,7 +57,8 @@
             </div>
             <div class="input form-group col-3">
               <label for="">Puchase Price</label><br>
-              <input type="text" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price" disabled>
+              <input type="text" class="form-control mt-2" :value="formatCurrency(list.price)"
+                placeholder="Purchase Price" disabled>
             </div>
             <div class="input form-group col-3">
               <label for="">Quantity</label><br>
@@ -71,10 +72,11 @@
   <div class="button">
     <div class="left">
       <button type="button" class="btn btn-edit" @click="back">Back</button>
-      <button type="button" class="btn btn-danger mx-5" @click="deleteSparepartConfirmation">Delete</button>
+      <button type="button" v-if="isRoleDirector" class="btn btn-danger mx-5"
+        @click="deleteSparepartConfirmation">Delete</button>
     </div>
     <div class="right">
-      <button type="button" class="btn btn-process" @click="goToEdit">Edit</button>
+      <button type="button" v-if="isRoleDirector" class="btn btn-process" @click="goToEdit">Edit</button>
     </div>
   </div>
 </template>
@@ -84,10 +86,11 @@ import { menuMapping as menuConfig } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref, computed } from 'vue'
 import { useModalStore } from '@/stores/modal'
 import { common } from '@/config'
 import { useRole } from '@/composeable/useRole'
+import { formatCurrency } from '@/utils/form-util'
 
 const route = useRoute()
 const router = useRouter()
@@ -97,7 +100,9 @@ const isProcessing = ref(false)
 
 const { sparepart } = storeToRefs(sparepartStore)
 
-const { isRoleDirector, isRoleFinance } = useRole()
+const { isRoleDirector, isRoleFinance, isRoleInventoryPurchase, isRoleHeadInventory } = useRole()
+
+const canSeePurchasePrice = computed(() => isRoleDirector.value || isRoleFinance.value || isRoleHeadInventory.value || isRoleInventoryPurchase.value)
 
 onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()
@@ -176,6 +181,7 @@ $secondary-color: rgb(98, 98, 98);
       }
     }
   }
+
 }
 
 .button {

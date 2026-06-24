@@ -27,12 +27,11 @@
             </div>
             <div class="input form-group col-12">
               <label for="">Buy Price</label><br>
-              <input type="number" class="form-control mt-2" v-model="sparepart.unitPriceBuy" placeholder="Buy Price">
+              <CurrencyInput v-model="sparepart.unitPriceBuy" placeholder="Buy Price" />
             </div>
             <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
-              <input type="number" class="form-control mt-2" v-model="sparepart.unitPriceSell"
-                placeholder="Selling Price">
+              <CurrencyInput v-model="sparepart.unitPriceSell" placeholder="Selling Price" />
             </div>
           </div>
         </div>
@@ -54,11 +53,11 @@
                 </div>
                 <div class="input form-group col-3">
                   <label for="">Puchase Price</label><br>
-                  <input type="number" class="form-control mt-2" v-model="list.price" placeholder="Purchase Price">
+                  <CurrencyInput v-model="list.price" placeholder="Purchase Price" />
                 </div>
                 <div class="input form-group col-3">
                   <label for="">Quantity</label><br>
-                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity">
+                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity" @wheel.prevent>
                 </div>
               </div>
             </div>
@@ -94,6 +93,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores/modal'
+import CurrencyInput from '@/components/CurrencyInput.vue'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { common } from '@/config'
 import { useSellerStore } from '@/stores/seller'

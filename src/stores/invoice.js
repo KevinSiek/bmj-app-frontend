@@ -14,7 +14,8 @@ export const useInvoiceStore = defineStore('invoice', () => {
       currentStatus: data?.current_status || '',
       version: data?.version || 0,
       purchaseOrder: {
-        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '', // This is for Internal Request Number
+        poNumber: data?.purchase_order?.po_number || '', // This is PO From Customer
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
         purchaseOrderType: data?.purchase_order?.purchase_order_type || '',
         paymentDue: data?.purchase_order?.payment_due || '',

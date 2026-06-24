@@ -210,6 +210,7 @@ import {
   ArcElement,
 } from 'chart.js'
 import { useDashboardStore } from '@/stores/dashboard'
+import { formatCurrency } from '@/utils/form-util'
 
 ChartJS.register(
   Title,
@@ -327,18 +328,12 @@ const maxFunnel = computed(() =>
     : 0,
 )
 
-const currencyFormatter = new Intl.NumberFormat('id-ID', {
-  style: 'currency',
-  currency: 'IDR',
-  maximumFractionDigits: 0,
-})
-
 const percentFormatter = new Intl.NumberFormat('id-ID', {
   minimumFractionDigits: 0,
   maximumFractionDigits: 2,
 })
 
-const formatCurrency = (value) => currencyFormatter.format(Number(value || 0))
+
 const formatPercent = (value) => `${percentFormatter.format(Number(value || 0))}%`
 
 const formatHeadlineValue = (headline) => {

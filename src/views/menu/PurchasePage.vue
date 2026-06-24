@@ -4,7 +4,7 @@
       <div class="left">
         <SearchBar @searched="handleUpdateSearch" />
         <RefreshButton @refresh="fetchPurchase" />
-        <div class="review">
+        <div v-if="isRoleDirector || isRoleHeadInventory" class="review">
           <router-link :to="menuConfig.purchase_review.path" class="nav-link">
             <button class="btn btn-primary">Review</button>
           </router-link>
@@ -53,12 +53,14 @@ import { computed, onBeforeMount, onMounted, watch } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 import { useMainStore } from '@/stores/main'
+import { useRole } from '@/composeable/useRole'
 
 const mainStore = useMainStore()
 const route = useRoute()
 const router = useRouter()
 const purchaseStore = usePurchaseStore()
 const { selectedMonth, selectedYear } = useDate()
+const { isRoleDirector, isRoleHeadInventory } = useRole()
 
 const { isMobile } = storeToRefs(mainStore)
 const { purchases, paginationData, isLoading } = storeToRefs(purchaseStore)

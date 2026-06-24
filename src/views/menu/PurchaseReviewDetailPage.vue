@@ -34,7 +34,7 @@
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
-        <div class="text">Rp. {{ purchase.totalAmount }}</div>
+        <div class="text">{{ formatCurrency(purchase.totalAmount) }}</div>
       </div>
     </form>
   </div>
@@ -85,6 +85,7 @@ const reject = async () => {
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
+    await purchaseStore.getPurchase(route.params.id)
     isProcessing.value = false
   }
 }
@@ -99,6 +100,7 @@ const needChange = async () => {
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
+    await purchaseStore.getPurchase(route.params.id)
     isProcessing.value = false
   }
 }
@@ -113,6 +115,7 @@ const approve = async () => {
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
+    await purchaseStore.getPurchase(route.params.id)
     isProcessing.value = false
   }
 }

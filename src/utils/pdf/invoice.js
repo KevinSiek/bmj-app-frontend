@@ -1,6 +1,7 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatCurrency } from '../form-util'
+import { ToWords } from 'to-words'  
 import { common } from '@/config'
 import { getBase64FromUrl } from '../pdf-util'
 
@@ -59,6 +60,21 @@ import { getBase64FromUrl } from '../pdf-util'
 //     }
 //   ]
 // }
+const toWords = new ToWords({
+  localeCode: 'en-US',
+  converterOptions: {
+    currency: false,
+    ignoreDecimal: false,
+    ignoreZeroCurrency: false,
+    doNotAddOnly: false,
+    currencyOptions: {
+      // can be used to override defaults for the selected locale
+      name: 'IDR',
+      plural: 'Rupiahs',
+      symbol: 'Rp.'
+    },
+  }
+})
 
 const createPdf = async (data) => {
   const { purchaseOrder, invoice, customer, price, termOfPayment, paymentDue } = data
@@ -131,7 +147,7 @@ const createPdf = async (data) => {
     table: {
       widths: ['auto', 'auto','*'],
       body: [
-        ['PO NO',':', purchaseOrder.purchaseOrderNumber],
+        ['PO NO',':', purchaseOrder.poNumber],
         ['PO DATE', ':', purchaseOrder.purchaseOrderDate],
       ]
     },
@@ -213,6 +229,7 @@ const createPdf = async (data) => {
     }
   }
 
+  const totalAmountWord = toWords.convert(Math.ceil(price.grandTotal), { ignoreDecimal: true })
   const type = purchaseOrder.purchaseOrderType === common.type.sparepart ? 'SPAREPART' : 'SERVICE'
   const invoiceType = invoice.type
 
@@ -280,7 +297,7 @@ const createPdf = async (data) => {
             ],
             [
               { text: '1', margin: [8, 0, 0, 0] },
-              { text: `${type} ATAS PO ${purchaseOrder.purchaseOrderNumber}`, margin: [8, 0, 0, 0] },
+              { text: `${type} ATAS PO ${purchaseOrder.poNumber}`, margin: [8, 0, 0, 0] },
               {
                 text: formatCurrency(price.subtotal),
                 margin: [0, 0, 30, 0],
@@ -322,7 +339,13 @@ const createPdf = async (data) => {
           paddingLeft: () => 3,
           paddingRight: () => 3
         },
-        margin: [250, 180, 30, 5],
+        margin: [250, 130, 30, 5],
+      },
+      {
+        text: '# ' + totalAmountWord + ' #',
+        alignment: 'center',
+        bold: true,
+        margin: [0, 40, 0, 10]
       },
 
       // // Signature rows
@@ -359,7 +382,7 @@ const createPdf = async (data) => {
               { text: 'SR. PRAWESTI', bold: true, alignment: 'center', decoration: 'underline' },
               { text: 'FINANCE', alignment: 'center' }
             ],
-            margin: [0, 90, 0, 0]
+            margin: [0, 110, 0, 0]
           },
         ]
       },
@@ -382,7 +405,8 @@ const createPdf = async (data) => {
     pageSize: 'A4',
   }
 
-  pdfMake.createPdf(docDefinition).download(`Invoice_${data.id}.pdf`)
+  // pdfMake.createPdf(docDefinition).download(`Invoice_${data.id}.pdf`)
+  pdfMake.createPdf(docDefinition).print()
 }
 
 
