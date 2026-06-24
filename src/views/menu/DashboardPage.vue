@@ -35,7 +35,14 @@
       <section class="headline-grid">
         <article v-for="headline in headlineCards" :key="headline.label" class="headline-card card">
           <span class="label">{{ headline.label }}</span>
-          <div class="value">{{ formatHeadlineValue(headline) }}</div>
+          <div class="value">
+            <template v-if="headline.unit === 'IDR'">
+              <PriceDisplay :value="headline.value" />
+            </template>
+            <template v-else>
+              {{ formatHeadlineValue(headline) }}
+            </template>
+          </div>
           <span v-if="headline.change_percent !== null" class="change" :class="changeClass(headline.change_percent)">
             {{ formatChange(headline.change_percent) }}
           </span>
@@ -51,7 +58,7 @@
           <div v-if="pipelineMetrics" class="pipeline-metrics">
             <div class="metric">
               <span class="metric-label">Potential Value</span>
-              <strong>{{ formatCurrency(pipelineMetrics.potential_value) }}</strong>
+              <strong><PriceDisplay :value="pipelineMetrics.potential_value" /></strong>
             </div>
             <div class="metric">
               <span class="metric-label">Quote → PO</span>
@@ -91,7 +98,7 @@
             <li v-for="(member, index) in teamLeaderboard" :key="member.name">
               <span class="rank">#{{ index + 1 }}</span>
               <span class="member-name">{{ member.name }}</span>
-              <span class="member-value">{{ formatCurrency(member.revenue) }}</span>
+              <span class="member-value" style="width: 150px; display: inline-block;"><PriceDisplay :value="member.revenue" /></span>
             </li>
             <li v-if="teamLeaderboard.length === 0" class="empty-state">
               No paid invoices for the selected interval.
@@ -182,7 +189,7 @@
         <ul>
           <li v-for="customer in topCustomers" :key="customer.customer">
             <span>{{ customer.customer }}</span>
-            <span class="customer-value">{{ formatCurrency(customer.revenue) }}</span>
+            <span class="customer-value" style="width: 150px; display: inline-block;"><PriceDisplay :value="customer.revenue" /></span>
           </li>
           <li v-if="topCustomers.length === 0" class="empty-state">
             No customers captured in this window.
@@ -211,6 +218,7 @@ import {
 } from 'chart.js'
 import { useDashboardStore } from '@/stores/dashboard'
 import { formatCurrency } from '@/utils/form-util'
+import PriceDisplay from '@/components/PriceDisplay.vue'
 
 ChartJS.register(
   Title,

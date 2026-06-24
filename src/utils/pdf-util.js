@@ -8,7 +8,7 @@ function getBase64FromUrl(url) {
       canvas.height = this.height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(this, 0, 0);
-      const dataURL = canvas.toDataURL('image/jpeg');
+      const dataURL = canvas.toDataURL('image/png');
       resolve(dataURL);
     };
     img.onerror = (err) => reject(err);

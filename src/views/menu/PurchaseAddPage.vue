@@ -1,17 +1,14 @@
 <template>
   <div class="contain background shadow">
-    <form class="row form">
+    <form class="row form" autocomplete="off">
       <div class="input form-group col-4 my-2">
         <div class="title">Branch</div>
-        <select class="form-select mt-2" aria-label="Branch" v-model="purchase.branch">
+        <select class="form-select mt-2" :class="{ 'is-invalid': errors.branch }" aria-label="Branch" v-model="purchase.branch">
           <option value="" disabled selected>Select Branch</option>
           <option value="Semarang">Semarang</option>
           <option value="Jakarta">Jakarta</option>
         </select>
-        <!-- <div v-if="isRoleInventoryPurchase">
-          <input type="text" class="form-control mt-2" :value="purchase.branch" placeholder="Branch" disabled readonly>
-          <small class="text-muted">Branch automatically set based on your profile</small>
-        </div> -->
+        <div class="invalid-feedback">{{ errors.branch }}</div>
       </div>
       <div class="my-2">
         <div class="title">Purchase List</div>
@@ -43,11 +40,12 @@
           </div>
           <div class="input form-group col-12 mx-3">
             <div v-for="(sparepart, sparepartIndex) in purchase.spareparts" :key="sparepartIndex"
-              class="row flex-nowrap">
+              class="row flex-nowrap align-items-start">
               <div class="col-3">
-                <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
+                <input type="text" class="form-control mt-2" :class="{ 'is-invalid': getSparepartError(sparepartIndex, 'sparepartId') }" v-model="sparepart.sparepartName" placeholder="Part Name"
                   data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
-                  @keyup="handleInputSearch(sparepart.sparepartName)">
+                  @keyup="handleInputSearch(sparepart.sparepartName)" autocomplete="off">
+                <div class="invalid-feedback">{{ getSparepartError(sparepartIndex, 'sparepartId') }}</div>
                 <ul class="dropdown-menu">
                   <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
                     @click="selectItem(sparepartIndex, sparepart, item)">
@@ -59,7 +57,7 @@
                 <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
                   placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
                   @change="handleInputSearch(sparepart.sparepartNumber)"
-                  @keyup="handleInputSearch(sparepart.sparepartNumber)">
+                  @keyup="handleInputSearch(sparepart.sparepartNumber)" autocomplete="off">
                 <ul class="dropdown-menu">
                   <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
                     @click="selectItem(sparepartIndex, sparepart, item)">
@@ -79,19 +77,21 @@
                 </select>
               </div>
               <div class="col-2">
-                <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
+                <input type="number" class="form-control mt-2" :class="{ 'is-invalid': getSparepartError(sparepartIndex, 'quantity') }" placeholder="Quantity" v-model="sparepart.quantity"
                   @wheel.prevent @input="selectItem(sparepartIndex, sparepart)">
+                <div class="invalid-feedback">{{ getSparepartError(sparepartIndex, 'quantity') }}</div>
               </div>
               <div class="col-3">
-                <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"
+                <CurrencyInput placeholder="Unit Price" :class="{ 'is-invalid': getSparepartError(sparepartIndex, 'unitPriceBuy') }" v-model="sparepart.unitPriceBuy"
                   @update:model-value="selectItem(sparepartIndex, sparepart)" />
+                <div class="invalid-feedback">{{ getSparepartError(sparepartIndex, 'unitPriceBuy') }}</div>
               </div>
               <div class="col-3">
                 <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
                   @update:model-value="selectItem(sparepartIndex, sparepart)" :disabled="true" />
               </div>
-              <div class="col-1 d-flex justify-content-center align-items-end">
-                <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
+              <div class="col-1 d-flex justify-content-center align-items-start">
+                <button type="button" class="btn btn-outline-danger mt-2" @click="removeSparepart(sparepartIndex)"><i
                     class="bi bi-trash3"></i></button>
               </div>
             </div>
@@ -107,11 +107,14 @@
       <div class="notes my-2">
         <div class="title">Description</div>
         <textarea class="form-control" placeholder="Description" id="floatingTextarea2" style="height: 100px"
-          v-model="purchase.notes"></textarea>
+          v-model="purchase.notes" autocomplete="off"></textarea>
       </div>
-      <div class="total my-2">
-        <div class="title">Total Purchase</div>
-        <div class="text">{{ formatCurrency(totalPurchase) }}</div>
+      <div class="total my-2 d-flex align-items-center">
+        <div class="title" style="width: 180px;">Total Purchase</div>
+        <div class="d-flex align-items-center flex-grow-1" style="max-width: 250px;">
+          <span class="me-2">:</span>
+          <PriceDisplay :value="totalPurchase" />
+        </div>
       </div>
     </form>
   </div>
@@ -127,10 +130,11 @@
 import { menuMapping as menuConfig, common } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
 import { formatCurrency } from '@/utils/form-util'
+import PriceDisplay from '@/components/PriceDisplay.vue'
 import CurrencyInput from '@/components/CurrencyInput.vue'
 import { useRouter } from 'vue-router'
 import { useRole } from '@/composeable/useRole'
@@ -146,6 +150,46 @@ const { purchase, searchedSpareparts } = storeToRefs(purchaseStore)
 const isProcessing = ref(false)
 
 const totalPurchase = computed(() => purchase.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
+
+const errors = computed(() => {
+  const errs = {}
+  if (!purchaseStore.isDirty) return errs
+  const p = purchase.value
+  if (!p) return errs
+
+  if (!p.branch) errs.branch = 'Branch is required.'
+  return errs
+})
+
+const getSparepartError = (index, field) => {
+  if (!purchaseStore.isDirty) return null
+  const sp = purchase.value?.spareparts?.[index]
+  if (!sp) return null
+  if (field === 'sparepartId' && !sp.sparepartId && sp.sparepartName) return 'Link ID required.'
+  if (field === 'quantity') {
+    const qty = Number(sp.quantity)
+    if (sp.quantity === '' || isNaN(qty) || qty < 1 || !Number.isInteger(qty)) {
+      return 'Min 1 (integer).'
+    }
+  }
+  if (field === 'unitPriceBuy') {
+    const price = Number(sp.unitPriceBuy)
+    if (sp.unitPriceBuy === '' || isNaN(price) || price < 1) {
+      return 'Min 1.'
+    }
+  }
+  return null
+}
+
+watch(
+  () => purchase.value,
+  (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null) {
+      purchaseStore.isDirty = true
+    }
+  },
+  { deep: true }
+)
 
 onBeforeMount(() => {
   if (!purchase.value) purchaseStore.$resetPurchase()
@@ -204,9 +248,9 @@ const doPurchase = async () => {
 }
 
 const doPurchaseConfirmation = () => {
-  const hasZeroQuantity = purchase.value.spareparts.some((item) => item.quantity <= 0)
-  if (hasZeroQuantity) {
-    modalStore.openMessageModal(common.modal.failed, 'All spareparts must have quantity greater than 0.')
+  const errorMsg = purchaseStore.validatePurchase()
+  if (errorMsg) {
+    purchaseStore.isDirty = true
     return
   }
   modalStore.openConfirmationModal(`to Purchase ${purchase.value.spareparts.length} Spareparts ?`, 'Purchase Spareparts Success', doPurchase)

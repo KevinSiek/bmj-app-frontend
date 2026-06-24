@@ -99,8 +99,10 @@
         :disabled="isProcessing">Edit</button>
       <button v-if="canCancel" type="button" class="btn btn-danger" @click="cancelConfirmation"
         :disabled="isProcessing">Cancel</button>
-      <button v-if="canHandover" type="button" class="btn btn-secondary" @click="printPdfPrompt"
-        :disabled="isProcessing">Print PDF</button>
+      <button v-if="canPrintDispatch" type="button" class="btn btn-secondary" @click="printPdfPrompt"
+        :disabled="isProcessing">Print Borrow</button>
+      <button v-if="canPrintReturn" type="button" class="btn btn-secondary ms-2" @click="printReturnPdfPrompt"
+        :disabled="isProcessing">Print Return</button>
     </div>
     <div class="right">
       <button v-if="canReview" type="button" class="btn btn-danger" @click="rejectPrompt"
@@ -128,7 +130,7 @@ import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { common, menuMapping as menuConfig } from '@/config'
-import { createPdf } from '@/utils/pdf/borrow'
+import { createPdf, createReturnPdf } from '@/utils/pdf/borrow'
 import PoSelect from '@/components/borrow/PoSelect.vue'
 
 const route = useRoute()
@@ -157,9 +159,12 @@ const isDone = computed(() => borrow.value?.currentStatus === status.done)
 const canCancel = computed(() => isMarketing.value && borrow.value?.currentStatus === status.created)
 const canReview = computed(() => isReviewer.value && borrow.value?.currentStatus === status.created)
 const canHandover = computed(() => isInventory.value && borrow.value?.currentStatus === status.approved)
-const canReturn = computed(() => isMarketing.value && borrow.value?.currentStatus === status.borrowed)
 const canReceive = computed(() => isInventory.value && borrow.value?.currentStatus === status.returned)
 const canFinished = computed(() => isRoleDirector.value && borrow.value?.currentStatus === status.received)
+const canReturn = computed(() => isMarketing.value && borrow.value?.currentStatus === status.borrowed)
+
+const canPrintDispatch = computed(() => isInventory.value && [status.approved, status.borrowed, status.returned, status.received, status.done].includes(borrow.value?.currentStatus))
+const canPrintReturn = computed(() => isInventory.value && [status.returned, status.received, status.done].includes(borrow.value?.currentStatus))
 
 const hasShortfall = computed(() =>
   borrow.value?.spareparts?.some((sp, i) => Number(returnQuantities.value[i]) < Number(sp.quantity)))
@@ -218,6 +223,12 @@ const printPdfPrompt = () =>
     await createPdf(borrow.value, user.value?.fullname || user.value?.username || '', modalStore.notes)
     modalStore.closeModal()
   }, { label: 'Nama Penerima' })
+
+const printReturnPdfPrompt = () =>
+  modalStore.openNotesModal('Print PDF Pengembalian', async () => {
+    await createReturnPdf(borrow.value, modalStore.notes, user.value?.fullname || user.value?.username || '')
+    modalStore.closeModal()
+  }, { label: 'Nama Yang Mengembalikan' })
 
 const sendConfirmation = () =>
   modalStore.openConfirmationModal('to Send (handover) these Spareparts ? Stock will be deducted.',

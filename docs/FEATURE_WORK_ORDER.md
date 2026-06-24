@@ -9,10 +9,10 @@ timelines, and sparepart usage.
 | File | Purpose |
 | ---- | ------- |
 | `views/menu/WorkOrderPage.vue` | List all work orders |
-| `views/menu/WorkOrderAddPage.vue` | Create WO (from PO release) |
+| `views/menu/WorkOrderAddPage.vue` | Create WO (from PO release) — with inline validation |
 | `views/menu/WorkOrderDetailPage.vue` | WO detail with status tracking |
-| `views/menu/WorkOrderEditPage.vue` | Edit WO details |
-| `stores/work-order.js` | Pinia store |
+| `views/menu/WorkOrderEditPage.vue` | Edit WO details — with inline validation |
+| `stores/work-order.js` | Pinia store — includes `isDirty` flag |
 | `api/work-order.js` | API wrappers |
 | `utils/pdf/work-order.js` | PDF generation (13KB — detailed) |
 
@@ -29,6 +29,9 @@ timelines, and sparepart usage.
 6. WO actions are gated to Service + Director roles.
 7. WO detail displays the related PO's "No Internal Request" (purchase_order_number) and "No PO"
    (po_number).
+8. **Inline validation** on Add and Edit forms: compiled (by), CSO head (approver), received_by,
+   and per-unit quantities (> 0) are all validated client-side. Errors display beneath the
+   invalid control. The store's `isDirty` flag prevents eager highlighting on load.
 
 ## Data Model
 ```
@@ -52,3 +55,4 @@ WorkOrder
 | `getWorkOrderById(id)` | GET | `/api/work-order/{id}` |
 | `updateWorkOrder(id, data)` | PUT | `/api/work-order/{id}` |
 | `processWorkOrder(id, data)` | POST | `/api/work-order/process/{id}` |
+| `doneWorkOrder(id)` | POST | `/api/work-order/done/{id}` |

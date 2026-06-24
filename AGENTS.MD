@@ -121,13 +121,14 @@ Every store follows this structure:
 
 ### 4.5 Role-Based Access
 
-Six roles defined in `config/index.js → common.role`:
+Seven roles defined in `config/index.js → common.role`:
 - **Director** — full access to everything
-- **Marketing** — quotation, purchase_order
+- **Marketing** — quotation, purchase_order, spareparts (view only), borrow
 - **Finance** — quotation, purchase_order, proforma_invoice, invoice
-- **Inventory Admin** — purchase_order, spareparts, back_order, delivery_order
+- **Inventory Admin** — purchase_order, spareparts, back_order, delivery_order, borrow, stock_history, sparepart_movement
 - **Inventory Purchase** — spareparts, back_order, purchase
-- **Service** — purchase_order, back_order, work_order
+- **Head Inventory** — purchase_order, spareparts, borrow, stock_history, sparepart_movement, purchase, back_order, delivery_order (supervisor role)
+- **Service** — purchase_order, spareparts (view), work_order
 
 The `accessFeature` config maps each role to its allowed feature keys. The
 `useRole()` composable provides computed booleans: `isRoleDirector`,
@@ -150,23 +151,26 @@ Components branch between desktop/mobile rendering accordingly. Two navbars:
 
 ## 5. Feature Index
 
-| Feature            | Pages (in `views/menu/`)                   | Store file           | API file          | Docs                     |
-| ------------------ | ------------------------------------------ | -------------------- | ----------------- | ------------------------ |
-| Dashboard          | DashboardPage                              | dashboard.js         | dashboard.js      | docs/FEATURE_DASHBOARD.md|
-| Quotation          | Quotation{Page,Add,Edit,Detail,Review,ReviewDetail} | quotation.js | quotation.js      | docs/FEATURE_QUOTATION.md|
-| Purchase Order     | PurchaseOrder{Page,Detail,Return}          | purchase-order.js    | purchase-order.js | docs/FEATURE_PURCHASE_ORDER.md|
-| Proforma Invoice   | ProformaInvoice{Page,Detail,Edit}          | proforma-invoice.js  | pi.js             | docs/FEATURE_PROFORMA_INVOICE.md|
-| Invoice            | Invoice{Page,Detail}                       | invoice.js           | invoice.js        | docs/FEATURE_INVOICE.md  |
-| Work Order         | WorkOrder{Page,Add,Detail,Edit}            | work-order.js        | work-order.js     | docs/FEATURE_WORK_ORDER.md|
-| Delivery Order     | DeliveryOrder{Page,Add,Detail}             | delivery-order.js    | delivery-order.js | docs/FEATURE_DELIVERY_ORDER.md|
-| Back Order         | BackOrder{Page,Detail}                     | back-order.js        | back-order.js     | docs/FEATURE_BACK_ORDER.md|
-| Purchase (Buy)     | Purchase{Page,Add,Edit,Detail,Review,ReviewDetail} | purchase.js  | purchase.js       | docs/FEATURE_PURCHASE.md |
-| Spareparts         | Spareparts{Page,Add,Detail,Edit}           | sparepart.js         | sparepart.js      | docs/FEATURE_SPAREPARTS.md|
-| Employee           | Employee{Page,Add,Detail,Edit}             | employee.js          | employee.js       | docs/FEATURE_EMPLOYEE.md |
-| Profile            | ProfilePage                                | auth.js              | auth.js           | docs/FEATURE_AUTH.md     |
-| General Settings   | GeneralPage                                | general.js           | general.js        | docs/FEATURE_GENERAL.md  |
-| Upload Data        | UploadDataPage                             | —                    | sparepart.js      | docs/FEATURE_UPLOAD.md   |
-| Return             | Return{Page,Detail}                        | purchase-order.js    | purchase-order.js | docs/FEATURE_RETURN.md   |
+| Feature            | Pages (in `views/menu/`)                                          | Store file              | API file              | Docs                                    |
+| ------------------ | ----------------------------------------------------------------- | ----------------------- | --------------------- | --------------------------------------- |
+| Dashboard          | DashboardPage                                                     | dashboard.js            | dashboard.js          | docs/FEATURE_DASHBOARD.md               |
+| Quotation          | Quotation{Page,Add,Edit,Detail,Review,ReviewDetail}               | quotation.js            | quotation.js          | docs/FEATURE_QUOTATION.md               |
+| Purchase Order     | PurchaseOrder{Page,Detail,Return}                                 | purchase-order.js       | purchase-order.js     | docs/FEATURE_PURCHASE_ORDER.md          |
+| Proforma Invoice   | ProformaInvoice{Page,Detail,Edit}                                 | proforma-invoice.js     | pi.js                 | docs/FEATURE_PROFORMA_INVOICE.md        |
+| Invoice            | Invoice{Page,Detail}                                              | invoice.js              | invoice.js            | docs/FEATURE_INVOICE.md                 |
+| Work Order         | WorkOrder{Page,Add,Detail,Edit}                                   | work-order.js           | work-order.js         | docs/FEATURE_WORK_ORDER.md              |
+| Delivery Order     | DeliveryOrder{Page,Add,Detail}                                    | delivery-order.js       | delivery-order.js     | docs/FEATURE_DELIVERY_ORDER.md          |
+| Back Order         | BackOrder{Page,Detail,AdjustmentPage}                            | back-order.js           | back-order.js         | docs/FEATURE_BACK_ORDER.md              |
+| Purchase (Buy)     | Purchase{Page,Add,Edit,Detail,Review,ReviewDetail}                | purchase.js             | purchase.js           | docs/FEATURE_PURCHASE.md                |
+| Spareparts         | Spareparts{Page,Add,Detail,Edit}                                  | sparepart.js            | sparepart.js          | docs/FEATURE_SPAREPARTS.md              |
+| Sparepart Movement | SparepartMovement{Page,Add,Detail}                                | sparepart-movement.js   | sparepart-movement.js | docs/FEATURE_SPAREPART_MOVEMENT.md      |
+| Stock History      | StockHistoryPage                                                  | stock-movement.js       | stock-movement.js     | docs/FEATURE_SPAREPART_MOVEMENT.md      |
+| Borrow (Pinjaman)  | Borrow{Page,Add,Detail,ReturnPage}                                | borrow.js               | borrow.js             | docs/FEATURE_BORROW.md                  |
+| Employee           | Employee{Page,Add,Detail,Edit}                                    | employee.js             | employee.js           | docs/FEATURE_EMPLOYEE_AUTH_MISC.md      |
+| Profile            | ProfilePage                                                       | auth.js                 | auth.js               | docs/FEATURE_EMPLOYEE_AUTH_MISC.md      |
+| General Settings   | GeneralPage                                                       | general.js              | general.js            | docs/FEATURE_EMPLOYEE_AUTH_MISC.md      |
+| Upload Data        | UploadDataPage                                                    | —                       | sparepart.js          | docs/FEATURE_EMPLOYEE_AUTH_MISC.md      |
+| Return             | Return{Page,Detail}                                               | purchase-order.js       | purchase-order.js     | docs/FEATURE_PURCHASE_ORDER.md          |
 
 ---
 
@@ -212,6 +216,16 @@ When starting a new session or task, read these files in order:
 2. Update backend controller + migration if new DB column needed
 3. Update the store's `mapXxx()` function
 4. Update the Track component data if it's a tracked entity
+
+### Adding inline validation to a form:
+1. Add `isDirty = ref(false)` to the entity's Pinia store and return it
+2. Add `computed errors` to the Vue component — one key per validated field
+3. Add a deep `watch` on the form data that sets `store.isDirty = true`
+4. Bind `:class="{ 'is-invalid': store.isDirty && errors.field }"` on each input
+5. Add `<div class="invalid-feedback">{{ errors.field }}</div>` after each input
+6. In the submit handler, set `store.isDirty = true` first, then guard with
+   `Object.values(errors.value).some(Boolean)` before calling the API
+See **`docs/INLINE_VALIDATION.md`** for the full pattern and field-type rule reference.
 
 ---
 
@@ -301,6 +315,7 @@ This project is indexed by GitNexus as **bmj-app-frontend** (4118 symbols, 9782 
 - NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
 - NEVER rename symbols with find-and-replace — use `rename` which understands the call graph.
 - NEVER commit changes without running `detect_changes()` to check affected scope.
+- NEVER execute git commits directly. Always leave all files unstaged/staged as requested, and let the human user evaluate and run commits manually.
 
 ## Resources
 

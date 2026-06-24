@@ -42,6 +42,11 @@ const addQuotation = async () => {
 }
 
 const addQuotationConfirmation = () => {
+  const errorMsg = quotationStore.validateQuotation()
+  if (errorMsg) {
+    quotationStore.isDirty = true
+    return
+  }
   modalStore.openConfirmationModal('to Add this Quotation ?', 'Add Quotation Success', addQuotation)
 }
 

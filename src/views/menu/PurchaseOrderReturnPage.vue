@@ -100,6 +100,7 @@
                   class="bi bi-trash3"></i></button>
             </div>
           </div>
+          <div v-if="errors.returnedSpareparts" class="text-danger mt-2 small">{{ errors.returnedSpareparts }}</div>
         </div>
       </div>
       <div class="notes my-2">
@@ -124,7 +125,7 @@
 <script setup>
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { common, menuMapping as menuConfig } from '@/config'
 import { useRole } from '@/composeable/useRole'
@@ -140,6 +141,23 @@ const trackStore = useTrackStore()
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
 const isProcessing = ref(false)
+
+const errors = computed(() => {
+  const errs = {}
+  if (!purchaseOrderStore.isDirty) return errs
+  if (returnedSparepart.value.length === 0) {
+    errs.returnedSpareparts = 'At least one sparepart must be returned.'
+  }
+  return errs
+})
+
+watch(
+  () => returnedSparepart.value,
+  () => {
+    purchaseOrderStore.isDirty = true
+  },
+  { deep: true }
+)
 
 const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
@@ -202,6 +220,10 @@ const setToReturn = async () => {
   }
 }
 const setToReturnConfirmation = () => {
+  purchaseOrderStore.isDirty = true
+  if (Object.keys(errors.value).length > 0) {
+    return
+  }
   modalStore.openConfirmationModal('to return Purchase Order ?', 'Purchase Order Returned', setToReturn)
 }
 </script>

@@ -8,6 +8,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   const returnPurchaseOrders = ref([])
   const paginationData = ref({})
   const isLoading = ref(false)
+  const isDirty = ref(false)
 
   function mapPurchaseOrder(data) {
     return {
@@ -136,6 +137,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
 
   async function $resetPurchaseOrder() {
     purchaseOrder.value = mapPurchaseOrder()
+    isDirty.value = false
   }
 
   async function $resetPurchaseOrders() {
@@ -203,6 +205,7 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     rejectReturn,
     updateNotes,
     $resetPurchaseOrder,
-    $resetPurchaseOrders
+    $resetPurchaseOrders,
+    isDirty
   }
 })

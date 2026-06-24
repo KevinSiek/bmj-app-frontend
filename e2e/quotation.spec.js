@@ -134,7 +134,7 @@ test.describe('Quotation E2E Tests (Live DB)', () => {
     await page.click('button:has-text("Approve")');
     
     // Confirm approval
-    await page.click('button:has-text("Yes")');
+    await page.click('.button-modal button:has-text("Approve")');
     
     // Wait for success modal and close it
     await closeModal(page);
@@ -167,7 +167,7 @@ test.describe('Quotation E2E Tests (Live DB)', () => {
       await page.locator('.list .item').first().click();
       await page.waitForURL('**/quotation/review/*');
       await page.click('button:has-text("Approve")');
-      await page.click('button:has-text("Yes")');
+      await page.click('.button-modal button:has-text("Approve")');
       await closeModal(page);
       await page.goto('/quotation');
       await closeModal(page);
@@ -278,7 +278,7 @@ test.describe('Quotation E2E Tests (Live DB)', () => {
     await page.click('button:has-text("Reject")');
     
     // Confirmation modal appears
-    await page.click('button:has-text("Yes")');
+    await page.click('.button-modal button:has-text("Reject")');
     
     // Wait for success modal and close it
     await closeModal(page);

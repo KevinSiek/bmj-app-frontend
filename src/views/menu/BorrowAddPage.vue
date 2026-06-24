@@ -1,10 +1,11 @@
 <template>
   <div class="contain background shadow">
-    <form class="form">
+    <form class="form" autocomplete="off">
       <div class="upper my-2 row">
         <div class="input form-group col-6">
           <div class="title">Service PO</div>
-          <PoSelect type="Service" placeholder="Search Service PO number" @select="selectPurchaseOrder" />
+          <PoSelect type="Service" placeholder="Search Service PO number" @select="selectPurchaseOrder" :isInvalid="!!errors.purchaseOrder" />
+          <div class="invalid-feedback d-block" v-if="errors.purchaseOrder">{{ errors.purchaseOrder }}</div>
         </div>
         <div class="input form-group col-6">
           <div class="title">Work Order</div>
@@ -33,8 +34,9 @@
             <div class="col-11">
               <div class="row">
                 <div class="col-3">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
-                    data-bs-toggle="dropdown" aria-expanded="false" @keyup="handleInputSearch(sparepart.sparepartName)">
+                  <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors[`sparepart_${sparepartIndex}_id`] }" v-model="sparepart.sparepartName" placeholder="Part Name"
+                    data-bs-toggle="dropdown" aria-expanded="false" @keyup="handleInputSearch(sparepart.sparepartName)" autocomplete="off">
+                  <div class="invalid-feedback">{{ errors[`sparepart_${sparepartIndex}_id`] }}</div>
                   <ul class="dropdown-menu">
                     <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
                       @click="selectItem(sparepartIndex, sparepart, item)">
@@ -43,9 +45,10 @@
                   </ul>
                 </div>
                 <div class="col-3">
-                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
+                  <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors[`sparepart_${sparepartIndex}_id`] }" v-model="sparepart.sparepartNumber"
                     placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
-                    @keyup="handleInputSearch(sparepart.sparepartNumber)">
+                    @keyup="handleInputSearch(sparepart.sparepartNumber)" autocomplete="off">
+                  <div class="invalid-feedback">{{ errors[`sparepart_${sparepartIndex}_id`] }}</div>
                   <ul class="dropdown-menu">
                     <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
                       @click="selectItem(sparepartIndex, sparepart, item)">
@@ -56,10 +59,11 @@
                 <div class="col-3">
                   <input type="text" class="form-control mt-2"
                     :value="isSearching ? 'Loading...' : (sparepart.totalUnit?.[user?.branch?.name] ?? '')"
-                    :placeholder="isSearching ? 'Loading...' : 'Stock'" disabled>
+                    :placeholder="isSearching ? 'Loading...' : 'Stock'" disabled autocomplete="off">
                 </div>
                 <div class="col-3">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity" @wheel.prevent>
+                  <input type="number" class="form-control mt-2" :class="{ 'is-invalid': errors[`sparepart_${sparepartIndex}_quantity`] }" placeholder="Quantity" v-model="sparepart.quantity" @wheel.prevent>
+                  <div class="invalid-feedback">{{ errors[`sparepart_${sparepartIndex}_quantity`] }}</div>
                 </div>
               </div>
             </div>
@@ -68,6 +72,7 @@
                   class="bi bi-trash3"></i></button>
             </div>
           </div>
+          <div v-if="errors.sparepartsEmpty" class="text-danger mt-2 small">{{ errors.sparepartsEmpty }}</div>
           <div class="add-btn mt-3">
             <button type="button" class="btn btn-outline-dark" @click="addSparepart">
               <i class="bi bi-plus-lg"></i>
@@ -78,8 +83,9 @@
       </div>
       <div class="notes my-2">
         <div class="title">Notes Marketing</div>
-        <textarea class="form-control" placeholder="Notes Marketing (required)" style="height: 100px"
-          v-model="borrow.notes"></textarea>
+        <textarea class="form-control" :class="{ 'is-invalid': errors.notes }" placeholder="Notes Marketing (required)" style="height: 100px"
+          v-model="borrow.notes" autocomplete="off"></textarea>
+        <div class="invalid-feedback">{{ errors.notes }}</div>
       </div>
     </form>
   </div>
@@ -98,7 +104,7 @@
 import { menuMapping as menuConfig, common } from '@/config'
 import { useBorrowStore } from '@/stores/borrow'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
 import { useRoute, useRouter } from 'vue-router'
@@ -117,6 +123,43 @@ const { borrow, searchedSpareparts } = storeToRefs(borrowStore)
 const isProcessing = ref(false)
 const isSearching = ref(false)
 const isEdit = computed(() => Boolean(route.params.id))
+
+const errors = computed(() => {
+  const errs = {}
+  if (!borrowStore.isDirty) return errs
+  const b = borrow.value
+  if (!b) return errs
+
+  if (!b.purchaseOrder?.id) {
+    errs.purchaseOrder = 'Please select a Service PO first.'
+  }
+  if (!b.notes?.trim()) {
+    errs.notes = 'Notes Marketing are required.'
+  }
+  if (!b.spareparts || b.spareparts.length === 0) {
+    errs.sparepartsEmpty = 'Add at least one sparepart.'
+  } else {
+    b.spareparts.forEach((item, index) => {
+      if (!item.sparepartId) {
+        errs[`sparepart_${index}_id`] = 'Please select a valid sparepart.'
+      }
+      if (!item.quantity || Number(item.quantity) <= 0) {
+        errs[`sparepart_${index}_quantity`] = 'Quantity must be greater than 0.'
+      }
+    })
+  }
+  return errs
+})
+
+watch(
+  () => borrow.value,
+  (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null) {
+      borrowStore.isDirty = true
+    }
+  },
+  { deep: true }
+)
 
 const workOrderLabel = computed(() => {
   const wo = borrow.value?.workOrder
@@ -197,19 +240,11 @@ const doBorrow = async () => {
 }
 
 const doBorrowConfirmation = () => {
-  if (!borrow.value.purchaseOrder.id) {
-    modalStore.openMessageModal(common.modal.failed, 'Please select a Service PO first.')
+  borrowStore.isDirty = true
+  if (Object.keys(errors.value).length > 0) {
     return
   }
-  if (!borrow.value.notes?.trim()) {
-    modalStore.openMessageModal(common.modal.failed, 'Notes Marketing are required.')
-    return
-  }
-  borrow.value.spareparts = borrow.value.spareparts.filter((item) => item.quantity > 0)
-  if (borrow.value.spareparts.length === 0) {
-    modalStore.openMessageModal(common.modal.failed, 'Add at least one sparepart with a quantity.')
-    return
-  }
+
   const verb = isEdit.value ? 'Save changes to' : 'Add'
   modalStore.openConfirmationModal(`to ${verb} this Borrow with ${borrow.value.spareparts.length} Spareparts ?`, 'Borrow Success', doBorrow)
 }

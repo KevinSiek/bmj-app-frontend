@@ -1,13 +1,14 @@
 <template>
   <div class="contain background shadow">
-    <form class="row form">
+    <form class="row form" autocomplete="off">
       <div class="upper my-2">
         <div class="left">
           <div class="title">Service Order</div>
           <div class="input form-group col-12">
             <label for="">Received by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.receivedBy"
-              placeholder="Received by">
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.receivedBy }" v-model="workOrder.serviceOrder.receivedBy"
+              placeholder="Received by" autocomplete="off">
+            <div class="invalid-feedback">{{ errors.receivedBy }}</div>
           </div>
           <div class="input form-group col-12">
             <div class="row">
@@ -51,13 +52,14 @@
               <div class="col-11">
                 <div class="row">
                   <div class="col-4">
-                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions">
+                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions" autocomplete="off">
                   </div>
                   <div class="col-5">
-                    <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType">
+                    <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType" autocomplete="off">
                   </div>
                   <div class="col-3">
-                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity" @wheel.prevent>
+                    <input type="number" class="form-control mt-2" :class="{ 'is-invalid': errors[`unit_${unitIndex}_quantity`] }" placeholder="Quantity" v-model="unit.quantity" @wheel.prevent>
+                    <div class="invalid-feedback">{{ errors[`unit_${unitIndex}_quantity`] }}</div>
                   </div>
                 </div>
               </div>
@@ -66,6 +68,7 @@
                     class="bi bi-trash3"></i></button>
               </div>
             </div>
+            <div v-if="errors.unitsEmpty" class="text-danger mt-2 small">{{ errors.unitsEmpty }}</div>
             <div class="add-btn mt-3">
               <button type="button" class="btn btn-outline-dark" @click="addUnit">
                 <i class="bi bi-plus-lg"></i>
@@ -75,19 +78,21 @@
           </div>
           <div class="input form-group col-12 mt-4">
             <label for="">Compiled By (Admin CSO)</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.poc.compiled" placeholder="Compiled by">
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.compiled }" v-model="workOrder.poc.compiled" placeholder="Compiled by" autocomplete="off">
+            <div class="invalid-feedback">{{ errors.compiled }}</div>
           </div>
           <div class="input form-group col-12">
             <label for="">Authorized by</label><br>
             <div class="row px-3">
               <div class="col-6">
                 <label for="">Dept Head Service</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.poc.headOfService"
-                  placeholder="Dept Head Service">
+                <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.headOfService }" v-model="workOrder.poc.headOfService"
+                  placeholder="Dept Head Service" autocomplete="off">
+                <div class="invalid-feedback">{{ errors.headOfService }}</div>
               </div>
               <div class="col-6">
                 <label for="">Director</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.poc.director" placeholder="Director">
+                <input type="text" class="form-control mt-2" v-model="workOrder.poc.director" placeholder="Director" autocomplete="off">
               </div>
             </div>
           </div>
@@ -107,11 +112,12 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Work Performed by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.poc.worker" placeholder="Work Performed by">
+            <input type="text" class="form-control mt-2" v-model="workOrder.poc.worker" placeholder="Work Performed by" autocomplete="off">
           </div>
           <div class="input form-group col-12">
             <label for="">Approved by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.poc.approver" placeholder="Approved by">
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.approver }" v-model="workOrder.poc.approver" placeholder="Approved by" autocomplete="off">
+            <div class="invalid-feedback">{{ errors.approver }}</div>
           </div>
         </div>
       </div>
@@ -121,26 +127,26 @@
           <div class="input form-group col-12">
             <label for="">List sparepart replaced</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.additional.spareparts"
-              placeholder="List sparepart replaced">
+              placeholder="List sparepart replaced" autocomplete="off">
           </div>
           <div class="input form-group col-12">
             <label for="">List backup sparepart</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.additional.backupSparepart"
-              placeholder="List backup sparepart">
+              placeholder="List backup sparepart" autocomplete="off">
           </div>
           <div class="input form-group col-12">
             <div class="row">
               <div class="col-6">
                 <label for="">Scope of Work</label><br>
                 <input type="text" class="form-control mt-2" v-model="workOrder.additional.scope"
-                  placeholder="Scope of Work">
+                  placeholder="Scope of Work" autocomplete="off">
               </div>
             </div>
           </div>
           <div class="input form-group col-12">
             <label for="">Execution Time</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.additional.executionTime"
-              placeholder="Execution Time">
+              placeholder="Execution Time" autocomplete="off">
           </div>
         </div>
       </div>
@@ -148,7 +154,7 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="workOrder.description"></textarea>
+            v-model="workOrder.description" autocomplete="off"></textarea>
         </div>
       </div>
     </form>
@@ -169,7 +175,7 @@ import { useModalStore } from '@/stores/modal'
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { common, menuMapping as menuConfig } from '@/config'
 
@@ -183,6 +189,46 @@ const { workOrder } = storeToRefs(workOrderStore)
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
 const isProcessing = ref(false)
+
+const errors = computed(() => {
+  const errs = {}
+  if (!workOrderStore.isDirty) return errs
+  const wo = workOrder.value
+  if (!wo) return errs
+
+  if (!wo.serviceOrder?.receivedBy?.trim()) {
+    errs.receivedBy = 'Received By is required.'
+  }
+  if (!wo.poc?.compiled?.trim()) {
+    errs.compiled = 'Compiled By is required.'
+  }
+  if (!wo.poc?.approver?.trim()) {
+    errs.approver = 'Approved By is required.'
+  }
+  if (!wo.poc?.headOfService?.trim()) {
+    errs.headOfService = 'Dept Head Service is required.'
+  }
+  if (!wo.units || wo.units.length === 0) {
+    errs.unitsEmpty = 'At least one unit is required.'
+  } else {
+    wo.units.forEach((unit, index) => {
+      if (!unit.quantity || Number(unit.quantity) <= 0) {
+        errs[`unit_${index}_quantity`] = 'Quantity must be greater than 0.'
+      }
+    })
+  }
+  return errs
+})
+
+watch(
+  () => workOrder.value,
+  (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null) {
+      workOrderStore.isDirty = true
+    }
+  },
+  { deep: true }
+)
 
 onBeforeMount(() => {
   workOrderStore.$resetWorkOrder()
@@ -212,6 +258,10 @@ const doRelease = async () => {
   }
 }
 const doReleaseConfirmation = () => {
+  workOrderStore.isDirty = true
+  if (Object.keys(errors.value).length > 0) {
+    return
+  }
   modalStore.openConfirmationModal('to release this Purchase Order?', 'Releasing', doRelease)
 }
 

@@ -24,6 +24,7 @@ Invoices, Work Orders, Delivery Orders, and Back Orders downstream.
 9. **PDF features**:
    - Creator name: the PO PDF signature block uses `created_by_name` (the creating employee's fullname) from the get() response.
    - Version stamp: PO PDFs include a version number for multi-version tracking.
+10. **Inline validation** on the Return form (`PurchaseOrderReturnPage.vue`): the returned items list must be non-empty and every returned quantity must be > 0. The store's `isDirty` flag gates error display until the user interacts or attempts submit.
 
 ## File Map
 
@@ -31,8 +32,8 @@ Invoices, Work Orders, Delivery Orders, and Back Orders downstream.
 | ---- | ------- |
 | `views/menu/PurchaseOrderPage.vue` | List all POs (grouped by PO number) |
 | `views/menu/PurchaseOrderDetailPage.vue` | PO detail with status actions |
-| `views/menu/PurchaseOrderReturnPage.vue` | Return items from a PO |
-| `stores/purchase-order.js` | Pinia store — state, API calls, data mapping |
+| `views/menu/PurchaseOrderReturnPage.vue` | Return items from a PO — with inline validation |
+| `stores/purchase-order.js` | Pinia store — includes `isDirty` flag |
 | `api/purchase-order.js` | API endpoint wrappers |
 | `utils/pdf/purchase-order.js` | PDF generation for PO document |
 

@@ -1,17 +1,20 @@
 # LLM Handover: E2E Testing Suite Status
 
-> **Date Updated:** 2026-06-06
+> **Date Updated:** 2026-06-22
 > **For:** the next LLM/engineer continuing work on `bmj-app-frontend` + `bmj-app-backend`.
 > **Read this first.** It supersedes the older "100% passing" note (which described only an
 > early, much smaller suite). The numbers and bug-fixes below are verified by real full runs.
 
 ---
 
-## 1. Current State — VERIFIED
+## 1. Current State — VERIFIED (baseline)
 
 **328 / 328 Playwright tests passing across 35 spec files** in `e2e/`, confirmed by a full
 local run (`npx playwright test`, single worker, DB reseeded via global-setup). Last full
 run: 11.2 min.
+
+**5 additional role-lifecycle spec files added 2026-06-22** (not yet included in the 328
+baseline count — run the full suite to update). See Section 7 for details.
 
 The suite is **API-direct first** (most new specs hit the backend over HTTP with a logged-in
 `request` context and assert real status codes / DB read-backs), with the original UI-driven
@@ -157,3 +160,51 @@ with data you care about. Seed creds: all users password `password`; key account
 - A handful of low-value list-filter endpoints assert "responds" but not filtered content.
 - The repo `docs/tests/TEST_*.md` files are an older planning catalog (~158 envisioned cases);
   the **actual implemented suite is the 35 specs in `e2e/`** — treat the specs as source of truth.
+
+---
+
+## 7. Role-Lifecycle Specs (Added 2026-06-22)
+
+Five new spec files exercise the **full business lifecycle with each role acting only in its
+authorized lane** — Marketing does Marketing things, Finance does Finance things, etc. This
+replaces the earlier pattern where Director provisioned everything via API alone.
+
+### New helpers in `e2e/helpers.js`
+
+| Export | What it does |
+|---|---|
+| `ACCOUNTS` | Map of `roleKey → email` for all 7 seeded roles |
+| `loginAs(page, email)` | Clears localStorage, navigates to /login, signs in, waits for /menu |
+| `apiContextForRole(playwright, roleKey)` | Returns an API request context for the named role |
+| `provisionReadyPo(director, type, opts)` | Full API-direct setup: Quotation→approve→moveToPo→moveToPi→dpPaid→ready. Returns `{poId, piId, quotationSlug}` |
+| `getStockForBranch(api, sparepartId, branchNameContains)` | Reads sparepart stock for a branch by name substring |
+
+### New spec files and their test IDs
+
+| File | Test ID Prefix | Coverage |
+|---|---|---|
+| `role-lifecycle-spareparts.spec.js` | SPLT-01 … SPLT-11 | Full Spareparts: Quote→PI→DO→Invoice→Done |
+| `role-lifecycle-service.spec.js` | SVLT-01 … SVLT-12 | Full Service: Quote→PI→WO→Invoice→Done |
+| `role-lifecycle-indent-backorder.spec.js` | BOLT-00 … BOLT-13 | Indent→BO→Purchase→BO fulfilled→PO Done |
+| `role-lifecycle-borrow-movement.spec.js` | BRLT-00 … BRLT-05, MVLT-01 … MVLT-06 | Borrow full lifecycle + Sparepart Movement with stock delta assertions |
+| `role-lifecycle-rejection.spec.js` | REJT-F01 … REJT-F03, REJT-G01 … REJT-G03, REJT-H01 … REJT-H03, REJT-I01 … REJT-I12 | Quotation rejection/review, return, PO decline, Head Inventory access matrix |
+
+### Gaps filled by these specs
+- `moveToInvoice` / `fullPaid` tested for first time (SPLT-06, SVLT-10, BOLT-12)
+- **Head Inventory** role — zero tests before → now 10+ (REJT-I series)
+- **Inventory Purchase** creates Buy in-role (BOLT-06)
+- **Sparepart Movement** — never E2E tested → MVLT series with stock delta
+- **Stock History** entries from Movement verified (MVLT-04)
+- **Borrow** tested by correct roles (Head Inventory approves, Inv.Admin sends/done, Marketing Kembali)
+- **Service role sidebar isolation** verified (SVLT-09)
+- Role-scope API 403s verified in-spec (REJT-I10, REJT-I11, REJT-I12)
+
+### Design pattern
+- Setup steps (quotation creation, approval, moveToPo) done **API-direct** (fast, no flake).
+- Role-specific actions (clicking buttons, filling forms) done via **browser page** to exercise real UI gating.
+- State (`poId`, `piId`, `borrowId`, etc.) shared via `let` at describe-block top scope.
+- Tests in each describe use `test.describe.configure({ mode: 'serial' })` and a shared `page` from `beforeAll`.
+- Soft degradation: steps where a button is conditionally visible (e.g., BO not yet resolved)
+  use `isVisible().catch(() => false)` and `console.warn` instead of hard-failing, so the suite
+  still runs end-to-end even if an intermediate state is unexpected.
+

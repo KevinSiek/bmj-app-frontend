@@ -87,13 +87,11 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Sub Total</label><br>
-            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.subTotal)"
-              placeholder="Sub Total" disabled>
+            <PriceDisplay :value="invoice.invoice.subTotal" class="form-control mt-2" style="background-color: #e9ecef; opacity: 1; min-height: 38px;" />
           </div>
           <div class="input form-group col-12">
             <label for="">Grand Total</label><br>
-            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.grandTotal)"
-              placeholder="Grand Total" disabled>
+            <PriceDisplay :value="invoice.invoice.grandTotal" class="form-control mt-2" style="background-color: #e9ecef; opacity: 1; min-height: 38px;" />
           </div>
         </div>
         <div class="right">
@@ -120,8 +118,7 @@
           </div> -->
           <div class="input form-group col-12">
             <label for="">Discount</label><br>
-            <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.purchaseOrder.discount)"
-              placeholder="Discount" disabled>
+            <PriceDisplay :value="invoice.purchaseOrder.discount" class="form-control mt-2" style="background-color: #e9ecef; opacity: 1; min-height: 38px;" />
           </div>
         </div>
       </div>
@@ -154,8 +151,8 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceSell" /></td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
                 <td class="table-col table-name">{{ sparepart.stock }}</td>
               </tr>
             </tbody>
@@ -164,8 +161,8 @@
                 <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
                 <td class="table-col table-name">{{ service.service }}</td>
                 <td class="table-col table-name">{{ service.quantity }}</td>
-                <td class="table-col table-name">{{ formatCurrency(service.unitPriceSell) }}</td>
-                <td class="table-col table-name">{{ formatCurrency(service.totalPrice) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="service.unitPriceSell" /></td>
+                <td class="table-col table-name"><PriceDisplay :value="service.totalPrice" /></td>
               </tr>
             </tbody>
             <tbody>
@@ -176,7 +173,7 @@
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(invoice.price.subtotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="invoice.price.subtotal" /></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -186,7 +183,7 @@
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(invoice.price.ppn) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="invoice.price.ppn" /></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -196,7 +193,7 @@
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(invoice.price.grandTotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="invoice.price.grandTotal" /></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
             </tbody>
@@ -262,6 +259,7 @@ import { onBeforeMount, onMounted, ref, computed } from 'vue'
 import { useTrackStore } from '@/stores/track'
 import { createPdf } from '@/utils/pdf/invoice'
 import { formatCurrency } from '@/utils/form-util'
+import PriceDisplay from '@/components/PriceDisplay.vue'
 import { useModalStore } from '@/stores/modal'
 import { useGeneralStore } from '@/stores/general'
 

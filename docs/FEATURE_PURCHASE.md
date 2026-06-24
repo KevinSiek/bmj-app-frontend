@@ -8,23 +8,23 @@ spareparts from external sellers to fulfill Back Orders.
 | File | Purpose |
 | ---- | ------- |
 | `views/menu/PurchasePage.vue` | List all purchases |
-| `views/menu/PurchaseAddPage.vue` | Create purchase (with item rows) |
-| `views/menu/PurchaseEditPage.vue` | Edit purchase |
+| `views/menu/PurchaseAddPage.vue` | Create purchase (with item rows) — inline validation |
+| `views/menu/PurchaseEditPage.vue` | Edit purchase — inline validation |
 | `views/menu/PurchaseDetailPage.vue` | Purchase detail |
 | `views/menu/PurchaseReviewPage.vue` | Purchases awaiting review |
 | `views/menu/PurchaseReviewDetailPage.vue` | Review detail |
-| `views/PurchaseAdd.vue` | Root-level purchase add (legacy?) |
 | `components/PurchaseItemRow.vue` | Single line item row component |
-| `stores/purchase.js` | Pinia store |
+| `stores/purchase.js` | Pinia store — includes `isDirty` flag |
 | `api/purchase.js` | API wrappers |
 
 ## Key Business Rules
-1. Purchases are created by **Inventory Purchase** role
-2. Review workflow: `Wait for Review → Approved/Rejected → Received`
-3. Each purchase links to a `back_order_id` and a `branch_id`
-4. Line items (`DetailBuy`) reference spareparts with seller prices
-5. Director reviews and approves/rejects purchase requests
-6. On approval + receive, stock quantities increase via `SparepartStockService`
+1. Purchases are created by **Inventory Purchase** role.
+2. Review workflow: `Wait for Review → Approved/Rejected → Received`.
+3. Each purchase links to a `back_order_id` and a `branch_id`.
+4. Line items (`DetailBuy`) reference spareparts with seller prices.
+5. Director reviews and approves/rejects purchase requests.
+6. On approval + receive, stock quantities increase via `SparepartStockService`.
+7. **Inline validation** on Add and Edit forms: seller selection, and each item row's sparepart (must be selected), quantity (> 0), and unit price (> 0) are all validated client-side before submission. Errors appear below each invalid field. The store's `isDirty` flag suppresses eager error display on initial load.
 
 ## API Endpoints
 | Function | Method | Endpoint |

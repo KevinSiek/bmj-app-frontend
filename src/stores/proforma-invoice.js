@@ -111,8 +111,11 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     const response = await proformaInvoiceApi.dpPaid(id)
   }
 
+  const isDirty = ref(false)
+
   async function $resetProformaInvoice() {
     proformaInvoice.value = mapProformaInvoice()
+    isDirty.value = false
   }
 
   async function $resetProformaInvoices() {
@@ -133,6 +136,7 @@ export const useProformaInvoiceStore = defineStore('proforma-invoice', () => {
     processToInvoice,
     dpPaid,
     $resetProformaInvoice,
-    $resetProformaInvoices
+    $resetProformaInvoices,
+    isDirty
   }
 })

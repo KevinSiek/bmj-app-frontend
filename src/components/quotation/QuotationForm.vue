@@ -1,44 +1,46 @@
 <template>
   <form class="row form" @click.capture="onRootClick" autocomplete="off">
-    <div v-if="!isTypeEdit || isRoleDirector" class="upper my-2">
+    <div v-if="props.type === common.form.type.add || isRoleDirector" class="upper my-2">
       <div class="title">Project</div>
       <div class="data">
         <div class="left">
           <div v-if="isTypeView" class="input form-group col-12">
             <label for="">No Quotation</label><br>
             <input type="text" class="form-control mt-2" v-model="quotation.project.quotationNumber"
-              placeholder="No Quotation" :disabled="disabled">
+              placeholder="No Quotation" :disabled="disabled" autocomplete="off">
           </div>
           <div class="input form-group col-12">
             <label for="">Project Type</label><br>
-            <select class="form-select mt-2" aria-label="Project Type" v-model="quotation.project.type"
-              :disabled="disabled">
+            <select class="form-select mt-2" :class="{ 'is-invalid': errors['project.type'] }" aria-label="Project Type" v-model="quotation.project.type"
+              :disabled="disabled" @change="markTouched('project.type')" @blur="markTouched('project.type')">
               <option value="" disabled selected>Select Project Type</option>
               <option value="Spareparts">Spareparts</option>
               <option value="Service">Service</option>
             </select>
+            <div class="invalid-feedback">{{ errors['project.type'] }}</div>
           </div>
         </div>
         <div class="right">
           <div v-if="isRoleDirector" class="input form-group col-12">
             <label for="">Branch</label><br>
-            <select class="form-select mt-2" aria-label="Branch" v-model="quotation.project.branch"
-              :disabled="disabled">
+            <select class="form-select mt-2" :class="{ 'is-invalid': errors['project.branch'] }" aria-label="Branch" v-model="quotation.project.branch"
+              :disabled="disabled" @change="markTouched('project.branch')" @blur="markTouched('project.branch')">
               <option value="" disabled selected>Select Branch</option>
               <option value="Semarang">Semarang</option>
               <option value="Jakarta">Jakarta</option>
             </select>
+            <div class="invalid-feedback">{{ errors['project.branch'] }}</div>
           </div>
           <div v-if="isRoleMarketing" class="input form-group col-12">
             <label for="">Branch</label><br>
             <input type="text" class="form-control mt-2" :value="quotation.project.branch" placeholder="Branch" disabled
-              readonly>
+              readonly autocomplete="off">
             <small class="text-muted">Branch automatically set based on your profile</small>
           </div>
           <div v-if="isTypeView" class="input form-group col-12">
             <label for="">Date Quotation</label><br>
             <input type="date" class="form-control mt-2" v-model="quotation.project.date" placeholder="Date"
-              :disabled="disabled">
+              :disabled="disabled" autocomplete="off">
           </div>
         </div>
       </div>
@@ -49,10 +51,12 @@
         <div class="left">
           <div class="input form-group col-12">
             <label for="">Company Name</label><br>
-            <input type="text" class="form-control mt-2" v-model="quotation.customer.companyName"
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.companyName'] }" v-model="quotation.customer.companyName"
               placeholder="Company Name" data-bs-toggle="dropdown" aria-expanded="false"
-              @change="handleInputSearchCustomer(quotation.customer.companyName)"
-              @keyup="handleInputSearchCustomer(quotation.customer.companyName)" :disabled="disabled">
+              @change="handleInputSearchCustomer(quotation.customer.companyName); markTouched('customer.companyName')"
+              @keyup="handleInputSearchCustomer(quotation.customer.companyName); markTouched('customer.companyName')"
+              @blur="markTouched('customer.companyName')" :disabled="disabled" autocomplete="off">
+            <div class="invalid-feedback">{{ errors['customer.companyName'] }}</div>
             <ul class="dropdown-menu dropdown-menu-customer">
               <li v-for="(item, index) in customers" :key="index" class="dropdown-item"
                 @click="selectItemCustomer(item)">
@@ -62,20 +66,23 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Address</label><br>
-            <input type="text" class="form-control mt-2" v-model="quotation.customer.address" placeholder="Address"
-              :disabled="disabled">
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.address'] }" v-model="quotation.customer.address" placeholder="Address"
+              :disabled="disabled" @input="markTouched('customer.address')" @blur="markTouched('customer.address')" autocomplete="off">
+            <div class="invalid-feedback">{{ errors['customer.address'] }}</div>
           </div>
           <div class="input form-group col-12">
             <div class="row">
               <div class="col-6">
                 <label for="">City</label><br>
-                <input type="text" class="form-control mt-2" v-model="quotation.customer.city" placeholder="City"
-                  :disabled="disabled">
+                <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.city'] }" v-model="quotation.customer.city" placeholder="City"
+                  :disabled="disabled" @input="markTouched('customer.city')" @blur="markTouched('customer.city')" autocomplete="off">
+                <div class="invalid-feedback">{{ errors['customer.city'] }}</div>
               </div>
               <div class="col-6">
                 <label for="">Province</label><br>
-                <input type="text" class="form-control mt-2" v-model="quotation.customer.province"
-                  placeholder="Province" :disabled="disabled">
+                <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.province'] }" v-model="quotation.customer.province"
+                  placeholder="Province" :disabled="disabled" @input="markTouched('customer.province')" @blur="markTouched('customer.province')" autocomplete="off">
+                <div class="invalid-feedback">{{ errors['customer.province'] }}</div>
               </div>
             </div>
           </div>
@@ -83,32 +90,37 @@
         <div class="right">
           <div class="input form-group col-12">
             <label for="">Office</label><br>
-            <input type="text" class="form-control mt-2" v-model="quotation.customer.office" placeholder="Office"
-              :disabled="disabled">
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.office'] }" v-model="quotation.customer.office" placeholder="Office"
+              :disabled="disabled" @input="markTouched('customer.office')" @blur="markTouched('customer.office')" autocomplete="off">
+            <div class="invalid-feedback">{{ errors['customer.office'] }}</div>
           </div>
           <div class="input form-group col-12">
             <div class="row">
               <div class="col-6">
                 <label for="">Urban</label><br>
-                <input type="text" class="form-control mt-2" v-model="quotation.customer.urban" placeholder="Urban"
-                  :disabled="disabled">
+                <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.urban'] }" v-model="quotation.customer.urban" placeholder="Urban"
+                  :disabled="disabled" @input="markTouched('customer.urban')" @blur="markTouched('customer.urban')" autocomplete="off">
+                <div class="invalid-feedback">{{ errors['customer.urban'] }}</div>
               </div>
               <div class="col-6">
                 <label for="">Subdistrict</label><br>
-                <input type="text" class="form-control mt-2" v-model="quotation.customer.subdistrict"
-                  placeholder="Subdistrict" :disabled="disabled">
+                <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.subdistrict'] }" v-model="quotation.customer.subdistrict"
+                  placeholder="Subdistrict" :disabled="disabled" @input="markTouched('customer.subdistrict')" @blur="markTouched('customer.subdistrict')" autocomplete="off">
+                <div class="invalid-feedback">{{ errors['customer.subdistrict'] }}</div>
               </div>
             </div>
           </div>
           <div class="input form-group col-12">
             <label for="">Postal Code</label><br>
-            <input type="text" class="form-control mt-2" v-model="quotation.customer.postalCode"
-              placeholder="Postal Code" :disabled="disabled">
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.postalCode'] }" v-model="quotation.customer.postalCode"
+              placeholder="Postal Code" :disabled="disabled" @input="markTouched('customer.postalCode')" @blur="markTouched('customer.postalCode')" autocomplete="off">
+            <div class="invalid-feedback">{{ errors['customer.postalCode'] }}</div>
           </div>
           <div class="input form-group col-12">
             <label for="">Email <small class="text-muted">(optional)</small></label><br>
-            <input type="email" class="form-control mt-2" v-model="quotation.customer.email" placeholder="Email"
-              :disabled="disabled">
+            <input type="email" class="form-control mt-2" :class="{ 'is-invalid': errors['customer.email'] }" v-model="quotation.customer.email" placeholder="Email"
+              :disabled="disabled" @input="markTouched('customer.email')" @blur="markTouched('customer.email')" autocomplete="off">
+            <div class="invalid-feedback">{{ errors['customer.email'] }}</div>
           </div>
         </div>
       </div>
@@ -136,8 +148,8 @@
               <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
               <td class="table-col table-name">{{ sparepart.quantity }}</td>
               <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
-              <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
-              <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceSell" /></td>
+              <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
               <td class="table-col table-name">{{ sparepart.stock }}</td>
             </tr>
             <tr class="align-middle">
@@ -147,7 +159,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.amount) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.amount" /></td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -157,7 +169,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.discount) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.discount" /></td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -167,7 +179,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.subtotal) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.subtotal" /></td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -177,7 +189,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.ppn) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.ppn" /></td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -187,49 +199,50 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.grandTotal) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.grandTotal" /></td>
               <td class="table-col table-name"></td>
             </tr>
           </tbody>
         </table>
       </div>
       <div v-else class="add-sparepart">
-        <div class="sparepart-scroll">
-          <div class="form-group col-12 mx-3">
-            <div class="row flex-nowrap">
-              <div class="col-3">
-                <label for="">Sparepart Name</label>
-              </div>
-              <div class="col-3">
-                <label for="">Part Number</label>
-              </div>
-              <div class="col-2">
-                <label for="">Stock</label>
-              </div>
-              <div class="col-2">
-                <label for="">Quantity</label>
-              </div>
-              <div class="col-2">
-                <label for="">Unit Price</label>
-              </div>
-              <div class="col-2">
-                <label for="">Total Price</label>
-              </div>
-              <div class="col-1">
-                <div class="button-placeholder"></div>
+        <div class="form-group col-12 mx-3">
+          <div class="row">
+            <div class="col-11">
+              <div class="row">
+                <div class="col-3">
+                  <label for="">Sparepart Name</label>
+                </div>
+                <div class="col-3">
+                  <label for="">Part Number</label>
+                </div>
+                <div class="col-2">
+                  <label for="">Quantity</label>
+                </div>
+                <div class="col-2">
+                  <label for="">Unit Price</label>
+                </div>
+                <div class="col-2">
+                  <label for="">Total Price</label>
+                </div>
               </div>
             </div>
+            <div class="col-1">
+              <div class="button-placeholder"></div>
+            </div>
           </div>
-          <div class="form-group col-12 mx-3">
-            <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex"
-              class="list row flex-nowrap">
-              <!-- FIXED: Sparepart Name with Controlled Dropdown -->
-              <div class="col-3 sparepart-container" :data-index="sparepartIndex">
-                <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
-                  @focus="openDropdown(sparepartIndex, 'name')"
-                  @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
-                  @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')" @blur="onNameBlur(sparepartIndex)"
-                  :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }" />
+        </div>
+        <div class="form-group col-12 mx-3">
+          <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex" class="list row">
+            <div class="col-11">
+              <div class="row">
+                <!-- FIXED: Sparepart Name with Controlled Dropdown -->
+                <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+                  <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
+                    @focus="openDropdown(sparepartIndex, 'name')"
+                    @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
+                    @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')" @blur="onNameBlur(sparepartIndex)"
+                    :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }" autocomplete="off" />
 
                 <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
                 <ul
@@ -241,17 +254,17 @@
                   </li>
                 </ul>
 
-                <div v-if="!sparepart.sparepartId && sparepart.sparepartName" class="invalid-feedback">
-                  Please select from suggestions to link sparepart ID
+                  <div v-if="!sparepart.sparepartId && sparepart.sparepartName" class="invalid-feedback">
+                    Please select from suggestions to link sparepart ID
+                  </div>
                 </div>
-              </div>
 
               <!-- FIXED: Part Number with Controlled Dropdown -->
               <div class="col-3 sparepart-container" :data-index="sparepartIndex">
                 <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
                   placeholder="Part Number" @focus="openDropdown(sparepartIndex, 'number')"
                   @input="onNumberInput(sparepartIndex, sparepart.sparepartNumber)"
-                  @keydown.esc.prevent="closeDropdown(sparepartIndex, 'number')" @blur="onNumberBlur(sparepartIndex)" />
+                  @keydown.esc.prevent="closeDropdown(sparepartIndex, 'number')" @blur="onNumberBlur(sparepartIndex)" autocomplete="off" />
 
                 <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
                 <ul
@@ -264,35 +277,32 @@
                 </ul>
               </div>
 
-              <div class="col-2">
-                <input type="number" class="form-control mt-2" placeholder="Stock" v-model="sparepart.stock"
-                  @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)" disabled>
-              </div>
-              <div class="col-2">
-                <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                  @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)">
-              </div>
-              <div class="col-2">
-                <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
-                  @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
-              </div>
-              <div class="col-2">
-                <!-- <input type="number" class="form-control mt-2" placeholder="Total Price"
-                v-model="sparepart.totalPrice" disabled> -->
-                <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
-                  @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true" />
-              </div>
-              <div class="col-1">
-                <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
-                    class="bi bi-trash3"></i></button>
+                <div class="col-2">
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
+                    @input="updateSparepartCalculation(sparepartIndex, sparepart)" autocomplete="off">
+                </div>
+                <div class="col-2">
+                  <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
+                    @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
+                </div>
+                <div class="col-2">
+                  <!-- <input type="number" class="form-control mt-2" placeholder="Total Price"
+                    v-model="sparepart.totalPrice" disabled> -->
+                  <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
+                    @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true" />
+                </div>
               </div>
             </div>
-            <div class="add-btn mt-3">
-              <button type="button" class="btn btn-outline-dark" @click="addSparepart">
-                <i class="bi bi-plus-lg"></i>
-                <span class="mx-2">Add Sparepart</span>
-              </button>
+            <div class="col-1">
+              <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
+                  class="bi bi-trash3"></i></button>
             </div>
+          </div>
+          <div class="add-btn mt-3">
+            <button type="button" class="btn btn-outline-dark" @click="addSparepart">
+              <i class="bi bi-plus-lg"></i>
+              <span class="mx-2">Add Sparepart</span>
+            </button>
           </div>
         </div>
       </div>
@@ -315,29 +325,29 @@
               <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
               <td class="table-col table-name">{{ service.service }}</td>
               <td class="table-col table-name">{{ service.quantity }}</td>
-              <td class="table-col table-name">{{ formatCurrency(service.unitPriceSell) }}</td>
-              <td class="table-col table-name">{{ formatCurrency(service.totalPrice) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="service.unitPriceSell" /></td>
+              <td class="table-col table-name"><PriceDisplay :value="service.totalPrice" /></td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">SubTotal</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.subtotal) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.subtotal" /></td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.ppn) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.ppn" /></td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">Grand Total</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.grandTotal) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.grandTotal" /></td>
             </tr>
           </tbody>
         </table>
@@ -371,19 +381,20 @@
             <div class="col-11">
               <div class="row">
                 <div class="col-4">
-                  <input type="text" class="form-control mt-2" v-model="service.service" placeholder="Service Name">
+                  <input type="text" class="form-control mt-2" :class="{ 'is-invalid': getServiceError(serviceIndex, 'service') }" v-model="service.service" placeholder="Service Name" autocomplete="off">
+                  <div class="invalid-feedback">{{ getServiceError(serviceIndex, 'service') }}</div>
                 </div>
                 <div class="col-3">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="service.quantity"
-                    @wheel.prevent @input="selectService(serviceIndex, service)">
+                    @input="selectService(serviceIndex, service)" autocomplete="off">
                 </div>
                 <div class="col-3">
-                  <CurrencyInput placeholder="Unit Price" v-model="service.unitPriceSell"
+                  <CurrencyInput placeholder="Unit Price" :class="{ 'is-invalid': getServiceError(serviceIndex, 'unitPriceSell') }" v-model="service.unitPriceSell"
                     @update:model-value="selectService(serviceIndex, service)" />
+                  <div class="invalid-feedback">{{ getServiceError(serviceIndex, 'unitPriceSell') }}</div>
                 </div>
                 <div class="col-2">
-                  <input type="text" class="form-control mt-2" placeholder="Total Price"
-                    :value="formatCurrency(service.totalPrice)" disabled>
+                  <PriceDisplay :value="service.totalPrice" class="form-control mt-2" style="background-color: #e9ecef; opacity: 1; min-height: 38px;" />
                 </div>
               </div>
             </div>
@@ -402,40 +413,57 @@
       </div>
     </div>
     <div class="price my-2">
-      <div class="amount type">
+      <div class="amount type d-flex align-items-center mb-2">
         <div class="label">Total Amount</div>
-        <div>: {{ formatCurrency(quotation.price.amount) }}</div>
+        <div class="d-flex align-items-center flex-grow-1" style="max-width: 250px;">
+          <span class="me-2">:</span>
+          <PriceDisplay :value="quotation.price.amount" />
+        </div>
       </div>
-      <div class="total-discount type">
+      <div class="total-discount type d-flex align-items-center mb-2">
         <div class="label d-flex align-items-center">Total Discount (%)</div>
         <div class="d-flex align-items-center">
-          : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2" style="width: 120px;"
-            placeholder="0" v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled" @wheel.prevent>
+          : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2" :class="{ 'is-invalid': errors['price.totalDiscountPercent'] }" style="width: 120px;"
+            placeholder="0" v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled"
+            @input="markTouched('price.totalDiscountPercent')" @blur="markTouched('price.totalDiscountPercent')" autocomplete="off">
+          <div class="invalid-feedback ms-2">{{ errors['price.totalDiscountPercent'] }}</div>
           <span class="ms-2 text-muted">Any value &gt; {{ discount }}% requires Director review.</span>
         </div>
       </div>
-      <div v-if="isTypeView" class="discount type">
+      <div v-if="isTypeView" class="discount type d-flex align-items-center mb-2">
         <div class="label">Discount</div>
-        <div>: {{ formatCurrency(quotation.price.discount) }}</div>
+        <div class="d-flex align-items-center flex-grow-1" style="max-width: 250px;">
+          <span class="me-2">:</span>
+          <PriceDisplay :value="quotation.price.discount" />
+        </div>
       </div>
-      <div class="subtotal type">
+      <div class="subtotal type d-flex align-items-center mb-2">
         <div class="label">Subtotal</div>
-        <div>: {{ formatCurrency(quotation.price.subtotal) }}</div>
+        <div class="d-flex align-items-center flex-grow-1" style="max-width: 250px;">
+          <span class="me-2">:</span>
+          <PriceDisplay :value="quotation.price.subtotal" />
+        </div>
       </div>
-      <div class="ppn type">
+      <div class="ppn type d-flex align-items-center mb-2">
         <div class="label">PPN ({{ Math.trunc(ppn) }}%)</div>
-        <div>: {{ formatCurrency(quotation.price.ppn) }}</div>
+        <div class="d-flex align-items-center flex-grow-1" style="max-width: 250px;">
+          <span class="me-2">:</span>
+          <PriceDisplay :value="quotation.price.ppn" />
+        </div>
       </div>
-      <div class="grand-total type">
+      <div class="grand-total type d-flex align-items-center mb-2">
         <div class="label">Grand Total</div>
-        <div>: {{ formatCurrency(quotation.price.grandTotal) }}</div>
+        <div class="d-flex align-items-center flex-grow-1" style="max-width: 250px;">
+          <span class="me-2">:</span>
+          <PriceDisplay :value="quotation.price.grandTotal" />
+        </div>
       </div>
     </div>
     <div class="notes my-2">
       <div class="title">Notes</div>
       <div class="inputform-floating">
         <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-          v-model="quotation.notes" :disabled="disabled"></textarea>
+          v-model="quotation.notes" :disabled="disabled" autocomplete="off"></textarea>
       </div>
     </div>
   </form>
@@ -448,6 +476,7 @@ import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
 import { formatCurrency } from '@/utils/form-util'
+import PriceDisplay from '@/components/PriceDisplay.vue'
 import { useCustomerStore } from '@/stores/customer'
 import { useGeneralStore } from '@/stores/general'
 import { useRole } from '@/composeable/useRole'
@@ -475,6 +504,24 @@ const props = defineProps({
 const isTypeEdit = props.type == common.form.type.edit
 const isTypeView = props.type == common.form.type.view
 const disabled = computed(() => isTypeView ? true : false)
+
+const touched = reactive({
+  'project.type': false,
+  'project.branch': false,
+  'customer.companyName': false,
+  'customer.office': false,
+  'customer.address': false,
+  'customer.city': false,
+  'customer.province': false,
+  'customer.urban': false,
+  'customer.subdistrict': false,
+  'customer.postalCode': false,
+  'customer.email': false,
+  'price.totalDiscountPercent': false
+})
+const markTouched = (field) => {
+  touched[field] = true
+}
 
 // FIXED: Dropdown visibility state per row index and field (name/number)
 // showDropdown[index] = { name: boolean, number: boolean }
@@ -546,6 +593,12 @@ const handleInputSearchCustomer = (search) => {
 
 const selectItemCustomer = (customerData) => {
   quotation.value.customer = customerData
+  // Mark all customer fields as touched when a customer is selected
+  Object.keys(touched).forEach(key => {
+    if (key.startsWith('customer.')) {
+      touched[key] = true
+    }
+  })
 }
 
 // FIXED: Auto-populate branch for Marketing users based on user profile
@@ -667,6 +720,132 @@ const removeService = (index) => {
   quotation.value.services.splice(index, 1)
   updatePrice()
 }
+
+// Watch for changes to the quotation object to mark the form as dirty (user interacted)
+watch(
+  () => quotation.value,
+  (newVal, oldVal) => {
+    // Only set dirty if it's a user interaction, not the initial loading of a quotation
+    if (newVal !== null && oldVal !== null) {
+      // Deactivated eager global isDirty setting to prevent flashing all validation errors on first keystroke
+      // quotationStore.isDirty = true
+    }
+  },
+  { deep: true }
+)
+
+const errors = computed(() => {
+  const errs = {}
+  const q = quotation.value
+  if (!q) return errs
+
+  if (touched['project.type'] || quotationStore.isDirty) {
+    if (!q.project?.type) errs['project.type'] = 'Project Type is required.'
+  }
+
+  if (touched['project.branch'] || quotationStore.isDirty) {
+    if (!q.project?.branch) errs['project.branch'] = 'Branch is required.'
+  }
+
+  if (touched['customer.companyName'] || quotationStore.isDirty) {
+    if (!q.customer?.companyName?.trim()) errs['customer.companyName'] = 'Company Name is required.'
+  }
+
+  if (touched['customer.office'] || quotationStore.isDirty) {
+    if (!q.customer?.office?.trim()) errs['customer.office'] = 'Office is required.'
+  }
+
+  if (touched['customer.address'] || quotationStore.isDirty) {
+    if (!q.customer?.address?.trim()) errs['customer.address'] = 'Address is required.'
+  }
+
+  if (touched['customer.city'] || quotationStore.isDirty) {
+    if (!q.customer?.city?.trim()) errs['customer.city'] = 'City is required.'
+  }
+
+  if (touched['customer.province'] || quotationStore.isDirty) {
+    if (!q.customer?.province?.trim()) errs['customer.province'] = 'Province is required.'
+  }
+
+  if (touched['customer.urban'] || quotationStore.isDirty) {
+    if (!q.customer?.urban?.trim()) errs['customer.urban'] = 'Urban/Village is required.'
+  }
+
+  if (touched['customer.subdistrict'] || quotationStore.isDirty) {
+    if (!q.customer?.subdistrict?.trim()) errs['customer.subdistrict'] = 'Subdistrict is required.'
+  }
+
+  if (touched['customer.postalCode'] || quotationStore.isDirty) {
+    if (!q.customer?.postalCode) {
+      errs['customer.postalCode'] = 'Postal Code is required.'
+    } else if (isNaN(Number(q.customer.postalCode))) {
+      errs['customer.postalCode'] = 'Postal Code must be numeric.'
+    }
+  }
+
+  if (touched['customer.email'] || quotationStore.isDirty) {
+    if (q.customer?.email?.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(q.customer.email.trim())) {
+        errs['customer.email'] = 'Email format is invalid.'
+      }
+    }
+  }
+
+  if (touched['price.totalDiscountPercent'] || quotationStore.isDirty) {
+    const discountPercent = Number(q.price?.totalDiscountPercent)
+    if (isNaN(discountPercent) || discountPercent < 0 || discountPercent > 100) {
+      errs['price.totalDiscountPercent'] = 'Must be between 0 and 100.'
+    }
+  }
+
+  return errs
+})
+
+const getSparepartError = (index, field) => {
+  if (!quotationStore.isDirty) return null
+  const sp = quotation.value.spareparts[index]
+  if (!sp) return null
+  if (field === 'sparepartId' && !sp.sparepartId && sp.sparepartName) return 'Select from suggestions to link ID.'
+  if (field === 'quantity') {
+    const qty = Number(sp.quantity)
+    if (!sp.quantity || isNaN(qty) || qty < 1 || !Number.isInteger(qty)) {
+      return 'Min 1 (integer).'
+    }
+  }
+  if (field === 'unitPriceSell') {
+    const price = Number(sp.unitPriceSell)
+    if (isNaN(price) || price < 1) {
+      return 'Min 1.'
+    }
+  }
+  return null
+}
+
+const getServiceError = (index, field) => {
+  if (!quotationStore.isDirty) return null
+  const s = quotation.value.services[index]
+  if (!s) return null
+  if (field === 'service' && !s.service?.trim()) return 'Service name is required.'
+  if (field === 'quantity') {
+    const qty = Number(s.quantity)
+    if (!s.quantity || isNaN(qty) || qty < 1 || !Number.isInteger(qty)) {
+      return 'Min 1 (integer).'
+    }
+  }
+  if (field === 'unitPriceSell') {
+    const price = Number(s.unitPriceSell)
+    if (isNaN(price) || price < 1) {
+      return 'Min 1.'
+    }
+  }
+  return null
+}
+
+// Remove the global warning banner flag, we use inline errors now
+const validationError = computed(() => {
+  return null
+})
 </script>
 
 <style lang="scss" scoped>

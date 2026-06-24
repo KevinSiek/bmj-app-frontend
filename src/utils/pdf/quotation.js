@@ -91,6 +91,7 @@ const createPdf = async (data, notes, user) => {
   const { project, customer, price, spareparts, services } = data
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
+  console.log('logoBase64 inside createPdf:', logoBase64 ? logoBase64.substring(0, 100) : 'null/undefined');
 
   // Top Left
   const customerInfo = {

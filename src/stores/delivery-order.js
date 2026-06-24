@@ -103,8 +103,11 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     await deliveryOrderApi.done(id)
   }
 
+  const isDirty = ref(false)
+
   async function $resetDeliveryOrder() {
     deliveryOrder.value = mapDeliveryOrder()
+    isDirty.value = false
   }
 
   async function $resetDeliveryOrders() {
@@ -125,6 +128,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     process,
     setDone,
     $resetDeliveryOrder,
-    $resetDeliveryOrders
+    $resetDeliveryOrders,
+    isDirty
   }
 })

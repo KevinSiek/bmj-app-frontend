@@ -120,3 +120,30 @@ endpoint, each field broken with multiple invalid values, asserting the correct 
 
 **Not yet covered** (the remaining tail toward literally "all scenarios"): cross-browser
 (Chromium only) and a handful of low-value endpoint/list-filter variants.
+
+---
+
+## 🏗️ Role-Lifecycle Specs (Added 2026-06-22)
+
+Five new spec files cover the complete business lifecycle **with each role acting only
+in its authorized lane**. These replace the earlier Director-only provisioning model with
+real multi-role collaboration:
+
+| Spec File | Flow | Key Roles |
+|---|---|---|
+| `role-lifecycle-spareparts.spec.js` | Full Spareparts: Quotation → PI → DO → Invoice → Done | Marketing, Director, Finance, Inv.Admin |
+| `role-lifecycle-service.spec.js` | Full Service: Quotation → PI → WO → Invoice → Done | Marketing, Director, Finance, Service |
+| `role-lifecycle-indent-backorder.spec.js` | Indent → BO → Purchase → BO fulfilled → PO Done | Marketing, Director, Finance, Inv.Admin, Inv.Purchase |
+| `role-lifecycle-borrow-movement.spec.js` | Borrow (Approved/Send/Done) + Sparepart Movement (Send/Receive) | Marketing, Inv.Admin, Head Inventory |
+| `role-lifecycle-rejection.spec.js` | Rejection/return/decline + Head Inventory access matrix | All roles |
+
+### Gaps now filled by these specs
+- `moveToInvoice` / `fullPaid` — now tested (SPLT-06, SVLT-10, BOLT-12)
+- **Head Inventory** role — zero tests before → now 10+ tests (REJT-I series)
+- **Inventory Purchase** creates a Buy — now tested in role (BOLT-06)
+- **Sparepart Movement** — never E2E tested → now MVLT series
+- **Stock History** entries from Movement → now verified (MVLT-04)
+- **Borrow** tested by correct roles (Head Inventory approves, Inv.Admin sends/done)
+- **Rejection/return/decline** flows all in one spec
+- **Service role sidebar isolation** (SVLT-09)
+

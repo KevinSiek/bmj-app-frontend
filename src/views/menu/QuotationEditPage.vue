@@ -49,6 +49,11 @@ const editQuotation = async () => {
 }
 
 const editQuotationConfirmation = () => {
+  const errorMsg = quotationStore.validateQuotation()
+  if (errorMsg) {
+    quotationStore.isDirty = true
+    return
+  }
   modalStore.openConfirmationModal('to Edit this Quotation', 'Edit Quotation Success', editQuotation)
 }
 

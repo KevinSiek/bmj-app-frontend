@@ -15,19 +15,26 @@ Created when a Purchase Order is **released**.
 | File | Purpose |
 | ---- | ------- |
 | `views/menu/DeliveryOrderPage.vue` | List all delivery orders |
-| `views/menu/DeliveryOrderAddPage.vue` | Create DO (from PO release) |
+| `views/menu/DeliveryOrderAddPage.vue` | Create DO (from PO release) — with inline validation |
 | `views/menu/DeliveryOrderDetailPage.vue` | DO detail |
-| `stores/delivery-order.js` | Pinia store |
+| `stores/delivery-order.js` | Pinia store — includes `isDirty` flag |
 | `api/delivery-order.js` | API wrappers |
 | `utils/pdf/delivery-note.js` | PDF generation for delivery note |
 
+## Status Lifecycle
+`Created → Process → Done`
+
+## Role Access
+Inventory Admin, Inventory Head, Director
+
 ## Key Business Rules
-1. DO is created during PO **Release** action
-2. Tracks: ship_mode, order_type, delivery details, received_by, prepared_by
-3. Has `type` field matching the quotation type (Sparepart/Service)
-4. NPWP field for tax purposes
-5. Process action transitions status
-6. Detail view displays both **Internal Request** (IR) number and **PO number** from the linked Purchase Order
+1. DO is created during PO **Release** action.
+2. Tracks: ship_mode, order_type, delivery details, received_by, prepared_by.
+3. Has `type` field matching the quotation type (Sparepart/Service).
+4. NPWP field for tax purposes.
+5. Process action transitions status to Done.
+6. Detail view displays both **Internal Request** (IR) number and **PO number** from the linked Purchase Order.
+7. **Inline validation** on the Add form: DO date, picked-by worker, ship mode, and order type are all validated client-side before submission. Errors appear directly below the invalid control. The store's `isDirty` flag prevents eager error display on first load.
 
 ## API Endpoints
 | Function | Method | Endpoint |

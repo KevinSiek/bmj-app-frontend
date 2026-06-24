@@ -27,8 +27,8 @@
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.seller || '-' }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceBuy) }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceBuy" /></td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
               </tr>
             </tbody>
           </table>
@@ -38,9 +38,12 @@
         <div class="title">Description</div>
         <div class="text">{{ purchase.notes }}</div>
       </div>
-      <div class="total my-2">
-        <div class="title">Total Purchase</div>
-        <div class="text">{{ formatCurrency(purchase.totalAmount) }}</div>
+      <div class="total my-2 d-flex align-items-center">
+        <div class="title" style="width: 180px;">Total Purchase</div>
+        <div class="d-flex align-items-center flex-grow-1" style="max-width: 250px;">
+          <span class="me-2">:</span>
+          <PriceDisplay :value="purchase.totalAmount" />
+        </div>
       </div>
     </form>
   </div>
@@ -66,6 +69,7 @@ import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { formatCurrency } from '@/utils/form-util'
+import PriceDisplay from '@/components/PriceDisplay.vue'
 
 const route = useRoute()
 const router = useRouter()

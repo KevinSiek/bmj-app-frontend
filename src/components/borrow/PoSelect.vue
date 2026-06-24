@@ -9,23 +9,24 @@
       aria-expanded="false"
       @keyup="onSearch"
       :disabled="disabled"
+      :class="{ 'is-invalid': isInvalid }"
     >
-    <ul class="dropdown-menu po-select__menu">
-      <li
-        v-for="po in poOptions"
-        :key="po.id"
-        class="dropdown-item"
-        @click="select(po)"
-      >
-        <span class="fw-semibold">{{ po.poNumber || po.purchaseOrderNumber }}</span>
-        <span class="text-muted ms-2">{{ po.purchaseOrderDate }}</span>
-      </li>
-      <li v-if="poOptions.length === 0" class="dropdown-item text-muted">No purchase orders</li>
-      <li v-if="hasMore" class="dropdown-item text-center text-primary" @click.stop="loadMore">
-        Load more…
-      </li>
-    </ul>
-  </div>
+  <ul class="dropdown-menu po-select__menu">
+    <li
+      v-for="po in poOptions"
+      :key="po.id"
+      class="dropdown-item"
+      @click="select(po)"
+    >
+      <span class="fw-semibold">{{ po.poNumber || po.purchaseOrderNumber }}</span>
+      <span class="text-muted ms-2">{{ po.purchaseOrderDate }}</span>
+    </li>
+    <li v-if="poOptions.length === 0" class="dropdown-item text-muted">No purchase orders</li>
+    <li v-if="hasMore" class="dropdown-item text-center text-primary" @click.stop="loadMore">
+      Load more…
+    </li>
+  </ul>
+</div>
 </template>
 
 <script setup>
@@ -38,7 +39,8 @@ const props = defineProps({
   // 'Service' (request link) or 'Spareparts' (reconciliation).
   type: { type: String, required: true },
   placeholder: { type: String, default: 'Search purchase order' },
-  disabled: { type: Boolean, default: false }
+  disabled: { type: Boolean, default: false },
+  isInvalid: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['select'])

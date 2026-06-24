@@ -9,20 +9,20 @@ pricing: sell price and buy price, plus seller-specific pricing.
 | File | Purpose |
 | ---- | ------- |
 | `views/menu/SparepartsPage.vue` | List all spareparts |
-| `views/menu/SparepartsAddPage.vue` | Add new sparepart |
+| `views/menu/SparepartsAddPage.vue` | Add new sparepart — with inline validation |
 | `views/menu/SparepartsDetailPage.vue` | Sparepart detail with stock per branch |
-| `views/menu/SparepartsEditPage.vue` | Edit sparepart |
+| `views/menu/SparepartsEditPage.vue` | Edit sparepart — with inline validation |
 | `components/SparepartSelector.vue` | ★ Search + select sparepart (used in Quotation/Purchase forms) |
 | `components/CurrencyInput.vue` | Realtime Rp currency formatting for price fields |
-| `stores/sparepart.js` | Pinia store |
+| `stores/sparepart.js` | Pinia store — includes `isDirty` flag |
 | `api/sparepart.js` | API wrappers |
 
 ## Key Business Rules
-1. Each sparepart has a unique `sparepart_number` and `slug`
-2. Pricing: `unit_price_sell` (to customer) and `unit_price_buy` (cost)
-3. Stock is **per-branch** via `branch_spareparts` pivot table
-4. `DetailSparepart` records track seller-specific prices
-5. Bulk upload via Excel (see FEATURE_UPLOAD.md)
+1. Each sparepart has a unique `sparepart_number` and `slug`.
+2. Pricing: `unit_price_sell` (to customer) and `unit_price_buy` (cost).
+3. Stock is **per-branch** via `branch_spareparts` pivot table.
+4. `DetailSparepart` records track seller-specific prices.
+5. Bulk upload via Excel (see FEATURE_UPLOAD.md).
 6. **Role-based costing visibility**: Marketing can view the sparepart list and detail
    pages but sees ONLY number, name, and stock quantities. All pricing information
    (sell price, buy price, and seller data) is hidden from Marketing via both backend
@@ -33,6 +33,14 @@ pricing: sell price and buy price, plus seller-specific pricing.
 7. **Realtime currency formatting**: Price input fields use `CurrencyInput.vue` component
    to display Rp (Indonesian Rupiah) currency formatting in real-time. The component
    emits the raw numeric value to parent forms while displaying formatted text to users.
+8. **Inline validation** on Add and Edit forms: sparepart name (required), sparepart number
+   (required), sell price (> 0), and buy price (> 0) are all validated client-side before
+   submission. Errors appear directly beneath each invalid field. The store's `isDirty` flag
+   prevents eager error display on initial render.
+9. **ManualEdit / Import stock source**: When a Director manually adjusts stock from the
+   Sparepart detail page, the Stock History records the source type as `ManualEdit`. Bulk
+   Excel imports record source type as `Import`. Both link back to the sparepart detail page
+   via `common.sourceRouteMap`.
 
 ## Data Model
 ```

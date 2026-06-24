@@ -9,24 +9,24 @@
           Hi, {{ userName }} !
         </div>
       </div>
-      <form @submit.prevent="updateProfileConfirmation()" class="row form-profile">
+      <form @submit.prevent="updateProfileConfirmation()" class="row form-profile" autocomplete="off">
         <div class="input form-group col-12">
           <label for="name">Full Name</label><br>
-          <input type="text" class="form-control mt-2" v-model="user.fullname" placeholder="Full name" disabled>
+          <input type="text" class="form-control mt-2" v-model="user.fullname" placeholder="Full name" autocomplete="off" disabled>
         </div>
         <div class="input form-group col-12">
           <label for="email">Email</label><br>
-          <input type="email" class="form-control mt-2" v-model="user.email" placeholder="Email" disabled>
+          <input type="email" class="form-control mt-2" v-model="user.email" placeholder="Email" autocomplete="off" disabled>
         </div>
         <div class="input form-group col-12">
           <label for="role">Role</label><br>
-          <input type="role" class="form-control mt-2" v-model="user.role" placeholder="Role" disabled>
+          <input type="role" class="form-control mt-2" v-model="user.role" placeholder="Role" autocomplete="off" disabled>
         </div>
         <div class="input form-group col-6">
           <label for="password">Password</label><br>
           <div class="input-group mt-2">
             <input :type="isPassShow ? 'text' : 'password'" class="input form-control" v-model="user.password"
-              placeholder="Password">
+              placeholder="Password" autocomplete="new-password">
             <span class="input input-group-text">
               <button type="button" @click="showHidePass(!isPassShow)" class="showHideBtn">
                 <svg v-if="!isPassShow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -52,7 +52,7 @@
           <label for="password">Confirm Password</label><br>
           <div class="input-group mt-2">
             <input :type="isConfPassShow ? 'text' : 'password'" class="input form-control"
-              v-model="user.confirm_password" placeholder="Retype Password">
+              v-model="user.confirm_password" placeholder="Retype Password" autocomplete="new-password">
             <span class="input input-group-text">
               <button type="button" @click="showHideConfPass(!isConfPassShow)" class="showHideBtn">
                 <svg v-if="!isConfPassShow" xmlns="http://www.w3.org/2000/svg" width="16" height="16"

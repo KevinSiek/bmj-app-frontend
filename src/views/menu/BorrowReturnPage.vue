@@ -100,6 +100,7 @@
                   class="bi bi-trash3"></i></button>
             </div>
           </div>
+          <div v-if="errors.returnedSpareparts" class="text-danger mt-2 small">{{ errors.returnedSpareparts }}</div>
         </div>
       </div>
       <div class="notes my-2">
@@ -112,8 +113,9 @@
       <div class="notes my-2">
         <div class="title">Return Notes</div>
         <div class="inputform-floating">
-          <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
+          <textarea class="form-control" :class="{ 'is-invalid': errors.returnNotes }" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
             v-model="borrow.returnNotes"></textarea>
+          <div class="invalid-feedback">{{ errors.returnNotes }}</div>
         </div>
       </div>
     </form>
@@ -130,7 +132,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, onMounted, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { common, menuMapping as menuConfig } from '@/config'
 import { useRole } from '@/composeable/useRole'
@@ -148,6 +150,31 @@ const { borrow } = storeToRefs(borrowStore)
 
 const isProcessing = ref(false)
 const returnQuantities = ref([])
+
+const errors = computed(() => {
+  const errs = {}
+  if (!borrowStore.isDirty) return errs
+  const b = borrow.value
+  if (!b) return errs
+
+  if (!b.returnNotes?.trim()) {
+    errs.returnNotes = 'Return Notes are required.'
+  }
+  if (returnedSparepart.value.length === 0) {
+    errs.returnedSpareparts = 'At least one sparepart must be returned.'
+  }
+  return errs
+})
+
+watch(
+  [() => borrow.value?.returnNotes, () => returnedSparepart.value],
+  () => {
+    if (borrow.value) {
+      borrowStore.isDirty = true
+    }
+  },
+  { deep: true }
+)
 
 const fetchData = async () => {
   await borrowStore.getBorrow(route.params.id)
@@ -214,6 +241,10 @@ const setToReturn = async () => {
   }
 }
 const setToReturnConfirmation = () => {
+  borrowStore.isDirty = true
+  if (Object.keys(errors.value).length > 0) {
+    return
+  }
   modalStore.openConfirmationModal('to return Borrow ?', 'Borrow Returned', setToReturn)
 }
 </script>

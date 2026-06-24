@@ -71,8 +71,24 @@ export const useEmployeeStore = defineStore('employee', () => {
     groupOptions.value = Object.values(data).map(g => g.name)
   }
 
+  const isDirty = ref(false)
+
+  function validateEmployee(isEdit = false) {
+    const e = employee.value
+    if (!e) return 'Employee data is empty.'
+    if (!e.fullname?.trim()) return 'Full Name is required.'
+    if (!e.username?.trim()) return 'Username is required.'
+    if (!e.email?.trim()) return 'Email is required.'
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(e.email.trim())) return 'Email format is invalid.'
+    if (!e.role) return 'Role is required.'
+    if (!e.branch) return 'Branch is required.'
+    return null
+  }
+
   async function $resetEmployee () {
     employee.value = mapEmployee()
+    isDirty.value = false
   }
 
   async function $resetEmployees() {
@@ -94,6 +110,8 @@ export const useEmployeeStore = defineStore('employee', () => {
     $resetEmployee,
     $resetEmployees,
     setEmployee,
-    resetPassword
+    resetPassword,
+    validateEmployee,
+    isDirty
   }
 })

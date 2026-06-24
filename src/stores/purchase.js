@@ -111,8 +111,36 @@ export const usePurchaseStore = defineStore('purchase', () => {
     return response
   }
 
+  const isDirty = ref(false)
+
+  function validatePurchase() {
+    const p = purchase.value
+    if (!p) return 'Purchase data is empty.'
+    if (!p.branch) return 'Branch is required.'
+    if (!p.spareparts || p.spareparts.length === 0) return 'Purchase list must contain at least one sparepart.'
+
+    for (let i = 0; i < p.spareparts.length; i++) {
+      const sp = p.spareparts[i]
+      const label = `Sparepart #${i + 1}`
+      if (!sp.sparepartName) return `${label}: Name is required.`
+      if (!sp.sparepartId) return `${label} (${sp.sparepartName}): Please select from search suggestions to link sparepart ID.`
+      
+      const qty = Number(sp.quantity)
+      if (sp.quantity === '' || isNaN(qty) || qty < 1 || !Number.isInteger(qty)) {
+        return `${label} (${sp.sparepartName}): Quantity must be an integer greater than or equal to 1.`
+      }
+
+      const price = Number(sp.unitPriceBuy)
+      if (sp.unitPriceBuy === '' || isNaN(price) || price < 1) {
+        return `${label} (${sp.sparepartName}): Buy Price must be greater than or equal to 1.`
+      }
+    }
+    return null
+  }
+
   async function $resetPurchase () {
     purchase.value = mapPurchase()
+    isDirty.value = false
   }
 
   async function $resetPurchases () {
@@ -153,6 +181,8 @@ export const usePurchaseStore = defineStore('purchase', () => {
     $resetPurchases,
     approvePurchase,
     rejectPurchase,
-    needChangePurchase
+    needChangePurchase,
+    validatePurchase,
+    isDirty
   }
 })

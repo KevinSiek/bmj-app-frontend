@@ -3,19 +3,21 @@
     <div class="row mt-4">
       <div class="col-md-6 mb-3">
         <label class="form-label">Source Branch</label>
-        <select class="form-select" aria-label="Branch" v-model="form.source_branch" :disabled="isSubmitting">
+        <select class="form-select" :class="{ 'is-invalid': errors.source_branch }" aria-label="Branch" v-model="form.source_branch" :disabled="isSubmitting">
           <option value="" disabled selected>Select Branch</option>
           <option value="Semarang">Semarang</option>
           <option value="Jakarta">Jakarta</option>
         </select>
+        <div class="invalid-feedback">{{ errors.source_branch }}</div>
       </div>
       <div class="col-md-6 mb-3">
         <label class="form-label">Target Branch</label>
-        <select class="form-select" aria-label="Branch" v-model="form.target_branch" :disabled="isSubmitting">
+        <select class="form-select" :class="{ 'is-invalid': errors.target_branch }" aria-label="Branch" v-model="form.target_branch" :disabled="isSubmitting">
           <option value="" disabled selected>Select Branch</option>
           <option value="Semarang">Semarang</option>
           <option value="Jakarta">Jakarta</option>
         </select>
+        <div class="invalid-feedback">{{ errors.target_branch }}</div>
       </div>
       <div class="col-md-12 mb-3">
         <label class="form-label">Reason</label>
@@ -40,7 +42,7 @@
         <div v-for="(item, index) in form.details" :key="index" class="list row">
           <!-- Sparepart Name typeahead -->
           <div class="col-4">
-            <input type="text" class="form-control mt-2" v-model="item.sparepartName" placeholder="Part Name"
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors[`item_${index}_id`] }" v-model="item.sparepartName" placeholder="Part Name"
               data-bs-toggle="dropdown" aria-expanded="false" @change="onNameInput(index, item.sparepartName)"
               @keyup="onNameInput(index, item.sparepartName)" />
             <ul class="dropdown-menu">
@@ -48,14 +50,12 @@
                 {{ sp.sparepartName }}
               </li>
             </ul>
-            <div v-if="!item.sparepart_id && item.sparepartName" class="invalid-feedback">
-              Please select from suggestions to link sparepart
-            </div>
+            <div class="invalid-feedback">{{ errors[`item_${index}_id`] }}</div>
           </div>
 
           <!-- Part Number typeahead -->
           <div class="col-3">
-            <input type="text" class="form-control mt-2" v-model="item.sparepartNumber" placeholder="Part Number"
+            <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors[`item_${index}_id`] }" v-model="item.sparepartNumber" placeholder="Part Number"
               data-bs-toggle="dropdown" aria-expanded="false" @change="onNumberInput(index, item.sparepartNumber)"
               @keyup="onNumberInput(index, item.sparepartNumber)" />
             <ul class="dropdown-menu">
@@ -63,6 +63,7 @@
                 {{ sp.sparepartNumber }}
               </li>
             </ul>
+            <div class="invalid-feedback">{{ errors[`item_${index}_id`] }}</div>
           </div>
 
           <div class="col-2">
@@ -72,8 +73,9 @@
           </div>
 
           <div class="col-2">
-            <input type="number" class="form-control mt-2" placeholder="Quantity" v-model.number="item.quantity"
+            <input type="number" class="form-control mt-2" :class="{ 'is-invalid': errors[`item_${index}_quantity`] }" placeholder="Quantity" v-model.number="item.quantity"
               min="1" @wheel.prevent />
+            <div class="invalid-feedback">{{ errors[`item_${index}_quantity`] }}</div>
           </div>
 
           <div class="col-1 d-flex align-items-end">
@@ -84,6 +86,7 @@
         </div>
 
         <p v-if="form.details.length === 0" class="text-center text-muted my-3">No items added</p>
+        <div v-if="errors.detailsEmpty" class="text-danger mt-2 small text-center">{{ errors.detailsEmpty }}</div>
 
         <div class="add-btn mt-3">
           <button type="button" class="btn btn-outline-dark" @click="addItem">
@@ -101,13 +104,13 @@
     </div>
     <div class="right">
       <button type="button" class="btn btn-process" @click="submitConfirmation"
-        :disabled="isSubmitting || form.details.length === 0">Add Movement</button>
+        :disabled="isSubmitting">Add Movement</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useSparepartMovementStore } from '@/stores/sparepart-movement'
@@ -123,12 +126,39 @@ const { searchedSpareparts } = storeToRefs(movementStore)
 
 const isSubmitting = ref(false)
 const isSearching = ref(false)
+const isDirty = ref(false)
 
 const form = ref({
   source_branch: '',
   target_branch: '',
   reason: '',
   details: []
+})
+
+const errors = computed(() => {
+  const errs = {}
+  if (!isDirty.value) return errs
+  const f = form.value
+
+  if (!f.source_branch) {
+    errs.source_branch = 'Source branch is required.'
+  }
+  if (!f.target_branch) {
+    errs.target_branch = 'Target branch is required.'
+  }
+  if (!f.details || f.details.length === 0) {
+    errs.detailsEmpty = 'At least one sparepart is required.'
+  } else {
+    f.details.forEach((item, index) => {
+      if (!item.sparepart_id) {
+        errs[`item_${index}_id`] = 'Please select from suggestions.'
+      }
+      if (!item.quantity || Number(item.quantity) <= 0) {
+        errs[`item_${index}_quantity`] = 'Quantity must be greater than 0.'
+      }
+    })
+  }
+  return errs
 })
 
 const opposite = (branch) => branch === common.branch.jakarta ? common.branch.semarang : common.branch.jakarta
@@ -142,6 +172,14 @@ watch(() => form.value.target_branch, (val) => {
   const opp = opposite(val)
   if (form.value.source_branch !== opp) form.value.source_branch = opp
 })
+
+watch(
+  () => form.value,
+  () => {
+    isDirty.value = true
+  },
+  { deep: true }
+)
 
 const searchSparepart = async (search) => {
   if (search !== '') {
@@ -184,6 +222,7 @@ const goBack = () => {
 const resetForm = () => {
   form.value.details = []
   form.value.reason = ''
+  isDirty.value = false
 }
 
 const submit = async () => {
@@ -200,13 +239,9 @@ const submit = async () => {
 }
 
 const submitConfirmation = () => {
-  if (!form.value.target_branch) {
-    return modalStore.openMessageModal(common.modal.failed, 'Target branch is required')
-  }
-  for (let i = 0; i < form.value.details.length; i++) {
-    if (!form.value.details[i].sparepart_id || form.value.details[i].quantity < 1) {
-      return modalStore.openMessageModal(common.modal.failed, 'Please select a sparepart and quantity for every row')
-    }
+  isDirty.value = true
+  if (Object.keys(errors.value).length > 0) {
+    return
   }
 
   modalStore.openConfirmationModal('to add this Stock Movement ?', 'Stock Movement created successfully', submit)

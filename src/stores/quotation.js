@@ -4,13 +4,14 @@ import quotationApi from '@/api/quotation'
 import { getAllSparepart } from '@/api/sparepart'
 
 export const useQuotationStore = defineStore('quotation', () => {
-  const quotation = ref(null)
+  const quotation = ref(mapQuotation())
   const quotations = ref([])
   const quotationReview = ref(null)
   const quotationReviews = ref([])
   const paginationData = ref({})
   const searchedSpareparts = ref([])
   const isLoading = ref(true)
+  const isDirty = ref(false)
 
   function mapQuotation(data) {
     return {
@@ -218,8 +219,90 @@ export const useQuotationStore = defineStore('quotation', () => {
     console.log("List Sparepart", searchedSpareparts.value)
   }
 
+  function validateQuotation() {
+    const q = quotation.value
+    if (!q) return 'Quotation data is empty.'
+    
+    // Project Type
+    if (!q.project?.type) return 'Project Type is required.'
+    if (!['Spareparts', 'Service'].includes(q.project.type)) return 'Invalid Project Type.'
+
+    // Branch
+    if (!q.project?.branch) return 'Branch is required.'
+
+    // Customer Details
+    if (!q.customer?.companyName?.trim()) return 'Customer Company Name is required.'
+    if (!q.customer?.office?.trim()) return 'Customer Office is required.'
+    if (!q.customer?.address?.trim()) return 'Customer Address is required.'
+    if (!q.customer?.city?.trim()) return 'Customer City is required.'
+    if (!q.customer?.province?.trim()) return 'Customer Province is required.'
+    if (!q.customer?.urban?.trim()) return 'Customer Urban/Village is required.'
+    if (!q.customer?.subdistrict?.trim()) return 'Customer Subdistrict is required.'
+    
+    if (!q.customer?.postalCode) return 'Customer Postal Code is required.'
+    if (isNaN(Number(q.customer.postalCode))) return 'Customer Postal Code must be numeric.'
+
+    if (q.customer?.email?.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(q.customer.email.trim())) {
+        return 'Customer Email format is invalid.'
+      }
+    }
+
+    // Discount
+    const discountPercent = Number(q.price?.totalDiscountPercent)
+    if (isNaN(discountPercent) || discountPercent < 0 || discountPercent > 100) {
+      return 'Total Discount Percent must be a number between 0 and 100.'
+    }
+
+    // Type specific items
+    if (q.project.type === 'Spareparts') {
+      if (!q.spareparts || q.spareparts.length === 0) {
+        return 'Quotation must contain at least one sparepart.'
+      }
+      for (let i = 0; i < q.spareparts.length; i++) {
+        const sp = q.spareparts[i]
+        const label = `Sparepart #${i + 1}`
+        if (!sp.sparepartName?.trim()) return `${label}: Name is required.`
+        if (!sp.sparepartId) return `${label} (${sp.sparepartName}): Please select from the search suggestions to link a valid sparepart ID.`
+        
+        const qty = Number(sp.quantity)
+        if (!sp.quantity || isNaN(qty) || qty < 1 || !Number.isInteger(qty)) {
+          return `${label} (${sp.sparepartName}): Quantity must be an integer greater than or equal to 1.`
+        }
+        
+        const price = Number(sp.unitPriceSell)
+        if (isNaN(price) || price < 1) {
+          return `${label} (${sp.sparepartName}): Unit Price must be greater than or equal to 1.`
+        }
+      }
+    } else if (q.project.type === 'Service') {
+      if (!q.services || q.services.length === 0) {
+        return 'Quotation must contain at least one service.'
+      }
+      for (let i = 0; i < q.services.length; i++) {
+        const s = q.services[i]
+        const label = `Service #${i + 1}`
+        if (!s.service?.trim()) return `${label}: Service Name is required.`
+        
+        const qty = Number(s.quantity)
+        if (!s.quantity || isNaN(qty) || qty < 1 || !Number.isInteger(qty)) {
+          return `${label}: Quantity must be an integer greater than or equal to 1.`
+        }
+        
+        const price = Number(s.unitPriceSell)
+        if (isNaN(price) || price < 1) {
+          return `${label}: Unit Price must be greater than or equal to 1.`
+        }
+      }
+    }
+
+    return null
+  }
+
   async function $resetQuotation() {
     quotation.value = mapQuotation()
+    isDirty.value = false
     console.log('DATA', quotation.value)
   }
 
@@ -230,6 +313,7 @@ export const useQuotationStore = defineStore('quotation', () => {
   async function $resetQuotationReview() {
     console.log('RESET QUOTATION REVIEW')
     quotationReview.value = mapQuotation()
+    isDirty.value = false
     console.log('DATA', quotationReview.value)
   }
 
@@ -256,6 +340,8 @@ export const useQuotationStore = defineStore('quotation', () => {
     processQuotation,
     approveQuotation,
     needChangeQuotation,
-    rejectQuotation
+    rejectQuotation,
+    validateQuotation,
+    isDirty
   }
 })

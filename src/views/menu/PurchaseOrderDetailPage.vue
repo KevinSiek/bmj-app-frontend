@@ -149,12 +149,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ formatCurrency(sparepart.unitPriceSell) }}
+                    <PriceDisplay :value="sparepart.unitPriceSell" />
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ formatCurrency(sparepart.totalPrice) }}
+                    <PriceDisplay :value="sparepart.totalPrice" />
                   </div>
                 </td>
                 <td class="table-col table-name">
@@ -183,12 +183,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.services.length - 1 }">
-                    {{ formatCurrency(service.unitPriceSell) }}
+                    <PriceDisplay :value="service.unitPriceSell" />
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.services.length - 1 }">
-                    {{ formatCurrency(service.totalPrice) }}
+                    <PriceDisplay :value="service.totalPrice" />
                   </div>
                 </td>
               </tr>
@@ -214,7 +214,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.amount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.amount" /></td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -225,7 +225,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.discount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.discount" /></td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -236,7 +236,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.subtotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.subtotal" /></td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -247,7 +247,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.ppn) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.ppn" /></td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -258,7 +258,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.grandTotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.grandTotal" /></td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -327,6 +327,7 @@ import { useTrackStore } from '@/stores/track'
 import { useAuthStore } from '@/stores/auth'
 import { createPdf } from '@/utils/pdf/purchase-order'
 import { formatCurrency } from '@/utils/form-util'
+import PriceDisplay from '@/components/PriceDisplay.vue'
 
 const router = useRouter()
 const route = useRoute()

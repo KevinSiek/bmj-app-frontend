@@ -108,3 +108,42 @@ Each role has a dedicated menu page showing only their allowed features:
 ### TrackNav.vue (1.7KB)
 - Navigation header for tracked entities
 - Shows current status badge + track toggle button
+
+### CurrencyInput.vue
+- Shared input component for all price/currency fields across the application
+- Displays value as formatted Rp (Indonesian Rupiah) with thousand separators in real-time
+- Emits the raw numeric value to the parent form via `v-model`
+- Used in: Spareparts Add/Edit, Quotation, Purchase, Back Order Adjustment, and any other form with price inputs
+- Accepts `disabled` and `inputClass` props
+
+### RefreshButton.vue
+- Small button that emits a `@refresh` event
+- Used on list pages alongside SearchBar to manually re-fetch data without reloading the page
+
+### DateRangeFilter.vue
+- Date range selection component (start date – end date)
+- Used on Stock History page to filter movements by a custom date range
+- Syncs with URL query params (`start_date`, `end_date`) via `updateQuery`
+
+### SearchAutocomplete.vue
+- Enhanced search input with autocomplete dropdown
+- Supports two modes:
+  1. **Text search** — emits `@searched` with the raw text query
+  2. **Entity select** — emits `@selected` with `{ filter_type, filter_id }` for server-side filtering
+- Used on Stock History page for sparepart-level filtering
+
+### borrow/PoSelect.vue
+- Domain-specific searchable PO picker used in Borrow forms
+- Supports load-more pagination for PO options
+- Filters by PO type (Service / Spareparts)
+- Accepts `isInvalid` boolean prop — applies Bootstrap `is-invalid` class for inline validation integration
+- Emits selected PO object to parent
+
+## Inline Validation in Components
+
+All form inputs now use Bootstrap's validation classes for inline error display:
+```vue
+<input :class="{ 'is-invalid': store.isDirty && errors.field }" class="form-control" />
+<div class="invalid-feedback">{{ errors.field }}</div>
+```
+See [`docs/INLINE_VALIDATION.md`](./INLINE_VALIDATION.md) for the full pattern.

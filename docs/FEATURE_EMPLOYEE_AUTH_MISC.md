@@ -8,19 +8,22 @@ entity — they have roles that determine feature access.
 | File | Purpose |
 | ---- | ------- |
 | `views/menu/EmployeePage.vue` | List all employees |
-| `views/menu/EmployeeAddPage.vue` | Create employee |
+| `views/menu/EmployeeAddPage.vue` | Create employee — with inline validation |
 | `views/menu/EmployeeDetailPage.vue` | Employee detail with access info |
-| `views/menu/EmployeeEditPage.vue` | Edit employee |
-| `stores/employee.js` | Pinia store |
+| `views/menu/EmployeeEditPage.vue` | Edit employee — with inline validation |
+| `stores/employee.js` | Pinia store — includes `isDirty` flag |
 | `api/employee.js` | API wrappers |
 
 ## Key Business Rules
-1. **Director-only** feature (middleware: `role:director`)
-2. Employee fields: fullname, branch, role, email, username, password
-3. Supports **temporary password** with one-time use and expiry
-4. Password reset by Director generates a temp password
-5. Employee's `role` field determines feature access
-6. Roles: Director, Marketing, Finance, Inventory Admin, Inventory Purchase, Service
+1. **Director-only** feature (middleware: `role:director`).
+2. Employee fields: fullname, branch, role, email, username, password.
+3. Supports **temporary password** with one-time use and expiry.
+4. Password reset by Director generates a temp password.
+5. Employee's `role` field determines feature access.
+6. Roles: Director, Marketing, Finance, Inventory Admin, Inventory Purchase, **Head Inventory**, Service.
+   - **Head Inventory** is a supervisor role with access to: Purchase Orders, all Spareparts sub-features (Borrow, Stock History, Sparepart Movement, Purchase), Back Order, and Delivery Order.
+7. **Inline validation** on Add and Edit forms: fullname, role, branch, email, username, and password (on add) are all validated client-side. Errors display beneath each invalid field. The store's `isDirty` flag prevents eager highlights on load.
+8. **Employee Groups** — employees may be grouped for batch operations or reporting. The employee detail page surfaces group membership.
 
 ## Auth Fields
 - `password` — bcrypt hashed permanent password

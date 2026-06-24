@@ -21,6 +21,9 @@ All stores use **Pinia Composition API** (setup stores with `defineStore` and
 | `back-order.js` | `back-order` | Back Orders |
 | `purchase.js` | `purchase` | Purchases (Buy) |
 | `sparepart.js` | `sparepart` | Sparepart catalog |
+| `borrow.js` | `borrow` | Borrow / Pinjaman |
+| `sparepart-movement.js` | `sparepart-movement` | Inter-branch stock transfers |
+| `stock-movement.js` | `stock-movement` | Stock History audit log |
 | `employee.js` | `employee` | Employee management |
 | `customer.js` | `customer` | Customer management |
 | `seller.js` | `seller` | Seller management |
@@ -79,6 +82,40 @@ export const useFeatureStore = defineStore('feature', () => {
   return { item, items, paginationData, isLoading, getAll, getById, $resetItem, $resetItems }
 })
 ```
+
+## `isDirty` — Inline Validation Flag
+
+Forms that have **client-side inline validation** add an `isDirty` reactive ref
+to their store. Its only purpose is to gate error highlights: errors are computed
+continuously but are shown **only after `isDirty` becomes `true`** (either when
+the user edits a field or presses Submit).
+
+```javascript
+// Pattern used in work-order.js, borrow.js, delivery-order.js, etc.
+const isDirty = ref(false)
+// returned as part of the store so the Vue component can set it
+return { ..., isDirty }
+```
+
+In the Vue component:
+```javascript
+const errors = computed(() => ({
+  worker: !form.worker ? 'Worker name is required' : '',
+}))
+
+// Set dirty on any edit
+watch(() => form, () => { store.isDirty = true }, { deep: true })
+
+// Set dirty + block if invalid on submit
+const submit = () => {
+  store.isDirty = true
+  if (Object.values(errors.value).some(Boolean)) return
+  // ... save
+}
+```
+
+See [`docs/INLINE_VALIDATION.md`](./INLINE_VALIDATION.md) for the complete
+pattern, list of validated forms, and guidance on adding validation to new forms.
 
 ## Data Mapping Convention
 

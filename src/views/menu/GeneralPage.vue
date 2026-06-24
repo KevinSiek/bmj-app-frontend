@@ -1,10 +1,10 @@
 <template>
   <div class="general-page">
-    <form @submit.prevent="action()" class="form">
+    <form @submit.prevent="action()" class="form" autocomplete="off">
       <div class="currency-converter background">
         <div class="input form-group col-12">
           <label for="">Currency Converter</label>
-          <input type="text" class="form-control mt-2" v-model="currencyConverter" placeholder="Currecy Converter">
+          <input type="text" class="form-control mt-2" v-model="currencyConverter" placeholder="Currecy Converter" autocomplete="off">
           <div class="description mt-2">
             <span>*This is currency converter for all of the sparepart</span>
           </div>
@@ -14,7 +14,7 @@
         <div class="input form-group col-12">
           <label for="">Discount</label>
           <div class="value mt-2">
-            <input type="text" class="form-control" v-model="discount" placeholder="Discount">
+            <input type="text" class="form-control" v-model="discount" placeholder="Discount" autocomplete="off">
             <div>%</div>
           </div>
           <div class="description mt-2">
@@ -26,7 +26,7 @@
         <div class="input form-group col-12">
           <label for="">VAT</label>
           <div class="value mt-2">
-            <input type="text" class="form-control" v-model="ppn" placeholder="VAT">
+            <input type="text" class="form-control" v-model="ppn" placeholder="VAT" autocomplete="off">
             <span>%</span>
           </div>
           <div class="description mt-2">

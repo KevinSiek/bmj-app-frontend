@@ -168,12 +168,15 @@ export const useBorrowStore = defineStore('borrow', () => {
     return borrowApi.doneBorrow(id)
   }
 
+  const isDirty = ref(false)
+
   async function cancelBorrow(id) {
     return borrowApi.cancelBorrow(id)
   }
 
   async function $resetBorrow() {
     borrow.value = mapBorrow()
+    isDirty.value = false
   }
 
   async function $resetBorrows() {
@@ -205,6 +208,7 @@ export const useBorrowStore = defineStore('borrow', () => {
     cancelBorrow,
     doneBorrow,
     $resetBorrow,
-    $resetBorrows
+    $resetBorrows,
+    isDirty
   }
 })

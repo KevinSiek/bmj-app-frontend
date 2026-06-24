@@ -159,3 +159,142 @@ export async function provisionApprovedQuotation(director) {
   if (create.status() !== 201) throw new Error(`provision: create quotation -> ${create.status()}: ${await create.text()}`);
   return (await create.json()).data.slug;
 }
+
+// ─── Role-Lifecycle Helpers ────────────────────────────────────────────────────
+//
+// Used by role-lifecycle-*.spec.js to provide fast API-direct provisioning and
+// a consistent loginAs() helper for switching roles in browser-driven tests.
+
+/**
+ * Seeded account credentials keyed by friendly role name.
+ * All passwords are 'password' (set by EmployeeSeeder).
+ */
+export const ACCOUNTS = {
+  director:         'director.jkt@bmj.com',
+  marketing:        'citra.k@bmj.com',
+  finance:          'fajar.n@bmj.com',
+  inventoryAdmin:   'eko.p@bmj.com',
+  inventoryPurchase:'indah.s@bmj.com',
+  headInventory:    'headinv.jkt@bmj.com',
+  service:          'hadi.s@bmj.com',
+};
+
+/**
+ * Return an API request context for a named seeded role.
+ * roleKey must be a key of ACCOUNTS.
+ */
+export async function apiContextForRole(playwright, roleKey) {
+  const email = ACCOUNTS[roleKey];
+  if (!email) throw new Error(`apiContextForRole: unknown roleKey '${roleKey}'`);
+  return apiContextFor(playwright, email);
+}
+
+/**
+ * Log in as a different user in a browser page.
+ * Clears localStorage first so the previous session token is gone.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} email
+ * @param {string} [password='password']
+ */
+export async function loginAs(page, email, password = 'password') {
+  await page.goto('/login');
+  await page.evaluate(() => localStorage.clear());
+  await page.fill('input[type="email"]', email);
+  await page.fill('input[type="password"]', password);
+  await page.click('button[type="submit"]');
+  await page.waitForURL('**/menu', { timeout: 20000 });
+}
+
+/**
+ * Provision a PO that is in "Ready" status (Quotation→approve→moveToPo→moveToPi→dpPaid→ready).
+ * All steps are API-direct (Director). Returns { poId, piId, quotationSlug }.
+ *
+ * @param {*} director - Director request context from apiContextFor()
+ * @param {'Spareparts'|'Service'} type - Quotation type
+ * @param {object} [opts]
+ * @param {number} [opts.qty=1] - Sparepart quantity (ignored for Service type)
+ * @param {string} [opts.sparepartSearch='E2E Guaranteed'] - Sparepart search term
+ */
+export async function provisionReadyPo(director, type = 'Spareparts', opts = {}) {
+  const { qty = 1, sparepartSearch = 'E2E Guaranteed' } = opts;
+  const suffix = `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+
+  let quotationPayload;
+  if (type === 'Spareparts') {
+    const sp = (await (await director.get(`/api/sparepart?search=${encodeURIComponent(sparepartSearch)}`)).json()).data.data[0];
+    if (!sp) throw new Error(`provisionReadyPo: sparepart '${sparepartSearch}' not found`);
+    quotationPayload = {
+      project: { type: 'Spareparts' },
+      customer: {
+        companyName: `PT Lifecycle ${suffix}`, address: 'Jl. Test', city: 'Jakarta',
+        province: 'DKI Jakarta', postalCode: '12345', office: '021-000', urban: 'U', subdistrict: 'S',
+      },
+      price: { amount: qty * 150000 },
+      spareparts: [{ sparepartId: sp.id, quantity: qty, unitPriceSell: 150000 }],
+    };
+  } else {
+    quotationPayload = {
+      project: { type: 'Service' },
+      customer: {
+        companyName: `PT Svc Lifecycle ${suffix}`, address: 'Jl. Service', city: 'Jakarta',
+        province: 'DKI Jakarta', postalCode: '12345', office: '021-000', urban: 'U', subdistrict: 'S',
+      },
+      price: { amount: 5000000 },
+      services: [{ service: 'E2E Service Work', quantity: 1, servicePrice: 5000000 }],
+    };
+  }
+
+  // 1. Create quotation
+  const createRes = await director.post('/api/quotation', { data: quotationPayload });
+  if (createRes.status() !== 201)
+    throw new Error(`provisionReadyPo: create quotation -> ${createRes.status()}: ${await createRes.text()}`);
+  const { slug, id: quotationId } = (await createRes.json()).data;
+
+  // 2. Approve
+  const approveRes = await director.post(`/api/quotation/approve/${slug}`, { data: { notes: 'auto-provision' } });
+  if (approveRes.status() !== 200)
+    throw new Error(`provisionReadyPo: approve -> ${approveRes.status()}: ${await approveRes.text()}`);
+
+  // 3. Move to PO
+  const poNumber = `PO-AUTO-${suffix}`;
+  const movRes = await director.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'auto-provision', poNumber } });
+  if (movRes.status() !== 200)
+    throw new Error(`provisionReadyPo: moveToPo -> ${movRes.status()}: ${await movRes.text()}`);
+  const poId = (await movRes.json()).data?.id;
+
+  // 4. Move to PI
+  const piRes = await director.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'auto-provision PI' } });
+  if (piRes.status() !== 200)
+    throw new Error(`provisionReadyPo: moveToPi -> ${piRes.status()}: ${await piRes.text()}`);
+  const piId = (await piRes.json()).data?.id;
+
+  // 5. DP Paid (makes PO eligible for Ready)
+  const dpRes = await director.post(`/api/proforma-invoice/dpPaid/${piId}`);
+  if (dpRes.status() !== 200)
+    throw new Error(`provisionReadyPo: dpPaid -> ${dpRes.status()}: ${await dpRes.text()}`);
+
+  // 6. Ready
+  const readyRes = await director.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'auto-provision ready' } });
+  if (readyRes.status() !== 200)
+    throw new Error(`provisionReadyPo: ready -> ${readyRes.status()}: ${await readyRes.text()}`);
+
+  return { poId, piId, quotationSlug: slug, quotationId };
+}
+
+/**
+ * Read a sparepart's stock quantity for a specific branch (by branch name contains match).
+ * @param {*} api - Any authenticated API context
+ * @param {number|string} sparepartId
+ * @param {string} branchNameContains - e.g. 'jakarta' or 'semarang'
+ * @returns {Promise<number>}
+ */
+export async function getStockForBranch(api, sparepartId, branchNameContains = 'jakarta') {
+  const res = await api.get(`/api/sparepart/${sparepartId}`);
+  const data = (await res.json()).data;
+  const stocks = data.stocks ?? data.total_unit ?? data.branch_stocks ?? [];
+  const branch = (Array.isArray(stocks) ? stocks : []).find(
+    (s) => (s.name ?? s.branch ?? '').toLowerCase().includes(branchNameContains.toLowerCase())
+  );
+  return Number(branch?.stock ?? branch?.quantity ?? 0);
+}

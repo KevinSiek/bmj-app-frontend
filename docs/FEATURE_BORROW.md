@@ -12,11 +12,12 @@ be justified by a covering Spareparts PO.
 | File | Purpose |
 | ---- | ------- |
 | `views/menu/BorrowPage.vue` | List all borrows |
-| `views/menu/BorrowAddPage.vue` | Create/edit: Service PO picker + sparepart lines |
+| `views/menu/BorrowAddPage.vue` | Create borrow: Service PO picker + sparepart lines (with inline validation) |
 | `views/menu/BorrowDetailPage.vue` | Lifecycle buttons, reconciliation, handover PDF |
-| `components/borrow/PoSelect.vue` | Searchable + load-more PO picker (Service / Spareparts) |
+| `views/menu/BorrowReturnPage.vue` | Marketing initiates return — enter returned quantities per line (with inline validation) |
+| `components/borrow/PoSelect.vue` | Searchable + load-more PO picker; accepts `isInvalid` prop for dynamic invalid styling |
 | `utils/pdf/borrow.js` | Handover PDF (Yang Menyerahkan / Yang Menerima) |
-| `stores/borrow.js` | Pinia store |
+| `stores/borrow.js` | Pinia store — includes `isDirty` flag for inline validation |
 | `api/borrow.js` | API wrappers |
 
 ## Lifecycle & roles
@@ -39,6 +40,7 @@ Director bypasses role gating everywhere (backend `RoleMiddleware`).
 3. Once Approved, Marketing can no longer cancel or edit.
 4. **Print PDF** is repeatable; it collects the receiver name ("Yang Menerima") via the notes modal, and stamps the logged-in user as "Yang Menyerahkan".
 5. At reconciliation, each line's Quantity Return is 0..borrowed. If any line is short, a Spareparts PO that covers the missing quantities is required before Done.
+6. **Inline validation** — both Add and Return forms validate fields client-side before submission: Service PO selection, notes marketing (required), sparepart lines (must be non-empty, qty > 0), and returned quantities (0 ≤ qty ≤ borrowed). Errors appear beneath each invalid control. The store's `isDirty` flag suppresses eager highlights on initial load.
 
 ## API Endpoints
 | Function | Method | Endpoint |

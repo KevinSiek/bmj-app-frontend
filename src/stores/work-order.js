@@ -105,8 +105,11 @@ export const useWorkOrderStore = defineStore('work-order', () => {
     await workOrderApi.done(id)
   }
 
+  const isDirty = ref(false)
+
   async function $resetWorkOrder () {
     workOrder.value = mapWorkOrder()
+    isDirty.value = false
   }
 
   async function $resetWorkOrders() {
@@ -127,6 +130,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
     process,
     done,
     $resetWorkOrder,
-    $resetWorkOrders
+    $resetWorkOrders,
+    isDirty
   }
 })

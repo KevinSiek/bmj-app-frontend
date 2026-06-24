@@ -29,6 +29,37 @@ export const useSparepartStore = defineStore('sparepart', () => {
     }
   }
 
+  const isDirty = ref(false)
+
+  function validateSparepart() {
+    const sp = sparepart.value
+    if (!sp) return 'Sparepart data is empty.'
+    if (!sp.sparepartName?.trim()) return 'Sparepart Name is required.'
+    if (!sp.sparepartNumber?.trim()) return 'Part Number is required.'
+    if (sp.unitPriceBuy === '' || isNaN(Number(sp.unitPriceBuy)) || Number(sp.unitPriceBuy) < 1) return 'Buy price must be at least 1.'
+    if (sp.unitPriceSell === '' || isNaN(Number(sp.unitPriceSell)) || Number(sp.unitPriceSell) < 1) return 'Selling price must be at least 1.'
+
+    for (let i = 0; i < sp.totalUnit.length; i++) {
+      const b = sp.totalUnit[i]
+      if (b.stock === '' || isNaN(Number(b.stock)) || Number(b.stock) < 0) {
+        return `Stock for branch ${b.name} must be a number greater than or equal to 0.`
+      }
+    }
+
+    for (let i = 0; i < sp.unitPriceSeller.length; i++) {
+      const s = sp.unitPriceSeller[i]
+      const idxStr = `Seller #${i + 1}`
+      if (!s.seller) return `${idxStr}: Seller Name is required.`
+      if (s.price === '' || isNaN(Number(s.price)) || Number(s.price) < 1) {
+        return `${idxStr}: Purchase Price must be at least 1.`
+      }
+      if (s.quantity === '' || isNaN(Number(s.quantity)) || Number(s.quantity) < 1 || !Number.isInteger(Number(s.quantity))) {
+        return `${idxStr}: Quantity must be an integer greater than or equal to 1.`
+      }
+    }
+    return null
+  }
+
   async function getAllSpareparts(param) {
     isLoading.value = true
     const { data } = await sparepartApi.getAllSparepart(param)
@@ -64,6 +95,7 @@ export const useSparepartStore = defineStore('sparepart', () => {
 
   async function $resetSparepart() {
     sparepart.value = mapSparepart()
+    isDirty.value = false
   }
 
   async function $resetSpareparts() {
@@ -90,6 +122,8 @@ export const useSparepartStore = defineStore('sparepart', () => {
     addSparepart,
     uploadSparepartFile,
     $resetSparepart,
-    $resetSpareparts
+    $resetSpareparts,
+    validateSparepart,
+    isDirty
   }
 })

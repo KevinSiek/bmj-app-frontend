@@ -58,7 +58,7 @@ const processQuotation = async (notes, poNumber) => {
   try {
     isProcessing.value = true
     await quotationStore.processQuotation(route.params.id, notes, poNumber)
-    router.push(menuConfig.purchase_order)
+    router.push(menuConfig.purchase_order.path)
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {

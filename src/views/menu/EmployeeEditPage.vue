@@ -1,25 +1,29 @@
 <template>
   <div class="contain background shadow">
-    <form @submit.prevent="action()" class="row form">
+    <form @submit.prevent="action()" class="row form" autocomplete="off">
       <div class="input form-group col-12">
         <label for="name">FullName</label><br>
-        <input type="text" class="form-control mt-2" v-model="employee.fullname" placeholder="Fullname">
+        <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.fullname }" v-model="employee.fullname" placeholder="Fullname" autocomplete="off">
+        <div class="invalid-feedback">{{ errors.fullname }}</div>
       </div>
       <div class="input form-group col-12">
         <label for="username">Username</label><br>
-        <input type="text" class="form-control mt-2" v-model="employee.username" placeholder="Username">
+        <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.username }" v-model="employee.username" placeholder="Username" autocomplete="off">
+        <div class="invalid-feedback">{{ errors.username }}</div>
       </div>
       <div class="input form-group col-12">
         <label for="email">Email</label><br>
-        <input type="email" class="form-control mt-2" v-model="employee.email" placeholder="Email">
+        <input type="email" class="form-control mt-2" :class="{ 'is-invalid': errors.email }" v-model="employee.email" placeholder="Email" autocomplete="off">
+        <div class="invalid-feedback">{{ errors.email }}</div>
       </div>
       <div class="input form-group col-12">
         <label for="role">Role</label><br>
-        <select class="form-select mt-2" id="role" v-model="employee.role">
+        <select class="form-select mt-2" :class="{ 'is-invalid': errors.role }" id="role" v-model="employee.role">
           <option v-for="(role, index) in roles" :key="index" :value="role">
             {{ role }}
           </option>
         </select>
+        <div class="invalid-feedback">{{ errors.role }}</div>
       </div>
       <div class="input form-group col-12">
         <label>Group</label><br>
@@ -31,12 +35,13 @@
       </div>
       <div class="input form-group col-12">
         <label for="branch">Branch</label><br>
-        <select class="form-select mt-2" id="branch" v-model="employee.branch">
+        <select class="form-select mt-2" :class="{ 'is-invalid': errors.branch }" id="branch" v-model="employee.branch">
           <option value="" disabled selected>Select Branch</option>
           <option v-for="(branch, index) in common.branch" :key="index" :value="branch">
             {{ branch }}
           </option>
         </select>
+        <div class="invalid-feedback">{{ errors.branch }}</div>
       </div>
     </form>
   </div>
@@ -52,7 +57,7 @@ import { menuMapping as menuConfig } from '@/config'
 import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, ref, onMounted } from 'vue'
+import { computed, onBeforeMount, ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { common } from '@/config'
 
@@ -78,18 +83,44 @@ const roles = [
   common.role.service
 ]
 
+const errors = computed(() => {
+  const errs = {}
+  if (!employeeStore.isDirty) return errs
+  const e = employee.value
+  if (!e) return errs
+
+  if (!e.fullname?.trim()) errs.fullname = 'Full Name is required.'
+  if (!e.username?.trim()) errs.username = 'Username is required.'
+  if (!e.email?.trim()) {
+    errs.email = 'Email is required.'
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(e.email.trim())) {
+      errs.email = 'Email format is invalid.'
+    }
+  }
+  if (!e.role) errs.role = 'Role is required.'
+  if (!e.branch) errs.branch = 'Branch is required.'
+  return errs
+})
+
+watch(
+  () => employee.value,
+  (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null) {
+      employeeStore.isDirty = true
+    }
+  },
+  { deep: true }
+)
+
 onBeforeMount(() => {
   if (!employee.value) employeeStore.$resetEmployee()
   employeeStore.getGroups()
 })
 onMounted(async () => {
   await employeeStore.getEmployee(route.params.id)
-  if (employee.value.mustChangePassword && employee.value.tempPassword) {
-    isShowPasswordInputs.value = true
-    employee.value.password = employee.value.tempPassword
-  }
 })
-
 
 const updateEmployee = async () => {
   if (isProcessing.value) return
@@ -105,6 +136,11 @@ const updateEmployee = async () => {
 }
 
 const updateEmployeeConfirmation = () => {
+  const errorMsg = employeeStore.validateEmployee(true)
+  if (errorMsg) {
+    employeeStore.isDirty = true
+    return
+  }
   modalStore.openConfirmationModal('to Update this Employee ?', 'Update Employee Success', updateEmployee)
 }
 

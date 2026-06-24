@@ -1,6 +1,6 @@
 <template>
   <div class="contain background shadow">
-    <form class="row form">
+    <form class="row form" autocomplete="off">
       <div class="upper my-2">
         <div class="title">Project</div>
         <div class="data">
@@ -8,14 +8,14 @@
             <div class="input form-group col-12">
               <label for="">No Proforma Invoice</label><br>
               <input type="text" class="form-control mt-2" v-model="proformaInvoice.project.proformaInvoiceNumber"
-                placeholder="No Proforma Invoice" disabled>
+                placeholder="No Proforma Invoice" disabled autocomplete="off">
             </div>
           </div>
           <div class="right">
             <div class="input form-group col-12">
               <label for="">Project Type</label><br>
               <input type="text" class="form-control mt-2" v-model="proformaInvoice.project.type" placeholder="Type"
-                disabled>
+                disabled autocomplete="off">
             </div>
           </div>
         </div>
@@ -27,24 +27,24 @@
             <div class="input form-group col-12">
               <label for="">Company Name</label><br>
               <input type="text" class="form-control mt-2" v-model="proformaInvoice.customer.companyName"
-                placeholder="Company Name" disabled>
+                placeholder="Company Name" disabled autocomplete="off">
             </div>
             <div class="input form-group col-12">
               <label for="">Address</label><br>
               <input type="text" class="form-control mt-2" v-model="proformaInvoice.customer.address"
-                placeholder="Address" disabled>
+                placeholder="Address" disabled autocomplete="off">
             </div>
             <div class="input form-group col-12">
               <div class="row">
                 <div class="col-6">
                   <label for="">City</label><br>
                   <input type="text" class="form-control mt-2" v-model="proformaInvoice.customer.city"
-                    placeholder="City" disabled>
+                    placeholder="City" disabled autocomplete="off">
                 </div>
                 <div class="col-6">
                   <label for="">Province</label><br>
                   <input type="text" class="form-control mt-2" v-model="proformaInvoice.customer.province"
-                    placeholder="Province" disabled>
+                    placeholder="Province" disabled autocomplete="off">
                 </div>
               </div>
             </div>
@@ -53,26 +53,26 @@
             <div class="input form-group col-12">
               <label for="">Office</label><br>
               <input type="text" class="form-control mt-2" v-model="proformaInvoice.customer.office"
-                placeholder="Office" disabled>
+                placeholder="Office" disabled autocomplete="off">
             </div>
             <div class="input form-group col-12">
               <div class="row">
                 <div class="col-6">
                   <label for="">Urban</label><br>
                   <input type="text" class="form-control mt-2" v-model="proformaInvoice.customer.urban"
-                    placeholder="Urban" disabled>
+                    placeholder="Urban" disabled autocomplete="off">
                 </div>
                 <div class="col-6">
                   <label for="">Subdistrict</label><br>
                   <input type="text" class="form-control mt-2" v-model="proformaInvoice.customer.subdistrict"
-                    placeholder="Subdistrict" disabled>
+                    placeholder="Subdistrict" disabled autocomplete="off">
                 </div>
               </div>
             </div>
             <div class="input form-group col-12">
               <label for="">Postal Code</label><br>
               <input type="text" class="form-control mt-2" v-model="proformaInvoice.customer.postalCode"
-                placeholder="Postal Code" disabled>
+                placeholder="Postal Code" disabled autocomplete="off">
             </div>
           </div>
         </div>
@@ -98,8 +98,8 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceSell" /></td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>
@@ -107,7 +107,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.amount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.amount" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -116,7 +116,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.discount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.discount" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -125,7 +125,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.subtotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.subtotal" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -134,7 +134,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.advancePayment) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.advancePayment" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -143,7 +143,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.total) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.total" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -152,7 +152,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.ppn) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.ppn" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -161,7 +161,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.totalAmount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.totalAmount" /></td>
                 <td class="table-col table-name"></td>
               </tr>
             </tbody>
@@ -172,7 +172,7 @@
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="proformaInvoice.notes" disabled></textarea>
+            v-model="proformaInvoice.notes" disabled autocomplete="off"></textarea>
         </div>
       </div>
     </form>
@@ -181,9 +181,12 @@
     <div class="title">
       Advance Payment:
     </div>
-    <div class="value">
-      <input type="text" class="form-control" v-model="proformaInvoice.downPayment" placeholder="Advance Payment">
-      %
+    <div class="value flex-column align-items-end">
+      <div class="d-flex align-items-center">
+        <input type="text" class="form-control" :class="{ 'is-invalid': errors.downPayment }" v-model="proformaInvoice.downPayment" placeholder="Advance Payment" autocomplete="off">
+        <span class="ms-1">%</span>
+      </div>
+      <div class="invalid-feedback d-block text-end mt-1" v-if="errors.downPayment">{{ errors.downPayment }}</div>
     </div>
   </div>
   <div class="button">
@@ -201,9 +204,10 @@ import { menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { formatCurrency } from '@/utils/form-util'
+import PriceDisplay from '@/components/PriceDisplay.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -213,6 +217,33 @@ const modalStore = useModalStore()
 const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
 
 const isProcessing = ref(false)
+
+const errors = computed(() => {
+  const errs = {}
+  if (!proformaInvoiceStore.isDirty) return errs
+  const pi = proformaInvoice.value
+  if (!pi) return errs
+
+  const dp = Number(pi.downPayment)
+  if (pi.downPayment === '' || pi.downPayment === null || pi.downPayment === undefined) {
+    errs.downPayment = 'Advance Payment is required.'
+  } else if (isNaN(dp)) {
+    errs.downPayment = 'Advance Payment must be a number.'
+  } else if (dp < 0 || dp > 100) {
+    errs.downPayment = 'Advance Payment must be between 0 and 100.'
+  }
+  return errs
+})
+
+watch(
+  () => proformaInvoice.value,
+  (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null) {
+      proformaInvoiceStore.isDirty = true
+    }
+  },
+  { deep: true }
+)
 
 onBeforeMount(() => {
   if (!proformaInvoice.value) proformaInvoiceStore.$resetProformaInvoice()
@@ -238,6 +269,10 @@ const updatePi = async () => {
   }
 }
 const updatePiConfirmation = () => {
+  proformaInvoiceStore.isDirty = true
+  if (Object.keys(errors.value).length > 0) {
+    return
+  }
   modalStore.openConfirmationModal('to Update Proforma Invoice', 'Update PI Success', updatePi)
 }
 </script>

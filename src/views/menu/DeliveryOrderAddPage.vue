@@ -1,51 +1,55 @@
 <template>
   <div class="contain background shadow">
-    <form class="row form">
+    <form class="row form" autocomplete="off">
       <div class="upper my-2">
         <div class="title">Delivery Order</div>
         <div class="data">
           <div class="left">
             <div class="input form-group col-12">
               <label for="">Date</label><br>
-              <input type="date" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.deliveryOrderDate"
-                placeholder="No">
+              <input type="date" class="form-control mt-2" :class="{ 'is-invalid': errors.deliveryOrderDate }" v-model="deliveryOrder.deliveryOrder.deliveryOrderDate"
+                placeholder="No" autocomplete="off">
+              <div class="invalid-feedback">{{ errors.deliveryOrderDate }}</div>
             </div>
             <div class="input form-group col-12">
               <label for="">Received by</label><br>
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.receivedBy"
-                placeholder="Received by">
+                placeholder="Received by" autocomplete="off">
             </div>
             <div class="input form-group col-12">
               <label for="">Picked by</label><br>
-              <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.pickedBy"
-                placeholder="Picked by">
+              <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.pickedBy }" v-model="deliveryOrder.deliveryOrder.pickedBy"
+                placeholder="Picked by" autocomplete="off">
+              <div class="invalid-feedback">{{ errors.pickedBy }}</div>
             </div>
             <div class="input form-group col-12">
               <label for="">Prepared by</label><br>
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.preparedBy"
-                placeholder="Prepared by">
+                placeholder="Prepared by" autocomplete="off">
             </div>
           </div>
           <div class="right">
             <div class="input form-group col-12">
               <label for="">Ship Mode</label><br>
-              <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.shipMode"
-                placeholder="Ship Mode">
+              <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.shipMode }" v-model="deliveryOrder.deliveryOrder.shipMode"
+                placeholder="Ship Mode" autocomplete="off">
+              <div class="invalid-feedback">{{ errors.shipMode }}</div>
             </div>
             <div class="input form-group col-12">
               <label for="">Order Type</label><br>
-              <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.orderType"
-                placeholder="Order Type">
+              <input type="text" class="form-control mt-2" :class="{ 'is-invalid': errors.orderType }" v-model="deliveryOrder.deliveryOrder.orderType"
+                placeholder="Order Type" autocomplete="off">
+              <div class="invalid-feedback">{{ errors.orderType }}</div>
             </div>
             <div class="input form-group col-12">
               <label for="">Delivery</label><br>
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.delivery"
-                placeholder="Delivery">
+                placeholder="Delivery" autocomplete="off">
             </div>
             <div class="input form-group col-12">
               <label for="">NPWP</label><br>
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.npwp"
-                placeholder="NPWP">
+                placeholder="NPWP" autocomplete="off">
             </div>
           </div>
         </div>
@@ -55,7 +59,7 @@
           <div class="title">Notes</div>
           <div class="inputform-floating">
             <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-              v-model="deliveryOrder.notes"></textarea>
+              v-model="deliveryOrder.notes" autocomplete="off"></textarea>
           </div>
         </div>
       </div>
@@ -77,7 +81,7 @@ import { useModalStore } from '@/stores/modal'
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { useDeliveryOrderStore } from '@/stores/delivery-order'
 import { storeToRefs } from 'pinia'
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { onBeforeMount, onMounted, ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { menuMapping as menuConfig } from '@/config'
 
@@ -91,6 +95,37 @@ const { deliveryOrder } = storeToRefs(deliveryOrderStore)
 const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 
 const isProcessing = ref(false)
+
+const errors = computed(() => {
+  const errs = {}
+  if (!deliveryOrderStore.isDirty) return errs
+  const doData = deliveryOrder.value?.deliveryOrder
+  if (!doData) return errs
+
+  if (!doData.deliveryOrderDate) {
+    errs.deliveryOrderDate = 'Date is required.'
+  }
+  if (!doData.pickedBy?.trim()) {
+    errs.pickedBy = 'Picked by is required.'
+  }
+  if (!doData.shipMode?.trim()) {
+    errs.shipMode = 'Ship Mode is required.'
+  }
+  if (!doData.orderType?.trim()) {
+    errs.orderType = 'Order Type is required.'
+  }
+  return errs
+})
+
+watch(
+  () => deliveryOrder.value,
+  (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null) {
+      deliveryOrderStore.isDirty = true
+    }
+  },
+  { deep: true }
+)
 
 onBeforeMount(() => {
   deliveryOrderStore.$resetDeliveryOrder()
@@ -109,6 +144,10 @@ const doRelease = async () => {
   }
 }
 const doReleaseConfirmation = () => {
+  deliveryOrderStore.isDirty = true
+  if (Object.keys(errors.value).length > 0) {
+    return
+  }
   modalStore.openConfirmationModal('to release this Purchase Order?', 'Releasing', doRelease)
 }
 
