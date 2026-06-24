@@ -98,7 +98,7 @@ const createPdf = async (data) => {
               { text: 'PART NAME', style: 'tableHeader' },
               { text: 'PART NO.', style: 'tableHeader' },
               { text: 'ORDER', style: 'tableHeader' },
-              { text: 'DELIVERED', style: 'tableHeader' },
+              { text: 'DELIVER', style: 'tableHeader' },
               { text: 'BACK ORDER', style: 'tableHeader' },
             ],
             ...(spareparts || []).map((item, idx) => [

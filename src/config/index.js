@@ -404,7 +404,8 @@ const accessFeature = {
         ]
       },
       'back_order',
-      'delivery_order'
+      'delivery_order',
+      'work_order'
     ]
   },
   'inventory purchase': {
@@ -439,7 +440,8 @@ const accessFeature = {
         ]
       },
       'back_order',
-      'delivery_order'
+      'delivery_order',
+      'work_order'
     ]
   },
   finance: {

@@ -111,7 +111,7 @@ const toWords = new ToWords({
 const createPdf = async (data) => {
   const { project, customer, price, downPayment, spareparts, services } = data
 
-  const totalAmountWord = toWords.convert(price.totalAmount)
+  const totalAmountWord = toWords.convert(Math.ceil(price.totalAmount), { ignoreDecimal: true })
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
@@ -665,7 +665,7 @@ const createPdf = async (data) => {
         text: '# ' + totalAmountWord + ' #',
         alignment: 'center',
         bold: true,
-        margin: [0, 20, 0, 0]
+        margin: [0, 40, 0, 100]
       },
 
       // Signature rows
@@ -701,7 +701,7 @@ const createPdf = async (data) => {
               { text: 'SR. PRAWESTI', bold: true, alignment: 'center', decoration: 'underline' },
               { text: 'FINANCE', alignment: 'center' }
             ],
-            margin: [0, 90, 0, 0]
+            margin: [0, 110, 0, 0]
           },
         ]
       },

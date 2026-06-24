@@ -43,7 +43,8 @@
                     disabled>
                 </div>
                 <div class="col-3">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.return" @wheel.prevent>
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.return"
+                    @wheel.prevent>
                 </div>
               </div>
             </div>
@@ -155,7 +156,7 @@ onMounted(async () => {
 const returnedSparepart = ref([])
 const listSparepart = computed(() => {
   return purchaseOrder.value.spareparts.map(sparepart => ({
-    id: sparepart.sparepartId,  // Add sparepart ID
+    id: sparepart.id,  // Add sparepart ID
     sparepartName: sparepart.sparepartName,
     sparepartNumber: sparepart.sparepartNumber,
     quantity: sparepart.quantity,

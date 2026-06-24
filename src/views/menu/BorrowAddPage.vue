@@ -4,7 +4,9 @@
       <div class="upper my-2 row">
         <div class="input form-group col-6">
           <div class="title">Service PO</div>
-          <PoSelect type="Service" placeholder="Search Service PO number" @select="selectPurchaseOrder" />
+          <PoSelect type="Service" placeholder="Search Service PO number"
+            :model-value="borrow?.purchaseOrder?.poNumber || borrow?.purchaseOrder?.purchaseOrderNumber"
+            @select="selectPurchaseOrder" />
         </div>
         <div class="input form-group col-6">
           <div class="title">Work Order</div>
@@ -29,7 +31,7 @@
           </div>
         </div>
         <div class="input form-group col-12 mx-3">
-          <div v-for="(sparepart, sparepartIndex) in borrow.spareparts" :key="sparepartIndex" class="list row">
+          <div v-for="(sparepart, sparepartIndex) in borrow?.spareparts" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
                 <div class="col-3">
@@ -55,11 +57,12 @@
                 </div>
                 <div class="col-3">
                   <input type="text" class="form-control mt-2"
-                    :value="isSearching ? 'Loading...' : (sparepart.totalUnit?.[user?.branch?.name] ?? '')"
+                    :value="isSearching ? 'Loading...' : (sparepart.totalUnit?.[user?.branch?.name] ?? sparepart.stockInBranch)"
                     :placeholder="isSearching ? 'Loading...' : 'Stock'" disabled>
                 </div>
                 <div class="col-3">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity" @wheel.prevent>
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
+                    @wheel.prevent>
                 </div>
               </div>
             </div>
@@ -125,11 +128,10 @@ const workOrderLabel = computed(() => {
 })
 
 onBeforeMount(async () => {
+  borrowStore.$resetBorrow()
   borrowStore.resetPurchaseOrderOptions()
   if (isEdit.value) {
     await borrowStore.getBorrow(route.params.id)
-  } else {
-    borrowStore.$resetBorrow()
   }
 })
 

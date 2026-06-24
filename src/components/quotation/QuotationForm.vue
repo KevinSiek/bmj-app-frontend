@@ -263,10 +263,10 @@
                   </li>
                 </ul>
               </div>
-
               <div class="col-2">
-                <input type="number" class="form-control mt-2" placeholder="Stock" v-model="sparepart.stock"
-                  @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)" disabled>
+                <input type="number" class="form-control mt-2" placeholder="Stock"
+                  :value="sparepart.totalUnit?.[quotation.project.branch] ?? 0" @wheel.prevent
+                  @input="updateSparepartCalculation(sparepartIndex, sparepart)" disabled>
               </div>
               <div class="col-2">
                 <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
@@ -586,7 +586,7 @@ const onSelect = (index, purchaseData, sparepartData) => {
     sparepartNumber: sparepartData.sparepartNumber || sparepartData.sparepart_number || sparepartData.part_number,
     unitPriceSell: sparepartData.unitPriceSell || sparepartData.unit_price_sell || sparepartData.selling_price || purchaseData.unitPriceSell || 0,
     quantity: purchaseData.quantity || 1,
-    stock: sparepartData.totalUnit?.[quotation.value.project.branch] || 0
+    totalUnit: sparepartData.totalUnit || sparepartData.stock || {}
   }
 
   // Calculate total price

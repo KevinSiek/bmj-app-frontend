@@ -363,7 +363,8 @@ const router = createRouter({
               component: PurchaseReviewPage,
               meta: {
                 useBack: true,
-                useTrack: false
+                useTrack: false,
+                allowedRoles: ['Director', 'Head Inventory']
               }
             },
             {
@@ -381,7 +382,8 @@ const router = createRouter({
               component: PurchaseReviewDetailPage,
               meta: {
                 useBack: true,
-                useTrack: false
+                useTrack: false,
+                allowedRoles: ['Director', 'Head Inventory']
               }
             },
           ]

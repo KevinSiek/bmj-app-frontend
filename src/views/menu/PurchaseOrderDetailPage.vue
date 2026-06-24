@@ -347,7 +347,7 @@ const isShowFullPaid = computed(() =>
   purchaseOrder.value.proformaInvoice.isDpPaid &&
   !purchaseOrder.value.proformaInvoice.isFullPaid
 )
-const isShowReady = computed(() => (isRoleInventoryAdmin.value || isRoleDirector.value) &&
+const isShowReady = computed(() => (isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.ready)
 )
 const isShowCreatePi = computed(() =>
@@ -355,7 +355,7 @@ const isShowCreatePi = computed(() =>
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
 const isShowRelease = computed(() =>
-  (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
+  (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
   purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.release)

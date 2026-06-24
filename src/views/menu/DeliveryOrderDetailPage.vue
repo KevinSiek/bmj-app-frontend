@@ -207,17 +207,17 @@ const trackStore = useTrackStore()
 const modalStore = useModalStore()
 
 const { deliveryOrder } = storeToRefs(deliveryOrderStore)
-const { isRoleDirector, isRoleInventoryAdmin, isRoleService } = useRole()
+const { isRoleDirector, isRoleInventoryAdmin, isRoleHeadInventory } = useRole()
 
 const isProcessing = ref(false)
 
 const isShowDone = computed(() =>
-  (isRoleInventoryAdmin.value || isRoleService.value || isRoleDirector.value) &&
+  (isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value) &&
   deliveryOrder.value.currentStatus === common.status.work_order.on_progress
 )
 
 const isShowProcess = computed(() =>
-  (isRoleInventoryAdmin.value || isRoleService.value || isRoleDirector.value) &&
+  (isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value) &&
   deliveryOrder.value.currentStatus === common.status.work_order.wait_on_progress
 )
 

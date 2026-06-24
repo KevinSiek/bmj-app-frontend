@@ -54,6 +54,9 @@ export const useQuotationStore = defineStore('quotation', () => {
         quantity: sparepart?.quantity || 0,
         unitPriceSell: sparepart?.unit_price_sell || 0,
         totalPrice: sparepart?.total_price || 0,
+        totalUnit: Object.fromEntries(
+          (sparepart?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
+        ),
         stock: sparepart?.stock || ''
       })),
       services: (data?.services || []).map(service => ({
@@ -154,7 +157,6 @@ export const useQuotationStore = defineStore('quotation', () => {
 
   async function getQuotation(id) {
     const { data } = await quotationApi.getQuotationyId(id)
-    console.log('GET QUOTATION', data)
     quotation.value = mapQuotation(data)
   }
 

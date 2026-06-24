@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBorrowStore } from '@/stores/borrow'
 import debounce from '@/utils/debouncer'
@@ -38,10 +38,11 @@ const props = defineProps({
   // 'Service' (request link) or 'Spareparts' (reconciliation).
   type: { type: String, required: true },
   placeholder: { type: String, default: 'Search purchase order' },
-  disabled: { type: Boolean, default: false }
+  disabled: { type: Boolean, default: false },
+  modelValue: { type: String, default: '' }
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'update:modelValue'])
 
 const borrowStore = useBorrowStore()
 const { poOptions, poOptionsPage, poOptionsLastPage } = storeToRefs(borrowStore)
@@ -62,7 +63,12 @@ const loadMore = () => fetch(poOptionsPage.value + 1)
 const select = (po) => {
   searchText.value = po.poNumber || po.purchaseOrderNumber
   emit('select', po)
+  emit('update:modelValue', searchText.value)
 }
+
+watch(() => props.modelValue, (newVal) => {
+  searchText.value = newVal || ''
+}, { immediate: true })
 
 // Prime the list on first focus so the dropdown isn't empty before typing.
 fetch(1)

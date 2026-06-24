@@ -86,12 +86,12 @@
               placeholder="Down Payment" disabled>
           </div>
           <div class="input form-group col-12">
-            <label for="">Sub Total</label><br>
+            <label for="">Sub Total {{ invoice.invoice.type && `(${invoice.invoice.type})` }}</label><br>
             <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.subTotal)"
               placeholder="Sub Total" disabled>
           </div>
           <div class="input form-group col-12">
-            <label for="">Grand Total</label><br>
+            <label for="">Grand Total {{ invoice.invoice.type && `(${invoice.invoice.type})` }}</label><br>
             <input type="text" class="form-control mt-2" :value="formatCurrency(invoice.invoice.grandTotal)"
               placeholder="Grand Total" disabled>
           </div>
