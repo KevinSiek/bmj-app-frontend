@@ -207,8 +207,8 @@ const approveConfirmation = () =>
 
 const rejectPrompt = () =>
   modalStore.openNotesModal('Reject', async () => {
-    await runAction(() => borrowStore.rejectBorrow(route.params.id, modalStore.notes))
-    modalStore.closeModal()
+    modalStore.openConfirmationModal('to Reject this Borrow ?', 'Reject Success',
+      () => runAction(() => borrowStore.rejectBorrow(route.params.id, modalStore.notes)))
   })
 
 // --- Inventory: handover ---

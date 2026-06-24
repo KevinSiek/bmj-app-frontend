@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="contain background shadow">
     <QuotationForm :type="common.form.type.view" />
   </div>
@@ -67,8 +67,9 @@ const approveQuotation = async (notes) => {
 }
 const approveQuotationConfirmation = () => {
   modalStore.openNotesModal('Approve', async () => {
-    await approveQuotation(modalStore.notes)
-    modalStore.closeModal()
+    modalStore.openConfirmationModal('to approve this quotation ?', 'Approve Quotation Success', async () => {
+      await approveQuotation(modalStore.notes)
+    })
   }, { label: 'Notes (optional)' })
 }
 
@@ -86,8 +87,9 @@ const needChangeQuotation = async (notes) => {
 }
 const needChangeQuotationConfirmation = () => {
   modalStore.openNotesModal('Need Change', async () => {
-    await needChangeQuotation(modalStore.notes)
-    modalStore.closeModal()
+    modalStore.openConfirmationModal('to mark this quotation as need change ?', 'Need Change Quotation Success', async () => {
+      await needChangeQuotation(modalStore.notes)
+    })
   })
 }
 
@@ -105,8 +107,9 @@ const rejectQuotation = async (notes) => {
 }
 const rejectQuotationConfirmation = () => {
   modalStore.openNotesModal('Reject', async () => {
-    await rejectQuotation(modalStore.notes)
-    modalStore.closeModal()
+    modalStore.openConfirmationModal('to reject this quotation ?', 'Reject Quotation Success', async () => {
+      await rejectQuotation(modalStore.notes)
+    })
   })
 }
 </script>

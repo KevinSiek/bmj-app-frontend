@@ -553,7 +553,7 @@ onBeforeMount(() => {
   if (!quotation.value) quotationStore.$resetQuotation()
 })
 watch([user, quotation], ([userVal, quotationVal]) => {
-  if (isRoleMarketing.value && quotationVal?.project && userVal && userVal?.branch) {
+  if (isRoleMarketing.value && quotationVal?.project && !quotationVal?.project.branch && userVal && userVal?.branch) {
     quotation.value.project.branch = userVal.branch.name
   }
 }, { immediate: true })
