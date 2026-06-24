@@ -31,7 +31,7 @@ const createPdf = async (data) => {
       body: [
         ['NO:', data.backOrderNumber || ''],
         ['DATE:', data.date || ''],
-        ['CUST. PO NO.:', purchaseOrder?.purchaseOrderNumber || ''],
+        ['CUST. PO NO.:', purchaseOrder?.poNumber || ''],
       ],
     },
     layout: {

@@ -24,8 +24,8 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
         npwp: data?.delivery_order?.npwp || ''
       },
       purchaseOrder: {
-        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '',
-        poNumber: data?.purchase_order?.po_number || '',
+        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '', // This is for Internal Request Number
+        poNumber: data?.purchase_order?.po_number || '', // This is PO From Customer
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
         type: data?.purchase_order?.type || ''
       },

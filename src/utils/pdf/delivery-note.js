@@ -91,7 +91,7 @@ const createPdf = async (data, docTitle = 'DELIVERY NOTE') => {
       body: [
         ['NO:', data.deliveryOrder.deliveryOrderNumber],
         ['DATE:', data.deliveryOrder.deliveryOrderDate],
-        ['CUST. PO NO.:', data.purchaseOrder.purchaseOrderNumber],
+        ['CUST. PO NO.:', data.purchaseOrder.poNumber],
         ['PACK. LIST:', data.id]
       ]
     },

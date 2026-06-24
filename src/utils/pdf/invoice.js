@@ -131,7 +131,7 @@ const createPdf = async (data) => {
     table: {
       widths: ['auto', 'auto','*'],
       body: [
-        ['PO NO',':', purchaseOrder.purchaseOrderNumber],
+        ['PO NO',':', purchaseOrder.poNumber],
         ['PO DATE', ':', purchaseOrder.purchaseOrderDate],
       ]
     },
@@ -280,7 +280,7 @@ const createPdf = async (data) => {
             ],
             [
               { text: '1', margin: [8, 0, 0, 0] },
-              { text: `${type} ATAS PO ${purchaseOrder.purchaseOrderNumber}`, margin: [8, 0, 0, 0] },
+              { text: `${type} ATAS PO ${purchaseOrder.poNumber}`, margin: [8, 0, 0, 0] },
               {
                 text: formatCurrency(price.subtotal),
                 margin: [0, 0, 30, 0],

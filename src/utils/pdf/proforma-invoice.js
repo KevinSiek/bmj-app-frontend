@@ -120,7 +120,7 @@ const createPdf = async (data) => {
     table: {
       widths: ['auto', 'auto','*'],
       body: [
-        ['Purchase Order', ':', project.purchaseOrderNumber],
+        ['Purchase Order', ':', project.poNumber],
         ['Date', ':', project.purchaseOrderDate],
         ['Project', ':', project.type],
       ]
