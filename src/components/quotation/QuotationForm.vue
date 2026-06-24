@@ -552,9 +552,9 @@ const selectItemCustomer = (customerData) => {
 onBeforeMount(() => {
   if (!quotation.value) quotationStore.$resetQuotation()
 })
-watch(user, (val) => {
-  if (isRoleMarketing.value && val?.branch?.name && !quotation.value?.project?.branch) {
-    quotation.value.project.branch = val.branch.name
+watch([user, quotation], ([userVal, quotationVal]) => {
+  if (isRoleMarketing.value && quotationVal?.project && userVal && userVal?.branch) {
+    quotation.value.project.branch = userVal.branch.name
   }
 }, { immediate: true })
 
