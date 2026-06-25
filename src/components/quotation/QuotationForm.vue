@@ -551,6 +551,7 @@ const selectItemCustomer = (customerData) => {
 // FIXED: Auto-populate branch for Marketing users based on user profile
 onBeforeMount(() => {
   if (!quotation.value) quotationStore.$resetQuotation()
+  generalStore.getGeneralData()
 })
 watch([user, quotation], ([userVal, quotationVal]) => {
   if (isRoleMarketing.value && quotationVal?.project && !quotationVal?.project.branch && userVal && userVal?.branch) {
@@ -632,9 +633,9 @@ const selectService = (index, serviceData) => {
 const updatePrice = () => {
   quotation.value.price.amount = amount.value
   quotation.value.price.subtotal = amount.value - quotation.value.price.discount
-  const ppn = quotation.value.price.subtotal * 11 / 100
-  quotation.value.price.ppn = ppn
-  quotation.value.price.grandTotal = quotation.value.price.subtotal + ppn
+  const calculatedPpn = quotation.value.price.subtotal * ppn.value / 100
+  quotation.value.price.ppn = calculatedPpn
+  quotation.value.price.grandTotal = quotation.value.price.subtotal + calculatedPpn
 }
 
 const addSparepart = () => {

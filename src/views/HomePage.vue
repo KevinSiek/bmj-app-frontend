@@ -55,9 +55,7 @@ const { isMobile } = storeToRefs(mainStore)
 const { isRoleDirector } = useRole()
 
 onMounted(() => {
-  if (isRoleDirector.value) {
-    generalStore.getGeneralData()
-  }
+  generalStore.getGeneralData()
 })
 
 const goBack = () => {
