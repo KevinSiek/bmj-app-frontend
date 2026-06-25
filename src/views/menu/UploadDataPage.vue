@@ -90,7 +90,7 @@ onMounted(() => {
   const token = `Bearer ${getToken('token-bmj')}`
 
   dropzone = new Dropzone('#upload-dropzone', {
-    url: 'http://localhost:8000/api/sparepart/updateAllData',
+    url: `${import.meta.env.VITE_API_BASE_URL}/api/sparepart/updateAllData`,
     method: 'post',
     headers: {
       'key': 'rest-api-test',
