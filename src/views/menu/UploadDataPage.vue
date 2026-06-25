@@ -19,6 +19,7 @@
                   <th scope="col" class="table-part-number">sparepart_number</th>
                   <th scope="col" class="table-name">sparepart_name</th>
                   <th scope="col" class="table-price">purchase_price</th>
+                  <th scope="col" class="table-price">quantity</th>
                   <th scope="col" class="table-seller">seller</th>
                   <th scope="col" class="table-discount">branch</th>
                 </tr>
@@ -29,6 +30,7 @@
                   <td scope="col" class="table-part-number">required</td>
                   <td scope="col" class="table-name">required</td>
                   <td scope="col" class="table-price">required</td>
+                  <td scope="col" class="table-price">required</td>
                   <td scope="col" class="table-seller">required</td>
                   <td scope="col" class="table-discount">optional</td>
                 </tr>
@@ -38,9 +40,11 @@
         </div>
         <div class="seller">
           *Input seller : <br>
-          &emsp; 1 -> if seller "MHI" <br>
+          &emsp; 1 -> if seller "Megah" <br>
           &emsp; 2 -> if seller "CT", <br>
           &emsp; 3 -> if seller "Aseng" <br>
+          &emsp; 4 -> if seller "MHI" <br>
+
         </div>
         <div class="branch">*Input branch : <br>
           &emsp; SMG -> if branch "Semarang" <br>
@@ -184,7 +188,7 @@ const processFileData = async (data) => {
   const json = XLSX.utils.sheet_to_json(worksheet, {
     defval: '',
     header: [
-      'id', 'sparepart_number', 'sparepart_name', 'purchase_price', 'seller', 'discount'
+      'id', 'sparepart_number', 'sparepart_name', 'purchase_price', 'quantity', 'seller', 'discount'
     ]
   })
 
@@ -211,7 +215,7 @@ const validateData = async (data) => {
 
   const contain = data.slice(1)
   contain.forEach(item => {
-    if (![1, 2, 3].includes(item['seller'])) throw new Error('Please input seller between 1, 2, 3 based on seller name')
+    if (![1, 2, 3, 4].includes(item['seller'])) throw new Error('Please input seller between 1, 2, 3, 4 based on seller name')
   })
 }
 </script>
