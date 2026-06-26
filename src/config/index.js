@@ -459,7 +459,6 @@ const accessFeature = {
     name: 'Service',
     feature: [
       'purchase_order',
-      'spareparts',
       'work_order'
     ]
   }

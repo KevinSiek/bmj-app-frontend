@@ -16,7 +16,7 @@ const componentList = ref([
   {
     name: 'Purchase Order',
     component: MenuPurchaseOrder,
-    path: menuConfig.spareparts.path
+    path: menuConfig.purchase_order.path
   },
   {
     name: 'Work Order',

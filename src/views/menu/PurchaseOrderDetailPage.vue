@@ -115,8 +115,8 @@
                 <th scope="col-1" class="table-number">NO</th>
                 <th scope="col" class="table-name">SERVICE</th>
                 <th scope="col" class="table-name">QUANTITY</th>
-                <th scope="col" class="table-name">UNIT PRICE</th>
-                <th scope="col" class="table-name">TOTAL PRICE</th>
+                <th scope="col" class="table-name" v-if="!isRoleService">UNIT PRICE</th>
+                <th scope="col" class="table-name" v-if="!isRoleService">TOTAL PRICE</th>
               </tr>
             </thead>
             <tbody class="table-group-divider" v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'">
@@ -181,12 +181,12 @@
                     {{ service.quantity }}
                   </div>
                 </td>
-                <td class="table-col table-name">
+                <td class="table-col table-name" v-if="!isRoleService">
                   <div :class="{ space: index === purchaseOrder.services.length - 1 }">
                     {{ formatCurrency(service.unitPriceSell) }}
                   </div>
                 </td>
-                <td class="table-col table-name">
+                <td class="table-col table-name" v-if="!isRoleService">
                   <div :class="{ space: index === purchaseOrder.services.length - 1 }">
                     {{ formatCurrency(service.totalPrice) }}
                   </div>
@@ -206,7 +206,7 @@
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
               </tr>
             </tbody>
-            <tbody>
+            <tbody v-if="!isRoleService">
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>
                 <td class="table-col table-part-number">Amount</td>
