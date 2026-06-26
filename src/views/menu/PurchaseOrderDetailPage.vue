@@ -291,7 +291,7 @@
   </div>
   <div class="button" v-if="!isRejected">
     <div class="left">
-      <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
+      <button v-if="!isRoleService" type="button" class="btn btn-process mx-3" @click="download">Print</button>
       <button v-if="isShowReject" type="button" class="btn btn-danger mx-3" @click="rejectConfirmation"
         :disabled="isProcessing">Reject PO</button>
     </div>
