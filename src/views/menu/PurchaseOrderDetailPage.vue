@@ -269,13 +269,18 @@
       <div class="notes my-2">
         <div class="title">Notes</div>
         <div class="inputform-floating">
-          <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="editableNotes"></textarea>
+          <textarea class="form-control" placeholder="No notes available" id="floatingTextarea2" style="height: 150px"
+            v-model="editableNotes" disabled></textarea>
         </div>
-        <div class="notes-action mt-2">
-          <button type="button" class="btn btn-save-notes" @click="saveNotesConfirmation" :disabled="isSavingNotes">
+        <div class="inputform-floating mt-2" v-if="!isRejected">
+          <label class="text-muted fw-bold mb-1">Add New Note</label>
+          <textarea class="form-control" placeholder="Type new note to append..." id="floatingNewNote" style="height: 80px"
+            v-model="newNote"></textarea>
+        </div>
+        <div class="notes-action mt-2" v-if="!isRejected">
+          <button type="button" class="btn btn-save-notes" @click="saveNotesConfirmation" :disabled="isSavingNotes || !newNote.trim()">
             <span v-if="isSavingNotes" class="spinner-border spinner-border-sm me-1" role="status"></span>
-            Save Notes
+            Add Note
           </button>
         </div>
       </div>
@@ -341,6 +346,7 @@ const { purchaseOrder } = storeToRefs(purchaseOrderStore)
 const isProcessing = ref(false)
 const isSavingNotes = ref(false)
 const editableNotes = ref('')
+const newNote = ref('')
 
 const isShowFullPaid = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
@@ -487,21 +493,31 @@ const rejectConfirmation = () => {
 }
 
 const saveNotes = async () => {
-  if (isSavingNotes.value) return
+  if (isSavingNotes.value || !newNote.value.trim()) return
   try {
     isSavingNotes.value = true
-    await purchaseOrderStore.updateNotes(route.params.id, editableNotes.value)
-    purchaseOrder.value.notes = editableNotes.value
-    modalStore.openMessageModal(common.modal.success, 'Notes updated successfully')
+    const username = authStore.user?.username || authStore.user?.fullname || 'User'
+    const timestamp = new Date().toLocaleString('id-ID', { hour12: false })
+    
+    const formattedNote = `[${timestamp} by ${username}]: ${newNote.value.trim()}`
+    const updatedNotes = editableNotes.value 
+      ? `${editableNotes.value}\n${formattedNote}` 
+      : formattedNote
+
+    await purchaseOrderStore.updateNotes(route.params.id, updatedNotes)
+    purchaseOrder.value.notes = updatedNotes
+    editableNotes.value = updatedNotes
+    newNote.value = ''
+    modalStore.openMessageModal(common.modal.success, 'Note added successfully')
   } catch (error) {
-    modalStore.openMessageModal(common.modal.failed, error?.data?.message || 'Failed to update notes')
+    modalStore.openMessageModal(common.modal.failed, error?.data?.message || 'Failed to add note')
   } finally {
     isSavingNotes.value = false
   }
 }
 
 const saveNotesConfirmation = () => {
-  modalStore.openConfirmationModal('Save Notes?', 'Notes updated', saveNotes)
+  modalStore.openConfirmationModal('Add Note?', 'Note appended', saveNotes)
 }
 
 const download = () => {

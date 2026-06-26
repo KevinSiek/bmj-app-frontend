@@ -291,6 +291,7 @@ onBeforeMount(() => {
   if (!invoice.value) invoiceStore.$resetInvoice()
 })
 onMounted(() => {
+  generalStore.getGeneralData()
   invoiceStore.getInvoice(route.params.id)
   trackStore.setTrackData(invoice.value.status)
 })
