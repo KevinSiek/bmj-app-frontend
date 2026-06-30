@@ -33,6 +33,10 @@
         <input type="text" class="form-control mt-2" v-model="employee.group" placeholder="Group" disabled>
       </div>
       <div class="input form-group col-12">
+        <label for="phone">Phone Number</label><br>
+        <input type="text" class="form-control mt-2" v-model="employee.phone" placeholder="Phone Number" disabled>
+      </div>
+      <div class="input form-group col-12">
         <label for="branch">Branch</label><br>
         <select class="form-select mt-2" id="branch" v-model="employee.branch" disabled>
           <option value="" disabled selected>Select Branch</option>

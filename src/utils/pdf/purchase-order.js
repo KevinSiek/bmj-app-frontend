@@ -129,13 +129,20 @@ const createPdf = async (data, notes, user) => {
   }
   // Top Right
 
+  const revisionText = data.version > 1 ? `-Rev. ${data.version-1}` : ''
+  const poDate = purchaseOrder.purchaseOrderDate ? new Date(purchaseOrder.purchaseOrderDate).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }) : ''
+
   const purchaseOrderInfo = {
     table: {
       widths: ['auto', 'auto','*'],
       body: [
-        ['No PO', ':', `${purchaseOrder.poNumber}-Rev.${data.version}`],
-        ['No IR', ':', `${purchaseOrder.purchaseOrderNumber}-Rev.${data.version}`],
-        ['Date', ':', purchaseOrder.purchaseOrderDate],
+        ['PO Customer', ':', `${purchaseOrder.poNumber}${revisionText}`],
+        ['Internal PO', ':', `${purchaseOrder.purchaseOrderNumber}${revisionText}`],
+        ['Date', ':', poDate],
         ['Type', ':', purchaseOrder.type]
       ]
     },
@@ -233,6 +240,8 @@ const createPdf = async (data, notes, user) => {
     margin: [0, 10, 0, 0]
   }
 
+  const hasDiscount = price.discount && price.discount > 0
+
   const docDefinition = {
     header: {
       image: logoBase64, // your base64 logo string
@@ -271,22 +280,24 @@ const createPdf = async (data, notes, user) => {
         table: {
           widths: [20, 200, 20, 20, 100, 100],
           body: [
-            [
-              '',
-              '',
-              '',
-              '',
-              { text: 'Amount' },
-              { text: formatCurrency(price.amount), alignment: 'right' }
-            ],
-            [
-              '',
-              '',
-              '',
-              '',
-              { text: 'Discount' },
-              { text: formatCurrency(price.discount), alignment: 'right' }
-            ],
+            ...(hasDiscount ? [
+              [
+                '',
+                '',
+                '',
+                '',
+                { text: 'Amount' },
+                { text: formatCurrency(price.amount), alignment: 'right' }
+              ],
+              [
+                '',
+                '',
+                '',
+                '',
+                { text: 'Discount' },
+                { text: formatCurrency(price.discount), alignment: 'right' }
+              ],
+            ] : []),
             [
               '',
               '',
@@ -356,7 +367,7 @@ const createPdf = async (data, notes, user) => {
           {
             width: '40%',
             stack: [
-              { text: 'Hormat kami,', alignment: 'center' },
+              { text: 'Dibuat oleh,', alignment: 'center' },
               { text: `${user.fullname || ''}`, alignment: 'center', margin: [0, 50, 0, 0] },
               { text: 'PT. Berkat Megah Jaya', bold: true, alignment: 'center', decoration: 'underline' }
             ],

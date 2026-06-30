@@ -2,9 +2,9 @@
   <div class="contain">
     <div class="user-profile shadow">
       <div class="profile-name">
-        <div class="profile-picture">
+        <!-- <div class="profile-picture">
           <img src="@/assets/images/ProfilePicture.png" alt="">
-        </div>
+        </div> -->
         <div class="name">
           Hi, {{ userName }} !
         </div>
@@ -21,6 +21,10 @@
         <div class="input form-group col-12">
           <label for="role">Role</label><br>
           <input type="role" class="form-control mt-2" v-model="user.role" placeholder="Role" disabled>
+        </div>
+        <div class="input form-group col-12">
+          <label for="phone">Phone Number</label><br>
+          <input type="text" class="form-control mt-2" v-model="user.phone" placeholder="Phone Number">
         </div>
         <div class="input form-group col-6">
           <label for="password">Password</label><br>
@@ -74,12 +78,12 @@
             </span>
           </div>
         </div>
-        <div class="button">
-          <button type="submit" class="btn btn-update">
-            Update Profile
-          </button>
-        </div>
       </form>
+      <div class="button">
+        <button type="button" class="btn btn-update" @click="updateProfileConfirmation()">
+          Update Profile
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -101,6 +105,7 @@ const user = reactive({
   email: '',
   role: '',
   password: '',
+  phone: '',
   confirm_password: ''
 })
 
@@ -118,6 +123,7 @@ const _getUser = () => {
   user.fullname = auth.user?.fullname
   user.email = auth.user?.email
   user.role = auth.user?.role
+  user.phone = auth.user?.phone
   user.password = ''
   user.confirm_password = ''
   userName.value = auth.user?.fullname.split(' ')[0]
@@ -158,27 +164,27 @@ $primary-color: black;
 .user-profile {
   margin: 2% 4%;
   padding: 1%;
-  height: 80vh;
+  height: 72vh;
   border-radius: 20px;
   background-color: white;
 
   .profile-name {
     display: flex;
-    padding: 4% 10% 1.5% 10%;
+    padding: 3.5% 10% 2% 10%;
 
     .profile-picture img {
       width: 10vw;
     }
 
     .name {
-      margin-left: 4vw;
-      align-self: center;
+      // margin-left: 4vw;
+      // align-self: center;
       font-size: 3vw;
     }
   }
 
   .form-profile {
-    padding: 2% 10% 0 10%;
+    padding: 0% 10% 2% 10%;
 
     .input {
       margin-top: 1%;

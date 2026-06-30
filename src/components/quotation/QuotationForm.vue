@@ -18,6 +18,11 @@
               <option value="Service">Service</option>
             </select>
           </div>
+          <div class="input form-group col-12">
+            <label for="">Name Up. <small class="text-muted">(optional)</small></label><br>
+            <input type="text" class="form-control mt-2" v-model="quotation.project.nameUP" placeholder="Name Up"
+              :disabled="disabled">
+          </div>
         </div>
         <div class="right">
           <div v-if="isRoleDirector" class="input form-group col-12">

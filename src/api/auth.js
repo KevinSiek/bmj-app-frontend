@@ -13,14 +13,14 @@ const getUser = async () => {
   return httpApi.getDataViaApi(api.user)
 }
 
-const changePassword = async (param) => {
-  return httpApi.postDataViaApi(`${api.user}/changePassword`, param)
+const changePasswordOrPhone = async (param) => {
+  return httpApi.postDataViaApi(`${api.user}/changePasswordOrPhone`, param)
 }
 
 export default {
 	login,
 	logout,
 	getUser,
-	changePassword
+	changePasswordOrPhone
 
 }

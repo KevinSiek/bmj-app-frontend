@@ -43,6 +43,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
       },
       notes: data?.notes || '',
       price: {
+        amount: data?.price?.amount || 0,
         subtotal: data?.price?.subtotal || 0,
         discount: data?.price?.discount || 0,
         ppn: data?.price?.ppn || 0,

@@ -78,7 +78,7 @@ export const useAuthStore = defineStore('auth-store', () => {
 	}
 
 	const updateUser = async (credentials) => {
-    await authApi.changePassword(credentials)
+    await authApi.changePasswordOrPhone(credentials)
     await getUser()
 	}
 

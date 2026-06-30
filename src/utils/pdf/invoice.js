@@ -77,7 +77,7 @@ const toWords = new ToWords({
 })
 
 const createPdf = async (data) => {
-  const { purchaseOrder, invoice, customer, price, termOfPayment, paymentDue } = data
+  const { purchaseOrder, invoice, customer, price, termOfPayment, paymentDue, ppn } = data
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
@@ -234,17 +234,18 @@ const createPdf = async (data) => {
   const invoiceType = invoice.type
 
   const dp = invoice.downPayment || 0
-  const grandTotalTypeDp = Math.ceil(price.subtotal - price.discount)
-  const subtotalTypeDp = invoice.type === 'DP' ? grandTotalTypeDp*dp/100 : grandTotalTypeDp*(100-dp)/100
-  const ppnTypeDp = Math.ceil(subtotalTypeDp * 0.11)
+  const subtotalAmount = Math.ceil(price.subtotal)
+  const subtotalTypeDp = invoice.type === 'DP' ? subtotalAmount*dp/100 : subtotalAmount*(100-dp)/100
+  const ppnTypeDp = Math.ceil(subtotalTypeDp * (ppn/100))
   const grandTotalTypeDpWithPpn = subtotalTypeDp + ppnTypeDp
 
   const totalDP = [
-    [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(grandTotalTypeDp), alignment: 'right', bold: true }],
-    [{ text: invoice.type === 'DP' ? 'Subtotal Termin 1' : 'Subtotal Termin 2', bold: true, margin: [0, 20, 0, 0] }, { text: formatCurrency(subtotalTypeDp), alignment: 'right', bold: true, margin: [0, 20, 0, 0] }],
+    [{ text: invoice.type === 'DP' ? 'Subtotal DP 1' : 'Subtotal DP 2', bold: true, margin: [0, 20, 0, 0] }, { text: formatCurrency(subtotalTypeDp), alignment: 'right', bold: true, margin: [0, 20, 0, 0] }],
     [{ text: 'PPN 11%', bold: true }, { text: formatCurrency(ppnTypeDp), alignment: 'right', bold: true }],
-    [{ text: invoiceType === 'DP' ? 'Grand Total Termin 1' :'Total Termin 2', bold: true }, { text: formatCurrency(grandTotalTypeDpWithPpn), alignment: 'right', bold: true }]
+    [{ text: invoiceType === 'DP' ? 'Grand Total DP 1' :'Grand Total DP 2', bold: true }, { text: formatCurrency(grandTotalTypeDpWithPpn), alignment: 'right', bold: true }]
   ]
+
+  const hasDiscount = price.discount > 0
 
   const docDefinition = {
     header: {
@@ -292,7 +293,7 @@ const createPdf = async (data) => {
           body: [
             [
               '',
-              { text: invoice.type === 'DP' ? 'Termin 1' : invoice.type === 'DP2' ? 'Termin 2' : 'Balance Payment', bold: true, margin: [55, 0, 0, 0], italics: true },
+              { text: invoice.type === 'DP' ? 'Down Payment 1' : invoice.type === 'DP2' ? 'Down Payment 2' : 'Balance Payment', bold: true, margin: [55, 0, 0, 0], italics: true },
               ''
             ],
             [
@@ -320,8 +321,11 @@ const createPdf = async (data) => {
         table: {
           widths: [100, '*'],
           body: [
+            ...(hasDiscount ? [
+              ['AMOUNT', { text: formatCurrency(price.amount), alignment: 'right' }],
+              ['DISC', { text: formatCurrency(price.discount), alignment: 'right' }],
+            ] : []),
             ['SUB TOTAL', { text: formatCurrency(price.subtotal), alignment: 'right' }],
-            ['DISC', { text: formatCurrency(price.discount), alignment: 'right' }],
             ...(invoice.type === 'Final' ? [
               ['PPN 11%', { text: formatCurrency(price.ppn), alignment: 'right' }],
               [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(price.grandTotal), alignment: 'right', bold: true }]
@@ -330,8 +334,8 @@ const createPdf = async (data) => {
         },
         layout: {
           hLineWidth: (i, node) => {
-            if (invoice.type === 'Final') return i === 3 ? 1 : 0
-            return i === 2 ? 1 : 0
+            if (invoice.type === 'Final') return i === 2 || i === 4 ? 1 : 0
+            return i === 2 || i === 5 ? 1 : 0
           },
           vLineWidth: () => 0,
           paddingTop: () => 3,
@@ -339,7 +343,7 @@ const createPdf = async (data) => {
           paddingLeft: () => 3,
           paddingRight: () => 3
         },
-        margin: [250, 130, 30, 5],
+        margin: [250, 110, 30, 5],
       },
       {
         text: '# ' + totalAmountWord + ' #',
@@ -374,7 +378,7 @@ const createPdf = async (data) => {
               paddingLeft: () => 3,
               paddingRight: () => 3
             },
-            margin: [10, 50, 0, 5],
+            margin: [10, 30, 0, 5],
           },
           {
             width: '40%',
@@ -382,7 +386,7 @@ const createPdf = async (data) => {
               { text: 'SR. PRAWESTI', bold: true, alignment: 'center', decoration: 'underline' },
               { text: 'FINANCE', alignment: 'center' }
             ],
-            margin: [0, 110, 0, 0]
+            margin: [0, 90, 0, 0]
           },
         ]
       },

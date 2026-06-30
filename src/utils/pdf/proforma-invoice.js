@@ -115,6 +115,8 @@ const createPdf = async (data) => {
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
+  const hasDownPaymentText = downPayment > 0 ? `Down Payment ${downPayment}%` : 'Balance Payment'
+
   // Top Left
   const purchaseOrderInfo = {
     table: {
@@ -199,7 +201,7 @@ const createPdf = async (data) => {
         body: [
           [
             '',
-            { text: 'Balance Payment ' + downPayment + '%', bold: true, margin: [55, 0, 0, 0], italics: true },
+            { text: hasDownPaymentText, bold: true, margin: [55, 0, 0, 0], italics: true },
             '',
             '',
             '',

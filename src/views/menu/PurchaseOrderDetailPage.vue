@@ -274,11 +274,12 @@
         </div>
         <div class="inputform-floating mt-2" v-if="!isRejected">
           <label class="text-muted fw-bold mb-1">Add New Note</label>
-          <textarea class="form-control" placeholder="Type new note to append..." id="floatingNewNote" style="height: 80px"
-            v-model="newNote"></textarea>
+          <textarea class="form-control" placeholder="Type new note to append..." id="floatingNewNote"
+            style="height: 80px" v-model="newNote"></textarea>
         </div>
         <div class="notes-action mt-2" v-if="!isRejected">
-          <button type="button" class="btn btn-save-notes" @click="saveNotesConfirmation" :disabled="isSavingNotes || !newNote.trim()">
+          <button type="button" class="btn btn-save-notes" @click="saveNotesConfirmation"
+            :disabled="isSavingNotes || !newNote.trim()">
             <span v-if="isSavingNotes" class="spinner-border spinner-border-sm me-1" role="status"></span>
             Add Note
           </button>
@@ -361,7 +362,7 @@ const isShowCreatePi = computed(() =>
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
 const isShowRelease = computed(() =>
-  (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value) &&
+  (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value || isRoleMarketing.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
   purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.release)
@@ -498,10 +499,10 @@ const saveNotes = async () => {
     isSavingNotes.value = true
     const username = authStore.user?.username || authStore.user?.fullname || 'User'
     const timestamp = new Date().toLocaleString('id-ID', { hour12: false })
-    
+
     const formattedNote = `[${timestamp} by ${username}]: ${newNote.value.trim()}`
-    const updatedNotes = editableNotes.value 
-      ? `${editableNotes.value}\n${formattedNote}` 
+    const updatedNotes = editableNotes.value
+      ? `${editableNotes.value}\n${formattedNote}`
       : formattedNote
 
     await purchaseOrderStore.updateNotes(route.params.id, updatedNotes)

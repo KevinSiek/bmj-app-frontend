@@ -385,7 +385,8 @@ const accessFeature = {
           'spareparts',
           'borrow'
         ]
-      }
+      },
+      'work_order'
     ]
   },
   'inventory admin': {

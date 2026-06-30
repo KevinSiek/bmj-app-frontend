@@ -12,6 +12,7 @@ import MenuQuotation from '@/components/menu/MenuQuotation.vue'
 import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
 import MenuBorrow from '@/components/menu/MenuBorrow.vue'
+import MenuDeliveryOrder from '@/components/menu/MenuDeliveryOrder.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
@@ -24,6 +25,11 @@ const componentList = ref([
     name: 'Purchase Order',
     component: MenuPurchaseOrder,
     path: menuConfig.purchase_order.path
+  },
+  {
+    name: 'Delivery Order',
+    component: MenuDeliveryOrder,
+    path: menuConfig.delivery_order.path
   },
   {
     name: 'Sparepart',

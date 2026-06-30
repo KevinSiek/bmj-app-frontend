@@ -97,15 +97,18 @@ const createPdf = async (data, notes, user) => {
     table: {
       widths: ['auto', '*'],
       body: [
+        [{ text: `Kepada Yth. `}, ''],
         [
           {
-            text: [ `Kepada Yth `, { text: `${customer.companyName}`, bold: true } ],
+            text: `${customer.companyName}`,
+            bold: true
           },
           ''
         ],
         [customer.office, ''],
         [customer.address, ''],
-        [`${customer.city} - ${customer.province}`, '']
+        [`${customer.city} - ${customer.province}`, ''],
+        ...(project.nameUP ? [[`Up. ${project.nameUP}`, '']] : [])
       ]
     },
     layout: {
@@ -126,6 +129,8 @@ const createPdf = async (data, notes, user) => {
     year: 'numeric',
   })
 
+  const hasDiscount = price.discount && price.discount > 0
+
   const sparepartTable = {
     header: {
       table: {
@@ -134,7 +139,7 @@ const createPdf = async (data, notes, user) => {
           [
             { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
             { text: 'PART NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-            { text: 'PART NO.', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'PART NUMBER', style: 'tableHeader', alignment: 'center', fontSize: 8 },
             { text: 'QTY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
             { text: 'UNIT', style: 'tableHeader', alignment: 'center', fontSize: 8 },
             { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
@@ -168,6 +173,20 @@ const createPdf = async (data, notes, user) => {
       table: {
           widths: [20, 100, 80, 20, 20, 80, 80, 40],
           body: [
+            ...(hasDiscount ? [
+              [
+                '', '', '', '', '',
+                { text: 'Amount', alignment: 'center', fontSize: 8 },
+                { text: formatCurrency(price.amount), alignment: 'right', fontSize: 8 },
+                ''
+              ],
+              [
+                '', '', '', '', '',
+                { text: 'Discount', alignment: 'center', fontSize: 8 },
+                { text: formatCurrency(price.discount), alignment: 'right', fontSize: 8 },
+                ''
+              ],
+            ] : []),
             [
               '',
               '',
@@ -202,11 +221,18 @@ const createPdf = async (data, notes, user) => {
       },
       layout: {
         hLineWidth: (i, node) => (i === 0) ? 0 : 1,
-        // hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 1 : 0.5),
-        // vLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.widths.length ? 0.5 : 0),
+        // hLineWidth: (i, node) => {
+        //   if(i === 0) return 1
+        //   if(i === 1) return 0
+        //   return (i === 1 || i === node.table.body.length ? 1 : 0.5)
+        // },
+        // vLineWidth: (i, node) => {
+        //   if(i === 0) return 0.5
+        //   return (i === 1 || i === node.table.widths.length ? 0.5 : 0)
+        // },
         vLineWidth: (i, node) => 1,
-        hLineColor: () => '#000000',
-        vLineColor: () => '#000000',
+        hLineColor: (i, node, c) => (c !== undefined && (c < 5 || c > 6)) ? '#ffffff' : '#000000',
+        vLineColor: (i, node) => (i >= 5 && i <= 7) ? '#000000' : '#ffffff',
         paddingLeft: () => 5,
         paddingRight: () => 5,
         paddingTop: () => 3,
@@ -223,7 +249,7 @@ const createPdf = async (data, notes, user) => {
         body: [
           [
             { text: 'No', style: 'tableHeader', alignment: 'center', fontSize: 8 },
-            { text: 'SERVICE NAME', style: 'tableHeader', alignment: 'center', fontSize: 8 },
+            { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center', fontSize: 8 },
             { text: 'QTY', style: 'tableHeader', alignment: 'center', fontSize: 8 },
             { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 },
             { text: 'TOTAL PRICE', style: 'tableHeader', alignment: 'center', fontSize: 8 }
@@ -252,6 +278,20 @@ const createPdf = async (data, notes, user) => {
       table: {
           widths: [20, 200, 30, 100, 100],
           body: [
+            ...(hasDiscount ? [
+              [
+                '', '',
+                { text: 'Amount', alignment: 'center', fontSize: 8 },
+                { text: formatCurrency(price.amount), alignment: 'right', fontSize: 8 },
+                ''
+              ],
+              [
+                '', '',
+                { text: 'Discount', alignment: 'center', fontSize: 8 },
+                { text: formatCurrency(price.discount), alignment: 'right', fontSize: 8 },
+                ''
+              ],
+            ] : []),
             [
               '',
               '',
@@ -291,6 +331,10 @@ const createPdf = async (data, notes, user) => {
     }
   }
 
+  const revisionText = data.version > 1 ? `-Rev. ${data.version-1}` : ''
+  const branchText = project.branch || ''
+  const phoneNumber = user.phone || ''
+  
   const docDefinition = {
     header: {
       image: logoBase64, // your base64 logo string
@@ -299,7 +343,7 @@ const createPdf = async (data, notes, user) => {
     },
     content: [
       {
-        text: `Quotation No : ${data.project.quotationNumber}-Rev.${data.version}`,
+        text: `Quotation No : ${data.project.quotationNumber}${revisionText}`,
         margin: [0, 3, 0, 0],
       },
 
@@ -310,7 +354,7 @@ const createPdf = async (data, notes, user) => {
         margin: [0, 15, 0, 0]
       },
       {
-        text: `Berikut kami sampaikan Penawaran harga sparepart Mesin Mitsubishi dengan rincian sebagain berikut:`,
+        text: `Berikut kami sampaikan penawaran harga dengan rincian sebagai berikut:`,
         margin: [0, 15, 0, 0]
       },
 
@@ -341,7 +385,7 @@ const createPdf = async (data, notes, user) => {
         width: '50%',
       },
       {
-        text: 'Demikian Penawaran ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.',
+        text: 'Demikian penawaran ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.',
         margin: [0, 20, 0, 0]
       },
 
@@ -351,19 +395,20 @@ const createPdf = async (data, notes, user) => {
           {
             width: '50%',
             stack: [
-              { text: `Semarang, ${currentDate}` },
+              { text: `${branchText}, ${currentDate}` },
               { text: 'Hormat kami,' },
               { text: `${user.fullname || ''}`, margin: [0, 50, 0, 0] },
-              { text: `Admin Part PT. Berkat Megah Jaya` },
+              { text: `PT. Berkat Megah Jaya` },
+              { text: `${phoneNumber}` }
             ],
             margin: [0, 30, 0, 0]
           },
           {
             width: '50%',
             stack: [
-              { text: `Desetujui,` },
+              { text: `Disetujui,` },
               { text: '(                                               )', margin: [0, 55, 0, 0] },
-              { text: `${customer.companyName}` }
+              // { text: `${customer.companyName}` }
             ],
             margin: [0, 40, 0, 0]
           },

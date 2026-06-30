@@ -17,6 +17,7 @@ export const useEmployeeStore = defineStore('employee', () => {
       username: data?.username || '',
       email: data?.email || '',
       role: data?.role || '',
+      phone: data?.phone || '',
       group: data?.group || '',
       password: data?.password || '',
       passwordConfirmation: data?.password_confirmation || '',
@@ -28,7 +29,6 @@ export const useEmployeeStore = defineStore('employee', () => {
   async function getAllEmployee (param) {
     isLoading.value = true
     const { data } = await employeeApi.getAllEmployee(param)
-    console.log('getEmployee', data)
     employees.value = data.data.map(mapEmployee)
     paginationData.value = data
     isLoading.value = false

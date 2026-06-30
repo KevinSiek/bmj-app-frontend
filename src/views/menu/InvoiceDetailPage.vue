@@ -171,6 +171,26 @@
             <tbody>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>
+                <td class="table-col table-part-number">Amount</td>
+                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
+                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
+                <td class="table-col table-name">{{ formatCurrency(invoice.price.amount) }}</td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
+              </tr>
+              <tr class="align-middle">
+                <td scope="row" class="table-col table-number">2</td>
+                <td class="table-col table-part-number">Discount</td>
+                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
+                <td class="table-col table-name"></td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
+                <td class="table-col table-name">{{ formatCurrency(invoice.price.discount) }}</td>
+                <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
+              </tr>
+              <tr class="align-middle">
+                <td scope="row" class="table-col table-number">3</td>
                 <td class="table-col table-part-number">SubTotal</td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
@@ -180,7 +200,7 @@
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
-                <td scope="row" class="table-col table-number">2</td>
+                <td scope="row" class="table-col table-number">4</td>
                 <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
@@ -190,7 +210,7 @@
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
-                <td scope="row" class="table-col table-number">3</td>
+                <td scope="row" class="table-col table-number">5</td>
                 <td class="table-col table-name">Grand Total</td>
                 <td class="table-col table-name"></td>
                 <td v-if="invoice.purchaseOrder.purchaseOrderType === 'Spareparts'" class="table-col table-name"></td>
@@ -339,7 +359,7 @@ const setFinalInvoice = async () => {
   }
 }
 const download = () => {
-  createPdf({ termOfPayment: termOfPayment.value, paymentDue: paymentDue.value, ...invoice.value })
+  createPdf({ termOfPayment: termOfPayment.value, paymentDue: paymentDue.value, ...invoice.value, ppn: Math.trunc(ppn.value) })
 }
 </script>
 

@@ -5,6 +5,9 @@
         <SearchBar @searched="handleUpdateSearch" />
         <RefreshButton @refresh="fetchDeliveryOrder" />
       </div>
+      <div class="btn-add">
+        <button class="btn btn-primary" @click="goToAdd">{{ addText }}</button>
+      </div>
     </div>
     <div class="lower paginate shadow">
       <SelectDate />
@@ -61,17 +64,22 @@ import Pagination from '@/components/Pagination.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onBeforeMount, onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch, computed } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 import { useDeliveryOrderStore } from '@/stores/delivery-order'
+import { useMainStore } from '@/stores/main'
 
 const route = useRoute()
 const router = useRouter()
+const mainStore = useMainStore()
 const deliveryOrderStore = useDeliveryOrderStore()
 const { selectedMonth, selectedYear } = useDate()
 
+const { isMobile } = storeToRefs(mainStore)
 const { deliveryOrders, paginationData, isLoading } = storeToRefs(deliveryOrderStore)
+
+const addText = computed(() => (isMobile.value ? 'Add' : 'Add Delivery Order'))
 
 onBeforeMount(() => {
   isLoading.value = true
@@ -109,6 +117,10 @@ const handleUpdateSearch = (search) => {
   debounce(() => searchDeliveryOrder(search), 1000, 'search-deliveryOrder')
 }
 
+const goToAdd = () => {
+  deliveryOrderStore.$resetDeliveryOrders()
+  router.push(menuConfig.delivery_order_add.path)
+}
 const goToDetail = async (deliveryOrder) => {
   await deliveryOrderStore.setDeliveryOrder(deliveryOrder)
   router.push(`${menuConfig.delivery_order.path}/${deliveryOrder.id}`)
