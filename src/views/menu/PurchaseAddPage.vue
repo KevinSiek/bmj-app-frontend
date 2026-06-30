@@ -69,8 +69,7 @@
               </div>
               <div class="col-3">
                 <select class="form-select mt-2" v-model="sparepart.seller"
-                  @click="loadSellers(sparepart, sparepartIndex)"
-                  @change="selectItem(sparepartIndex, sparepart)">
+                  @click="loadSellers(sparepart, sparepartIndex)" @change="selectItem(sparepartIndex, sparepart)">
                   <option value="" disabled selected>Select Seller</option>
                   <option v-for="(sellerOption, idx) in sparepart.unitPriceSeller" :key="idx"
                     :value="sellerOption.seller">
@@ -80,7 +79,8 @@
               </div>
               <div class="col-2">
                 <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                  @wheel.prevent @input="selectItem(sparepartIndex, sparepart)">
+                  @wheel.prevent @input="selectItem(sparepartIndex, sparepart)" min="0"
+                  @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
               </div>
               <div class="col-3">
                 <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"

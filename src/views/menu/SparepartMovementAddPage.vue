@@ -72,8 +72,8 @@
           </div>
 
           <div class="col-2">
-            <input type="number" class="form-control mt-2" placeholder="Quantity" v-model.number="item.quantity"
-              min="1" @wheel.prevent />
+            <input type="number" class="form-control mt-2" placeholder="Quantity" v-model.number="item.quantity" min="1"
+              @wheel.prevent @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()" />
           </div>
 
           <div class="col-1 d-flex align-items-end">

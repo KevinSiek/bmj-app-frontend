@@ -229,15 +229,16 @@ const createPdf = async (data) => {
     }
   }
 
-  const totalAmountWord = toWords.convert(Math.ceil(price.grandTotal), { ignoreDecimal: true })
   const type = purchaseOrder.purchaseOrderType === common.type.sparepart ? 'SPAREPART' : 'SERVICE'
   const invoiceType = invoice.type
-
+  
   const dp = invoice.downPayment || 0
   const subtotalAmount = Math.ceil(price.subtotal)
   const subtotalTypeDp = invoice.type === 'DP' ? subtotalAmount*dp/100 : subtotalAmount*(100-dp)/100
   const ppnTypeDp = Math.ceil(subtotalTypeDp * (ppn/100))
-  const grandTotalTypeDpWithPpn = subtotalTypeDp + ppnTypeDp
+  const grandTotalTypeDpWithPpn = Math.ceil(subtotalTypeDp + ppnTypeDp)
+  const totalAmount = invoice.type === 'Final' ? price.grandTotal : grandTotalTypeDpWithPpn
+  const totalAmountWord = toWords.convert(Math.ceil(totalAmount), { ignoreDecimal: true })
 
   const totalDP = [
     [{ text: invoice.type === 'DP' ? 'Subtotal DP 1' : 'Subtotal DP 2', bold: true, margin: [0, 20, 0, 0] }, { text: formatCurrency(subtotalTypeDp), alignment: 'right', bold: true, margin: [0, 20, 0, 0] }],

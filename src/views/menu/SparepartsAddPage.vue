@@ -14,7 +14,8 @@
               <div class="input form-group col-12">
                 <div class="branch">
                   <label for="">Stock {{ branch.name }}</label><br>
-                  <input type="number" class="form-control mt-2" v-model="branch.stock" placeholder="Stock" @wheel.prevent>
+                  <input type="number" class="form-control mt-2" v-model="branch.stock" placeholder="Stock"
+                    @wheel.prevent min="0" @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
                 </div>
               </div>
             </template>
@@ -66,7 +67,8 @@
                 </div>
                 <div class="input form-group col-3">
                   <label for="">Quantity</label><br>
-                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity" @wheel.prevent>
+                  <input type="number" class="form-control mt-2" v-model="list.quantity" placeholder="Quantity"
+                    @wheel.prevent min="0" @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
                 </div>
               </div>
             </div>

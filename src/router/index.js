@@ -235,8 +235,7 @@ const router = createRouter({
               name: menuConfig.invoice_detail.name,
               component: InvoiceDetailPage,
               meta: {
-                useBack: true,
-                useTrack: true
+                useBack: true
               }
             },
           ]

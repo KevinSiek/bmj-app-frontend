@@ -271,11 +271,13 @@
               <div class="col-2">
                 <input type="number" class="form-control mt-2" placeholder="Stock"
                   :value="sparepart.totalUnit?.[quotation.project.branch] ?? 0" @wheel.prevent
-                  @input="updateSparepartCalculation(sparepartIndex, sparepart)" disabled>
+                  @input="updateSparepartCalculation(sparepartIndex, sparepart)" disabled min="0"
+                  @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
               </div>
               <div class="col-2">
                 <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
-                  @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)">
+                  @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)" min="0"
+                  @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
               </div>
               <div class="col-2">
                 <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
@@ -380,7 +382,8 @@
                 </div>
                 <div class="col-3">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="service.quantity"
-                    @wheel.prevent @input="selectService(serviceIndex, service)">
+                    @wheel.prevent @input="selectService(serviceIndex, service)" min="0"
+                    @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
                 </div>
                 <div class="col-3">
                   <CurrencyInput placeholder="Unit Price" v-model="service.unitPriceSell"
@@ -415,7 +418,8 @@
         <div class="label d-flex align-items-center">Total Discount (%)</div>
         <div class="d-flex align-items-center">
           : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2" style="width: 120px;"
-            placeholder="0" v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled" @wheel.prevent>
+            placeholder="0" v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled" @wheel.prevent
+            @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
           <span class="ms-2 text-muted">Any value &gt; {{ discount }}% requires Director review.</span>
         </div>
       </div>

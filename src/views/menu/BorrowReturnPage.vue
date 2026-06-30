@@ -43,7 +43,8 @@
                     disabled>
                 </div>
                 <div class="col-3">
-                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.return" @wheel.prevent>
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.return"
+                    @wheel.prevent min="0" @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
                 </div>
               </div>
             </div>

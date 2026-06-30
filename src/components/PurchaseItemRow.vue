@@ -2,58 +2,31 @@
   <tr class="purchase-item-row">
     <!-- Sparepart Selection -->
     <td colspan="2">
-      <SparepartSelector 
-        :branch-id="branchId"
-        :initial-value="item.selectedSparepart"
-        @select="handleSparepartSelect"
-        @clear="handleSparepartClear"
-        :required="true"
-      />
+      <SparepartSelector :branch-id="branchId" :initial-value="item.selectedSparepart" @select="handleSparepartSelect"
+        @clear="handleSparepartClear" :required="true" />
     </td>
-    
+
     <!-- Quantity -->
     <td>
-      <input
-        v-model.number="localItem.quantity"
-        @input="updateTotals"
-        @wheel.prevent
-        type="number"
-        class="form-control"
-        placeholder="Qty"
-        min="1"
-        :disabled="!localItem.sparepartId"
-      />
+      <input v-model.number="localItem.quantity" @input="updateTotals" @wheel.prevent type="number" class="form-control"
+        placeholder="Qty" min="1" :disabled="!localItem.sparepartId"
+        @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()" />
     </td>
-    
+
     <!-- Unit Price (Auto-filled from sparepart) -->
     <td>
-      <CurrencyInput
-        v-model="localItem.unit_price"
-        @update:model-value="updateTotals"
-        input-class="form-control"
-        placeholder="Unit Price"
-        :disabled="!localItem.sparepartId"
-      />
+      <CurrencyInput v-model="localItem.unit_price" @update:model-value="updateTotals" input-class="form-control"
+        placeholder="Unit Price" :disabled="!localItem.sparepartId" />
     </td>
-    
+
     <!-- Total Price (Calculated) -->
     <td>
-      <input
-        :value="formatCurrency(localItem.total_price || 0)"
-        type="text"
-        class="form-control"
-        readonly
-        disabled
-      />
+      <input :value="formatCurrency(localItem.total_price || 0)" type="text" class="form-control" readonly disabled />
     </td>
-    
+
     <!-- Remove Row -->
     <td>
-      <button 
-        @click="$emit('remove')"
-        type="button" 
-        class="btn btn-outline-danger btn-sm"
-      >
+      <button @click="$emit('remove')" type="button" class="btn btn-outline-danger btn-sm">
         <i class="bi bi-trash"></i>
       </button>
     </td>
@@ -122,9 +95,9 @@ watch(() => props.item, (newItem) => {
 
 defineExpose({
   validate: () => {
-    return !!localItem.value.sparepartId && 
-           localItem.value.quantity > 0 && 
-           localItem.value.unit_price > 0
+    return !!localItem.value.sparepartId &&
+      localItem.value.quantity > 0 &&
+      localItem.value.unit_price > 0
   },
   getItem: () => localItem.value
 })
