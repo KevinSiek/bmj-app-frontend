@@ -19,10 +19,11 @@ spareparts from external sellers to fulfill Back Orders.
 | `api/purchase.js` | API wrappers |
 
 ## Key Business Rules
-1. Purchases are created by **Inventory Purchase** role
-2. Review workflow: `Wait for Review → Approved/Rejected → Received`
-3. Each purchase links to a `back_order_id` and a `branch_id`
-4. Line items (`DetailBuy`) reference spareparts with seller prices
+1. "Buy" is initiated when missing stock is identified, usually from a Back Order (BO).
+2. Buy tracks items purchased from a specific seller.
+3. Status lifecycle: `Wait for Review → Approved → Received`. Side states: `Rejected`, `Need Change`.
+4. It ties into **Spareparts** (purchasing more inventory) and optionally links to a `back_order_id` if fulfilling a BO.
+5. Line items (`DetailBuy`) reference spareparts with seller prices
 5. Director reviews and approves/rejects purchase requests
 6. On approval + receive, stock quantities increase via `SparepartStockService`
 
