@@ -175,8 +175,9 @@ Components branch between desktop/mobile rendering accordingly. Two navbars:
 When starting a new session or task, read these files in order:
 
 1. **This file** (`AGENTS.MD`) — system overview
-2. **`src/config/index.js`** — all route paths, statuses, roles, API endpoints
-3. **`src/router/index.js`** — full route tree with auth guards
+2. **`.claude/ENGINEERING_DISCIPLINE.md`** — The absolute rules for coding and execution in this workspace.
+3. **`src/config/index.js`** — all route paths, statuses, roles, API endpoints
+4. **`src/router/index.js`** — full route tree with auth guards
 4. **The specific `docs/*.md`** for the feature you're modifying
 5. **The specific store** (`src/stores/xxx.js`) for state logic
 6. **The specific API file** (`src/api/xxx.js`) for endpoint calls

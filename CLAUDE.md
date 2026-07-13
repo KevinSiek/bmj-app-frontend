@@ -1,3 +1,24 @@
+# BMJ App Frontend Development Guide
+
+## ⛔ Commit Policy — NEVER auto-commit
+- **NEVER run `git commit` without explicit user instruction.**
+- Always leave changes in staged state and wait for the user to commit.
+- This applies to all subagents and all tasks — no exceptions.
+
+## Engineering Discipline (read before ANY coding task)
+
+For every coding task — fix to feature, zero to finish — follow the unified
+pipeline. The contract is workspace-portable: the one authority is
+**[.claude/ENGINEERING_DISCIPLINE.md](.claude/ENGINEERING_DISCIPLINE.md)**;
+this repo's specific facts are in
+**[.claude/discipline-adapter.md](.claude/discipline-adapter.md)**.
+It fuses Compound Engineering (`ce:*`), Superpowers, and gstack: understand →
+brainstorm (HARD-GATE) → plan → worktree → execute (TDD Iron Law) → review +
+codex → QA → verify → finish → compound. Two locked constraints: never
+auto-commit (ask first), browser/QA via gstack only. Prime directive: code as
+a senior expert would — simple, human-readable, no redundancy, reuse first,
+maintainable.
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 

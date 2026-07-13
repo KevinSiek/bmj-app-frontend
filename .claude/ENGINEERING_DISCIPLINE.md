@@ -7,12 +7,11 @@ defines the pipeline and how it degrades when a capability is absent. Adapters
 never restate this file — that would be the redundancy the prime directive
 forbids.
 
-> **Workspace anchor.** This file lives in `spfio-core/.claude/` and is THE
-> authority for every repo in this workspace. All repos in `Progres_2/` sit
+> **Workspace anchor.** This file lives in `Code/FrontEnd/bmj-app-frontend/.claude/` and is THE
+> authority for every repo in this workspace. All repos in `PT_BerkatMegahJaya/` sit
 > under one parent folder, so every adapter references this file with a
-> **relative path** (e.g. `../../spfio-core/.claude/ENGINEERING_DISCIPLINE.md`
-> from a sibling repo; `../../../spfio-core/.claude/ENGINEERING_DISCIPLINE.md`
-> from a nested repo like `Spf_io_projector/spfio-projector/`). Relative paths
+> **relative path** (e.g. `../../../../Code/FrontEnd/bmj-app-frontend/.claude/ENGINEERING_DISCIPLINE.md`
+> from the backend repo). Relative paths
 > keep the contract machine-portable — clone the workspace anywhere and links
 > still resolve.
 
@@ -209,7 +208,7 @@ other three carry `Read, Grep, Glob, Bash`.
 
 Each agent's first act is to read the **current repo's**
 `.claude/discipline-adapter.md` and announce the detected capabilities, then
-behave per the degradation matrix above. They never assume spfio-core specifics.
+behave per the degradation matrix above. They never assume bmj-app specifics.
 
 | Subagent | Phase | When Claude delegates |
 |----------|-------|-----------------------|
