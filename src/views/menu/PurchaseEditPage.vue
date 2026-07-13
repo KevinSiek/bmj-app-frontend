@@ -18,22 +18,22 @@
         <div class="purchase-scroll">
           <div class="input form-group col-12 mx-3">
             <div class="row flex-nowrap">
-              <div class="col-3">
+              <div class="col-2">
                 <label for="">Sparepart Name</label>
               </div>
-              <div class="col-3">
+              <div class="col-2">
                 <label for="">Part Number</label>
               </div>
-              <div class="col-3">
+              <div class="col-2">
                 <label for="">Seller</label>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <label for="">Quantity</label>
               </div>
-              <div class="col-3">
+              <div class="col">
                 <label for="">Unit Price</label>
               </div>
-              <div class="col-3">
+              <div class="col">
                 <label for="">Total Price</label>
               </div>
               <div class="col-1">
@@ -44,7 +44,7 @@
           <div class="input form-group col-12 mx-3">
             <div v-for="(sparepart, sparepartIndex) in purchase.spareparts" :key="sparepartIndex"
               class="row flex-nowrap">
-              <div class="col-3">
+              <div class="col-2">
                 <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                   data-bs-toggle="dropdown" aria-expanded="false" @change="handleInputSearch(sparepart.sparepartName)"
                   @keyup="handleInputSearch(sparepart.sparepartName)">
@@ -55,7 +55,7 @@
                   </li>
                 </ul>
               </div>
-              <div class="col-3">
+              <div class="col-2">
                 <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
                   placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
                   @change="handleInputSearch(sparepart.sparepartNumber)"
@@ -67,7 +67,7 @@
                   </li>
                 </ul>
               </div>
-              <div class="col-3">
+              <div class="col-2">
                 <select class="form-select mt-2" v-model="sparepart.seller"
                   @click="loadSellers(sparepart, sparepartIndex)" @change="selectItem(sparepartIndex, sparepart)">
                   <option value="" disabled selected>Select Seller</option>
@@ -78,15 +78,15 @@
                   </option>
                 </select>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
                   @wheel.prevent @input="selectItem(sparepartIndex, sparepart)">
               </div>
-              <div class="col-3">
+              <div class="col">
                 <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"
                   @update:model-value="selectItem(sparepartIndex, sparepart)" />
               </div>
-              <div class="col-3">
+              <div class="col">
                 <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
                   @update:model-value="selectItem(sparepartIndex, sparepart)" :disabled="true" />
               </div>
@@ -111,7 +111,7 @@
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
-        <div class="text">{{ formatCurrency(totalPurchase) }}</div>
+        <div class="text"><PriceDisplay :value="totalPurchase" /></div>
       </div>
     </form>
   </div>

@@ -42,7 +42,7 @@
           <div class="row">
             <div class="col-11">
               <div class="data row">
-                <div class="input form-group col-5">
+                <div class="input form-group col">
                   <label for="">Seller</label><br>
                   <select class="form-select mt-2" id="branch" v-model="list.seller">
                     <option value="" disabled selected>Select Seller</option>
@@ -51,7 +51,7 @@
                     </option>
                   </select>
                 </div>
-                <div class="input form-group col-3">
+                <div class="input form-group col">
                   <label for="">Puchase Price</label><br>
                   <CurrencyInput v-model="list.price" placeholder="Purchase Price" />
                 </div>

@@ -1,0 +1,154 @@
+
+=== FEATURE_BACK_ORDER.md ===
+# Feature: Back Order
+## Overview
+## File Map
+## Key Business Rules
+## Data Chain
+## API Endpoints
+## Print / PDF Export
+
+=== FEATURE_BORROW.md ===
+# Feature: Borrow (Pinjaman)
+## Overview
+## File Map
+## Lifecycle & roles
+## Key Business Rules
+## API Endpoints
+## Print / PDF Export
+
+=== FEATURE_CRM.md ===
+# Feature: CRM (Customer & Seller)
+## Overview
+## File Map
+## 1. Customers
+### Implicit Creation Workflow
+### Key Business Rules
+### Data Model
+### API Endpoints
+## 2. Sellers
+### Integration Workflow
+### Data Model
+### API Endpoints
+
+=== FEATURE_DELIVERY_ORDER.md ===
+# Feature: Delivery Order (UI label: "Delivery Note")
+## Overview
+## File Map
+## Key Business Rules
+## API Endpoints
+## Print Modes
+## Response Data
+
+=== FEATURE_EMPLOYEE_AUTH_MISC.md ===
+# Feature: Employee Management
+## Overview
+## File Map
+## Key Business Rules
+## Auth Fields
+## API Endpoints
+# Feature: Auth & Profile
+## Overview
+## File Map
+## Auth Flow
+## Temp Password Flow
+# Feature: General Settings
+## Overview
+## File Map
+## Settings
+# Feature: Dashboard
+## Overview
+## File Map
+## Key Features
+# Feature: Upload Data
+## Overview
+## File Map
+## Key Features
+# Feature: Return
+## Overview
+## File Map
+## Business Rules
+
+=== FEATURE_INVOICE.md ===
+# Feature: Invoice
+## Overview
+## File Map
+## Key Business Rules
+## API Endpoints
+
+=== FEATURE_PROFORMA_INVOICE.md ===
+# Feature: Proforma Invoice
+## Overview
+## Status Flow
+## File Map
+## Key Business Rules
+## API Endpoints
+
+=== FEATURE_PURCHASE.md ===
+# Feature: Purchase (Buy)
+## Overview
+## File Map
+## Key Business Rules
+## API Endpoints
+## Note on Naming
+
+=== FEATURE_PURCHASE_ORDER.md ===
+# Feature: Purchase Order
+## Overview
+## Business Rules
+## File Map
+## Store: `purchase-order.js`
+### Key State
+### Key Mapping (`mapPurchaseOrder`)
+### Key Actions
+## API Endpoints
+## API Response Format
+## Track Component
+
+=== FEATURE_QUOTATION.md ===
+# Feature: Quotation
+## Overview
+## Business Rules
+## File Map
+## Data Flow
+## QuotationForm.vue (Critical Component)
+### Key Props
+### Key Dependencies
+## Store: `quotation.js`
+### Key State
+### Key Mapping (`mapQuotation`)
+### Key Actions
+## API: `quotation.js`
+### processQuotation Payload
+## PDF Generation
+
+=== FEATURE_SPAREPARTS.md ===
+# Feature: Spareparts
+## Overview
+## File Map
+## Key Business Rules
+## Data Model
+## SparepartSelector Component
+## CurrencyInput Component
+## API Endpoints
+
+=== FEATURE_STOCK_MOVEMENT.md ===
+# Feature: Stock Movement & History
+## Overview
+## File Map
+## 1. Stock History (Ledger)
+### Key Data Fields (`stores/stock-movement.js`)
+### Business Rules
+## 2. Sparepart Movement (Branch Transfers)
+### Status Lifecycle
+### Key Data Fields (`stores/sparepart-movement.js`)
+### Business Rules
+## API Endpoints
+
+=== FEATURE_WORK_ORDER.md ===
+# Feature: Work Order
+## Overview
+## File Map
+## Key Business Rules
+## Data Model
+## API Endpoints

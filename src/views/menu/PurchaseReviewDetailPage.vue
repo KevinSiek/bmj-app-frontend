@@ -21,8 +21,8 @@
                 <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceBuy) }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceBuy" /></td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
               </tr>
             </tbody>
           </table>
@@ -34,7 +34,7 @@
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
-        <div class="text">{{ formatCurrency(purchase.totalAmount) }}</div>
+        <div class="text"><PriceDisplay :value="purchase.totalAmount" /></div>
       </div>
     </form>
   </div>

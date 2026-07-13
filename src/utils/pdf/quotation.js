@@ -1,6 +1,6 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
-import { formatCurrency } from '../form-util'
+import { formatPDFPrice } from '../form-util'
 import { common } from '@/config'
 import { getBase64FromUrl } from '@/utils/pdf-util'
 
@@ -147,8 +147,8 @@ const createPdf = async (data, notes, user) => {
             { text: item.sparepartNumber, alignment: 'center', fontSize: 8 },
             { text: item.quantity, alignment: 'center', fontSize: 8 },
             { text: 'pcs', alignment: 'center', fontSize: 8 },
-            { text: formatCurrency(item.unitPriceSell), alignment: 'right', fontSize: 8 },
-            { text: formatCurrency(item.totalPrice), alignment: 'right', fontSize: 8 },
+            formatPDFPrice(item.unitPriceSell, { fontSize: 8 }),
+            formatPDFPrice(item.totalPrice, { fontSize: 8 }),
             { text: item.stock, alignment: 'left', fontSize: 8 }
           ]),
         ]
@@ -175,7 +175,7 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               { text: 'SubTotal', alignment: 'center', fontSize: 8 },
-              { text: formatCurrency(price.subtotal), alignment: 'right', fontSize: 8 },
+              formatPDFPrice(price.subtotal, { fontSize: 8 }),
               ''
             ],
             [
@@ -185,7 +185,7 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               { text: 'PPN 11%', alignment: 'center', fontSize: 8 },
-              { text: formatCurrency(price.ppn), alignment: 'right', fontSize: 8 },
+              formatPDFPrice(price.ppn, { fontSize: 8 }),
               ''
             ],
             [
@@ -195,7 +195,7 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               { text: 'Grand Total', alignment: 'center', bold: true, fontSize: 8 },
-              { text: formatCurrency(price.grandTotal), alignment: 'right', fontSize: 8 },
+              formatPDFPrice(price.grandTotal, { fontSize: 8 }),
               ''
             ],
           ]
@@ -232,8 +232,8 @@ const createPdf = async (data, notes, user) => {
             { text: idx + 1, alignment: 'center', fontSize: 8 },
             { text: item.service, fontSize: 8 },
             { text: item.quantity, alignment: 'center', fontSize: 8 },
-            { text: formatCurrency(item.unitPriceSell), alignment: 'right', fontSize: 8 },
-            { text: formatCurrency(item.totalPrice), alignment: 'right', fontSize: 8 }
+            formatPDFPrice(item.unitPriceSell, { fontSize: 8 }),
+            formatPDFPrice(item.totalPrice, { fontSize: 8 })
           ]),
         ]
       },
@@ -257,21 +257,21 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               { text: 'SubTotal', alignment: 'center', fontSize: 8 },
-              { text: formatCurrency(price.subtotal), alignment: 'right', fontSize: 8 },
+              formatPDFPrice(price.subtotal, { fontSize: 8 }),
             ],
             [
               '',
               '',
               '',
               { text: 'PPN 11%', alignment: 'center', fontSize: 8 },
-              { text: formatCurrency(price.ppn), alignment: 'right', fontSize: 8 },
+              formatPDFPrice(price.ppn, { fontSize: 8 }),
             ],
             [
               '',
               '',
               '',
               { text: 'Grand Total', alignment: 'center', bold: true, fontSize: 8 },
-              { text: formatCurrency(price.grandTotal), alignment: 'right', fontSize: 8 },
+              formatPDFPrice(price.grandTotal, { fontSize: 8 }),
             ],
           ]
         },

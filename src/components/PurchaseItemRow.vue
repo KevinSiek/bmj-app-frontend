@@ -39,7 +39,7 @@
     <!-- Total Price (Calculated) -->
     <td>
       <input
-        :value="formatCurrency(localItem.total_price || 0)"
+        v-model="localItem.total_price" :disabled="true"
         type="text"
         class="form-control"
         readonly

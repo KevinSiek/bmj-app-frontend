@@ -385,7 +385,8 @@ const accessFeature = {
           'spareparts',
           'borrow'
         ]
-      }
+      },
+      'work_order'
     ]
   },
   'inventory admin': {
@@ -404,8 +405,7 @@ const accessFeature = {
         ]
       },
       'back_order',
-      'delivery_order',
-      'work_order'
+      'delivery_order'
     ]
   },
   'inventory purchase': {
@@ -440,8 +440,7 @@ const accessFeature = {
         ]
       },
       'back_order',
-      'delivery_order',
-      'work_order'
+      'delivery_order'
     ]
   },
   finance: {

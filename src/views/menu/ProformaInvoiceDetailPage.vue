@@ -137,12 +137,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === proformaInvoice.spareparts.length - 1 }">
-                    {{ formatCurrency(sparepart.unitPriceSell) }}
+                    <PriceDisplay :value="sparepart.unitPriceSell" />
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === proformaInvoice.spareparts.length - 1 }">
-                    {{ formatCurrency(sparepart.totalPrice) }}
+                    <PriceDisplay :value="sparepart.totalPrice" />
                   </div>
                 </td>
               </tr>
@@ -166,12 +166,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === proformaInvoice.services.length - 1 }">
-                    {{ formatCurrency(service.unitPriceSell) }}
+                    <PriceDisplay :value="service.unitPriceSell" />
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === proformaInvoice.services.length - 1 }">
-                    {{ formatCurrency(service.totalPrice) }}
+                    <PriceDisplay :value="service.totalPrice" />
                   </div>
                 </td>
               </tr>
@@ -193,7 +193,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.amount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.amount" /></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">2</td>
@@ -201,7 +201,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.discount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.discount" /></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">3</td>
@@ -209,7 +209,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.subtotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.subtotal" /></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">4</td>
@@ -217,7 +217,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.advancePayment) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.advancePayment" /></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">5</td>
@@ -225,7 +225,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.total) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.total" /></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">6</td>
@@ -233,7 +233,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.ppn) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.ppn" /></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">7</td>
@@ -241,7 +241,7 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.totalAmount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.totalAmount" /></td>
               </tr>
             </tbody>
           </table>

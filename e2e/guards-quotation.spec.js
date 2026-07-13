@@ -128,14 +128,14 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
     await dir.dispose();
 
     const api = await ctxFor('citra.k@bmj.com'); // Marketing — passes route gate, fails row lookup
-    const res = await api.post(`/api/quotation/reject/${slug}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const res = await api.post(`/api/quotation/reject/${slug}`, { data: { notes: 'test rejection notes' } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
 
-  test('GUARD-QUOTHR-007: Director reject nonexistent slug → 404', async () => {
+  test('GUARD-QUOTHR-007: Director reject nonexistent slug -> 404', async () => {
     const api = await ctxFor('director.jkt@bmj.com'); // Director
-    const res = await api.post(`/api/quotation/reject/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const res = await api.post(`/api/quotation/reject/${NONEXISTENT_SLUG}`, { data: { notes: 'test rejection notes' } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });

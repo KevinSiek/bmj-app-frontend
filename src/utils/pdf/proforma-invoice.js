@@ -1,6 +1,6 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
-import { formatCurrency } from '../form-util'
+import { formatPDFPrice } from '../form-util'
 import { ToWords } from 'to-words'
 import { common } from '@/config'
 import { getBase64FromUrl } from '../pdf-util'
@@ -111,7 +111,14 @@ const toWords = new ToWords({
 const createPdf = async (data) => {
   const { project, customer, price, downPayment, spareparts, services } = data
 
-  const totalAmountWord = toWords.convert(Math.ceil(price.totalAmount), { ignoreDecimal: true })
+  const dp = downPayment || 0
+  let amountToSpell = price.totalAmount
+  if (dp > 0) {
+    const subtotalTypeDp = Math.ceil(price.subtotal) * dp / 100
+    const ppnTypeDp = Math.ceil(subtotalTypeDp * 0.11)
+    amountToSpell = subtotalTypeDp + ppnTypeDp
+  }
+  const totalAmountWord = toWords.convert(Math.ceil(amountToSpell), { ignoreDecimal: true })
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
@@ -221,8 +228,8 @@ const createPdf = async (data) => {
             },
             { text: item.quantity, alignment: 'center' },
             { text: 'pcs', alignment: 'center' },
-            { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
-            { text: formatCurrency(item.totalPrice), alignment: 'right' }
+            formatPDFPrice(item.unitPriceSell),
+            formatPDFPrice(item.totalPrice)
           ]),
           [
             { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
@@ -257,7 +264,7 @@ const createPdf = async (data) => {
             '',
             '',
             '',
-            { text: formatCurrency(price.amount), alignment: 'right' }
+            formatPDFPrice(price.amount)
           ],
           [
             '2',
@@ -265,7 +272,7 @@ const createPdf = async (data) => {
             '',
             '',
             '',
-            { text: formatCurrency(price.discount), alignment: 'right' }
+            formatPDFPrice(price.discount)
           ],
           [
             '3',
@@ -273,7 +280,7 @@ const createPdf = async (data) => {
             '',
             '',
             '',
-            { text: formatCurrency(price.subtotal), alignment: 'right' }
+            formatPDFPrice(price.subtotal)
           ],
           [
             '4',
@@ -281,7 +288,7 @@ const createPdf = async (data) => {
             '',
             '',
             '',
-            { text: formatCurrency(price.advancePayment), alignment: 'right' }
+            formatPDFPrice(price.advancePayment)
           ],
           [
             '5',
@@ -289,7 +296,7 @@ const createPdf = async (data) => {
             '',
             '',
             '',
-            { text: formatCurrency(price.total), alignment: 'right' }
+            formatPDFPrice(price.total)
           ],
           [
             '6',
@@ -297,7 +304,7 @@ const createPdf = async (data) => {
             '',
             '',
             '',
-            { text: formatCurrency(price.ppn), alignment: 'right' }
+            formatPDFPrice(price.ppn)
           ],
           [
             '7',
@@ -305,7 +312,7 @@ const createPdf = async (data) => {
             '',
             '',
             '',
-            { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+            formatPDFPrice(price.totalAmount, { bold: true })
           ],
         ]
       },
@@ -362,8 +369,8 @@ const createPdf = async (data) => {
             { text: idx + 1, alignment: 'center' },
             { text: item.service },
             { text: item.quantity, alignment: 'center' },
-            { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
-            { text: formatCurrency(item.totalPrice), alignment: 'right' }
+            formatPDFPrice(item.unitPriceSell),
+            formatPDFPrice(item.totalPrice)
           ]),
           [
             { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
@@ -396,49 +403,49 @@ const createPdf = async (data) => {
             { text: 'Amount' },
             '',
             '',
-            { text: formatCurrency(price.amount), alignment: 'right' }
+            formatPDFPrice(price.amount)
           ],
           [
             '2',
             { text: 'Less: Discount' },
             '',
             '',
-            { text: formatCurrency(price.discount), alignment: 'right' }
+            formatPDFPrice(price.discount)
           ],
           [
             '3',
             { text: 'Sub Total ( 1-2 )' },
             '',
             '',
-            { text: formatCurrency(price.subtotal), alignment: 'right' }
+            formatPDFPrice(price.subtotal)
           ],
           [
             '4',
             { text: 'Less: Advance Payment' },
             '',
             '',
-            { text: formatCurrency(price.advancePayment), alignment: 'right' }
+            formatPDFPrice(price.advancePayment)
           ],
           [
             '5',
             { text: 'Total ( 3-4 )' },
             '',
             '',
-            { text: formatCurrency(price.total), alignment: 'right' }
+            formatPDFPrice(price.total)
           ],
           [
             '6',
             { text: 'VAT' },
             '',
             '',
-            { text: formatCurrency(price.ppn), alignment: 'right' }
+            formatPDFPrice(price.ppn)
           ],
           [
             '7',
             { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
             '',
             '',
-            { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+            formatPDFPrice(price.totalAmount, { bold: true })
           ],
         ]
       },

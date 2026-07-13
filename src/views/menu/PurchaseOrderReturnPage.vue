@@ -7,16 +7,16 @@
           <div class="row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col">
                   <label for="">Sparepart Name</label>
                 </div>
-                <div class="col-3">
+                <div class="col">
                   <label for="">Part Number</label>
                 </div>
                 <div class="col-2">
                   <label for="">PO Quantity</label>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                   <label for="">Returned Quantity</label>
                 </div>
               </div>
@@ -30,11 +30,11 @@
           <div v-for="(sparepart, sparepartIndex) in listSparepart" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
-                <div class="col-4">
+                <div class="col">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                     data-bs-toggle="dropdown" aria-expanded="false" disabled>
                 </div>
-                <div class="col-3">
+                <div class="col">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
                     placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false" disabled>
                 </div>
@@ -42,7 +42,7 @@
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
                     disabled>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.return"
                     @wheel.prevent>
                 </div>
@@ -62,13 +62,13 @@
           <div class="row">
             <div class="col-11">
               <div class="row">
-                <div class="col-5">
+                <div class="col">
                   <label for="">Sparepart Name</label>
                 </div>
-                <div class="col-4">
+                <div class="col">
                   <label for="">Part Number</label>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                   <label for="">Returned Quantity</label>
                 </div>
               </div>
@@ -82,15 +82,15 @@
           <div v-for="(sparepart, sparepartIndex) in returnedSparepart" :key="sparepartIndex" class="list row">
             <div class="col-11">
               <div class="row">
-                <div class="col-5">
+                <div class="col">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                     data-bs-toggle="dropdown" aria-expanded="false" disabled>
                 </div>
-                <div class="col-4">
+                <div class="col">
                   <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
                     placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false" disabled>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.return"
                     disabled>
                 </div>

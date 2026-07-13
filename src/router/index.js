@@ -655,7 +655,11 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.feature && authStore.user) {
     const allowed = getAllowedFeatures(authStore.user.role)
-    if (!allowed.includes(to.meta.feature)) {
+    const isMarketing = authStore.user.role.toLowerCase() === 'marketing'
+    const isMarketingReleaseDo = isMarketing && to.name === menuConfig.delivery_order_add.name
+    const isMarketingReleaseWo = isMarketing && to.name === menuConfig.work_order_add.name
+
+    if (!allowed.includes(to.meta.feature) && !isMarketingReleaseDo && !isMarketingReleaseWo) {
       return next('/menu')
     }
   }

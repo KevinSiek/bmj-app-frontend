@@ -19,7 +19,9 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '', // This is for Internal Request Number
         poNumber: data?.purchase_order?.po_number || '', // This is PO From Customer
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
-        type: data?.purchase_order?.type || ''
+        type: data?.purchase_order?.type || '',
+        branch: data?.purchase_order?.branch || '',
+        branchCode: data?.purchase_order?.branch_code || ''
       },
       proformaInvoice: {
         proformaInvoiceNumber: data?.proforma_invoice?.proforma_invoice_number || '',
@@ -35,7 +37,8 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
         office: data?.customer?.office || '',
         urban: data?.customer?.urban || '',
         subdistrict: data?.customer?.subdistrict || '',
-        postalCode: data?.customer?.postal_code || ''
+        postalCode: data?.customer?.postal_code || '',
+        npwp: data?.customer?.npwp || ''
       },
       price: {
         amount: data?.price?.amount || 0,

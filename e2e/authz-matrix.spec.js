@@ -29,9 +29,9 @@ const GROUPS = [
   { name: 'back-order', probe: '/api/back-order', allowed: ['inventory_admin'] },
   { name: 'buy', probe: '/api/buy', allowed: [] }, // inventory_purchase/inventory only — none of our seeded non-director accounts qualify
   { name: 'employee', probe: '/api/employee', allowed: [] }, // director only
-  { name: 'general', probe: '/api/general', allowed: [] }, // director only
+  { name: 'general', probe: '/api/general', allowed: ['marketing', 'finance', 'inventory_admin', 'service'] }, // global settings
   { name: 'dashboard', probe: '/api/dashboard/summary', allowed: [] }, // director only
-  { name: 'sparepart', probe: '/api/sparepart', allowed: ['marketing', 'inventory_admin'] },
+  { name: 'sparepart', probe: '/api/sparepart', allowed: ['marketing', 'inventory_admin', 'service'] },
 ];
 
 // The four non-director seeded roles we can authenticate as.

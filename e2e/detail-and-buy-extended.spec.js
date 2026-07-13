@@ -28,7 +28,7 @@ test.describe('Detail + Buy Extended API Tests', () => {
   async function director(playwright) {
     const ctx = await playwright.request.newContext({ baseURL: 'http://localhost:8000' });
     const res = await ctx.post('/api/login', {
-      data: { email: 'director.jkt@bmj.com', password: 'password' },
+      data: { email: 'director.smg@bmj.com', password: 'password' },
     });
     const body = await res.json();
     expect(body.access_token).toBeDefined();

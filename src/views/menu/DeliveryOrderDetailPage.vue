@@ -67,6 +67,11 @@
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.deliveryOrderNumber"
                 placeholder="No" disabled>
             </div>
+            <div v-if="deliveryOrder.deliveryOrder.deliveryNoteNumber" class="input form-group col-12">
+              <label for="">Delivery Note No</label><br>
+              <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.deliveryNoteNumber"
+                placeholder="Delivery Note No" disabled>
+            </div>
             <div class="input form-group col-12">
               <label for="">Date</label><br>
               <input type="date" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.deliveryOrderDate"
@@ -150,6 +155,7 @@
                 <th scope="col" class="table-part-number">PART NUMBER</th>
                 <th scope="col" class="table-name">Quantity</th>
                 <th scope="col" class="table-name">UNIT</th>
+                <th scope="col" class="table-name">Stock</th>
               </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -160,6 +166,7 @@
                 <td class="table-col table-name"> {{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit || 'PCS' }}</td>
+                <td class="table-col table-name text-uppercase">{{ sparepart.stock }}</td>
               </tr>
             </tbody>
           </table>
@@ -180,7 +187,7 @@
     </div>
     <div class="right">
       <button type="button" class="btn btn-process mx-3" @click="printDeliveryOrder">Print Delivery Order</button>
-      <button type="button" class="btn btn-process mx-3" @click="printDeliveryNote">Print Delivery Note</button>
+      <button v-if="isShowPrintDN" type="button" class="btn btn-process mx-3" @click="printDeliveryNote">Print Delivery Note</button>
       <button v-if="isShowProcess" type="button" class="btn btn-process mx-3" @click="setProcessConfirmation"
         :disabled="isProcessing">Process</button>
       <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setDoneConfirmation"
@@ -218,8 +225,20 @@ const isShowDone = computed(() =>
 
 const isShowProcess = computed(() =>
   (isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value) &&
-  deliveryOrder.value.currentStatus === common.status.work_order.wait_on_progress
+  deliveryOrder.value.currentStatus === common.status.work_order.wait_on_progress &&
+  (deliveryOrder.value?.purchaseOrder?.isDpPaid || deliveryOrder.value?.purchaseOrder?.isFullPaid)
 )
+
+const isSemarangBranch = computed(() => {
+  const branch = deliveryOrder.value?.purchaseOrder?.branch || ''
+  return branch.toLowerCase() === 'semarang' || branch.toUpperCase() === 'SMG'
+})
+
+const isShowPrintDN = computed(() => {
+  if (!isSemarangBranch.value) return false
+  const status = deliveryOrder.value?.currentStatus
+  return status === common.status.work_order.on_progress || status === common.status.work_order.done
+})
 
 onBeforeMount(() => {
   if (!deliveryOrder.value) deliveryOrderStore.$resetDeliveryOrder()
@@ -268,7 +287,38 @@ const printDeliveryOrder = () => {
   createPdf(deliveryOrder.value, 'DELIVERY ORDER')
 }
 const printDeliveryNote = () => {
-  createPdf(deliveryOrder.value, 'DELIVERY NOTE')
+  if (!isShowPrintDN.value) return
+
+  modalStore.openNotesModal(
+    'Print Delivery Note',
+    async () => {
+      const receiverName = modalStore.notes
+      if (!receiverName) {
+        modalStore.openMessageModal(common.modal.failed, 'Receiver Name is required to print the Delivery Note')
+        return
+      }
+
+      try {
+        isProcessing.value = true
+        // Set the receivedBy field
+        deliveryOrder.value.deliveryOrder.receivedBy = receiverName
+        
+        // Use the existing update method on the store with a flat payload
+        await deliveryOrderStore.updateDeliveryOrder(route.params.id, {
+          receivedBy: receiverName
+        })
+        await fetchData()
+        
+        // Print the PDF using the updated data
+        createPdf(deliveryOrder.value, 'DELIVERY NOTE')
+      } catch (error) {
+        modalStore.openMessageModal(common.modal.failed, error?.data?.error || error?.data?.message || 'Failed to update receiver name')
+      } finally {
+        isProcessing.value = false
+      }
+    },
+    { label: 'Receiver Name' }
+  )
 }
 const back = () => {
   router.push(menuConfig.delivery_order.path)

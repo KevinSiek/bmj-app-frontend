@@ -1,0 +1,282 @@
+[access-summary.spec.js] ACC-API-001: Create Access
+[access-summary.spec.js] ACC-API-002: Get all Accesses
+[access-summary.spec.js] ACC-API-003: Get single Access
+[access-summary.spec.js] ACC-API-004: Update Access
+[access-summary.spec.js] ACC-API-005: Delete Access
+[access-summary.spec.js] SUM-API-001: Director Summary reflects a newly created quotation
+[access-summary.spec.js] SUM-API-002: Marketing Summary returns numeric counts
+[access-summary.spec.js] SUM-API-003: Inventory Summary responds 200 with a data object
+[access-summary.spec.js] SUM-API-004: Finance Summary responds 200 with a data object
+[access-summary.spec.js] SUM-API-005: Service Summary responds 200 with a data object
+[auth-lifecycle.spec.js] AL-001: logout revokes the current token
+[auth-lifecycle.spec.js] AL-002: a new employee can log in with its temp password (use_temp_password=true)
+[auth-lifecycle.spec.js] AL-003: changePassword rejects a weak password (422) and accepts a strong one (200)
+[auth-lifecycle.spec.js] AL-004: changePassword requires matching confirm_password (422)
+[auth-lifecycle.spec.js] AL-005: reset-password issues a usable temp password (Director)
+[auth-lifecycle.spec.js] AL-006: temp password is single-use — reuse fails after changePassword
+[auth-lifecycle.spec.js] AL-007: a gated account cannot reach a protected mutation until password changed
+[auth.spec.js] AUTH-API-001: Login with valid credentials
+[auth.spec.js] AUTH-API-002: Login with wrong password
+[auth.spec.js] AUTH-API-004: Form validation for missing fields
+[auth.spec.js] UI-AUTH-028: Login page renders correctly
+[backorder-buy.spec.js] BO-SETUP: Create Indent Quotation -> PO -> Release -> Creates Back Order
+[backorder-buy.spec.js] BO-API-003: Analyze and Process Back Order
+[backorder-buy.spec.js] BUY-API-007 & 008: Approve and Receive Buy (Director & Inventory)
+[backorder-buy.spec.js] BO-API-003-PART2: Fulfill Back Order with received stock
+[backorder-buy.spec.js] BO-API-004: Role Security (Marketing blocked from Back Order)
+[bo-double-loop.spec.js] BO-DOUBLE: Buy partial, Analyze, Buy rest, Analyze
+[borrow-shortfall.spec.js] BOR-SHORTFALL: Partial return demands a Spareparts PO
+[bulk-import.spec.js] IMP-001: valid import creates a new sparepart (new_records=1)
+[bulk-import.spec.js] IMP-002: imported sparepart has a record on every branch
+[bulk-import.spec.js] IMP-003: re-importing an existing part resets its branch stock to 0 (not additive)
+[bulk-import.spec.js] IMP-004: a row failing validation aborts the import (400) and persists nothing
+[buy-extended.spec.js] BUY-EXT-001: Create Buy
+[buy-extended.spec.js] BUY-EXT-002: Reject Buy
+[buy-extended.spec.js] BUY-EXT-003: Create Buy for needChange
+[buy-extended.spec.js] BUY-EXT-004: needChange Buy
+[concurrency-deep.spec.js] CONC-001: five concurrent moveToPo decrements apply with no lost update
+[concurrency-deep.spec.js] CONC-002: concurrent Buy receives apply every increment with no lost update
+[concurrency-deep.spec.js] CONC-003: a decrement (moveToPo) racing an increment (Buy receive) nets correctly
+[customer-seller.spec.js] CUST-API-004: Create Customer
+[customer-seller.spec.js] CUST-API-003: Get all Customers
+[customer-seller.spec.js] CUST-API-00x: Get single Customer
+[customer-seller.spec.js] CUST-API-00x: Update Customer
+[customer-seller.spec.js] CUST-API-00x: Delete Customer
+[customer-seller.spec.js] SELL-API-005: Create Seller
+[customer-seller.spec.js] SELL-API-00x: Get all Sellers
+[customer-seller.spec.js] SELL-API-00x: Get single Seller
+[customer-seller.spec.js] SELL-API-00x: Update Seller
+[customer-seller.spec.js] SELL-API-00x: Delete Seller
+[dashboard.spec.js] DASH-UI: Verify Dashboard loads for Director
+[dashboard.spec.js] DASH-UI: Verify Dashboard Role Access (Marketing)
+[detail-and-buy-extended.spec.js] DBE-API-001: Buy update persists notes (read-back)
+[detail-and-buy-extended.spec.js] DBE-API-002: Buy update validation rejects bad input (422)
+[detail-and-buy-extended.spec.js] DBE-API-003: Buy delete removes the record (incl. line items)
+[detail-and-buy-extended.spec.js] DBE-API-004: Buy review list responds with a paginated envelope
+[detail-and-buy-extended.spec.js] DBE-API-005: Delivery Order detail endpoint (release a goods PO first)
+[detail-and-buy-extended.spec.js] DBE-API-006: Back Order detail endpoint (indent order produces a BO)
+[detail-and-buy-extended.spec.js] DBE-API-007: Work Order detail endpoint (release a service PO first)
+[detail-and-buy-extended.spec.js] DBE-API-008: Employee access endpoint returns the role access object
+[edge-cases.spec.js] EDGE-PAGE-001: list endpoints return the full pagination envelope
+[edge-cases.spec.js] EDGE-PAGE-002: page parameter advances to the requested page
+[edge-cases.spec.js] EDGE-PAGE-003: page beyond last_page returns 200 with an empty data array
+[edge-cases.spec.js] EDGE-FILTER-001: search filter only returns matching rows
+[edge-cases.spec.js] EDGE-FILTER-002: a search with no matches returns an empty (not error) list
+[edge-cases.spec.js] EDGE-CHARS-001: special characters in a customer name round-trip exactly
+[edge-cases.spec.js] EDGE-CHARS-002: a name at the 255-char max length is accepted; 256 is rejected (422)
+[edge-cases.spec.js] EDGE-MONEY-001: quotation pricing computes subtotal/ppn/grand_total from decimals
+[edge-cases.spec.js] EDGE-MONEY-002: large quantities do not overflow or corrupt the subtotal
+[employee-extended.spec.js] EMP-EXT-001: Create Employee
+[employee-extended.spec.js] EMP-EXT-002: Update Employee
+[employee-extended.spec.js] EMP-EXT-003: Reset Password
+[employee-extended.spec.js] EMP-EXT-004: Temp Password Login & Change Password Flow
+[employee-extended.spec.js] EMP-EXT-005: Delete Employee
+[feature-verify-2.spec.js] FV2-7: 
+[feature-verify-2.spec.js] FV2-2: Marketing sparepart detail hides Selling Price + sellers
+[feature-verify-2.spec.js] FV2-7b: Delivery Note detail has two print buttons
+[feature-verify-2.spec.js] FV2-1: PI detail shows No Internal Request + No PO fields
+[feature-verify-3.spec.js] FV3-setup: drive Service quotation -> release -> mint a Work Order (WAIT_ON_PROGRESS)
+[feature-verify-3.spec.js] FV3-#9a: WO process() advances Wait On Progress -> On Progress (NOT done)
+[feature-verify-3.spec.js] FV3-#10: WO detail carries No Internal Request + No PO numbers
+[feature-verify-3.spec.js] FV3-#9b: WO done() advances On Progress -> Done + propagates DONE to PO & quotation
+[feature-verify-3.spec.js] FV3-#9c: done() again is rejected (idempotency guard)
+[feature-verify-3.spec.js] FV3-#9/#10 UI: WO detail shows status + IR/PO labels + lifecycle button
+[feature-verify-3.spec.js] FV3-#6-setup: stock-short Spareparts moveToPo mints a Back Order with back_order>0
+[feature-verify-3.spec.js] FV3-#6 UI: Back Order detail renders + Print button present
+[feature-verify-borrow.spec.js] BOR-1: create -> borrow decrements stock by qty, return restores it
+[feature-verify-borrow.spec.js] BOR-2: cancel-from-Borrowed reverses the decrement
+[feature-verify-borrow.spec.js] BOR-3: borrow blocked (422) when branch stock is insufficient; stock untouched
+[feature-verify-borrow.spec.js] BOR-4: illegal transition guarded (return from Created -> 400)
+[feature-verify-borrow.spec.js] BOR-5 UI: Borrow list + detail render with status-gated buttons
+[feature-verify-borrow.spec.js] BOR-6 UI: Add Borrow form renders
+[feature-verify-pdf.spec.js] #5: Quotation PDF downloads as a valid PDF (rev-stamp path, version present)
+[feature-verify-pdf.spec.js] #5: version is present in the quotation detail response (rev-stamp source)
+[feature-verify-pdf.spec.js] #5: Purchase Order PDF downloads as a valid PDF (rev-stamp path)
+[feature-verify-pdf.spec.js] #6: Back Order PDF downloads as a valid PDF
+[feature-verify-stock-history.spec.js] SH-1: a Borrow cycle writes +/- movements visible in the GLOBAL endpoint + filter works
+[feature-verify-stock-history.spec.js] SH-2 UI: standalone /stock-history page renders the table for Director
+[feature-verify-stock-history.spec.js] SH-3 UI: sparepart DETAIL page no longer shows a Stock History section
+[feature-verify-stock-history.spec.js] SH-4: Marketing gets 403 on the global endpoint; sparepart still visible
+[feature-verify.spec.js] FV-1: realtime Rp formatting on the quotation unit-price input
+[feature-verify.spec.js] FV-3: total-discount % field appears below the total amount
+[feature-verify.spec.js] FV-5: Create PO modal shows the No PO input
+[feature-verify.spec.js] FV-5b/6: PO detail shows No Internal Request + No PO labels
+[guards-buy.spec.js] GUARD-BUY-001: Marketing cannot POST buy/approve (Inventory/Director-only) → 403
+[guards-buy.spec.js] GUARD-BUY-002: Unauthenticated POST buy/approve → 401
+[guards-buy.spec.js] GUARD-BUY-003: approve with non-existent id → 404 (Buy::find returns null)
+[guards-buy.spec.js] GUARD-BUY-004: ALLOW — Head Inventory POST buy/approve is NOT 403
+[guards-buy.spec.js] GUARD-BUY-005: Finance cannot POST buy/reject (Inventory/Director-only) → 403
+[guards-buy.spec.js] GUARD-BUY-006: reject with non-existent id → 404 (Buy::find returns null)
+[guards-buy.spec.js] GUARD-BUY-007: ALLOW — Director POST buy/reject is NOT 403
+[guards-buy.spec.js] GUARD-BUY-008: Marketing cannot POST buy/needChange (Inventory/Director-only) → 403
+[guards-buy.spec.js] GUARD-BUY-009: needChange with non-existent id → 404 (Buy::find returns null)
+[guards-buy.spec.js] GUARD-BUY-010: ALLOW — Head Inventory POST buy/needChange is NOT 403
+[guards-buy.spec.js] GUARD-BUY-011: Service cannot POST buy/done (Inventory/Director-only) → 403
+[guards-buy.spec.js] GUARD-BUY-012: done with non-existent id → 404 (Buy::find returns null, before branch resolution)
+[guards-buy.spec.js] GUARD-BUY-013: ALLOW — Director POST buy/done is NOT 403
+[guards-buy.spec.js] GUARD-BUY-014: Finance cannot DELETE buy (Inventory/Director-only) → 403
+[guards-buy.spec.js] GUARD-BUY-015: DELETE buy with non-existent id → 404 (Buy::find returns null)
+[guards-buy.spec.js] GUARD-BUY-016: ALLOW — Inventory Purchase DELETE buy reaches handler (404, not 403)
+[guards-do-bo-pi.spec.js] GUARD-HRE-001: Marketing POST delivery-order/process (inventory/director-only) → 403
+[guards-do-bo-pi.spec.js] GUARD-HRE-002: Unauthenticated POST delivery-order/process → 401
+[guards-do-bo-pi.spec.js] GUARD-HRE-003: ALLOW-case — Inventory Admin POST delivery-order/process is NOT 403
+[guards-do-bo-pi.spec.js] GUARD-HRE-004: Inventory Admin POST delivery-order/process on an already-Done order → 400
+[guards-do-bo-pi.spec.js] GUARD-HRE-005: Inventory Admin POST delivery-order/process on nonexistent id → 404
+[guards-do-bo-pi.spec.js] GUARD-HRE-006: Marketing POST back-order/process → 403
+[guards-do-bo-pi.spec.js] GUARD-HRE-007: Unauthenticated POST back-order/process → 401
+[guards-do-bo-pi.spec.js] GUARD-HRE-008: ALLOW-case — Inventory Purchase POST back-order/process is NOT 403
+[guards-do-bo-pi.spec.js] GUARD-HRE-009: Inventory Purchase POST back-order/process on a Ready/Rejected order → 400
+[guards-do-bo-pi.spec.js] GUARD-HRE-010: Inventory Purchase POST back-order/process on nonexistent id → 404
+[guards-do-bo-pi.spec.js] GUARD-HRE-011: Service POST proforma-invoice/fullPaid (finance/director-only) → 403
+[guards-do-bo-pi.spec.js] GUARD-HRE-012: Unauthenticated POST proforma-invoice/fullPaid → 401
+[guards-do-bo-pi.spec.js] GUARD-HRE-013: ALLOW-case — Finance POST proforma-invoice/fullPaid is NOT 403
+[guards-do-bo-pi.spec.js] GUARD-HRE-014: Finance POST proforma-invoice/fullPaid on a Rejected PO → 400
+[guards-do-bo-pi.spec.js] GUARD-HRE-015: Finance POST proforma-invoice/fullPaid on nonexistent po_id → 404
+[guards-masterdata.spec.js] GUARD-RBA-001: Finance POST /api/sparepart (forbidden role) → 403
+[guards-masterdata.spec.js] GUARD-RBA-002: Inventory Admin POST /api/sparepart missing required fields → 422
+[guards-masterdata.spec.js] GUARD-RBA-003: Allow-case — Inventory Admin POST /api/sparepart (authorized role) NOT 403
+[guards-masterdata.spec.js] GUARD-RBA-004: Service PUT /api/sparepart/{id} (forbidden role) → 403
+[guards-masterdata.spec.js] GUARD-RBA-005: Inventory Admin PUT /api/sparepart/{id} missing required fields → 422
+[guards-masterdata.spec.js] GUARD-RBA-006: Finance DELETE /api/sparepart/{id} (forbidden role) → 403
+[guards-masterdata.spec.js] GUARD-RBA-007: Inventory Admin DELETE /api/sparepart/{nonexistent} → 404
+[guards-masterdata.spec.js] GUARD-RBA-008: Marketing PUT /api/employee/{slug} (non-Director) → 403
+[guards-masterdata.spec.js] GUARD-RBA-009: Director PUT /api/employee/{slug} missing required fields → 422
+[guards-masterdata.spec.js] GUARD-RBA-010: Allow-case — Director PUT /api/employee/{slug} (authorized role) NOT 403
+[guards-masterdata.spec.js] GUARD-RBA-011: Finance POST /api/employee/reset-password/{slug} (non-Director) → 403
+[guards-masterdata.spec.js] GUARD-RBA-012: Director POST /api/employee/reset-password/{nonexistent} → 404
+[guards-masterdata.spec.js] GUARD-RBA-013: Anonymous PUT /api/access/{id} (unauthenticated) → 401
+[guards-masterdata.spec.js] GUARD-RBA-014: Finance PUT /api/access/{nonexistent} → 404
+[guards-masterdata.spec.js] GUARD-RBA-015: PUT /api/access/{badFormat} → 404 (non-numeric id resolves to no row)
+[guards-masterdata.spec.js] GUARD-RBA-016: Anonymous DELETE /api/access/{id} (unauthenticated) → 401
+[guards-masterdata.spec.js] GUARD-RBA-017: Finance DELETE /api/access/{nonexistent} → 404
+[guards-masterdata.spec.js] GUARD-RBA-018: Anonymous DELETE /api/customer/{slug} (unauthenticated) → 401
+[guards-masterdata.spec.js] GUARD-RBA-019: Marketing DELETE /api/customer/{nonexistent} → 404
+[guards-masterdata.spec.js] GUARD-RBA-020: Anonymous PUT /api/seller/{slug} (unauthenticated) → 401
+[guards-masterdata.spec.js] GUARD-RBA-021: Finance PUT /api/seller/{slug} missing required fields → 422
+[guards-masterdata.spec.js] GUARD-RBA-022: Finance PUT /api/seller/{nonexistent code} with valid body → 404
+[guards-masterdata.spec.js] GUARD-RBA-023: Anonymous DELETE /api/seller/{slug} (unauthenticated) → 401
+[guards-masterdata.spec.js] GUARD-RBA-024: Finance DELETE /api/seller/{nonexistent code} → 404
+[guards-purchase-order.spec.js] GUARD-PO-001: Inventory Purchase cannot POST ready (role not in group) → 403
+[guards-purchase-order.spec.js] GUARD-PO-002: Inventory Purchase cannot POST release → 403
+[guards-purchase-order.spec.js] GUARD-PO-003: Inventory Purchase cannot POST done → 403
+[guards-purchase-order.spec.js] GUARD-PO-004: Inventory Purchase cannot POST decline → 403
+[guards-purchase-order.spec.js] GUARD-PO-005: Inventory Purchase cannot POST status → 403
+[guards-purchase-order.spec.js] GUARD-PO-006: Unauthenticated POST status returns 401
+[guards-purchase-order.spec.js] GUARD-PO-007: Allow-case — Director POST status is NOT 403 (role authorized)
+[guards-purchase-order.spec.js] GUARD-PO-008: POST status with invalid status value → 422
+[guards-purchase-order.spec.js] GUARD-PO-009: POST status with missing status field → 422
+[guards-purchase-order.spec.js] GUARD-PO-010: Director POST decline missing notes → 422
+[guards-purchase-order.spec.js] GUARD-PO-011: Director POST done to nonexistent id → 404
+[guards-purchase-order.spec.js] GUARD-PO-012: Director POST ready to nonexistent id → 404
+[guards-purchase-order.spec.js] GUARD-PO-013: Director POST release with empty body → 400 (validator/business rule, never 422)
+[guards-quotation.spec.js] GUARD-QUOTHR-001: Service approve (route-gated role) → 403
+[guards-quotation.spec.js] GUARD-QUOTHR-002: Marketing approve (authorized role, non-Director) is blocked → 404
+[guards-quotation.spec.js] GUARD-QUOTHR-003: Director approve nonexistent slug → 404
+[guards-quotation.spec.js] GUARD-QUOTHR-004: Allow-case — Director approve real slug NOT 403
+[guards-quotation.spec.js] GUARD-QUOTHR-005: Service reject (route-gated role) → 403
+[guards-quotation.spec.js] GUARD-QUOTHR-006: Marketing reject (authorized role, non-Director) is blocked → 404
+[guards-quotation.spec.js] GUARD-QUOTHR-007: Director reject nonexistent slug → 404
+[guards-quotation.spec.js] GUARD-QUOTHR-008: Allow-case — Director reject real slug NOT 403
+[guards-quotation.spec.js] GUARD-QUOTHR-009: Inventory Admin needChange (route-gated role) → 403
+[guards-quotation.spec.js] GUARD-QUOTHR-010: Director needChange nonexistent slug → 404
+[guards-quotation.spec.js] GUARD-QUOTHR-011: Allow-case — Marketing needChange real slug NOT 403
+[guards-quotation.spec.js] GUARD-QUOTHR-012: Inventory Admin update (route-gated role) → 403
+[guards-quotation.spec.js] GUARD-QUOTHR-013: Marketing update with missing required fields → 422
+[guards-quotation.spec.js] GUARD-QUOTHR-014: Marketing update invalid enum project.type → 422
+[guards-quotation.spec.js] GUARD-QUOTHR-015: Marketing update valid body, nonexistent slug → 404
+[guards-quotation.spec.js] GUARD-QUOTHR-016: Unauthenticated approve → 401
+[illegal-transitions.spec.js] ILL-001: moveToPo on an unapproved quotation is rejected
+[illegal-transitions.spec.js] ILL-002: moveToPo twice (already has a PO) is rejected
+[illegal-transitions.spec.js] ILL-003: moveToPi twice (PI already exists) is rejected
+[illegal-transitions.spec.js] ILL-004: release a goods PO without a PI is rejected
+[illegal-transitions.spec.js] ILL-005: release a rejected/declined PO is rejected
+[illegal-transitions.spec.js] ILL-006: PO updateStatus rejects an arbitrary status (422) and accepts a valid one
+[invoice.spec.js] INV-SETUP: Create Full Pipeline to generate Invoice
+[invoice.spec.js] INV-API-001: View Invoice List and Details (Finance)
+[list-filters.spec.js] LF-001: quotation review/{1} and review/{0} are disjoint (the flag actually filters)
+[list-filters.spec.js] LF-002: a freshly created low-price (On Review) quotation appears in review/{1}
+[list-filters.spec.js] LF-003: every row returned by quotation review/{1} is a reviewable status
+[list-filters.spec.js] LF-004: buy review/{1} and review/{0} are disjoint
+[list-filters.spec.js] LF-005: quotation return/{1} and return/{0} are disjoint
+[list-filters.spec.js] LF-006: a quotation put into a return state appears in return/{0} and not return/{1}
+[master-data.spec.js] EMP-API-009: Create Employee (Director)
+[master-data.spec.js] SP-API-003: Create Sparepart
+[master-data.spec.js] GEN-API-007: Update General Settings
+[negative-paths.spec.js] NEG-VAL-007: Buy create with empty spareparts → 422
+[negative-paths.spec.js] NEG-VAL-008: Quotation with negative quantity → 422
+[negative-paths.spec.js] NEG-404-014: PUT non-existent customer → 404
+[negative-paths.spec.js] NEG-404-015: DELETE non-existent employee → 404
+[negative-paths.spec.js] NEG-404-016: POST dpPaid on non-existent PI → 404
+[order-flow-extended.spec.js] OFE-API-001: PO updateStatus persists the new status
+[order-flow-extended.spec.js] OFE-API-002: getAllReturn returns a paginated list
+[order-flow-extended.spec.js] OFE-API-003: moveToInvoice creates an Invoice and blocks a second one
+[order-flow-extended.spec.js] OFE-API-004: isNeedReturn list endpoint responds
+[order-flow-extended.spec.js] OFE-API-005: declineReturn on a non-return quotation is rejected (400)
+[order-updates.spec.js] ORD-EXT-001: Setup Orders
+[order-updates.spec.js] ORD-EXT-002: Update Purchase Order (read-back number)
+[order-updates.spec.js] ORD-EXT-003: Update Proforma Invoice (read-back down_payment)
+[order-updates.spec.js] ORD-EXT-004: Update Delivery Order (read-back ship_mode)
+[order-updates.spec.js] ORD-EXT-005: Update Work Order (read-back worker)
+[proforma-invoice.spec.js] PI-SETUP: Create a PO to test PI workflows via UI
+[proforma-invoice.spec.js] PI-API-008 & UI-PI-009: Move PO to PI & Check UI
+[proforma-invoice.spec.js] PI-API-003: Pay Down Payment (DP)
+[proforma-invoice.spec.js] PI-API-005: Pay Full -> Creates Invoice
+[proforma-invoice.spec.js] PI-API-008 (Negative): Finance & Director roles only
+[purchase-order-negative.spec.js] PO-DECLINE-SETUP: Create a Purchase Order for negative testing
+[purchase-order-negative.spec.js] PO-API-025: Decline PO — Marketing role blocked (UI Button Missing)
+[purchase-order-negative.spec.js] PO-API-023: Decline PO — Finance role
+[purchase-order.spec.js] PO-SETUP: Create a Purchase Order for testing
+[purchase-order.spec.js] UI-PO-031: PO detail page shows Track timeline
+[purchase-order.spec.js] PO-API-008: Move to PI (Finance)
+[purchase-order.spec.js] PO-API-012: Set to Ready (Inventory Admin)
+[purchase-order.spec.js] PO-API-019: Release Spareparts PO (Inventory Admin)
+[purchase-order.spec.js] PO-API-020: Release blocked if DO exists & Role UI visibility
+[purchase-order.spec.js] PO-API-015: Done (Marketing)
+[purchase-order.spec.js] PO-API-016 & PO-API-017 & PO-API-018: Service PO Flow
+[quotation-extended.spec.js] QUOT-EXT-001: Create Initial Quotation
+[quotation-extended.spec.js] QUOT-EXT-002: Update Quotation
+[quotation-extended.spec.js] QUOT-EXT-003: Request Change (needChange) flips status to Change
+[quotation.spec.js] UI-QUOT-041 & UI-QUOT-042: Create Quotation and check pricing calculations
+[quotation.spec.js] QUOT-API-028: Director approves quotation
+[quotation.spec.js] QUOT-API-034: Move to PO from approved quotation
+[quotation.spec.js] QUOT-API-030 & QUOT-API-032: Reject quotation
+[recent-edge-cases.spec.js] CUST-EDGE-001 & 002: Customer isolation and group sharing
+[recent-edge-cases.spec.js] DO-EDGE-001 & 002: DO Release Bypass & DN Sequential Numbering
+[return-reject.spec.js] RJ-001: returning then rejecting the return leaves the quotation Declined
+[return-reject.spec.js] RJ-002: rejectReturn on a quotation that is not in a return state → 400
+[return.spec.js] RET-SETUP: Create Quotation → PO → Ready → Release → Done via API, then Return via UI
+[return.spec.js] RET-API-002: Approve Return (Director)
+[security-403-writes.spec.js] SECW-001: Unauthenticated mutation returns 401
+[security-403-writes.spec.js] SECW-002: Marketing cannot POST to employee (Director-only) → 403
+[security-403-writes.spec.js] SECW-003: Marketing cannot POST work-order process (Service-only) → 403
+[security-403-writes.spec.js] SECW-004: Finance cannot POST buy (Inventory/Director-only) → 403
+[security-403-writes.spec.js] SECW-005: Service cannot POST proforma-invoice dpPaid (Finance-only) → 403
+[security-403-writes.spec.js] SECW-006: Inventory Admin cannot PUT proforma-invoice (Finance-only) → 403
+[security-403-writes.spec.js] SECW-007: Marketing cannot PUT general settings (Director-only) → 403
+[security-403-writes.spec.js] SECW-008: Allow-case — Director CAN POST employee (not 403)
+[security-403.spec.js] SEC-API-001: Unauthenticated request returns 401
+[security-403.spec.js] SEC-API-002: Marketing role restrictions (403)
+[security-403.spec.js] SEC-API-003: Finance role restrictions (403)
+[security-403.spec.js] SEC-API-004: Inventory Admin role restrictions (403)
+[security-403.spec.js] SEC-API-005: Service role restrictions (403)
+[sparepart-extended.spec.js] SP-EXT-001: Create Sparepart
+[sparepart-extended.spec.js] SP-EXT-002: Update Sparepart
+[sparepart-extended.spec.js] SP-EXT-003: Delete Sparepart
+[sparepart-extended.spec.js] SP-EXT-004: Bulk Import with Invalid File
+[stock-concurrency.spec.js] STKC-001: over-ordering floors branch stock at 0
+[stock-concurrency.spec.js] STKC-002: concurrent moveToPo serialize with no lost update
+[stock-math.spec.js] STK-API-001: Releasing DO should decrement stock
+[stock-math.spec.js] STK-API-002: Completing Buy should increment stock
+[stock-math.spec.js] STK-API-003: Returning PO after release should restore stock
+[summary-values.spec.js] SUMV-001: inventory summary (as Inventory Admin) returns numeric PO counts
+[summary-values.spec.js] SUMV-002: finance summary (as Finance) returns numeric payment-state counts
+[summary-values.spec.js] SUMV-003: service summary (as Service) returns numeric work-order counts
+[summary-values.spec.js] SUMV-004: inventory PO total increments when a new PO is created (live value check)
+[upload-data.spec.js] UPLOAD-UI: Verify Upload Data page loads for Director
+[upload-data.spec.js] UPLOAD-UI: Verify Role Access Blocked (Marketing)
+[validation-matrix.spec.js] VM moveToPo · notes missing → 422
+[wo-do.spec.js] WO-SETUP: Create Service Quotation, Move to PO, Move to PI, Pay DP, Set Ready
+[wo-do.spec.js] WO-API-003: Update Work Order status (Service Role)
+[wo-do.spec.js] DO-SETUP: Create a Spareparts PO and Release to DO
+[wo-do.spec.js] DO-API-008: Update DO Status to Delivered (Inventory Admin Role)
+[wo-do.spec.js] DO-API-007: Role Access Blocked (Finance)

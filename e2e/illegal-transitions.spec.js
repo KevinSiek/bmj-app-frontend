@@ -74,13 +74,29 @@ test.describe('Illegal State Transitions', () => {
     expect((await res.json()).message).toMatch(/already has a proforma/i);
   });
 
-  test('ILL-004: release a goods PO without a PI is rejected', async () => {
+  test('ILL-004: release a goods PO without a PI is rejected', async ({ playwright }) => {
     const q = await quotation();
     await approve(q.slug);
     const poId = (await (await moveToPo(q.slug)).json()).data.id;
-    const res = await releaseDO(poId); // no moveToPi
+
+    // Use inventory admin to test the PI guard (Director bypasses it)
+    const invCtx = await playwright.request.newContext({ baseURL: 'http://localhost:8000' });
+    const invToken = (await (await invCtx.post('/api/login', {
+      data: { email: 'inventory.admin.smg@bmj.com', password: 'password' },
+    })).json()).access_token;
+    const invApi = await playwright.request.newContext({
+      baseURL: 'http://localhost:8000',
+      extraHTTPHeaders: { Authorization: `Bearer ${invToken}`, Accept: 'application/json' },
+    });
+
+    const res = await invApi.post(`/api/purchase-order/release/${poId}`, {
+      data: { deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'C', shipMode: 'Land', orderType: 'N' }, notes: 'R' },
+    }); // no moveToPi
     expect(res.status()).toBe(400);
     expect((await res.json()).message).toMatch(/proforma invoice must exist/i);
+
+    await invApi.dispose();
+    await invCtx.dispose();
   });
 
   test('ILL-005: release a rejected/declined PO is rejected', async () => {

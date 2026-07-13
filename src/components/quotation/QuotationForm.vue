@@ -110,6 +110,11 @@
             <input type="email" class="form-control mt-2" v-model="quotation.customer.email" placeholder="Email"
               :disabled="disabled">
           </div>
+          <div class="input form-group col-12">
+            <label for="">NPWP <small class="text-muted">(optional)</small></label><br>
+            <input type="text" class="form-control mt-2" v-model="quotation.customer.npwp" placeholder="NPWP"
+              :disabled="disabled">
+          </div>
         </div>
       </div>
     </div>
@@ -136,8 +141,8 @@
               <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
               <td class="table-col table-name">{{ sparepart.quantity }}</td>
               <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
-              <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
-              <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceSell" /></td>
+              <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
               <td class="table-col table-name">{{ sparepart.stock }}</td>
             </tr>
             <tr class="align-middle">
@@ -147,7 +152,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.amount) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.amount" /></td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -157,7 +162,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.discount) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.discount" /></td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -167,7 +172,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.subtotal) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.subtotal" /></td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -177,7 +182,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.ppn) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.ppn" /></td>
               <td class="table-col table-name"></td>
             </tr>
             <tr class="align-middle">
@@ -187,7 +192,7 @@
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.grandTotal) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.grandTotal" /></td>
               <td class="table-col table-name"></td>
             </tr>
           </tbody>
@@ -197,22 +202,22 @@
         <div class="sparepart-scroll">
           <div class="form-group col-12 mx-3">
             <div class="row flex-nowrap">
-              <div class="col-3">
+              <div class="col-2">
                 <label for="">Sparepart Name</label>
               </div>
-              <div class="col-3">
+              <div class="col-2">
                 <label for="">Part Number</label>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <label for="">Stock</label>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <label for="">Quantity</label>
               </div>
-              <div class="col-2">
+              <div class="col">
                 <label for="">Unit Price</label>
               </div>
-              <div class="col-2">
+              <div class="col">
                 <label for="">Total Price</label>
               </div>
               <div class="col-1">
@@ -223,15 +228,13 @@
           <div class="form-group col-12 mx-3">
             <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex"
               class="list row flex-nowrap">
-              <!-- FIXED: Sparepart Name with Controlled Dropdown -->
-              <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+              <div class="col-2 sparepart-container" :data-index="sparepartIndex">
                 <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
                   @focus="openDropdown(sparepartIndex, 'name')"
                   @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
                   @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')" @blur="onNameBlur(sparepartIndex)"
                   :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }" />
 
-                <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
                 <ul
                   v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].name && searchedSpareparts.length > 0"
                   class="dropdown-menu" style="display: block;">
@@ -246,14 +249,12 @@
                 </div>
               </div>
 
-              <!-- FIXED: Part Number with Controlled Dropdown -->
-              <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+              <div class="col-2 sparepart-container" :data-index="sparepartIndex">
                 <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
                   placeholder="Part Number" @focus="openDropdown(sparepartIndex, 'number')"
                   @input="onNumberInput(sparepartIndex, sparepart.sparepartNumber)"
                   @keydown.esc.prevent="closeDropdown(sparepartIndex, 'number')" @blur="onNumberBlur(sparepartIndex)" />
 
-                <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
                 <ul
                   v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].number && searchedSpareparts.length > 0"
                   class="dropdown-menu" style="display: block;">
@@ -263,22 +264,20 @@
                   </li>
                 </ul>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <input type="number" class="form-control mt-2" placeholder="Stock"
                   :value="sparepart.totalUnit?.[quotation.project.branch] ?? 0" @wheel.prevent
                   @input="updateSparepartCalculation(sparepartIndex, sparepart)" disabled>
               </div>
-              <div class="col-2">
+              <div class="col-1">
                 <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
                   @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)">
               </div>
-              <div class="col-2">
+              <div class="col">
                 <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
                   @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
               </div>
-              <div class="col-2">
-                <!-- <input type="number" class="form-control mt-2" placeholder="Total Price"
-                v-model="sparepart.totalPrice" disabled> -->
+              <div class="col">
                 <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
                   @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true" />
               </div>
@@ -315,29 +314,29 @@
               <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
               <td class="table-col table-name">{{ service.service }}</td>
               <td class="table-col table-name">{{ service.quantity }}</td>
-              <td class="table-col table-name">{{ formatCurrency(service.unitPriceSell) }}</td>
-              <td class="table-col table-name">{{ formatCurrency(service.totalPrice) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="service.unitPriceSell" /></td>
+              <td class="table-col table-name"><PriceDisplay :value="service.totalPrice" /></td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">SubTotal</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.subtotal) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.subtotal" /></td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.ppn) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.ppn" /></td>
             </tr>
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name">Grand Total</td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">{{ formatCurrency(quotation.price.grandTotal) }}</td>
+              <td class="table-col table-name"><PriceDisplay :value="quotation.price.grandTotal" /></td>
             </tr>
           </tbody>
         </table>
@@ -350,13 +349,13 @@
                 <div class="col-4">
                   <label for="">Service Name</label>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                   <label for="">Quantity</label>
                 </div>
-                <div class="col-3">
+                <div class="col">
                   <label for="">Unit Price</label>
                 </div>
-                <div class="col-2">
+                <div class="col">
                   <label for="">Total Price</label>
                 </div>
               </div>
@@ -373,17 +372,16 @@
                 <div class="col-4">
                   <input type="text" class="form-control mt-2" v-model="service.service" placeholder="Service Name">
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="service.quantity"
                     @wheel.prevent @input="selectService(serviceIndex, service)">
                 </div>
-                <div class="col-3">
+                <div class="col">
                   <CurrencyInput placeholder="Unit Price" v-model="service.unitPriceSell"
                     @update:model-value="selectService(serviceIndex, service)" />
                 </div>
-                <div class="col-2">
-                  <input type="text" class="form-control mt-2" placeholder="Total Price"
-                    :value="formatCurrency(service.totalPrice)" disabled>
+                <div class="col">
+                  <CurrencyInput placeholder="Total Price" v-model="service.totalPrice" :disabled="true" />
                 </div>
               </div>
             </div>
@@ -404,7 +402,7 @@
     <div class="price my-2">
       <div class="amount type">
         <div class="label">Total Amount</div>
-        <div>: {{ formatCurrency(quotation.price.amount) }}</div>
+        <div>: <PriceDisplay :value="quotation.price.amount" /></div>
       </div>
       <div class="total-discount type">
         <div class="label d-flex align-items-center">Total Discount (%)</div>
@@ -416,19 +414,19 @@
       </div>
       <div v-if="isTypeView" class="discount type">
         <div class="label">Discount</div>
-        <div>: {{ formatCurrency(quotation.price.discount) }}</div>
+        <div>: <PriceDisplay :value="quotation.price.discount" /></div>
       </div>
       <div class="subtotal type">
         <div class="label">Subtotal</div>
-        <div>: {{ formatCurrency(quotation.price.subtotal) }}</div>
+        <div>: <PriceDisplay :value="quotation.price.subtotal" /></div>
       </div>
       <div class="ppn type">
         <div class="label">PPN ({{ Math.trunc(ppn) }}%)</div>
-        <div>: {{ formatCurrency(quotation.price.ppn) }}</div>
+        <div>: <PriceDisplay :value="quotation.price.ppn" /></div>
       </div>
       <div class="grand-total type">
         <div class="label">Grand Total</div>
-        <div>: {{ formatCurrency(quotation.price.grandTotal) }}</div>
+        <div>: <PriceDisplay :value="quotation.price.grandTotal" /></div>
       </div>
     </div>
     <div class="notes my-2">

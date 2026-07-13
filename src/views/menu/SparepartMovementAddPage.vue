@@ -30,8 +30,8 @@
 
       <div class="form-group col-12">
         <div class="row header-row">
-          <div class="col-4"><label>Sparepart Name</label></div>
-          <div class="col-3"><label>Part Number</label></div>
+          <div class="col"><label>Sparepart Name</label></div>
+          <div class="col"><label>Part Number</label></div>
           <div class="col-2"><label>Stock {{ form.source_branch }}</label></div>
           <div class="col-2"><label>Quantity</label></div>
           <div class="col-1"></div>
@@ -39,7 +39,7 @@
 
         <div v-for="(item, index) in form.details" :key="index" class="list row">
           <!-- Sparepart Name typeahead -->
-          <div class="col-4">
+          <div class="col">
             <input type="text" class="form-control mt-2" v-model="item.sparepartName" placeholder="Part Name"
               data-bs-toggle="dropdown" aria-expanded="false" @change="onNameInput(index, item.sparepartName)"
               @keyup="onNameInput(index, item.sparepartName)" />
@@ -54,7 +54,7 @@
           </div>
 
           <!-- Part Number typeahead -->
-          <div class="col-3">
+          <div class="col">
             <input type="text" class="form-control mt-2" v-model="item.sparepartNumber" placeholder="Part Number"
               data-bs-toggle="dropdown" aria-expanded="false" @change="onNumberInput(index, item.sparepartNumber)"
               @keyup="onNumberInput(index, item.sparepartNumber)" />

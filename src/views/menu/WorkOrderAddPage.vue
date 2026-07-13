@@ -199,12 +199,20 @@ const removeUnit = (index) => {
   workOrder.value.units.splice(index, 1)
 }
 
+import { useAuthStore } from '@/stores/auth'
+
 const doRelease = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
     await purchaseOrderStore.release(route.params.id, workOrder.value)
-    router.push(menuConfig.work_order.path)
+    
+    const authStore = useAuthStore()
+    if (authStore.user?.role?.toLowerCase() === 'marketing') {
+      router.push(`${menuConfig.purchase_order.path}/${route.params.id}`)
+    } else {
+      router.push(menuConfig.work_order.path)
+    }
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
@@ -216,7 +224,12 @@ const doReleaseConfirmation = () => {
 }
 
 const back = () => {
-  router.push(menuConfig.work_order.path)
+  const authStore = useAuthStore()
+  if (authStore.user?.role?.toLowerCase() === 'marketing') {
+    router.push(`${menuConfig.purchase_order.path}/${route.params.id}`)
+  } else {
+    router.push(menuConfig.work_order.path)
+  }
 }
 
 </script>

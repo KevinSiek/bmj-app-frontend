@@ -103,16 +103,20 @@ test.describe('List-Filter Correctness', () => {
   // IS in a return state appears in return/{0}, and ones that are NOT appear in return/{1}.
   test('LF-006: a quotation put into a return state appears in return/{0} and not return/{1}', async () => {
     // Build a completed order, then return it.
-    const q = (await (await api.post('/api/quotation', {
+    const resQ = await api.post('/api/quotation', {
       data: {
         project: { type: 'Spareparts' },
         customer: { companyName: `PT LFR ${Date.now()}`, address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' },
         price: { amount: 50000 },
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }],
       },
-    })).json()).data;
+    });
+    expect(resQ.status()).toBe(201);
+    const q = (await resQ.json()).data;
     await api.post(`/api/quotation/approve/${q.slug}`, { data: { notes: 'a', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-    const poId = (await (await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } })).json()).data.id;
+    const resPo = await api.post(`/api/quotation/moveToPo/${q.slug}`, { data: { notes: 'po', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    expect(resPo.status()).toBe(200);
+    const poId = (await resPo.json()).data.id;
     await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     await api.post(`/api/purchase-order/release/${poId}`, {

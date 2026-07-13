@@ -1,6 +1,6 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
-import { formatCurrency } from '../form-util'
+import { formatPDFPrice } from '../form-util'
 import { ToWords } from 'to-words'  
 import { common } from '@/config'
 import { getBase64FromUrl } from '../pdf-util'
@@ -229,7 +229,6 @@ const createPdf = async (data) => {
     }
   }
 
-  const totalAmountWord = toWords.convert(Math.ceil(price.grandTotal), { ignoreDecimal: true })
   const type = purchaseOrder.purchaseOrderType === common.type.sparepart ? 'SPAREPART' : 'SERVICE'
   const invoiceType = invoice.type
 
@@ -239,11 +238,14 @@ const createPdf = async (data) => {
   const ppnTypeDp = Math.ceil(subtotalTypeDp * 0.11)
   const grandTotalTypeDpWithPpn = subtotalTypeDp + ppnTypeDp
 
+  const amountToSpell = invoice.type === 'Final' ? price.grandTotal : grandTotalTypeDpWithPpn
+  const totalAmountWord = toWords.convert(Math.ceil(amountToSpell), { ignoreDecimal: true })
+
   const totalDP = [
-    [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(grandTotalTypeDp), alignment: 'right', bold: true }],
-    [{ text: invoice.type === 'DP' ? 'Subtotal Termin 1' : 'Subtotal Termin 2', bold: true, margin: [0, 20, 0, 0] }, { text: formatCurrency(subtotalTypeDp), alignment: 'right', bold: true, margin: [0, 20, 0, 0] }],
-    [{ text: 'PPN 11%', bold: true }, { text: formatCurrency(ppnTypeDp), alignment: 'right', bold: true }],
-    [{ text: invoiceType === 'DP' ? 'Grand Total Termin 1' :'Total Termin 2', bold: true }, { text: formatCurrency(grandTotalTypeDpWithPpn), alignment: 'right', bold: true }]
+    [{ text: 'GRAND TOTAL', bold: true }, formatPDFPrice(grandTotalTypeDp, { bold: true })],
+    [{ text: invoice.type === 'DP' ? 'Subtotal Termin 1' : 'Subtotal Termin 2', bold: true, margin: [0, 20, 0, 0] }, formatPDFPrice(subtotalTypeDp, { bold: true }, { margin: [0, 20, 0, 0] })],
+    [{ text: 'PPN 11%', bold: true }, formatPDFPrice(ppnTypeDp, { bold: true })],
+    [{ text: invoiceType === 'DP' ? 'Grand Total Termin 1' :'Total Termin 2', bold: true }, formatPDFPrice(grandTotalTypeDpWithPpn, { bold: true })]
   ]
 
   const docDefinition = {
@@ -298,11 +300,7 @@ const createPdf = async (data) => {
             [
               { text: '1', margin: [8, 0, 0, 0] },
               { text: `${type} ATAS PO ${purchaseOrder.poNumber}`, margin: [8, 0, 0, 0] },
-              {
-                text: formatCurrency(price.subtotal),
-                margin: [0, 0, 30, 0],
-                alignment: 'right'
-              },
+              formatPDFPrice(price.subtotal, {}, { margin: [0, 0, 30, 0] }),
             ],
           ]
         },
@@ -320,11 +318,11 @@ const createPdf = async (data) => {
         table: {
           widths: [100, '*'],
           body: [
-            ['SUB TOTAL', { text: formatCurrency(price.subtotal), alignment: 'right' }],
-            ['DISC', { text: formatCurrency(price.discount), alignment: 'right' }],
+            ['SUB TOTAL', formatPDFPrice(price.subtotal)],
+            ['DISC', formatPDFPrice(price.discount)],
             ...(invoice.type === 'Final' ? [
-              ['PPN 11%', { text: formatCurrency(price.ppn), alignment: 'right' }],
-              [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(price.grandTotal), alignment: 'right', bold: true }]
+              ['PPN 11%', formatPDFPrice(price.ppn)],
+              [{ text: 'GRAND TOTAL', bold: true }, formatPDFPrice(price.grandTotal, { bold: true })]
             ] : totalDP)
           ]
         },
