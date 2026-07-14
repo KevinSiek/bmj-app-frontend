@@ -63,12 +63,20 @@ const movementSteps = [
   common.status.sparepart_movement.received
 ]
 
+const woSteps = [
+  common.status.work_order.wo,
+  common.status.work_order.on_progress,
+  common.status.work_order.done
+]
+
 const progressSteps = computed(() => {
   switch (trackType.value) {
     case 'Borrow':
       return borrowSteps
     case 'SparepartMovement':
       return movementSteps
+    case 'WorkOrder':
+      return woSteps
     default:
       return poSteps
   }
