@@ -51,7 +51,7 @@
             </div>
             <div class="text-end">
               <small class="text-success">
-                {{ formatCurrency(sparepart.selling_price || sparepart.default_price || 0) }}
+                <PriceDisplay :value="sparepart.selling_price || sparepart.default_price || 0" />
               </small>
               <br>
               <small class="text-muted">Stock: {{ sparepart.stock || 0 }}</small>

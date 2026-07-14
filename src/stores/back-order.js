@@ -55,7 +55,8 @@ export const useBackOrderStore = defineStore('back-order', () => {
         ),
         order: sparepart?.order || 0,
         deliveryOrder: sparepart?.delivery_order || 0,
-        backOrder: sparepart?.back_order || 0
+        backOrder: sparepart?.back_order || 0,
+        stock: sparepart?.stock || ''
       }))
     }
   }

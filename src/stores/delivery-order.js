@@ -14,6 +14,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
       currentStatus: data?.current_status || '',
       deliveryOrder: {
         deliveryOrderNumber: data?.delivery_order?.delivery_order_number || '',
+        deliveryNoteNumber: data?.delivery_order?.delivery_note_number || '',
         deliveryOrderDate: data?.delivery_order?.delivery_order_date || '',
         receivedBy: data?.delivery_order?.received_by || '',
         pickedBy: data?.delivery_order?.picked_by || '',
@@ -27,7 +28,11 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
         purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '', // This is for Internal Request Number
         poNumber: data?.purchase_order?.po_number || '', // This is PO From Customer
         purchaseOrderDate: data?.purchase_order?.purchase_order_date || '',
-        type: data?.purchase_order?.type || ''
+        type: data?.purchase_order?.type || '',
+        branch: data?.purchase_order?.branch || '',
+        branchCode: data?.purchase_order?.branch_code || '',
+        isDpPaid: data?.purchase_order?.is_dp_paid || false,
+        isFullPaid: data?.purchase_order?.is_full_paid || false
       },
       customer: {
         companyName: data?.customer?.company_name || '',
@@ -38,6 +43,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
         urban: data?.customer?.urban || '',
         subdistrict: data?.customer?.subdistrict || '',
         postalCode: data?.customer?.postal_code || '',
+        npwp: data?.customer?.npwp || ''
       },
       notes: data?.notes || '',
       spareparts: (data?.spareparts || []).map(sparepart => ({
@@ -87,8 +93,8 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
     deliveryOrder.value = selectedDeliveryOrder
   }
 
-  async function updateDeliveryOrder() {
-    const { data } = await deliveryOrderApi.updateDeliveryOrder(deliveryOrder.value.id, deliveryOrder)
+  async function updateDeliveryOrder(id, payload) {
+    const { data } = await deliveryOrderApi.updateDeliveryOrder(id, payload)
   }
 
   async function deleteDeliveryOrder(id) {

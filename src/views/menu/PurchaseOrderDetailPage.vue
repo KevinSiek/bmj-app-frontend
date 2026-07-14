@@ -150,12 +150,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ formatCurrency(sparepart.unitPriceSell) }}
+                    <PriceDisplay :value="sparepart.unitPriceSell" />
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ formatCurrency(sparepart.totalPrice) }}
+                    <PriceDisplay :value="sparepart.totalPrice" />
                   </div>
                 </td>
                 <td class="table-col table-name">
@@ -184,12 +184,12 @@
                 </td>
                 <td class="table-col table-name" v-if="!isRoleService">
                   <div :class="{ space: index === purchaseOrder.services.length - 1 }">
-                    {{ formatCurrency(service.unitPriceSell) }}
+                    <PriceDisplay :value="service.unitPriceSell" />
                   </div>
                 </td>
                 <td class="table-col table-name" v-if="!isRoleService">
                   <div :class="{ space: index === purchaseOrder.services.length - 1 }">
-                    {{ formatCurrency(service.totalPrice) }}
+                    <PriceDisplay :value="service.totalPrice" />
                   </div>
                 </td>
               </tr>
@@ -215,7 +215,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.amount) }}</td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.amount" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -226,7 +228,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.discount) }}</td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.discount" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -237,7 +241,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.subtotal) }}</td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.subtotal" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -248,7 +254,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.ppn) }}</td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.ppn" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -259,7 +267,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.grandTotal) }}</td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.grandTotal" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'" class="table-col table-name"></td>
               </tr>
@@ -368,14 +378,28 @@ const isShowCreatePi = computed(() =>
   (isRoleFinance.value || isRoleDirector.value) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
-const isShowRelease = computed(() =>
-  !isLoading.value &&
-  (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value || isRoleMarketing.value) &&
-  purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
-  purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.release) &&
-  purchaseOrder.value.purchaseOrder.type == common.type.sparepart
-)
+const isShowRelease = computed(() => {
+  const hasDpPaid = purchaseOrder.value.status.some(item => item.state === common.track.dp_paid)
+  const isMarketingOrDirector = isRoleMarketing.value || isRoleDirector.value
+  const dpConditionMet = hasDpPaid || isMarketingOrDirector
+
+  const baseConditions = !isLoading.value && (isRoleMarketing.value || isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
+    purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
+    dpConditionMet &&
+    !purchaseOrder.value.status.some(item => item.state === common.track.release) &&
+    purchaseOrder.value.purchaseOrder.type == common.type.sparepart
+
+  if (!baseConditions) return false
+
+  // If it's a Sparepart PO, restrict to Semarang/SMG branch only
+  if (purchaseOrder.value.purchaseOrder.type === common.type.sparepart) {
+    const branch = purchaseOrder.value.purchaseOrder.branch || ''
+    const isSemarang = branch.toLowerCase() === 'semarang' || branch.toUpperCase() === 'SMG'
+    if (!isSemarang) return false
+  }
+
+  return true
+})
 const isShowDone = computed(() =>
   !isLoading.value &&
   (isRoleMarketing.value || isRoleDirector.value) &&

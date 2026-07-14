@@ -52,7 +52,7 @@
           <div v-if="pipelineMetrics" class="pipeline-metrics">
             <div class="metric">
               <span class="metric-label">Potential Value</span>
-              <strong>{{ formatCurrency(pipelineMetrics.potential_value) }}</strong>
+              <strong><PriceDisplay :value="pipelineMetrics.potential_value" /></strong>
             </div>
             <div class="metric">
               <span class="metric-label">Quote → PO</span>
@@ -92,7 +92,7 @@
             <li v-for="(member, index) in teamLeaderboard" :key="member.name">
               <span class="rank">#{{ index + 1 }}</span>
               <span class="member-name">{{ member.name }}</span>
-              <span class="member-value">{{ formatCurrency(member.revenue) }}</span>
+              <span class="member-value"><PriceDisplay :value="member.revenue" /></span>
             </li>
             <li v-if="teamLeaderboard.length === 0" class="empty-state">
               No paid invoices for the selected interval.
@@ -183,7 +183,7 @@
         <ul>
           <li v-for="customer in topCustomers" :key="customer.customer">
             <span>{{ customer.customer }}</span>
-            <span class="customer-value">{{ formatCurrency(customer.revenue) }}</span>
+            <span class="customer-value"><PriceDisplay :value="customer.revenue" /></span>
           </li>
           <li v-if="topCustomers.length === 0" class="empty-state">
             No customers captured in this window.

@@ -152,7 +152,7 @@ Components branch between desktop/mobile rendering accordingly. Two navbars:
 
 | Feature            | Pages (in `views/menu/`)                   | Store file           | API file          | Docs                     |
 | ------------------ | ------------------------------------------ | -------------------- | ----------------- | ------------------------ |
-| Dashboard          | DashboardPage                              | dashboard.js         | dashboard.js      | docs/FEATURE_DASHBOARD.md|
+| Dashboard          | DashboardPage                              | dashboard.js         | dashboard.js      | docs/FEATURE_EMPLOYEE_AUTH_MISC.md|
 | Quotation          | Quotation{Page,Add,Edit,Detail,Review,ReviewDetail} | quotation.js | quotation.js      | docs/FEATURE_QUOTATION.md|
 | Purchase Order     | PurchaseOrder{Page,Detail,Return}          | purchase-order.js    | purchase-order.js | docs/FEATURE_PURCHASE_ORDER.md|
 | Proforma Invoice   | ProformaInvoice{Page,Detail,Edit}          | proforma-invoice.js  | pi.js             | docs/FEATURE_PROFORMA_INVOICE.md|
@@ -162,11 +162,14 @@ Components branch between desktop/mobile rendering accordingly. Two navbars:
 | Back Order         | BackOrder{Page,Detail}                     | back-order.js        | back-order.js     | docs/FEATURE_BACK_ORDER.md|
 | Purchase (Buy)     | Purchase{Page,Add,Edit,Detail,Review,ReviewDetail} | purchase.js  | purchase.js       | docs/FEATURE_PURCHASE.md |
 | Spareparts         | Spareparts{Page,Add,Detail,Edit}           | sparepart.js         | sparepart.js      | docs/FEATURE_SPAREPARTS.md|
-| Employee           | Employee{Page,Add,Detail,Edit}             | employee.js          | employee.js       | docs/FEATURE_EMPLOYEE.md |
-| Profile            | ProfilePage                                | auth.js              | auth.js           | docs/FEATURE_AUTH.md     |
-| General Settings   | GeneralPage                                | general.js           | general.js        | docs/FEATURE_GENERAL.md  |
-| Upload Data        | UploadDataPage                             | —                    | sparepart.js      | docs/FEATURE_UPLOAD.md   |
-| Return             | Return{Page,Detail}                        | purchase-order.js    | purchase-order.js | docs/FEATURE_RETURN.md   |
+| Stock Movement     | StockHistoryPage, SparepartMovement{...}   | stock-movement.js    | stock-movement.js | docs/FEATURE_STOCK_MOVEMENT.md|
+| Employee           | Employee{Page,Add,Detail,Edit}             | employee.js          | employee.js       | docs/FEATURE_EMPLOYEE_AUTH_MISC.md |
+| Profile            | ProfilePage                                | auth.js              | auth.js           | docs/FEATURE_EMPLOYEE_AUTH_MISC.md |
+| General Settings   | GeneralPage                                | general.js           | general.js        | docs/FEATURE_EMPLOYEE_AUTH_MISC.md |
+| Upload Data        | UploadDataPage                             | —                    | sparepart.js      | docs/FEATURE_EMPLOYEE_AUTH_MISC.md |
+| Return             | Return{Page,Detail}                        | purchase-order.js    | purchase-order.js | docs/FEATURE_EMPLOYEE_AUTH_MISC.md |
+| CRM (Customer, Seller) | (No dedicated CRUD pages)              | customer.js, seller.js | customer.js, seller.js | docs/FEATURE_CRM.md |
+
 
 ---
 
@@ -175,8 +178,9 @@ Components branch between desktop/mobile rendering accordingly. Two navbars:
 When starting a new session or task, read these files in order:
 
 1. **This file** (`AGENTS.MD`) — system overview
-2. **`src/config/index.js`** — all route paths, statuses, roles, API endpoints
-3. **`src/router/index.js`** — full route tree with auth guards
+2. **`.claude/ENGINEERING_DISCIPLINE.md`** — The absolute rules for coding and execution in this workspace.
+3. **`src/config/index.js`** — all route paths, statuses, roles, API endpoints
+4. **`src/router/index.js`** — full route tree with auth guards
 4. **The specific `docs/*.md`** for the feature you're modifying
 5. **The specific store** (`src/stores/xxx.js`) for state logic
 6. **The specific API file** (`src/api/xxx.js`) for endpoint calls

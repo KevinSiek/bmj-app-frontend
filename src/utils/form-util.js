@@ -5,16 +5,27 @@ const validatePassword = (password, confirmPassword) => {
 
 // Keeps "Rp" — used by PDF documents, which are official financial documents.
 const formatCurrency = (value) => {
-  if(!value) return 0
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR"
-  }).format(value)
+  if (value === null || value === undefined || value === '') return ''
+  const num = Math.round(Number(value) || 0)
+  return new Intl.NumberFormat('id-ID').format(num)
 }
 
 // No "Rp", Indonesian thousands grouping (1250000 -> "1.250.000"). Web UI display only.
-const formatMoney = (value) =>
-  new Intl.NumberFormat('id-ID').format(Number(value) || 0)
+const formatMoney = (value) => formatCurrency(value)
+
+const formatPDFPrice = (value, extraStyles = {}, layoutStyles = {}) => {
+  if (value === null || value === undefined || value === '') return ''
+  const num = Math.round(Number(value) || 0)
+  const formattedNum = new Intl.NumberFormat('id-ID').format(num)
+  return {
+    columns: [
+      { text: 'Rp.', width: 'auto', alignment: 'left', ...extraStyles },
+      { text: formattedNum, alignment: 'right', ...extraStyles }
+    ],
+    columnGap: 0,
+    ...layoutStyles
+  }
+}
 
 const formatDate = (timestamp) => {
   if(!timestamp) return null
@@ -43,6 +54,7 @@ export {
   validatePassword,
   formatCurrency,
   formatMoney,
+  formatPDFPrice,
   formatDate,
   formatDateAndTime
 }

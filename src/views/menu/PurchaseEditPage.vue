@@ -113,7 +113,9 @@
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
-        <div class="text">{{ formatCurrency(totalPurchase) }}</div>
+        <div class="text">
+          <PriceDisplay :value="totalPurchase" />
+        </div>
       </div>
     </form>
   </div>

@@ -21,6 +21,8 @@ All stores use **Pinia Composition API** (setup stores with `defineStore` and
 | `back-order.js` | `back-order` | Back Orders |
 | `purchase.js` | `purchase` | Purchases (Buy) |
 | `sparepart.js` | `sparepart` | Sparepart catalog |
+| `sparepart-movement.js` | `sparepartMovement` | Sparepart transfers between branches |
+| `stock-movement.js` | `stock-movement` | Global stock movement ledger |
 | `employee.js` | `employee` | Employee management |
 | `customer.js` | `customer` | Customer management |
 | `seller.js` | `seller` | Seller management |

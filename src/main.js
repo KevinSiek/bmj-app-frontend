@@ -35,8 +35,13 @@ axios.interceptors.response.use(
   }
 );
 
+import PriceDisplay from '@/components/PriceDisplay.vue'
+import CurrencyInput from '@/components/CurrencyInput.vue'
+
 const app = createApp(App)
 
+app.component('PriceDisplay', PriceDisplay)
+app.component('CurrencyInput', CurrencyInput)
 app.use(createPinia())
 app.use(router)
 

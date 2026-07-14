@@ -30,7 +30,7 @@ test.describe('Per-Field Validation — Target-Bound Endpoints', () => {
   test.beforeAll(async ({ playwright }) => {
     const ctx = await playwright.request.newContext({ baseURL: 'http://localhost:8000' });
     const token = (await (await ctx.post('/api/login', {
-      data: { email: 'director.jkt@bmj.com', password: 'password' },
+      data: { email: 'director.smg@bmj.com', password: 'password' },
     })).json()).access_token;
     expect(token).toBeDefined();
     await ctx.dispose();

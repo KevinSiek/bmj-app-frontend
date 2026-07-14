@@ -1,0 +1,216 @@
+{
+  "version": "1.0.1",
+  "description": "BMJ App coding rules (Laravel 11 + Vue 3). LLMs must read and follow these before editing any file in this workspace.",
+  "rules": [
+    {
+      "id": "P1",
+      "title": "Named constants",
+      "severity": "required",
+      "summary": "No string or number literals in conditions or comparisons — always use a named constant or config value."
+    },
+    {
+      "id": "P3",
+      "title": "Top-level config branching",
+      "severity": "required",
+      "summary": "One if/else at the top decides the whole strategy — never scatter env checks inside handlers or components. Use Laravel config() or Vue environment variables."
+    },
+    {
+      "id": "P4",
+      "title": "Route architecture",
+      "severity": "required",
+      "summary": "Backend: Group API routes by feature in routes/api.php. Frontend: Keep all routing logic config-driven inside src/config/index.js -> menuMapping."
+    },
+    {
+      "id": "P5",
+      "title": "Auth defense-in-depth",
+      "severity": "required",
+      "summary": "Backend: Apply auth (Sanctum) and RoleMiddleware at the route group level AND validate inside controllers if necessary. Frontend: Enforce auth guards in the router."
+    },
+    {
+      "id": "P8",
+      "title": "Envelope only when used",
+      "severity": "preferred",
+      "summary": "Do not wrap data in deep nesting if the client ignores those fields."
+    },
+    {
+      "id": "P9",
+      "title": "Honest TODOs",
+      "severity": "preferred",
+      "summary": "TODOs must name the destination file and trigger condition."
+    },
+    {
+      "id": "P10",
+      "title": "Generic helper extraction",
+      "severity": "preferred",
+      "summary": "Extract on second use, not first. Shared utils belong in src/utils/ (Frontend) or app/Helpers/ or app/Services/ (Backend)."
+    },
+    {
+      "id": "P11",
+      "title": "Preserve log message strings",
+      "severity": "required",
+      "summary": "Do not change existing Log::error/warn/info message strings in Laravel. They may be used in log searches."
+    },
+    {
+      "id": "P14",
+      "title": "Generic error to client, detail in logs",
+      "severity": "required",
+      "summary": "Backend: Return generic error messages to the client (HTTP 4xx/5xx). Log full detail including stack traces to Laravel logs."
+    },
+    {
+      "id": "P16",
+      "title": "Collapse repeated validation into loops",
+      "severity": "preferred",
+      "summary": "If validating multiple keys with the same check, define a constant array of keys and loop — do not repeat the check per field."
+    },
+    {
+      "id": "P17",
+      "title": "Function names are verbs",
+      "severity": "preferred",
+      "summary": "Function names should describe what the function does (verb), not the state of its result (past participle)."
+    },
+    {
+      "id": "P18",
+      "title": "Distinguish preset data from live instance data",
+      "severity": "required",
+      "summary": "Functions that return data from static config/preset files must be named to reflect that. Functions that return live instance data must be named differently."
+    },
+    {
+      "id": "P20",
+      "title": "Docs gate before medium/high work",
+      "severity": "required",
+      "summary": "Create docs/spec, docs/plan, and docs/presentation before starting medium/high implementation. Use date-prefixed filenames: YYYY-MM-DD-short-slug.md."
+    },
+    {
+      "id": "P21",
+      "title": "Drop redundant prefixes inside feature-local modules",
+      "severity": "preferred",
+      "summary": "When a file already provides context from its location, drop the module-name prefix from identifiers."
+    },
+    {
+      "id": "P22",
+      "title": "Feature orchestration belongs in the feature layer",
+      "severity": "required",
+      "summary": "Backend: Feature-specific orchestration belongs in the Controller or a feature-specific Service. Frontend: Keep logic inside Pinia stores, not shared UI components."
+    },
+    {
+      "id": "P23",
+      "title": "Extract repeated inline expressions within a file",
+      "severity": "preferred",
+      "summary": "If the same inline expression appears 3 or more times in a file, extract it into a local const or function at the top of the file."
+    },
+    {
+      "id": "P24",
+      "title": "Use POST for server-keyed write routes",
+      "severity": "preferred",
+      "summary": "Use POST when the server owns the resource key (e.g. derived from session or tenant). Use PUT only when the client provides the resource ID in the URL path."
+    },
+    {
+      "id": "P25",
+      "title": "Strip internal identifiers before sending to clients",
+      "severity": "required",
+      "summary": "Backend: Never expose internal identifiers or raw passwords in HTTP responses. Use API Resources or hidden model attributes."
+    },
+    {
+      "id": "P26",
+      "title": "No defensive code for data you own",
+      "severity": "required",
+      "summary": "Do not add normalisation, deduplication, or case-folding for data that originates from files you control (e.g. static config). Reserve defensive guards for external inputs only."
+    },
+    {
+      "id": "P27",
+      "title": "HTTP status codes from typed errors, not regex on messages",
+      "severity": "required",
+      "summary": "Backend: Derive HTTP status from the Exception type (e.g., ValidationException -> 422, ModelNotFoundException -> 404). Never regex-match error messages."
+    },
+    {
+      "id": "P28",
+      "title": "404 means resource missing, empty results return 200",
+      "severity": "required",
+      "summary": "Return 404 only when the requested resource genuinely does not exist. A resource that exists but contains zero items returns 200 with an empty array."
+    },
+    {
+      "id": "P29",
+      "title": "Consistent null-check rule across optional parameters in the same function",
+      "severity": "preferred",
+      "summary": "When a function accepts multiple optional parameters, apply the same null-check rule to all of them."
+    },
+    {
+      "id": "P30",
+      "title": "Options object once a function takes 4+ optional parameters",
+      "severity": "preferred",
+      "summary": "Positional optional arguments past the third one force callers to write `f(a, undefined, undefined, foo)`. Switch to a single options object so callers name each field they pass."
+    },
+    {
+      "id": "P31",
+      "title": "Single source of truth for type and format catalogs",
+      "severity": "required",
+      "summary": "Do not maintain two parallel structures for the same set of types. One config object owns the catalog; derive other shapes from it."
+    },
+    {
+      "id": "P32",
+      "title": "Stable identity for entity joins, never ordinal position",
+      "severity": "required",
+      "summary": "Joining related entities by ordinal position breaks when one side is reordered. Joins must use a stable explicit identity field."
+    },
+    {
+      "id": "P33",
+      "title": "Document concurrency assumptions on shared DB writes",
+      "severity": "required",
+      "summary": "When two callers can update the same row concurrently (e.g., Stock mutations), document the assumption. Use DB row locking if necessary."
+    },
+    {
+      "id": "P34",
+      "title": "Best-effort failures must document the recovery path",
+      "severity": "required",
+      "summary": "When code is intentionally best-effort (logs and continues on failure), the comment must answer: what does the user observe when it fails, and how do they recover."
+    },
+    {
+      "id": "P36",
+      "title": "API boundaries accept identifiers only, never display names",
+      "severity": "required",
+      "summary": "HTTP routes must accept IDs/codes in the request body. Reject display names at the boundary. The backend resolves codes to display names when needed."
+    },
+    {
+      "id": "P37",
+      "title": "Names must reveal scope and intent at the call site",
+      "severity": "required",
+      "summary": "Generic names like `convert`, `process`, `handle` hide what the function actually does. A reader should be able to predict what a function does from the import statement alone."
+    },
+    {
+      "id": "P38",
+      "title": "Prefer existing utilities over hand-rolled helpers",
+      "severity": "required",
+      "summary": "Before writing a new utility function, check built-in runtimes, lodash (Frontend), or Laravel Collections/Str facades (Backend)."
+    },
+    {
+      "id": "P39",
+      "title": "Offload post-response async work to Jobs",
+      "severity": "required",
+      "summary": "Backend: Anything async that runs after the response must use Laravel Queues/Jobs. Never run arbitrary async code detached from the request lifecycle directly in the controller."
+    },
+    {
+      "id": "P40",
+      "title": "Idempotency lives in the primitive, not the route",
+      "severity": "required",
+      "summary": "When a long-running operation has 'already in flight' semantics, encode the gate inside the Service/Primitive that runs the work, not the Controller."
+    },
+    {
+      "id": "P41",
+      "title": "Server-only setters for security-sensitive fields",
+      "severity": "required",
+      "summary": "Backend: Protect sensitive fields (roles, status overrides) from Mass Assignment using $fillable. Use dedicated setter methods on the Model instead."
+    },
+    {
+      "id": "P42",
+      "title": "Allowlist-reject unknown enum values at the boundary",
+      "severity": "required",
+      "summary": "When accepting an enum-like value, validate it against an explicit allowlist (Laravel Rule::in) and reject unknowns with 422."
+    },
+    {
+      "id": "P43",
+      "title": "Filter raw records by raw fields, not enrichment-only fields",
+      "severity": "required",
+      "summary": "When eligibility is computed from a raw record, filter on fields that exist on the raw record. Do not filter on fields appended by API Resources."
+    }
+  ]
+}

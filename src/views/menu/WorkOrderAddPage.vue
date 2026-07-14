@@ -300,7 +300,12 @@ const doReleaseConfirmation = () => {
 }
 
 const back = () => {
-  router.push(menuConfig.work_order.path)
+  const authStore = useAuthStore()
+  if (authStore.user?.role?.toLowerCase() === 'marketing') {
+    router.push(`${menuConfig.purchase_order.path}/${route.params.id}`)
+  } else {
+    router.push(menuConfig.work_order.path)
+  }
 }
 
 </script>

@@ -1,19 +1,17 @@
 <template>
-  <input type="text" inputmode="numeric" :class="inputClass" :placeholder="placeholder" :disabled="disabled"
-    :value="display" @input="onInput" @blur="onBlur">
+  <div class="input-group mt-2 custom-currency-input">
+    <span class="input-group-text bg-white border-end-0">Rp.</span>
+    <input type="text" inputmode="numeric" :class="[cleanedInputClass, 'text-end border-start-0']" :placeholder="placeholder" :disabled="disabled"
+      :value="display" @input="onInput" @blur="onBlur">
+  </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { formatMoney } from '@/utils/form-util'
+import { ref, watch, computed } from 'vue'
 
 /**
- * Currency input that shows the value formatted as "Rp 1.250.000" while the user types, but
- * keeps v-model as a raw Number — so every existing price calculation (quantity * unitPrice,
- * subtotal, ppn, ...) keeps receiving plain numbers and nothing downstream has to change.
- *
- * Indonesian formatting: "." is the thousands separator. We strip every non-digit on input,
- * parse to a Number for v-model, and re-format the digits for the display.
+ * Currency input that shows the value formatted as "1.250.000" inside an input-group with a static "Rp." prefix.
+ * Keeps v-model as a raw Number.
  */
 const props = defineProps({
   modelValue: { type: [Number, String], default: 0 },
@@ -24,9 +22,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+const cleanedInputClass = computed(() => {
+  return (props.inputClass || 'form-control').replace('mt-2', '').trim()
+})
+
 const format = (num) => {
   if (num === null || num === undefined || num === '' || isNaN(num)) return ''
-  return formatMoney(num)
+  return new Intl.NumberFormat('id-ID').format(Math.round(Number(num) || 0))
 }
 
 const display = ref(format(props.modelValue ?? 0))
@@ -59,3 +61,15 @@ function onBlur() {
   display.value = display.value === '' ? '' : format(digitsToNumber(display.value))
 }
 </script>
+
+<style scoped>
+.custom-currency-input {
+  width: 100%;
+}
+.custom-currency-input .input-group-text {
+  color: inherit;
+}
+.custom-currency-input input::placeholder {
+  text-align: right;
+}
+</style>

@@ -37,13 +37,11 @@
             </div>
             <div v-if="canSeePurchasePrice" class="input form-group col-12">
               <label for="">Buy Price</label><br>
-              <input type="text" class="form-control mt-2" :value="formatCurrency(sparepart.unitPriceBuy)"
-                placeholder="Buy Price" disabled>
+              <CurrencyInput v-model="sparepart.unitPriceBuy" placeholder="Buy Price" :disabled="true" />
             </div>
             <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
-              <input type="text" class="form-control mt-2" :value="formatCurrency(sparepart.unitPriceSell)"
-                placeholder="Selling Price" disabled>
+              <CurrencyInput v-model="sparepart.unitPriceSell" placeholder="Selling Price" :disabled="true" />
             </div>
           </div>
         </div>
@@ -58,8 +56,7 @@
             </div>
             <div class="input form-group col-3">
               <label for="">Puchase Price</label><br>
-              <input type="text" class="form-control mt-2" :value="formatCurrency(list.price)"
-                placeholder="Purchase Price" disabled>
+              <CurrencyInput v-model="list.price" placeholder="Purchase Price" :disabled="true" />
             </div>
             <div class="input form-group col-3">
               <label for="">Quantity</label><br>

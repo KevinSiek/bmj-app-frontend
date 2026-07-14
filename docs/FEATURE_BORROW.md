@@ -51,8 +51,9 @@ Director bypasses role gating everywhere (backend `RoleMiddleware`).
 | `approveBorrow(id)` | POST | `/api/borrow/approve/{id}` |
 | `rejectBorrow(id, {notes})` | POST | `/api/borrow/reject/{id}` |
 | `sendBorrow(id)` | POST | `/api/borrow/send/{id}` |
-| `kembaliBorrow(id, {notes})` | POST | `/api/borrow/kembali/{id}` |
-| `doneBorrow(id, {returned, sparepartPoId?})` | POST | `/api/borrow/done/{id}` |
+| `receiveBorrow(id)` | POST | `/api/borrow/receive/{id}` |
+| `returnBorrow(id)` | POST | `/api/borrow/return/{id}` |
+| `doneBorrow(id)` | POST | `/api/borrow/done/{id}` |
 | `cancelBorrow(id)` | POST | `/api/borrow/cancel/{id}` |
 
 ## Print / PDF Export

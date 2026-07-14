@@ -85,11 +85,15 @@ const createPdf = async (data, docTitle = 'DELIVERY NOTE') => {
     },
     margin: [0, 5, 10, 5]
   }
+  const displayNo = docTitle === 'DELIVERY NOTE' && data.deliveryOrder.deliveryNoteNumber
+    ? data.deliveryOrder.deliveryNoteNumber
+    : data.deliveryOrder.deliveryOrderNumber
+
   const deliveryNoteInfo = {
     table: {
       widths: ['auto', '*'],
       body: [
-        ['NO:', data.deliveryOrder.deliveryOrderNumber],
+        ['NO:', displayNo],
         ['DATE:', data.deliveryOrder.deliveryOrderDate],
         ['CUST. PO NO.:', data.purchaseOrder.poNumber],
         ['PACK. LIST:', data.spareparts.length]
@@ -143,6 +147,7 @@ const createPdf = async (data, docTitle = 'DELIVERY NOTE') => {
       widths: ['auto', '*'],
       body: [
         ['DLVR:', deliveryOrder.delivery],
+        ['NPWP:', deliveryOrder.npwp || ''],
         ['UP:', ''],
       ]
     },

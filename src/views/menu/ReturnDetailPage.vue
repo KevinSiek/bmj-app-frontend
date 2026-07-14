@@ -137,12 +137,12 @@
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ formatCurrency(sparepart.unitPriceSell) }}
+                    <PriceDisplay :value="sparepart.unitPriceSell" />
                   </div>
                 </td>
                 <td class="table-col table-name">
                   <div :class="{ space: index === purchaseOrder.spareparts.length - 1 }">
-                    {{ formatCurrency(sparepart.totalPrice) }}
+                    <PriceDisplay :value="sparepart.totalPrice" />
                   </div>
                 </td>
                 <td class="table-col table-name">
@@ -171,7 +171,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.amount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.amount" /></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -181,7 +181,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.discount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.discount" /></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -191,7 +191,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.subtotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.subtotal" /></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -201,7 +201,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.ppn) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.ppn" /></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -211,7 +211,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(purchaseOrder.price.grandTotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.grandTotal" /></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>

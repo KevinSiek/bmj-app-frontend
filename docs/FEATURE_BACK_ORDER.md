@@ -13,8 +13,10 @@ They trigger the Purchase (Buy) workflow to procure missing parts from sellers.
 | `api/back-order.js` | API wrappers |
 
 ## Key Business Rules
-1. BO is auto-created during PO **Release** when spareparts are insufficient
+1. BO is auto-created during PO **Release** when spareparts are insufficient.
 2. Contains `DetailBackOrder` line items (sparepart_id + qty needed)
+3. A BO can have two main types depending on missing goods (Spareparts).
+4. Status lifecycle: `Process → Ready → Rejected`.
 3. **Fulfillment Workflow**: BOs are now fulfilled via manual Purchases rather than auto-creating Buys. 
 4. **Analyze Action**: Before processing, Inventory clicks "Analyze" to verify if `available stock >= requested quantity`.
 5. **Process Action**: If stock is sufficient, "Process" decrements the branch stock directly and transitions the BO to 'Done'.
@@ -37,6 +39,7 @@ PurchaseOrder (Release)
 | `getBackOrderById(id)` | GET | `/api/back-order/{id}` |
 | `analyzeBackOrder(id)` | GET | `/api/back-order/analyze/{id}` |
 | `processBackOrder(id)` | POST | `/api/back-order/process/{id}` |
+| `adjustBackOrder(id, data)` | POST | `/api/back-order/adjust/{id}` |
 
 ## Print / PDF Export
 Back Order detail page includes a **Print** button that generates a PDF following the same pattern as Quotation and PO PDFs:

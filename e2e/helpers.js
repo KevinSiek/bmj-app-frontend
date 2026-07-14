@@ -94,7 +94,7 @@ export async function provisionQuotationAndPo(director) {
 
   const create = await director.post('/api/quotation', {
     data: {
-      project: { type: 'Spareparts' },
+      project: { type: 'Spareparts', branch: 'Semarang' },
       customer: {
         companyName: `PT Guard Provision ${Date.now()}`, address: 'A', city: 'Jakarta',
         province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S',
@@ -109,7 +109,7 @@ export async function provisionQuotationAndPo(director) {
   const approve = await director.post(`/api/quotation/approve/${slug}`, { data: { notes: 'guard provision' } });
   if (approve.status() !== 200) throw new Error(`provision: approve -> ${approve.status()}`);
 
-  const move = await director.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'guard provision po' } });
+  const move = await director.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'guard provision po', poNumber: `PO-${Date.now()}` } });
   if (move.status() !== 200) throw new Error(`provision: moveToPo -> ${move.status()}`);
   const poId = (await move.json()).data?.id ?? null;
 

@@ -1,6 +1,6 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
-import { formatCurrency } from '../form-util'
+import { formatPDFPrice } from '../form-util'
 import { common } from '@/config'
 import { getBase64FromUrl } from '../pdf-util'
 
@@ -191,8 +191,8 @@ const createPdf = async (data, notes, user) => {
           },
           { text: item.quantity, alignment: 'center' },
           { text: 'pcs', alignment: 'center' },
-          { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
-          { text: formatCurrency(item.totalPrice), alignment: 'right' }
+          formatPDFPrice(item.unitPriceSell),
+          formatPDFPrice(item.totalPrice)
         ]),
       ]
     },
@@ -223,8 +223,8 @@ const createPdf = async (data, notes, user) => {
           { text: idx + 1, alignment: 'center' },
           { text: item.service, alignment: 'center' },
           { text: item.quantity, alignment: 'center' },
-          { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
-          { text: formatCurrency(item.totalPrice), alignment: 'right' }
+          formatPDFPrice(item.unitPriceSell),
+          formatPDFPrice(item.totalPrice)
         ]),
       ]
     },
@@ -287,7 +287,7 @@ const createPdf = async (data, notes, user) => {
                 '',
                 '',
                 { text: 'Amount' },
-                { text: formatCurrency(price.amount), alignment: 'right' }
+                { text: formatPDFPrice(price.amount), alignment: 'right' }
               ],
               [
                 '',
@@ -295,7 +295,7 @@ const createPdf = async (data, notes, user) => {
                 '',
                 '',
                 { text: 'Discount' },
-                { text: formatCurrency(price.discount), alignment: 'right' }
+                { text: formatPDFPrice(price.discount), alignment: 'right' }
               ],
             ] : []),
             [
@@ -304,7 +304,7 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               { text: 'Sub Total' },
-              { text: formatCurrency(price.subtotal), alignment: 'right' }
+              formatPDFPrice(price.subtotal)
             ],
             [
               '',
@@ -312,7 +312,7 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               { text: 'VAT' },
-              { text: formatCurrency(price.ppn), alignment: 'right' }
+              formatPDFPrice(price.ppn)
             ],
             [
               '',
@@ -320,7 +320,7 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               { text: 'TOTAL AMOUNT', bold: true },
-              { text: formatCurrency(price.grandTotal), alignment: 'right', bold: true }
+              formatPDFPrice(price.grandTotal, { bold: true })
             ],
           ]
         },

@@ -99,8 +99,8 @@
                 <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
                 <td class="table-col table-name">{{ sparepart.unit }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.unitPriceSell) }}</td>
-                <td class="table-col table-name">{{ formatCurrency(sparepart.totalPrice) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceSell" /></td>
+                <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>
@@ -108,7 +108,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.amount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.amount" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -117,7 +117,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.discount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.discount" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -126,7 +126,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.subtotal) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.subtotal" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -135,7 +135,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.advancePayment) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.advancePayment" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -144,7 +144,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.total) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.total" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -153,7 +153,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.ppn) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.ppn" /></td>
                 <td class="table-col table-name"></td>
               </tr>
               <tr class="align-middle">
@@ -162,7 +162,7 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name">{{ formatCurrency(proformaInvoice.price.totalAmount) }}</td>
+                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.totalAmount" /></td>
                 <td class="table-col table-name"></td>
               </tr>
             </tbody>

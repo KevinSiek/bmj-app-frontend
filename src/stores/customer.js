@@ -15,8 +15,8 @@ export const useCustomerStore = defineStore('customer', () => {
       urban: data?.urban || '',
       subdistrict: data?.subdistrict || '',
       postalCode: data?.postal_code || '',
-      npwp: data?.npwp || '',
-      email: data?.email || ''
+      email: data?.email || '',
+      npwp: data?.npwp || ''
     }
   }
 

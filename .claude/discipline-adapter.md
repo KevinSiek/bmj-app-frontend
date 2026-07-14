@@ -9,7 +9,7 @@
 | Capability | Value |
 | ---------- | ----- |
 | `indexed` | no |
-| `rulesRef` | `AGENTS.MD` + `docs/*.md` |
+| `rulesRef` | `.claude/bmj-rules.json` + `AGENTS.MD` + `docs/*.md` |
 | `testCommand` | none (no test harness configured) |
 | `buildCommand` | `npm run build` |
 | `monorepo` | false |

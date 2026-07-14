@@ -13,7 +13,7 @@ Invoices, Work Orders, Delivery Orders, and Back Orders downstream.
 
 1. POs are created via `moveToPo` from a Quotation — not manually.
 2. POs support **versioning** (same PO number, different versions).
-3. Status lifecycle: `Prepare → DP Paid → Ready → Release → Done → BO`
+3. Status lifecycle: `Prepare → DP Paid → Ready → Release → Done → BO`. Side states: `Returned`, `Paid`, `Rejected`, `Wait On Progress`, `On Progress`.
 4. **Release** action creates Work Orders, Delivery Orders, and Back Orders.
 5. **Return** workflow allows partial item returns after completion.
 6. Director can decline POs.

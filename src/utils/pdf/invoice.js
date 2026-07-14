@@ -1,7 +1,7 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
-import { formatCurrency } from '../form-util'
-import { ToWords } from 'to-words'  
+import { formatPDFPrice } from '../form-util'
+import { ToWords } from 'to-words'
 import { common } from '@/config'
 import { getBase64FromUrl } from '../pdf-util'
 
@@ -226,8 +226,8 @@ const createPdf = async (data) => {
             },
             { text: item.quantity, alignment: 'center' },
             // { text: 'pcs', alignment: 'center' },
-            { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
-            { text: formatCurrency(item.totalPrice), alignment: 'right' }
+            { text: formatPDFPrice(item.unitPriceSell), alignment: 'right' },
+            { text: formatPDFPrice(item.totalPrice), alignment: 'right' }
           ]),
           // [
           //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
@@ -252,80 +252,6 @@ const createPdf = async (data) => {
       margin: [0, 0, 0, 0],
       minHeight: 700
     },
-    // footer: {
-    //   table: {
-    //     widths: [20, 200, 20, 20, 100, 100],
-    //     body: [
-    //       [
-    //         '1',
-    //         { text: 'Amount' },
-    //         '',
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.amount), alignment: 'right' }
-    //       ],
-    //       [
-    //         '2',
-    //         { text: 'Less: Discount' },
-    //         '',
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.discount), alignment: 'right' }
-    //       ],
-    //       [
-    //         '3',
-    //         { text: 'Sub Total ( 1-2 )' },
-    //         '',
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.subtotal), alignment: 'right' }
-    //       ],
-    //       [
-    //         '4',
-    //         { text: 'Less: Advance Payment' },
-    //         '',
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.advancePayment), alignment: 'right' }
-    //       ],
-    //       [
-    //         '5',
-    //         { text: 'Total ( 3-4 )' },
-    //         '',
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.total), alignment: 'right' }
-    //       ],
-    //       [
-    //         '6',
-    //         { text: 'VAT' },
-    //         '',
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.ppn), alignment: 'right' }
-    //       ],
-    //       [
-    //         '7',
-    //         { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
-    //         '',
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
-    //       ],
-    //     ]
-    //   },
-    //   layout: {
-    //     hLineWidth: () => 1,
-    //     vLineWidth: () => 1,
-    //     hLineColor: () => '#000000',
-    //     vLineColor: () => '#000000',
-    //     paddingLeft: () => 5,
-    //     paddingRight: () => 5,
-    //     paddingTop: () => 3,
-    //     paddingBottom: () => 3,
-    //   },
-    //   margin: [0, 0, 0, 0]
-    // },
   }
 
   const service = {
@@ -372,8 +298,8 @@ const createPdf = async (data) => {
             { text: '', alignment: 'center' },
             { text: item.service },
             { text: item.quantity, alignment: 'center' },
-            { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
-            { text: formatCurrency(item.totalPrice), alignment: 'right' }
+            { text: formatPDFPrice(item.unitPriceSell), alignment: 'right' },
+            { text: formatPDFPrice(item.totalPrice), alignment: 'right' }
           ]),
           // [
           //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
@@ -398,78 +324,11 @@ const createPdf = async (data) => {
       margin: [0, 0, 0, 0],
       minHeight: 700
     },
-    // footer: {
-    //   table: {
-    //     widths: [20, 200, 20, 115, 115],
-    //     body: [
-    //       [
-    //         '1',
-    //         { text: 'Amount' },
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.amount), alignment: 'right' }
-    //       ],
-    //       [
-    //         '2',
-    //         { text: 'Less: Discount' },
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.discount), alignment: 'right' }
-    //       ],
-    //       [
-    //         '3',
-    //         { text: 'Sub Total ( 1-2 )' },
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.subtotal), alignment: 'right' }
-    //       ],
-    //       [
-    //         '4',
-    //         { text: 'Less: Advance Payment' },
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.advancePayment), alignment: 'right' }
-    //       ],
-    //       [
-    //         '5',
-    //         { text: 'Total ( 3-4 )' },
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.total), alignment: 'right' }
-    //       ],
-    //       [
-    //         '6',
-    //         { text: 'VAT' },
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.ppn), alignment: 'right' }
-    //       ],
-    //       [
-    //         '7',
-    //         { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
-    //         '',
-    //         '',
-    //         { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
-    //       ],
-    //     ]
-    //   },
-    //   layout: {
-    //     hLineWidth: () => 1,
-    //     vLineWidth: () => 1,
-    //     hLineColor: () => '#000000',
-    //     vLineColor: () => '#000000',
-    //     paddingLeft: () => 5,
-    //     paddingRight: () => 5,
-    //     paddingTop: () => 3,
-    //     paddingBottom: () => 3,
-    //   },
-    //   margin: [0, 0, 0, 0]
-    // },
   }
 
   const type = purchaseOrder.purchaseOrderType === common.type.sparepart ? 'SPAREPART' : 'SERVICE'
   const invoiceType = invoice.type
-  
+
   const dp = invoice.downPayment || 0
   const subtotalAmount = Math.ceil(price.subtotal)
   const subtotalTypeDp = invoice.type === 'DP' ? subtotalAmount*dp/100 : subtotalAmount*(100-dp)/100
@@ -479,9 +338,9 @@ const createPdf = async (data) => {
   const totalAmountWord = toWords.convert(Math.ceil(totalAmount), { ignoreDecimal: true })
 
   const totalDP = [
-    [{ text: invoice.type === 'DP' ? 'Subtotal DP 1' : 'Subtotal DP 2', bold: true, margin: [0, 20, 0, 0] }, { text: formatCurrency(subtotalTypeDp), alignment: 'right', bold: true, margin: [0, 20, 0, 0] }],
-    [{ text: 'PPN 11%', bold: true }, { text: formatCurrency(ppnTypeDp), alignment: 'right', bold: true }],
-    [{ text: invoiceType === 'DP' ? 'Grand Total DP 1' :'Grand Total DP 2', bold: true }, { text: formatCurrency(grandTotalTypeDpWithPpn), alignment: 'right', bold: true }]
+    [{ text: invoice.type === 'DP' ? 'Subtotal DP 1' : 'Subtotal DP 2', bold: true, margin: [0, 20, 0, 0] }, { text: formatPDFPrice(subtotalTypeDp), alignment: 'right', bold: true, margin: [0, 20, 0, 0] }],
+    [{ text: 'PPN 11%', bold: true }, { text: formatPDFPrice(ppnTypeDp), alignment: 'right', bold: true }],
+    [{ text: invoiceType === 'DP' ? 'Grand Total DP 1' :'Grand Total DP 2', bold: true }, { text: formatPDFPrice(grandTotalTypeDpWithPpn), alignment: 'right', bold: true }]
   ]
 
   const hasDiscount = price.discount > 0
@@ -541,7 +400,7 @@ const createPdf = async (data) => {
       //         { text: '1', margin: [8, 0, 0, 0] },
       //         { text: `${type} ATAS PO ${purchaseOrder.poNumber}`, margin: [8, 0, 0, 0] },
       //         {
-      //           text: formatCurrency(price.subtotal),
+      //           text: formatPDFPrice(price.subtotal),
       //           margin: [0, 0, 30, 0],
       //           alignment: 'right'
       //         },
@@ -563,13 +422,13 @@ const createPdf = async (data) => {
           widths: [100, '*'],
           body: [
             ...(hasDiscount ? [
-              ['AMOUNT', { text: formatCurrency(price.amount), alignment: 'right' }],
-              ['DISC', { text: formatCurrency(price.discount), alignment: 'right' }],
+              ['AMOUNT', { text: formatPDFPrice(price.amount), alignment: 'right' }],
+              ['DISC', { text: formatPDFPrice(price.discount), alignment: 'right' }],
             ] : []),
-            ['SUB TOTAL', { text: formatCurrency(price.subtotal), alignment: 'right' }],
+            ['SUB TOTAL', { text: formatPDFPrice(price.subtotal), alignment: 'right' }],
             ...(invoice.type === 'Final' ? [
-              ['PPN 11%', { text: formatCurrency(price.ppn), alignment: 'right' }],
-              [{ text: 'GRAND TOTAL', bold: true }, { text: formatCurrency(price.grandTotal), alignment: 'right', bold: true }]
+              ['PPN 11%', formatPDFPrice(price.ppn)],
+              [{ text: 'GRAND TOTAL', bold: true }, formatPDFPrice(price.grandTotal, { bold: true })]
             ] : totalDP)
           ]
         },

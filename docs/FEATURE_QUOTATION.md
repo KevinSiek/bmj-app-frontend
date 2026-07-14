@@ -16,7 +16,7 @@ Purchase Orders.
    multiple versions. The list page groups quotations by number and shows
    version tabs.
 2. Types: `Spareparts` or `Service` (or mixed, line items can be either).
-3. Status lifecycle: `Process → On Review → Approved → PO → Cancelled/Revised`
+3. Status lifecycle: `Process → On Review → Approved → PO`. Side states: `Change` (needs changes), `Revised` (version bumped), `Cancelled`, `Waiting`, `Rejected`, `Done`.
 4. Quotations can be **returned** after becoming a PO (return workflow).
 5. The **review workflow** is role-gated: Director reviews quotation pricing.
 6. Discount and PPN (tax) values come from General settings.
@@ -124,8 +124,12 @@ All calls go to `config.api.quotation` = `/api/quotation`.
 | `processQuotation(slug, data)` | POST | `/api/quotation/moveToPo/{slug}` |
 | `getAllReviewQuotations(param)` | GET | `/api/quotation/review/1` |
 | `approveQuotation(slug)` | POST | `/api/quotation/approve/{slug}` |
-| `rejectQuotation(slug)` | POST | `/api/quotation/reject/{slug}` |
-| `needChangeQuotation(slug)` | POST | `/api/quotation/needChange/{slug}` |
+| `rejectQuotation(slug, data)` | POST | `/api/quotation/reject/{slug}` |
+| `needChangeQuotation(slug, data)` | POST | `/api/quotation/needChange/{slug}` |
+| `getQuotationReturn(param)` | GET | `/api/quotation/return/1` |
+| `returnQuotation(id)` | POST | `/api/quotation/return/{id}` |
+| `approveReturn(slug)` | GET | `/api/quotation/approveReturn/{slug}` |
+| `declineReturn(slug)` | GET | `/api/quotation/rejectReturn/{slug}` |
 
 ### processQuotation Payload
 
