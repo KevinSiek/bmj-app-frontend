@@ -1,5 +1,5 @@
 <template>
-  <form class="row form" @click.capture="onRootClick" autocomplete="off">
+  <form class="row form">
     <div v-if="!isTypeEdit || isRoleDirector" class="upper my-2">
       <div class="title">Project</div>
       <div class="data">
@@ -25,20 +25,10 @@
           </div>
         </div>
         <div class="right">
-          <div v-if="isRoleDirector" class="input form-group col-12">
+          <div class="input form-group col-12">
             <label for="">Branch</label><br>
-            <select class="form-select mt-2" aria-label="Branch" v-model="quotation.project.branch"
-              :disabled="disabled">
-              <option value="" disabled selected>Select Branch</option>
-              <option value="Semarang">Semarang</option>
-              <option value="Jakarta">Jakarta</option>
-            </select>
-          </div>
-          <div v-if="isRoleMarketing" class="input form-group col-12">
-            <label for="">Branch</label><br>
-            <input type="text" class="form-control mt-2" :value="quotation.project.branch" placeholder="Branch" disabled
-              readonly>
-            <small class="text-muted">Branch automatically set based on your profile</small>
+            <BranchField v-model="quotation.project.branch" :disabled="disabled" :show-director="isRoleDirector"
+              :show-readonly="isRoleMarketing" />
           </div>
           <div v-if="isTypeView" class="input form-group col-12">
             <label for="">Date Quotation</label><br>
@@ -84,13 +74,13 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="right">
           <div class="input form-group col-12">
             <label for="">Office</label><br>
             <input type="text" class="form-control mt-2" v-model="quotation.customer.office" placeholder="Office"
               :disabled="disabled">
           </div>
+        </div>
+        <div class="right">
           <div class="input form-group col-12">
             <div class="row">
               <div class="col-6">
@@ -109,6 +99,11 @@
             <label for="">Postal Code</label><br>
             <input type="text" class="form-control mt-2" v-model="quotation.customer.postalCode"
               placeholder="Postal Code" :disabled="disabled">
+          </div>
+          <div class="input form-group col-12">
+            <label for="">NPWP</label><br>
+            <input type="text" class="form-control mt-2" v-model="quotation.customer.npwp" placeholder="NPWP"
+              :disabled="disabled">
           </div>
           <div class="input form-group col-12">
             <label for="">Email <small class="text-muted">(optional)</small></label><br>
@@ -228,19 +223,13 @@
           <div class="form-group col-12 mx-3">
             <div v-for="(sparepart, sparepartIndex) in quotation.spareparts" :key="sparepartIndex"
               class="list row flex-nowrap">
-              <!-- FIXED: Sparepart Name with Controlled Dropdown -->
-              <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+              <!-- Sparepart Name -->
+              <div class="col-3">
                 <input type="text" class="form-control mt-2" v-model="sparepart.sparepartName" placeholder="Part Name"
-                  @focus="openDropdown(sparepartIndex, 'name')"
-                  @input="onNameInput(sparepartIndex, sparepart.sparepartName)"
-                  @keydown.esc.prevent="closeDropdown(sparepartIndex, 'name')" @blur="onNameBlur(sparepartIndex)"
-                  :class="{ 'is-invalid': !sparepart.sparepartId && sparepart.sparepartName }" />
-
-                <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
-                <ul
-                  v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].name && searchedSpareparts.length > 0"
-                  class="dropdown-menu" style="display: block;">
-                  <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item" @mousedown.prevent
+                  data-bs-toggle="dropdown" aria-expanded="false" @input="handleInputSearch(sparepart.sparepartName)"
+                  @change="handleInputSearch(sparepart.sparepartName)" />
+                <ul class="dropdown-menu">
+                  <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
                     @click="onSelect(sparepartIndex, sparepart, item)">
                     {{ item.sparepartName }}
                   </li>
@@ -251,18 +240,15 @@
                 </div>
               </div>
 
-              <!-- FIXED: Part Number with Controlled Dropdown -->
-              <div class="col-3 sparepart-container" :data-index="sparepartIndex">
+              <!-- Part Number -->
+              <div class="col-3">
                 <input type="text" class="form-control mt-2" v-model="sparepart.sparepartNumber"
-                  placeholder="Part Number" @focus="openDropdown(sparepartIndex, 'number')"
-                  @input="onNumberInput(sparepartIndex, sparepart.sparepartNumber)"
-                  @keydown.esc.prevent="closeDropdown(sparepartIndex, 'number')" @blur="onNumberBlur(sparepartIndex)" />
+                  placeholder="Part Number" data-bs-toggle="dropdown" aria-expanded="false"
+                  @input="handleInputSearch(sparepart.sparepartNumber)"
+                  @change="handleInputSearch(sparepart.sparepartNumber)" />
 
-                <!-- FIXED: Controlled dropdown visibility (Bootstrap-style list like Purchase page) -->
-                <ul
-                  v-if="showDropdown[sparepartIndex] && showDropdown[sparepartIndex].number && searchedSpareparts.length > 0"
-                  class="dropdown-menu" style="display: block;">
-                  <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item" @mousedown.prevent
+                <ul class="dropdown-menu">
+                  <li v-for="(item, index) in searchedSpareparts" :key="index" class="dropdown-item"
                     @click="onSelect(sparepartIndex, sparepart, item)">
                     {{ item.sparepartNumber }}
                   </li>
@@ -451,7 +437,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount, reactive, watch } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { common } from '@/config'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
@@ -461,6 +447,7 @@ import { useCustomerStore } from '@/stores/customer'
 import { useGeneralStore } from '@/stores/general'
 import { useRole } from '@/composeable/useRole'
 import CurrencyInput from '@/components/CurrencyInput.vue'
+import BranchField from '@/components/BranchField.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const quotationStore = useQuotationStore()
@@ -473,7 +460,6 @@ const { customers } = storeToRefs(customerStore)
 const { discount, ppn } = storeToRefs(generalStore)
 const { user } = storeToRefs(authStore)
 
-// FIXED: Import both isRoleDirector and isRoleMarketing
 const { isRoleDirector, isRoleMarketing } = useRole()
 
 const props = defineProps({
@@ -485,70 +471,11 @@ const isTypeEdit = props.type == common.form.type.edit
 const isTypeView = props.type == common.form.type.view
 const disabled = computed(() => isTypeView ? true : false)
 
-// FIXED: Dropdown visibility state per row index and field (name/number)
-// showDropdown[index] = { name: boolean, number: boolean }
-const showDropdown = reactive({})
-
-// FIXED: Dropdown control functions (per-field)
-const openDropdown = (index, field = 'name') => {
-  if (!showDropdown[index]) showDropdown[index] = { name: false, number: false }
-  showDropdown[index][field] = true
+const handleInputSearch = (search) => {
+  if (search !== '') debounce(() => quotationStore.getSpareparts({ page: 1, search }), 300, `search-quotation-sparepart-${search}`)
 }
 
-const closeDropdown = (index, field) => {
-  if (!showDropdown[index]) return
-  if (field) {
-    showDropdown[index][field] = false
-  } else {
-    // close both
-    showDropdown[index].name = false
-    showDropdown[index].number = false
-  }
-  // Clear search results to force dropdown to hide when no field open
-  const anyOpen = Object.values(showDropdown[index] || {}).some(Boolean)
-  if (!anyOpen) searchedSpareparts.value = []
-}
-
-// FIXED: Root click handler to close dropdown on outside click
-const onRootClick = (evt) => {
-  const container = evt.target.closest('.sparepart-container')
-  if (!container) {
-    // Clicked outside any sparepart container → close all dropdowns
-    Object.keys(showDropdown).forEach((k) => {
-      if (showDropdown[k]) {
-        showDropdown[k].name = false
-        showDropdown[k].number = false
-      }
-    })
-    searchedSpareparts.value = []
-  }
-}
-
-// FIXED: Enhanced input handlers with dropdown control
-const searchSparepart = (search) => {
-  if (search !== '') quotationStore.getSpareparts({ page: 1, search })
-}
-
-const onNameInput = (index, search) => {
-  openDropdown(index, 'name')
-  debounce(() => searchSparepart(search), 300, `search-quotation-sparepart-name-${index}`)
-}
-
-const onNumberInput = (index, search) => {
-  openDropdown(index, 'number')
-  debounce(() => searchSparepart(search), 300, `search-quotation-sparepart-number-${index}`)
-}
-
-// Separate blur handlers so closing one field doesn't immediately close the other if it's active
-const onNameBlur = (index) => {
-  setTimeout(() => closeDropdown(index, 'name'), 150)
-}
-
-const onNumberBlur = (index) => {
-  setTimeout(() => closeDropdown(index, 'number'), 150)
-}
-
-// Customer search handlers (unchanged)
+// Customer search handlers
 const handleInputSearchCustomer = (search) => {
   if (search !== '') debounce(() => customerStore.getCustomers({ search }), 500, 'search-quotation-customer')
 }
@@ -746,58 +673,6 @@ $secondary-color: rgb(98, 98, 98);
   border: 2px solid $primary-color;
   border-radius: 20px;
   overflow: auto;
-}
-
-// CRITICAL FIX: Sparepart container for dropdown positioning
-.sparepart-container {
-  position: relative;
-}
-
-// CRITICAL FIX: Proper sparepart dropdown styling
-.sparepart-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 1050;
-  background: white;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  max-height: 200px;
-  overflow-y: auto;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  margin-top: 2px;
-}
-
-// CRITICAL FIX: Clickable sparepart suggestion buttons
-.sparepart-suggestion-btn {
-  display: block;
-  width: 100%;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-  color: #212529;
-  border-bottom: 1px solid #f8f9fa;
-
-  &:hover {
-    background-color: #e9ecef;
-    color: #16181b;
-  }
-
-  &:focus {
-    outline: none;
-    background-color: #f8f9fa;
-  }
-
-  &:active {
-    background-color: #dee2e6;
-  }
-
-  &:last-child {
-    border-bottom: none;
-  }
 }
 
 .dropdown-menu {
