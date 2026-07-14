@@ -1,27 +1,17 @@
 <template>
   <div class="po-select">
-    <input
-      type="text"
-      class="form-control"
-      :placeholder="placeholder"
-      v-model="searchText"
-      data-bs-toggle="dropdown"
-      aria-expanded="false"
-      @keyup="onSearch"
-      :disabled="disabled"
-    >
+    <input ref="inputRef" type="text" class="form-control" :placeholder="placeholder" v-model="searchText"
+      data-bs-toggle="dropdown" aria-expanded="false" @keyup="onSearch" :disabled="disabled">
     <ul class="dropdown-menu po-select__menu">
-      <li
-        v-for="po in poOptions"
-        :key="po.id"
-        class="dropdown-item"
-        @click="select(po)"
-      >
+      <li v-for="po in poOptions" :key="po.id" class="dropdown-item" @click="select(po)">
         <span class="fw-semibold">{{ po.poNumber || po.purchaseOrderNumber }}</span>
         <span class="text-muted ms-2">{{ po.purchaseOrderDate }}</span>
       </li>
-      <li v-if="poOptions.length === 0" class="dropdown-item text-muted">No purchase orders</li>
-      <li v-if="hasMore" class="dropdown-item text-center text-primary" @click.stop="loadMore">
+      <li v-if="isLoading" class="dropdown-item text-center">
+        <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+      </li>
+      <li v-else-if="poOptions.length === 0" class="dropdown-item text-muted">No purchase orders</li>
+      <li v-if="!isLoading && hasMore" class="dropdown-item text-center text-primary" @click.stop="loadMore">
         Load more…
       </li>
     </ul>
@@ -29,9 +19,9 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useBorrowStore } from '@/stores/borrow'
+import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import debounce from '@/utils/debouncer'
 
 const props = defineProps({
@@ -42,19 +32,28 @@ const props = defineProps({
   modelValue: { type: String, default: '' }
 })
 
-const emit = defineEmits(['select', 'update:modelValue'])
+const emit = defineEmits(['select', 'update:modelValue', 'clear'])
 
-const borrowStore = useBorrowStore()
-const { poOptions, poOptionsPage, poOptionsLastPage } = storeToRefs(borrowStore)
+const purchaseOrderStore = usePurchaseOrderStore()
+const { poOptions, poOptionsPage, poOptionsLastPage } = storeToRefs(purchaseOrderStore)
 
 const searchText = ref('')
+const isLoading = ref(false)
+const inputRef = ref(null)
 
 const hasMore = computed(() => poOptionsPage.value < poOptionsLastPage.value)
 
-const fetch = (page = 1) =>
-  borrowStore.getPurchaseOrderOptions({ type: props.type, search: searchText.value, page })
+const fetch = async (page = 1) => {
+  isLoading.value = true
+  try {
+    await purchaseOrderStore.getPurchaseOrderOptions({ type: props.type, search: searchText.value, page })
+  } finally {
+    isLoading.value = false
+  }
+}
 
 const onSearch = () => {
+  if (searchText.value === '') emit('clear')
   debounce(() => fetch(1), 400, 'po-select-search')
 }
 
@@ -70,8 +69,21 @@ watch(() => props.modelValue, (newVal) => {
   searchText.value = newVal || ''
 }, { immediate: true })
 
-// Prime the list on first focus so the dropdown isn't empty before typing.
-fetch(1)
+// On mount, only prime the list if a value is already set.
+if (searchText.value !== '') fetch(1)
+
+onMounted(() => {
+  inputRef.value?.addEventListener('show.bs.dropdown', () => {
+    if (searchText.value !== '') fetch(1)
+  })
+  inputRef.value?.addEventListener('hidden.bs.dropdown', () => {
+    purchaseOrderStore.resetPurchaseOrderOptions()
+  })
+})
+
+onUnmounted(() => {
+  purchaseOrderStore.resetPurchaseOrderOptions()
+})
 </script>
 
 <style lang="scss" scoped>
