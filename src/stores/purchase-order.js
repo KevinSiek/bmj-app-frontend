@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import purchaseOrderApi from '@/api/purchase-order'
+import borrowApi from '@/api/borrow'
 
 export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   const purchaseOrder = ref(null)
@@ -8,6 +9,12 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
   const returnPurchaseOrders = ref([])
   const paginationData = ref({})
   const isLoading = ref(false)
+
+  // PO option pickers (Service for the request, Spareparts for reconciliation). Kept as an
+  // appendable list so the dropdown can "load more" by incrementing the page.
+  const poOptions = ref([])
+  const poOptionsPage = ref(1)
+  const poOptionsLastPage = ref(1)
 
   function mapPurchaseOrder(data) {
     return {
@@ -61,6 +68,27 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
         quantity: service?.quantity || 0,
         unitPriceSell: service?.unit_price_sell || 0,
         totalPrice: service?.total_price || 0
+      }))
+    }
+  }
+
+  function mapPoOption(data) {
+    return {
+      id: data?.id || '',
+      poNumber: data?.po_number || '',
+      purchaseOrderNumber: data?.purchase_order_number || '',
+      purchaseOrderDate: data?.purchase_order_date || '',
+      version: data?.version || 1,
+      workOrder: {
+        id: data?.work_order?.id || '',
+        workOrderNumber: data?.work_order?.work_order_number || '',
+        worker: data?.work_order?.worker || ''
+      },
+      spareparts: (data?.spareparts || []).map(s => ({
+        sparepartId: s?.sparepart_id || '',
+        sparepartName: s?.sparepart_name || '',
+        sparepartNumber: s?.sparepart_number || '',
+        quantity: s?.quantity || 0
       }))
     }
   }
@@ -178,12 +206,33 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     const response = await purchaseOrderApi.rejectReturn(id)
   }
 
+  /**
+   * Load PO options. page === 1 replaces the list; higher pages append (load-more).
+   * type is 'Service' (request link) or 'Spareparts' (reconciliation).
+   */
+  async function getPurchaseOrderOptions({ type, search = '', page = 1 } = {}) {
+    const { data } = await purchaseOrderApi.getPurchaseOrderOptions({ type, search, page })
+    const mapped = data.data.map(mapPoOption)
+    poOptions.value = page === 1 ? mapped : [...poOptions.value, ...mapped]
+    poOptionsPage.value = data.current_page
+    poOptionsLastPage.value = data.last_page
+  }
+
+  function resetPurchaseOrderOptions() {
+    poOptions.value = []
+    poOptionsPage.value = 1
+    poOptionsLastPage.value = 1
+  }
+
   return {
     purchaseOrder,
     purchaseOrders,
     returnPurchaseOrders,
     paginationData,
     isLoading,
+    poOptions,
+    poOptionsPage,
+    poOptionsLastPage,
     getAllPurchaseOrders,
     getAllReturnPurchaseOrders,
     getPurchaseOrder,
@@ -202,6 +251,8 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     approveReturn,
     rejectReturn,
     updateNotes,
+    getPurchaseOrderOptions,
+    resetPurchaseOrderOptions,
     $resetPurchaseOrder,
     $resetPurchaseOrders
   }

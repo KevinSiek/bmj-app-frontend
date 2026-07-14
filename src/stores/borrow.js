@@ -10,21 +10,12 @@ export const useBorrowStore = defineStore('borrow', () => {
   const searchedSpareparts = ref([])
   const isLoading = ref(false)
 
-  // PO option pickers (Service for the request, Spareparts for reconciliation). Kept as an
-  // appendable list so the dropdown can "load more" by incrementing the page.
-  const poOptions = ref([])
-  const poOptionsPage = ref(1)
-  const poOptionsLastPage = ref(1)
-
   function mapBorrow(data = {}) {
     return {
       id: data?.id || '',
       borrowNumber: data?.borrow_number || '',
       currentStatus: data?.current_status || '',
-      branch: {
-        id: data?.branch?.id || '',
-        name: data?.branch?.name || ''
-      },
+      branch: data?.branch || '',
       purchaseOrder: {
         id: data?.purchase_order?.id || '',
         poNumber: data?.purchase_order?.po_number || '',
@@ -61,27 +52,6 @@ export const useBorrowStore = defineStore('borrow', () => {
       totalUnit: Object.fromEntries(
         (data?.total_unit || []).map(branch => [branch?.name || '', branch?.stock || 0])
       ),
-    }
-  }
-
-  function mapPoOption(data) {
-    return {
-      id: data?.id || '',
-      poNumber: data?.po_number || '',
-      purchaseOrderNumber: data?.purchase_order_number || '',
-      purchaseOrderDate: data?.purchase_order_date || '',
-      version: data?.version || 1,
-      workOrder: {
-        id: data?.work_order?.id || '',
-        workOrderNumber: data?.work_order?.work_order_number || '',
-        worker: data?.work_order?.worker || ''
-      },
-      spareparts: (data?.spareparts || []).map(s => ({
-        sparepartId: s?.sparepart_id || '',
-        sparepartName: s?.sparepart_name || '',
-        sparepartNumber: s?.sparepart_number || '',
-        quantity: s?.quantity || 0
-      }))
     }
   }
 
@@ -126,24 +96,6 @@ export const useBorrowStore = defineStore('borrow', () => {
     searchedSpareparts.value = data.data.map(mapSparepart)
   }
 
-  /**
-   * Load PO options. page === 1 replaces the list; higher pages append (load-more).
-   * type is 'Service' (request link) or 'Spareparts' (reconciliation).
-   */
-  async function getPurchaseOrderOptions({ type, search = '', page = 1 } = {}) {
-    const { data } = await borrowApi.getPurchaseOrderOptions({ type, search, page })
-    const mapped = data.data.map(mapPoOption)
-    poOptions.value = page === 1 ? mapped : [...poOptions.value, ...mapped]
-    poOptionsPage.value = data.current_page
-    poOptionsLastPage.value = data.last_page
-  }
-
-  function resetPurchaseOrderOptions() {
-    poOptions.value = []
-    poOptionsPage.value = 1
-    poOptionsLastPage.value = 1
-  }
-
   async function approveBorrow(id) {
     return borrowApi.approveBorrow(id)
   }
@@ -186,17 +138,12 @@ export const useBorrowStore = defineStore('borrow', () => {
     paginationData,
     searchedSpareparts,
     isLoading,
-    poOptions,
-    poOptionsPage,
-    poOptionsLastPage,
     getAllBorrow,
     getBorrow,
     setBorrow,
     addBorrow,
     updateBorrow,
     getSpareparts,
-    getPurchaseOrderOptions,
-    resetPurchaseOrderOptions,
     approveBorrow,
     rejectBorrow,
     sendBorrow,

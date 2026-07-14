@@ -113,6 +113,10 @@ const rejectReturn = (id) => {
   return httpApi.postDataViaApi(`${api.quotation}/rejectReturn/${id}`)
 }
 
+const getPurchaseOrderOptions = (param) => {
+  return httpApi.getDataViaApi(`${api.purchase_order}/options/purchase-orders`, param)
+}
+
 export default {
   getAllPurchaseOrder,
   getAllReturnPurchaseOrder,
@@ -129,5 +133,6 @@ export default {
   reject,
   returnPurchaseOrder,
   approveReturn,
-  rejectReturn
+  rejectReturn,
+  getPurchaseOrderOptions,
 }

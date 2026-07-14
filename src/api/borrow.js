@@ -17,10 +17,6 @@ const updateBorrow = (id, borrow) => {
   return httpApi.putDataViaApi(`${api.borrow}/${id}`, borrow)
 }
 
-const getPurchaseOrderOptions = (param) => {
-  return httpApi.getDataViaApi(`${api.borrow}/options/purchase-orders`, param)
-}
-
 const approveBorrow = (id) => {
   return httpApi.postDataViaApi(`${api.borrow}/approve/${id}`)
 }
@@ -54,7 +50,6 @@ export default {
   addBorrow,
   getBorrowById,
   updateBorrow,
-  getPurchaseOrderOptions,
   approveBorrow,
   rejectBorrow,
   sendBorrow,
