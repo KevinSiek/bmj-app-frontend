@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="my-2">
         <div class="title">Purchase List</div>
@@ -60,6 +61,7 @@
 <script setup>
 import { useModalStore } from '@/stores/modal'
 import { usePurchaseStore } from '@/stores/purchase'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -73,8 +75,11 @@ const { purchase } = storeToRefs(purchaseStore)
 
 const isProcessing = ref(false)
 
-onMounted(() => {
-  purchaseStore.getPurchase(route.params.id)
+const isLoading = ref(true)
+
+onMounted(async () => {
+  await purchaseStore.getPurchase(route.params.id)
+  isLoading.value = false
 })
 
 const reject = async () => {

@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="input form-group col-4 my-2">
         <div class="title">Branch</div>
@@ -127,6 +128,7 @@
 <script setup>
 import { menuMapping as menuConfig, common } from '@/config'
 import { usePurchaseStore } from '@/stores/purchase'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
 import debounce from '@/utils/debouncer'
@@ -146,11 +148,14 @@ const isProcessing = ref(false)
 
 const totalPurchase = computed(() => purchase.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
 
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!purchase.value) purchaseStore.$resetPurchase()
 })
-onMounted(() => {
-  purchaseStore.getPurchase(route.params.id)
+onMounted(async () => {
+  await purchaseStore.getPurchase(route.params.id)
+  isLoading.value = false
 })
 
 const searchSparepart = (search) => {

@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="upper my-2">
         <div class="left">
@@ -22,7 +23,7 @@
           <div class="title">Detail</div>
           <div class="input form-group col-12">
             <label>Branch</label><br>
-            <input type="text" class="form-control mt-2" v-model="borrow.branch.name" disabled>
+            <input type="text" class="form-control mt-2" v-model="borrow.branch" disabled>
           </div>
           <div class="input form-group col-12">
             <label>Status</label><br>
@@ -122,9 +123,11 @@
 
 <script setup>
 import { useBorrowStore } from '@/stores/borrow'
+import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
 import { useRole } from '@/composeable/useRole'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -135,6 +138,7 @@ import PoSelect from '@/components/borrow/PoSelect.vue'
 const route = useRoute()
 const router = useRouter()
 const borrowStore = useBorrowStore()
+const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
 const { isRoleMarketing, isRoleDirector, isRoleHeadInventory, isRoleInventoryAdmin, isRoleInventoryPurchase, user } = useRole()
@@ -142,6 +146,7 @@ const { isRoleMarketing, isRoleDirector, isRoleHeadInventory, isRoleInventoryAdm
 const { borrow } = storeToRefs(borrowStore)
 
 const isProcessing = ref(false)
+const isLoading = ref(true)
 const status = common.status.borrow
 
 // Per-line returned quantity inputs (reconciliation only).
@@ -155,12 +160,12 @@ const isReviewer = computed(() => isRoleHeadInventory.value || isRoleDirector.va
 const isReceived = computed(() => borrow.value?.currentStatus === status.received)
 const isDone = computed(() => borrow.value?.currentStatus === status.done)
 
-const canCancel = computed(() => isMarketing.value && borrow.value?.currentStatus === status.created)
-const canReview = computed(() => isReviewer.value && borrow.value?.currentStatus === status.created)
-const canHandover = computed(() => isInventory.value && borrow.value?.currentStatus === status.approved)
-const canReturn = computed(() => isMarketing.value && borrow.value?.currentStatus === status.borrowed)
-const canReceive = computed(() => isInventory.value && borrow.value?.currentStatus === status.returned)
-const canFinished = computed(() => isRoleDirector.value && borrow.value?.currentStatus === status.received)
+const canCancel = computed(() => !isLoading.value && isMarketing.value && borrow.value?.currentStatus === status.created)
+const canReview = computed(() => !isLoading.value && isReviewer.value && borrow.value?.currentStatus === status.created)
+const canHandover = computed(() => !isLoading.value && isInventory.value && borrow.value?.currentStatus === status.approved)
+const canReturn = computed(() => !isLoading.value && isMarketing.value && borrow.value?.currentStatus === status.borrowed)
+const canReceive = computed(() => !isLoading.value && isInventory.value && borrow.value?.currentStatus === status.returned)
+const canFinished = computed(() => !isLoading.value && isRoleDirector.value && borrow.value?.currentStatus === status.received)
 
 const hasShortfall = computed(() =>
   borrow.value?.spareparts?.some((sp, i) => Number(returnQuantities.value[i]) < Number(sp.quantity)))
@@ -176,10 +181,10 @@ const fetchData = async () => {
 
 onBeforeMount(() => {
   if (!borrow.value) borrowStore.$resetBorrow()
-  borrowStore.resetPurchaseOrderOptions()
+  purchaseOrderStore.resetPurchaseOrderOptions()
 })
 
-onMounted(fetchData)
+onMounted(async () => { await fetchData(); isLoading.value = false })
 
 const runAction = async (fn) => {
   if (isProcessing.value) return

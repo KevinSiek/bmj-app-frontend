@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="upper my-2">
         <div class="left">
@@ -248,6 +249,7 @@
 
 <script setup>
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -270,11 +272,14 @@ const fetchData = async () => {
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
   await trackStore.setTrackData(purchaseOrder.value.status)
 }
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!purchaseOrder.value) purchaseOrderStore.$resetPurchaseOrder()
 })
 onMounted(async () => {
   await fetchData()
+  isLoading.value = false
 })
 
 const reject = async () => {

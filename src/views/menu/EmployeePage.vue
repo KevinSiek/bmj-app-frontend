@@ -10,13 +10,9 @@
       </div>
     </div>
     <div class="lower paginate shadow">
-      <div v-if="isLoading">
-        <div class="loading-text">
-          Loading...
-        </div>
-      </div>
-      <div v-else>
-        <div v-if="employees?.length == 0">
+      <LoaderOverlaySmall v-if="isLoading" />
+      <div>
+        <div v-if="employees?.length == 0 && !isLoading">
           <div class="no-data-text">
             No Data
           </div>
@@ -33,6 +29,7 @@
 </template>
 
 <script setup>
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { menuMapping as menuConfig } from '@/config'
 import SearchBar from '@/components/SearchBar.vue'
 import RefreshButton from '@/components/RefreshButton.vue'

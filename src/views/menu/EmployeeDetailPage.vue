@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <div class="title">
       Employee
     </div>
@@ -116,6 +117,7 @@
 import { menuMapping as menuConfig, common } from '@/config'
 import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -142,6 +144,8 @@ const roles = [
   common.role.service
 ]
 
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!employee.value) employeeStore.$resetEmployee()
 })
@@ -151,6 +155,7 @@ onMounted(async () => {
     isShowPasswordInputs.value = true
     employee.value.password = employee.value.tempPassword
   }
+  isLoading.value = false
 })
 
 const showHidePass = (isShow) => {

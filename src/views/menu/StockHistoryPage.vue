@@ -19,13 +19,9 @@
       </div>
     </div>
     <div class="lower paginate shadow">
+      <LoaderOverlaySmall v-if="isLoading" />
       <DateRangeFilter />
-      <div v-if="isLoading">
-        <div class="loading-text">
-          Loading...
-        </div>
-      </div>
-      <div v-else>
+      <div>
         <div v-if="stockMovements?.length == 0">
           <div class="no-data-text">
             No stock movements found
@@ -78,6 +74,7 @@
 </template>
 
 <script setup>
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { common, menuMapping } from '@/config'
 import DateRangeFilter from '@/components/DateRangeFilter.vue'
 import SearchAutocomplete from '@/components/SearchAutocomplete.vue'

@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="notes my-2">
         <div class="title">Branch</div>
@@ -51,7 +52,7 @@
     <div class="left" v-if="isShowEdit">
       <button type="button" class="btn btn-process" @click="goToEdit" :disabled="isProcessing">Edit</button>
     </div>
-    <div class="right" v-if="purchase.currentStatus == common.status.approved">
+    <div class="right" v-if="isShowReceive">
       <button type="button" class="btn btn-process" @click="receiveConfirmation"
         :disabled="isProcessing">Receive</button>
     </div>
@@ -62,6 +63,7 @@
 import { common, menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { usePurchaseStore } from '@/stores/purchase'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -75,6 +77,7 @@ const modalStore = useModalStore()
 const { purchase } = storeToRefs(purchaseStore)
 
 const isProcessing = ref(false)
+const isLoading = ref(true)
 
 const HIDDEN_EDIT_STATUSES = [
   common.status.purchase.received,
@@ -86,12 +89,18 @@ const isShowEdit = computed(() => {
   const status = purchase.value.currentStatus
   return status && !HIDDEN_EDIT_STATUSES.includes(status)
 })
+const isShowReceive = computed(() =>
+  !isLoading.value &&
+  purchase.value.currentStatus === common.status.purchase.approved
+)
+
 
 onBeforeMount(() => {
   if (!purchase.value) purchaseStore.$resetPurchase()
 })
-onMounted(() => {
-  purchaseStore.getPurchase(route.params.id)
+onMounted(async () => {
+  await purchaseStore.getPurchase(route.params.id)
+  isLoading.value = false
 })
 
 const goToEdit = () => {

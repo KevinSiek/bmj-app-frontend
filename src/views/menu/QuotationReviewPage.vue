@@ -7,14 +7,10 @@
       </div>
     </div>
     <div class="lower paginate shadow">
+      <LoaderOverlaySmall v-if="isLoading" />
       <SelectDate />
-      <div v-if="isLoading">
-        <div class="loading-text">
-          Loading...
-        </div>
-      </div>
-      <div v-else>
-        <div v-if="quotationReviews?.length == 0">
+      <div>
+        <div v-if="quotationReviews?.length == 0 && !isLoading">
           <div class="no-data-text">
             No Data
           </div>
@@ -32,6 +28,7 @@
 </template>
 
 <script setup>
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { menuMapping as menuConfig } from '@/config'
 import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'

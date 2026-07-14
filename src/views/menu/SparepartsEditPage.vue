@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="upper my-2">
         <div class="title">Sparepart Information</div>
@@ -92,6 +93,7 @@
 import { menuMapping as menuConfig } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
 import { useSparepartStore } from '@/stores/sparepart'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores/modal'
 import CurrencyInput from '@/components/CurrencyInput.vue'
@@ -110,13 +112,16 @@ const { sellers } = storeToRefs(sellerStore)
 
 const isProcessing = ref(false)
 
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!sparepart.value) sparepartStore.$resetSparepart()
 })
 
-onMounted(() => {
-  sparepartStore.getSparepart(route.params.id)
+onMounted(async () => {
+  await sparepartStore.getSparepart(route.params.id)
   sellerStore.getSellers()
+  isLoading.value = false
 })
 
 const addSeller = () => {

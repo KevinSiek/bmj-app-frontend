@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="upper my-2">
         <div class="title">Customer</div>
@@ -277,6 +278,7 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoice'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, ref, computed } from 'vue'
 import { useTrackStore } from '@/stores/track'
@@ -307,13 +309,16 @@ const isShowDPInvoice = computed(() =>
     invoice.value.invoice.version < 3)
 )
 
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!invoice.value) invoiceStore.$resetInvoice()
 })
-onMounted(() => {
+onMounted(async () => {
   generalStore.getGeneralData()
-  invoiceStore.getInvoice(route.params.id)
+  await invoiceStore.getInvoice(route.params.id)
   trackStore.setTrackData(invoice.value.status)
+  isLoading.value = false
 })
 
 const openDownloadModal = () => {

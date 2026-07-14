@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="upper my-2">
         <div class="title">Customer</div>
@@ -195,6 +196,7 @@ import { common, menuMapping as menuConfig } from '@/config'
 import { useDeliveryOrderStore } from '@/stores/delivery-order'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -210,22 +212,27 @@ const { deliveryOrder } = storeToRefs(deliveryOrderStore)
 const { isRoleDirector, isRoleInventoryAdmin, isRoleHeadInventory } = useRole()
 
 const isProcessing = ref(false)
+const isLoading = ref(true)
 
 const isShowDone = computed(() =>
+  !isLoading.value &&
   (isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value) &&
   deliveryOrder.value.currentStatus === common.status.work_order.on_progress
 )
 
 const isShowProcess = computed(() =>
+  !isLoading.value &&
   (isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value) &&
   deliveryOrder.value.currentStatus === common.status.work_order.wait_on_progress
 )
+
 
 onBeforeMount(() => {
   if (!deliveryOrder.value) deliveryOrderStore.$resetDeliveryOrder()
 })
 onMounted(async () => {
   await fetchData()
+  isLoading.value = false
 })
 
 const fetchData = async () => {

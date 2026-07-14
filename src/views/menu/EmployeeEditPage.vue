@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form @submit.prevent="action()" class="row form">
       <div class="input form-group col-12">
         <label for="name">FullName</label><br>
@@ -55,6 +56,7 @@
 import { menuMapping as menuConfig } from '@/config'
 import { useEmployeeStore } from '@/stores/employee'
 import { useModalStore } from '@/stores/modal'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -82,6 +84,8 @@ const roles = [
   common.role.service
 ]
 
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!employee.value) employeeStore.$resetEmployee()
   employeeStore.getGroups()
@@ -92,6 +96,7 @@ onMounted(async () => {
     isShowPasswordInputs.value = true
     employee.value.password = employee.value.tempPassword
   }
+  isLoading.value = false
 })
 
 

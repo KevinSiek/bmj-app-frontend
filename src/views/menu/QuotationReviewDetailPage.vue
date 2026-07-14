@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <QuotationForm :type="common.form.type.view" />
   </div>
   <div class="button">
@@ -20,6 +21,7 @@
 
 <script setup>
 import { useQuotationStore } from '@/stores/quotation'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useTrackStore } from '@/stores/track'
@@ -41,12 +43,15 @@ const fetchData = async () => {
   quotation.value = quotationReview.value
 }
 
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!quotationReview.value) quotationStore.$resetQuotationReview()
 })
 
 onMounted(async () => {
   await fetchData()
+  isLoading.value = false
 })
 
 onBeforeUnmount(() => {

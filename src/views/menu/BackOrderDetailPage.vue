@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="upper my-2">
         <div class="left">
@@ -167,6 +168,7 @@
 import { useBackOrderStore } from '@/stores/back-order'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -182,8 +184,10 @@ const modalStore = useModalStore()
 const { backOrder } = storeToRefs(backOrderStore)
 
 const isProcessing = ref(false)
+const isLoading = ref(true)
 
 const isReadyToProcess = computed(() =>
+  !isLoading.value &&
   backOrder.value?.currentStatus !== 'Rejected' &&
   backOrder.value?.currentStatus !== 'Ready' &&
   backOrder.value?.spareparts?.some(s => s.backOrder !== 0)
@@ -194,10 +198,14 @@ const fetchData = async () => {
   await trackStore.setTrackData(backOrder.value.status)
 }
 
+
 onBeforeMount(() => {
   if (!backOrder.value) backOrderStore.$resetBackOrder()
 })
-onMounted(fetchData)
+onMounted(async () => {
+  await fetchData()
+  isLoading.value = false
+})
 
 const analyzeBackOrderAction = async () => {
   if (isProcessing.value) return

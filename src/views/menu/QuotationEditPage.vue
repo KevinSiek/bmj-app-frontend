@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <QuotationForm :type="common.form.type.edit" :action="editQuotation" />
   </div>
   <div class="button">
@@ -18,6 +19,7 @@ import { common, menuMapping as menuConfig } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuotationStore } from '@/stores/quotation'
 import { useModalStore } from '@/stores/modal'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { defineAsyncComponent, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 const QuotationForm = defineAsyncComponent(() => import('@/components/quotation/QuotationForm.vue'))
@@ -31,8 +33,11 @@ const { quotation } = storeToRefs(quotationStore)
 
 const isProcessing = ref(false)
 
-onMounted(() => {
-  quotationStore.getQuotation(route.params.id)
+const isLoading = ref(true)
+
+onMounted(async () => {
+  await quotationStore.getQuotation(route.params.id)
+  isLoading.value = false
 })
 
 const editQuotation = async () => {

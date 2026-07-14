@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <QuotationForm :type="common.form.type.view" />
   </div>
   <div class="button">
@@ -8,7 +9,7 @@
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
     <div class="right" v-if="canCreatePO">
-      <button type="button" class="btn btn-process" @click="processQuotationConfirmation"
+      <button type="button" v-if="!isLoading" class="btn btn-process" @click="processQuotationConfirmation"
         :disabled="isProcessing">Create PO</button>
     </div>
   </div>
@@ -19,6 +20,7 @@ import { menuMapping as menuConfig, common } from '@/config'
 import { useRoute, useRouter } from 'vue-router'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useQuotationStore } from '@/stores/quotation'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { useTrackStore } from '@/stores/track'
 import { useModalStore } from '@/stores/modal'
@@ -41,12 +43,15 @@ const isProcessing = ref(false)
 
 const canCreatePO = computed(() => !quotation.value?.status?.some(s => s.state === 'Po'))
 
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!quotation.value) quotationStore.$resetQuotation()
 })
 onMounted(async () => {
   await quotationStore.getQuotation(route.params.id)
   await trackStore.setTrackData(quotation.value.status)
+  isLoading.value = false
 })
 
 const goToEdit = () => {

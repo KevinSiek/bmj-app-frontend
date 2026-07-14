@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="upper my-2">
         <div class="left">
@@ -323,6 +324,7 @@
 
 <script setup>
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -348,31 +350,40 @@ const isProcessing = ref(false)
 const isSavingNotes = ref(false)
 const editableNotes = ref('')
 const newNote = ref('')
+const isLoading = ref(true)
 
 const isShowFullPaid = computed(() =>
+  !isLoading.value &&
   (isRoleFinance.value || isRoleDirector.value) &&
   purchaseOrder.value.proformaInvoice.isDpPaid &&
   !purchaseOrder.value.proformaInvoice.isFullPaid
 )
-const isShowReady = computed(() => (isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value) &&
+const isShowReady = computed(() =>
+  !isLoading.value &&
+  (isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.ready)
 )
 const isShowCreatePi = computed(() =>
+  !isLoading.value &&
   (isRoleFinance.value || isRoleDirector.value) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
 const isShowRelease = computed(() =>
+  !isLoading.value &&
   (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value || isRoleMarketing.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
   purchaseOrder.value.status.some(item => item.state === common.track.dp_paid) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.release)
+  !purchaseOrder.value.status.some(item => item.state === common.track.release) &&
+  purchaseOrder.value.purchaseOrder.type == common.type.sparepart
 )
 const isShowDone = computed(() =>
+  !isLoading.value &&
   (isRoleMarketing.value || isRoleDirector.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.release) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.done)
 )
 const isShowReturn = computed(() =>
+  !isLoading.value &&
   (isRoleMarketing.value || isRoleDirector.value) &&
   purchaseOrder.value.status.some(item => item.state === common.track.done) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.return)
@@ -386,11 +397,13 @@ const fetchData = async () => {
   await trackStore.setTrackData(purchaseOrder.value.status)
   editableNotes.value = purchaseOrder.value.notes || ''
 }
+
 onBeforeMount(() => {
   if (!purchaseOrder.value) purchaseOrderStore.$resetPurchaseOrder()
 })
 onMounted(async () => {
   await fetchData()
+  isLoading.value = false
 })
 
 const fullPaid = async () => {

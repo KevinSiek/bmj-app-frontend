@@ -1,5 +1,6 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
       <div class="upper my-2">
         <div class="title">Project</div>
@@ -200,6 +201,7 @@
 import { menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useProformaInvoiceStore } from '@/stores/proforma-invoice'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -214,11 +216,14 @@ const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
 
 const isProcessing = ref(false)
 
+const isLoading = ref(true)
+
 onBeforeMount(() => {
   if (!proformaInvoice.value) proformaInvoiceStore.$resetProformaInvoice()
 })
-onMounted(() => {
-  proformaInvoiceStore.getProformaInvoice(route.params.id)
+onMounted(async () => {
+  await proformaInvoiceStore.getProformaInvoice(route.params.id)
+  isLoading.value = false
 })
 
 const back = () => {

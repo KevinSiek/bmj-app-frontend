@@ -138,10 +138,12 @@ import { useRole } from '@/composeable/useRole'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
 import { useBorrowStore } from '@/stores/borrow'
+import { usePurchaseOrderStore } from '@/stores/purchase-order'
 
 const router = useRouter()
 const route = useRoute()
 const borrowStore = useBorrowStore()
+const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
 
@@ -159,7 +161,7 @@ const fetchData = async () => {
 
 onBeforeMount(() => {
   if (!borrow.value) borrowStore.$resetBorrow()
-  borrowStore.resetPurchaseOrderOptions()
+  purchaseOrderStore.resetPurchaseOrderOptions()
 })
 
 onMounted(fetchData)

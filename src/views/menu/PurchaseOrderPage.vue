@@ -12,14 +12,10 @@
       </div>
     </div>
     <div class="lower paginate shadow">
+      <LoaderOverlaySmall v-if="isLoading" />
       <SelectDate />
-      <div v-if="isLoading">
-        <div class="loading-text">
-          Loading...
-        </div>
-      </div>
-      <div v-else>
-        <div v-if="purchaseOrders?.length == 0">
+      <div>
+        <div v-if="purchaseOrders?.length == 0 && !isLoading">
           <div class="no-data-text">
             No Data
           </div>
@@ -63,6 +59,7 @@ import SearchBar from '@/components/SearchBar.vue'
 import RefreshButton from '@/components/RefreshButton.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
 import Pagination from '@/components/Pagination.vue'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
