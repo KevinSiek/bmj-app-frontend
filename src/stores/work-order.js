@@ -11,6 +11,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
   function mapWorkOrder (data) {
     return {
       id: data?.id || '',
+      branch: data?.branch || '',
       serviceOrder: {
         serviceOrderNumber: data?.service_order?.service_order_number || '',
         date: data?.service_order?.date || '',
@@ -19,10 +20,23 @@ export const useWorkOrderStore = defineStore('work-order', () => {
         endDate: data?.service_order?.end_date || ''
       },
       currentStatus: data?.current_status || '',
-      purchaseOrder: {
-        purchaseOrderNumber: data?.purchase_order?.purchase_order_number || '', // This is for Internal Request Number
-        poNumber: data?.purchase_order?.po_number || '', // This is PO From Customer
-        purchaseOrderDate: data?.purchase_order?.purchase_order_date || ''
+      servicePurchaseOrder: {
+        id: data?.service_purchase_order?.id || '',
+        purchaseOrderNumber: data?.service_purchase_order?.purchase_order_number || '', // This is for Internal Request Number
+        poNumber: data?.service_purchase_order?.po_number || '', // This is PO From Customer
+        purchaseOrderDate: data?.service_purchase_order?.purchase_order_date || ''
+      },
+      sparepartPurchaseOrder: {
+        id: data?.sparepart_purchase_order?.id || '',
+        purchaseOrderNumber: data?.sparepart_purchase_order?.purchase_order_number || '', // This is for Internal Request Number
+        poNumber: data?.sparepart_purchase_order?.po_number || '', // This is PO From Customer
+        purchaseOrderDate: data?.sparepart_purchase_order?.purchase_order_date || '',
+        spareparts: (data?.sparepart_purchase_order?.spareparts || []).map(s => ({
+          sparepartId: s?.sparepart_id || '',
+          sparepartName: s?.sparepart_name || '',
+          sparepartNumber: s?.sparepart_number || '',
+          quantity: s?.quantity || 0
+        }))
       },
       proformaInvoice: {
         proformaInvoiceNumber: data?.proforma_invoice?.proforma_invoice_number || '',
@@ -43,6 +57,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
         unitType: unit?.unit_type || '',
         quantity: unit?.quantity || 0
       })),
+      jobs: (data?.jobs || []).map(j => j || ''),
       poc: {
         compiled: data?.poc?.compiled || '',
         headOfService: data?.poc?.head_of_service || '',
@@ -54,7 +69,8 @@ export const useWorkOrderStore = defineStore('work-order', () => {
         startDate: data?.date?.start_date || '',
         endDate: data?.date?.end_date || ''
       },
-      description: data?.description || '',
+      notes: data?.notes || '',
+      descriptionCompleted: data?.description_completed || '',
       additional: {
         spareparts: data?.additional?.spareparts || '',
         backupSparepart: data?.additional?.backup_sparepart || '',
@@ -82,7 +98,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
 
   async function addWorkOrder() {
     console.log(workOrder.value)
-    await workOrderApi.addWorkOrder(workOrder)
+    await workOrderApi.addWorkOrder(workOrder.value)
   }
 
   async function setWorkOrder (selectedWorkOrder) {
@@ -90,7 +106,7 @@ export const useWorkOrderStore = defineStore('work-order', () => {
   }
 
   async function updateWorkOrder() {
-    const { data } = await workOrderApi.updateWorkOrder(workOrder.value.id, workOrder)
+    const { data } = await workOrderApi.updateWorkOrder(workOrder.value.id, workOrder.value)
   }
 
   async function deleteWorkOrder(id) {
@@ -102,7 +118,12 @@ export const useWorkOrderStore = defineStore('work-order', () => {
   }
 
   async function done(id) {
-    await workOrderApi.done(id)
+    await workOrderApi.done(id, {
+      startDate: workOrder.value.date.startDate,
+      endDate: workOrder.value.date.endDate,
+      worker: workOrder.value.poc.worker,
+      descriptionCompleted: workOrder.value.descriptionCompleted
+    })
   }
 
   async function $resetWorkOrder () {

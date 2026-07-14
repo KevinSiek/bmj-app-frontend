@@ -5,16 +5,15 @@
         <SearchBar @searched="handleUpdateSearch" />
         <RefreshButton @refresh="fetchWorkOrder" />
       </div>
+      <div class="btn-add">
+        <button class="btn btn-primary" @click="goToAdd">{{ addText }}</button>
+      </div>
     </div>
     <div class="lower paginate shadow">
+      <LoaderOverlaySmall v-if="isLoading" />
       <SelectDate />
-      <div v-if="isLoading">
-        <div class="loading-text">
-          Loading...
-        </div>
-      </div>
-      <div v-else>
-        <div v-if="workOrders?.length == 0">
+      <div>
+        <div v-if="workOrders?.length == 0 && !isLoading">
           <div class="no-data-text">
             No Data
           </div>
@@ -50,6 +49,7 @@
 </template>
 
 <script setup>
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { menuMapping as menuConfig } from '@/config'
 import SelectDate from '@/components/SelectDate.vue'
 import SearchBar from '@/components/SearchBar.vue'
@@ -60,16 +60,21 @@ import { useRoute, useRouter } from 'vue-router'
 import { useWorkOrderStore } from '@/stores/work-order'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onBeforeMount, onMounted, watch } from 'vue'
+import { onBeforeMount, onMounted, watch, computed } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
+import { useMainStore } from '@/stores/main'
 
+const mainStore = useMainStore()
 const route = useRoute()
 const router = useRouter()
 const workOrderStore = useWorkOrderStore()
+const { isMobile } = storeToRefs(mainStore)
 const { selectedMonth, selectedYear } = useDate()
 
 const { workOrders, paginationData, isLoading } = storeToRefs(workOrderStore)
+
+const addText = computed(() => (isMobile.value ? 'Add' : 'Add Work Order'))
 
 onBeforeMount(() => {
   isLoading.value = true
@@ -107,6 +112,10 @@ const handleUpdateSearch = (search) => {
   debounce(() => searchWorkOrder(search), 1000, 'search-workOrder')
 }
 
+const goToAdd = () => {
+  workOrderStore.$resetWorkOrder()
+  router.push(menuConfig.work_order_add.path)
+}
 const goToDetail = async (workOrder) => {
   await workOrderStore.setWorkOrder(workOrder)
   router.push(`${menuConfig.work_order.path}/${workOrder.id}`)

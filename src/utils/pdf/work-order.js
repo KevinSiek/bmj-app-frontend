@@ -57,114 +57,121 @@ import { getBase64FromUrl } from '../pdf-util'
 const createPdf = async (data) => {
   const {
     serviceOrder,
-    purchaseOrder,
+    servicePurchaseOrder: purchaseOrder,
+    sparepartPurchaseOrder,
     customer,
     units,
+    jobs,
     additional,
     poc,
     date,
-    description
+    descriptionCompleted
   } = data
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
-  // Top Left
-  const poInfo = {
-    table: {
-      widths: ['auto', '*'],
-      body: [
-        ['Reff PO No.', purchaseOrder.poNumber],
-        ['PO Date', purchaseOrder.purchaseOrderDate],
-      ]
-    },
-    layout: {
-      hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 0.5 : 0),
-      vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
-      hLineColor: () => '#000000',
-      vLineColor: () => '#000000',
-      paddingTop: () => 5,
-      paddingBottom: () => 5,
-      paddingLeft: () => 5,
-      paddingRight: () => 5
-    },
-    margin: [0, 5, 10, 5]
-  }
-  const addressInfo = {
-    table: {
-      widths: ['auto', '*'],
-      body: [
-        ['CUSTOMER NAME', customer.companyName],
-        ['ADDRESS', customer.address],
-        ['', `${customer.city}, ${customer.province}`]
-      ]
-    },
-    layout: {
-      hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 0.5 : 0),
-      vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
-      hLineColor: () => '#000000',
-      vLineColor: () => '#000000',
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-      paddingLeft: () => 3,
-      paddingRight: () => 3
-    },
-    margin: [0, 5, 10, 5]
-  }
-  const topLeftSide = {
-    stack: [
-      poInfo,
-      addressInfo
-    ],
-    width: '50%'
-  }
-  // Top Right
-  const woInfo = {
-    table: {
-      widths: ['auto', '*'],
-      body: [
-        ['ORDER NUMBER', serviceOrder.serviceOrderNumber],
-        ['ORDER DATE', serviceOrder.date],
-        ['ORDER RECEIVED BY', serviceOrder.receivedBy],
-      ]
-    },
-    layout: {
-      hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 0.5 : 0),
-      vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
-      hLineColor: () => '#000000',
-      vLineColor: () => '#000000',
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-      paddingLeft: () => 3,
-      paddingRight: () => 3
-    },
-    margin: [10, 5, 0, 5]
-  }
-  const dateInfo = {
-    table: {
-      widths: ['auto', '*'],
-      body: [
-        ['EXPECTED START DATE', serviceOrder.startDate],
-        ['EXPECTED END DATE', serviceOrder.endDate],
-      ]
-    },
-    layout: {
-      hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 0.5 : 0),
-      vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
-      hLineColor: () => '#000000',
-      vLineColor: () => '#000000',
-      paddingTop: () => 5,
-      paddingBottom: () => 5,
-      paddingLeft: () => 5,
-      paddingRight: () => 5
-    },
-    margin: [10, 5, 0, 5]
-  }
-  const topRightSide = {
-    stack: [
-      dateInfo,
-      woInfo
-    ],
-    width: '50%'
+  // Factory — call once per usage so pdfMake gets distinct object references each time
+  const buildTopInfoTable = (extraProps = {}) => {
+    const poInfoNode = {
+      table: {
+        widths: ['auto', '*'],
+        body: [
+          ['Reff PO No.', purchaseOrder.poNumber],
+          ['PO Date', purchaseOrder.purchaseOrderDate],
+        ]
+      },
+      layout: {
+        hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 0.5 : 0),
+        vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingTop: () => 5,
+        paddingBottom: () => 5,
+        paddingLeft: () => 5,
+        paddingRight: () => 5
+      },
+      margin: [0, 5, 10, 5]
+    }
+    const addressInfoNode = {
+      table: {
+        widths: ['auto', '*'],
+        body: [
+          ['CUSTOMER NAME', customer.companyName],
+          ['ADDRESS', customer.address],
+          ['', `${customer.city}, ${customer.province}`]
+        ]
+      },
+      layout: {
+        hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 0.5 : 0),
+        vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+        paddingLeft: () => 3,
+        paddingRight: () => 3
+      },
+      margin: [0, 5, 10, 5]
+    }
+    const dateInfoNode = {
+      table: {
+        widths: ['auto', '*'],
+        body: [
+          ['EXPECTED START DATE', serviceOrder.startDate],
+          ['EXPECTED END DATE', serviceOrder.endDate],
+        ]
+      },
+      layout: {
+        hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 0.5 : 0),
+        vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingTop: () => 5,
+        paddingBottom: () => 5,
+        paddingLeft: () => 5,
+        paddingRight: () => 5
+      },
+      margin: [10, 5, 0, 5]
+    }
+    const woInfoNode = {
+      table: {
+        widths: ['auto', '*'],
+        body: [
+          ['ORDER NUMBER', serviceOrder.serviceOrderNumber],
+          ['ORDER DATE', serviceOrder.date],
+          ['ORDER RECEIVED BY', serviceOrder.receivedBy],
+        ]
+      },
+      layout: {
+        hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 0.5 : 0),
+        vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+        paddingLeft: () => 3,
+        paddingRight: () => 3
+      },
+      margin: [10, 5, 0, 5]
+    }
+    return {
+      table: {
+        widths: ['50%', '50%'],
+        body: [[
+          { stack: [poInfoNode, addressInfoNode], width: '50%' },
+          { stack: [dateInfoNode, woInfoNode], width: '50%' }
+        ]]
+      },
+      layout: {
+        hLineWidth: () => 0,
+        vLineWidth: () => 0,
+        paddingTop: () => 0,
+        paddingBottom: () => 0,
+        paddingLeft: () => 0,
+        paddingRight: () => 0
+      },
+      ...extraProps
+    }
   }
 
   const leftPOC = {
@@ -188,11 +195,10 @@ const createPdf = async (data) => {
             [''],
             [''],
             [''],
-            [''],
             [
               [
                 { text: poc.compiled, alignment: 'center', bold: true, decoration: 'underline' },
-                { text: 'ADMIN CSO', alignment: 'center', bold: true }
+                { text: 'Marketing', alignment: 'center', bold: true }
               ]
             ]
           ]
@@ -228,7 +234,6 @@ const createPdf = async (data) => {
               },
               {}
             ],
-            ['', ''],
             ['', ''],
             ['', ''],
             ['', ''],
@@ -279,9 +284,10 @@ const createPdf = async (data) => {
       {
         table: {
           widths: ['30%', '35%', '35%'],
+          heights: ['auto', 40],
           body: [
-            ['Date Completed', `Start Date: ${date.startDate}`, `End Date: ${date.endDate}`],
-            ['Work Performed by', { text: poc.worker, colSpan: 2}, {}],
+            ['Date Completed', `Start Date: ${date?.startDate || ''}`, `End Date: ${date?.endDate || ''}`],
+            ['Work Performed by', { text: poc?.worker || '', colSpan: 2}, {}],
           ]
         },
         layout: {
@@ -300,12 +306,16 @@ const createPdf = async (data) => {
       {
         table: {
           widths: ['70%', '30%'],
+          heights: ['auto', 60],
           body: [
             [
               { text: 'Description of Work Completed', alignment: 'center' },
               { text: 'Approved By', alignment: 'center' }
             ],
-            [description, poc.approver],
+            [
+              { text: descriptionCompleted || '' },
+              { text: poc?.approver || '' }
+            ],
           ]
         },
         layout: {
@@ -331,22 +341,7 @@ const createPdf = async (data) => {
       margin: [25, 30, 30, 0]
     },
     content: [
-      {
-        table: {
-          widths: ['50%', '50%'],
-          body: [
-            [topLeftSide, topRightSide],
-          ]
-        },
-        layout: {
-          hLineWidth: () => 0,
-          vLineWidth: () => 0,
-          paddingTop: () => 0,
-          paddingBottom: () => 0,
-          paddingLeft: () => 0,
-          paddingRight: () => 0
-        }
-      },
+      buildTopInfoTable(),
 
       // WORK DESCRIPTION
       {
@@ -393,11 +388,12 @@ const createPdf = async (data) => {
               { text: 'ADDITIONAL COMMENTS', style: 'tableHeader', alignment: 'center', colSpan: 2 },
               {},
             ],
-            ['1  LIST SPAREPART YANG AKAN DIGANTI', additional.spareparts !== '' && additional.spareparts !== '-' ? 'V' : '-'],
+            ['1  LIST SPAREPART YANG AKAN DIGANTI', sparepartPurchaseOrder.spareparts.length != 0 ? 'V' : '-'],
             ['2  LIST SPAREPART CADANGAN', additional.backupSparepart !== '' && additional.backupSparepart !== '-' ? 'V' : '-'],
-            ['3  LINGKUP PEKERJAAN', additional.scope !== '' && additional.scope !== '-' ? 'V' : '-'],
-            ['4  EKSEKUSI JAM KERJA / MALAM HARI', additional.executionTime !== '' && additional.executionTime !== '-' ? `V ${additional.executionTime}` : '-'],
-            ['5  FOTO DOKUMENTASI', 'V'],
+            ['3  APD', 'V APD SESUAI RESIKO PEKERJAAN'],
+            ['4  LINGKUP PEKERJAAN', additional.scope !== '' && additional.scope !== '-' ? 'V' : '-'],
+            ['5  EKSEKUSI JAM KERJA / MALAM HARI', additional.executionTime !== '' && additional.executionTime !== '-' ? `V ${additional.executionTime}` : '-'],
+            ['6  FOTO DOKUMENTASI', 'V'],
           ]
         },
         layout: {
@@ -410,7 +406,7 @@ const createPdf = async (data) => {
           paddingLeft: () => 3,
           paddingRight: () => 3
         },
-        margin: [0, 10, 0, 20]
+        margin: [0, 10, 0, 10]
       },
 
       // // POC
@@ -447,6 +443,91 @@ const createPdf = async (data) => {
           paddingLeft: () => 0,
           paddingRight: () => 0
         }
+      },
+
+      // ── PAGE 2 ────────────────────────────────────────────────────────────────
+
+      // Repeat header info on page 2
+      buildTopInfoTable({ pageBreak: 'before' }),
+
+      // SPAREPART LIST (from PO Sparepart)
+      {
+        text: 'LIST SPAREPART',
+        style: 'tableHeader',
+        fontSize: 12,
+        decoration: 'underline',
+        margin: [0, 10, 0, 8]
+      },
+      {
+        table: {
+          widths: ['5%', '45%', '30%', '20%'],
+          body: [
+            [
+              { text: 'NO', style: 'tableHeader', alignment: 'center' },
+              { text: 'PART NAME', style: 'tableHeader', alignment: 'center' },
+              { text: 'PART NUMBER', style: 'tableHeader', alignment: 'center' },
+              { text: 'QUANTITY', style: 'tableHeader', alignment: 'center' },
+            ],
+            ...(sparepartPurchaseOrder.spareparts.length > 0
+              ? sparepartPurchaseOrder.spareparts.map((sp, i) => [
+                  { text: i + 1, alignment: 'center' },
+                  sp.sparepartName || '-',
+                  sp.sparepartNumber || '-',
+                  { text: sp.quantity, alignment: 'center' }
+                ])
+              : [[{ text: '-', alignment: 'center' }, { text: '-', alignment: 'center' }, { text: '-', alignment: 'center' }, { text: '-', alignment: 'center' }]]
+            )
+          ]
+        },
+        layout: {
+          hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 0.5 : 0),
+          vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
+          hLineColor: () => '#000000',
+          vLineColor: () => '#000000',
+          paddingTop: () => 4,
+          paddingBottom: () => 4,
+          paddingLeft: () => 4,
+          paddingRight: () => 4
+        },
+        margin: [0, 0, 0, 10]
+      },
+
+      // JOBS LIST
+      {
+        text: 'LIST JOBS',
+        style: 'tableHeader',
+        fontSize: 12,
+        decoration: 'underline',
+        margin: [0, 10, 0, 8]
+      },
+      {
+        table: {
+          widths: ['5%', '95%'],
+          body: [
+            [
+              { text: 'NO', style: 'tableHeader', alignment: 'center' },
+              { text: 'JOB', style: 'tableHeader', alignment: 'center' },
+            ],
+            ...((jobs || []).length > 0
+              ? (jobs || []).map((job, i) => [
+                  { text: i + 1, alignment: 'center' },
+                  job || '-'
+                ])
+              : [[{ text: '-', alignment: 'center' }, { text: '-', alignment: 'center' }]]
+            )
+          ]
+        },
+        layout: {
+          hLineWidth: (i, node) => (i === 0 || i === 1 || i === node.table.body.length ? 0.5 : 0),
+          vLineWidth: (i, node) => (i === 0 || i === node.table.widths.length ? 0.5 : 0),
+          hLineColor: () => '#000000',
+          vLineColor: () => '#000000',
+          paddingTop: () => 4,
+          paddingBottom: () => 4,
+          paddingLeft: () => 4,
+          paddingRight: () => 4
+        },
+        margin: [0, 0, 0, 10]
       },
     ],
     styles: {

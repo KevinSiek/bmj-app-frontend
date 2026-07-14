@@ -82,8 +82,8 @@ const process = (id) => {
   return httpApi.postDataViaApi(`${api.work_order}/process/${id}`)
 }
 
-const done = (id) => {
-  return httpApi.postDataViaApi(`${api.work_order}/done/${id}`)
+const done = (id, data) => {
+  return httpApi.postDataViaApi(`${api.work_order}/done/${id}`, data)
 }
 
 

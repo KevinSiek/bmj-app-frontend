@@ -1,7 +1,8 @@
 <template>
   <div class="contain background shadow">
+    <LoaderOverlaySmall v-if="isLoading" />
     <form class="row form">
-      <div class="upper my-2">
+      <div class="upper my-2" v-if="workOrder.servicePurchaseOrder.id">
         <div class="title">Customer</div>
         <div class="data">
           <div class="left">
@@ -60,24 +61,6 @@
       </div>
       <div class="lower my-2">
         <div class="left">
-          <div class="title">Purchase Order</div>
-          <div class="input form-group col-12">
-            <label for="">No Internal Request</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.purchaseOrder.purchaseOrderNumber"
-              placeholder="No Internal Request" disabled>
-          </div>
-          <div class="input form-group col-12">
-            <label for="">No PO</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.purchaseOrder.poNumber" placeholder="No PO"
-              disabled>
-          </div>
-          <div class="input form-group col-12">
-            <label for="">Date</label><br>
-            <input type="date" class="form-control mt-2" v-model="workOrder.purchaseOrder.purchaseOrderDate"
-              placeholder="Date" disabled>
-          </div>
-        </div>
-        <div class="right">
           <div class="title">Service Order</div>
           <div class="input form-group col-12">
             <label for="">No</label><br>
@@ -85,14 +68,9 @@
               placeholder="No" disabled>
           </div>
           <div class="input form-group col-12">
-            <label for="">Date</label><br>
-            <input type="date" class="form-control mt-2" v-model="workOrder.serviceOrder.date" placeholder="Date"
-              disabled>
-          </div>
-          <div class="input form-group col-12">
-            <label for="">Received by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.receivedBy"
-              placeholder="Received by" disabled>
+            <label for="">Branch</label><br>
+            <BranchField v-model="workOrder.branch" :disabled="true" :show-director="isRoleDirector"
+              :show-readonly="isRoleMarketing" />
           </div>
           <div class="input form-group col-12">
             <div class="row">
@@ -109,53 +87,18 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="lower my-2">
-        <div class="left">
-          <div class="title">Work Description</div>
+        <div class="right mt-4">
           <div class="input form-group col-12">
-            <div class="row">
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-4">
-                    <label for="">Job Desc</label>
-                  </div>
-                  <div class="col-5">
-                    <label for="">Unit Type</label>
-                  </div>
-                  <div class="col-3">
-                    <label for="">Quantity</label>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <label for="">Received by</label><br>
+            <input type="text" class="form-control mt-2" v-model="workOrder.serviceOrder.receivedBy"
+              placeholder="Received by" disabled>
           </div>
           <div class="input form-group col-12">
-            <div v-for="(unit, unitIndex) in workOrder.units" :key="unitIndex" class="list row">
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-4">
-                    <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions"
-                      disabled>
-                  </div>
-                  <div class="col-5">
-                    <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType"
-                      disabled>
-                  </div>
-                  <div class="col-3">
-                    <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity"
-                      disabled>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="input form-group col-12 mt-4">
-            <label for="">Compiled By (Admin CSO)</label><br>
+            <label for="">Compiled By</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.poc.compiled" placeholder="Compiled by"
               disabled>
           </div>
-          <div class="input form-group col-12">
+          <div class="input form-group col-12 mt-3">
             <label for="">Authorized by</label><br>
             <div class="row px-3">
               <div class="col-6">
@@ -170,52 +113,38 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="lower my-2">
+        <div class="left" v-if="workOrder.servicePurchaseOrder.id">
+          <div class="title">Purchase Order</div>
           <div class="input form-group col-12">
-            <label for="">Date Completed</label><br>
-            <div class="row px-3">
-              <div class="col-6">
-                <label for="">Start Date</label><br>
-                <input type="date" class="form-control mt-2" v-model="workOrder.date.startDate" placeholder="Start Date"
-                  disabled>
-              </div>
-              <div class="col-6">
-                <label for="">End Date</label><br>
-                <input type="date" class="form-control mt-2" v-model="workOrder.date.endDate" placeholder="End Date"
-                  disabled>
-              </div>
-            </div>
+            <label for="">No Internal Request</label><br>
+            <input type="text" class="form-control mt-2" v-model="workOrder.servicePurchaseOrder.purchaseOrderNumber"
+              placeholder="No Internal Request" disabled>
           </div>
           <div class="input form-group col-12">
-            <label for="">Work Performed by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.poc.worker" placeholder="Work Performed by"
-              disabled>
+            <label for="">No PO</label><br>
+            <input type="text" class="form-control mt-2" v-model="workOrder.servicePurchaseOrder.poNumber"
+              placeholder="No PO" disabled>
           </div>
           <div class="input form-group col-12">
-            <label for="">Approved by</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.poc.approver" placeholder="Approved by"
-              disabled>
+            <label for="">Date</label><br>
+            <input type="date" class="form-control mt-2" v-model="workOrder.servicePurchaseOrder.purchaseOrderDate"
+              placeholder="Date" disabled>
           </div>
         </div>
         <div class="right">
           <div class="title">Additional Comments</div>
-          <div class="input form-group col-12">
-            <label for="">List sparepart replaced</label><br>
-            <input type="text" class="form-control mt-2" v-model="workOrder.additional.spareparts"
-              placeholder="List sparepart replaced" disabled>
-          </div>
           <div class="input form-group col-12">
             <label for="">List backup sparepart</label><br>
             <input type="text" class="form-control mt-2" v-model="workOrder.additional.backupSparepart"
               placeholder="List backup sparepart" disabled>
           </div>
           <div class="input form-group col-12">
-            <div class="row">
-              <div class="col-6">
-                <label for="">Scope of Work</label><br>
-                <input type="text" class="form-control mt-2" v-model="workOrder.additional.scope"
-                  placeholder="Scope of Work" disabled>
-              </div>
-            </div>
+            <label for="">Scope of Work</label><br>
+            <input type="text" class="form-control mt-2" v-model="workOrder.additional.scope"
+              placeholder="Scope of Work" disabled>
           </div>
           <div class="input form-group col-12">
             <label for="">Execution Time</label><br>
@@ -224,11 +153,136 @@
           </div>
         </div>
       </div>
+      <div class="lower my-2">
+        <div class="left my-2">
+          <div class="title">
+            Select PO Service
+          </div>
+          <div class="data">
+            <PoSelect type="Service" placeholder="Search PO Service number"
+              :model-value="workOrder?.servicePurchaseOrder?.poNumber || workOrder?.servicePurchaseOrder?.purchaseOrderNumber"
+              :disabled="true" @select="selectServicePurchaseOrder" />
+          </div>
+        </div>
+        <div class="right my-2">
+          <div class="title">
+            Select PO Sparepart<small class="text-muted">(optional)</small>
+          </div>
+          <div class="data">
+            <PoSelect type="Spareparts" placeholder="Search PO Sparepart number"
+              :model-value="workOrder?.sparepartPurchaseOrder?.poNumber || workOrder?.sparepartPurchaseOrder?.purchaseOrderNumber"
+              :disabled="true" @select="selectSparepartPurchaseOrder" />
+          </div>
+        </div>
+      </div>
+
+      <div v-if="workOrder?.sparepartPurchaseOrder?.spareparts?.length" class="my-3">
+        <div class="title">
+          List Sparepart from PO Sparepart {{ workOrder?.sparepartPurchaseOrder?.poNumber ||
+            workOrder?.sparepartPurchaseOrder?.purchaseOrderNumber }}
+        </div>
+        <div class="table-placeholder">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr class="align-middle">
+                <th class="table-number">NO</th>
+                <th>PART NAME</th>
+                <th>PART NUMBER</th>
+                <th class="text-center">QTY</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <tr v-for="(sp, i) in workOrder.sparepartPurchaseOrder.spareparts" :key="i" class="align-middle">
+                <td class="table-number">{{ i + 1 }}</td>
+                <td>{{ sp.sparepartName }}</td>
+                <td>{{ sp.sparepartNumber }}</td>
+                <td class="text-center">{{ sp.quantity }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="description">
+        <div class="title">Work Description</div>
+        <div class="input form-group col-12">
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-4">
+                  <label for="">Job Desc</label>
+                </div>
+                <div class="col-5">
+                  <label for="">Unit Type</label>
+                </div>
+                <div class="col-3">
+                  <label for="">Quantity</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input form-group col-12">
+          <div v-for="(unit, unitIndex) in workOrder.units" :key="unitIndex" class="list row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-4">
+                  <input type="text" class="form-control mt-2" placeholder="Job Desc" v-model="unit.jobDescriptions"
+                    disabled>
+                </div>
+                <div class="col-5">
+                  <input type="text" class="form-control mt-2" placeholder="Unit Type" v-model="unit.unitType" disabled>
+                </div>
+                <div class="col-3">
+                  <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="unit.quantity"
+                    disabled>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="title mt-3">Jobs</div>
+        <div class="input form-group col-12">
+          <div v-for="(job, jobIndex) in workOrder.jobs" :key="jobIndex" class="list row">
+            <div class="col-12 d-flex align-items-center mt-2">
+              <label for="">{{ jobIndex + 1 }}</label>
+              <input type="text" class="form-control mx-3" placeholder="Job" :value="job" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="notes my-2">
         <div class="title">Notes</div>
         <div class="inputform-floating">
           <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
-            v-model="workOrder.description" disabled></textarea>
+            v-model="workOrder.notes" disabled></textarea>
+        </div>
+      </div>
+      <div v-if="isShowReport" class="report my-2">
+        <div class="title">Report</div>
+        <div class="input form-group col-12">
+          <label for="">Date Completed</label><br>
+          <div class="row px-3">
+            <div class="col-6">
+              <label for="">Start Date</label><br>
+              <input type="date" class="form-control mt-2" v-model="workOrder.date.startDate" placeholder="Start Date"
+                :disabled="workOrder.currentStatus === common.status.work_order.done">
+            </div>
+            <div class="col-6">
+              <label for="">End Date</label><br>
+              <input type="date" class="form-control mt-2" v-model="workOrder.date.endDate" placeholder="End Date"
+                :disabled="workOrder.currentStatus === common.status.work_order.done">
+            </div>
+          </div>
+        </div>
+        <div class="input form-group col-12">
+          <label for="">Work Performed by</label><br>
+          <input type="text" class="form-control mt-2" v-model="workOrder.poc.worker" placeholder="Work Performed by"
+            :disabled="workOrder.currentStatus === common.status.work_order.done">
+        </div>
+        <div class="title">Description of Work Completed</div>
+        <div class="inputform-floating">
+          <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
+            v-model="workOrder.descriptionCompleted" :disabled="workOrder.currentStatus === common.status.work_order.done"></textarea>
         </div>
       </div>
     </form>
@@ -239,6 +293,8 @@
     </div>
     <div class="right">
       <button type="button" class="btn btn-process" @click="download">Print</button>
+      <button v-if="isShowEdit" type="button" class="btn btn-process" @click="goToEdit"
+        :disabled="isProcessing">Edit</button>
       <button v-if="isShowProcess" type="button" class="btn btn-process" @click="setProcessConfirmation"
         :disabled="isProcessing">Process</button>
       <button v-if="isShowDone" type="button" class="btn btn-process" @click="setDoneConfirmation"
@@ -253,10 +309,13 @@ import { common, menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
 import { useWorkOrderStore } from '@/stores/work-order'
+import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { createPdf } from '@/utils/pdf/work-order'
+import BranchField from '@/components/BranchField.vue'
+import PoSelect from '@/components/borrow/PoSelect.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -265,30 +324,45 @@ const trackStore = useTrackStore()
 const modalStore = useModalStore()
 
 const { workOrder } = storeToRefs(workOrderStore)
-const { isRoleDirector, isRoleService } = useRole()
+const { isRoleDirector, isRoleService, isRoleMarketing } = useRole()
 
 const isProcessing = ref(false)
+const isLoading = ref(true)
 
-const canAct = computed(() => isRoleService.value || isRoleDirector.value)
+const isService = computed(() => isRoleService.value || isRoleDirector.value)
+const isMarketing = computed(() => isRoleMarketing.value || isRoleDirector.value)
+
+const isShowEdit = computed(() =>
+  !isLoading.value &&
+  isMarketing.value && workOrder.value.currentStatus === common.status.work_order.wait_on_progress
+)
 // Process button: WO is in "Wait On Progress" -> advance to "On Progress".
 const isShowProcess = computed(() =>
-  canAct.value && workOrder.value.currentStatus === common.status.work_order.wait_on_progress
+  !isLoading.value &&
+  isService.value && workOrder.value.currentStatus === common.status.work_order.wait_on_progress
 )
 // Done button: WO is in "On Progress" -> finish it.
 const isShowDone = computed(() =>
-  canAct.value && workOrder.value.currentStatus === common.status.work_order.on_progress
+  !isLoading.value &&
+  isService.value && workOrder.value.currentStatus === common.status.work_order.on_progress
 )
+const isShowReport = computed(() =>
+  workOrder.value.currentStatus === common.status.work_order.on_progress ||
+  workOrder.value.currentStatus === common.status.work_order.done
+)
+
 
 onBeforeMount(() => {
   if (!workOrder.value) workOrderStore.$resetWorkOrder()
 })
 onMounted(async () => {
   await fetchData()
+  isLoading.value = false
 })
 
 const fetchData = async () => {
   await workOrderStore.getWorkOrder(route.params.id)
-  await trackStore.setTrackData(workOrder.value.status)
+  await trackStore.setTrackData(workOrder.value.status, 'WorkOrder')
 }
 
 const runAction = async (action) => {
@@ -311,6 +385,9 @@ const setProcessConfirmation = () => {
 const setDoneConfirmation = () => {
   modalStore.openConfirmationModal('to mark this Work Order as Done ?', 'Work Order Done',
     () => runAction(workOrderStore.done))
+}
+const goToEdit = () => {
+  router.push(`${menuConfig.work_order_edit.path.replace(':id', route.params.id)}`)
 }
 const download = () => {
   createPdf(workOrder.value)
@@ -369,6 +446,12 @@ $secondary-color: rgb(98, 98, 98);
     .left,
     .right {
       width: 48%;
+    }
+  }
+
+  .description {
+    .input {
+      margin: 0% 0%;
     }
   }
 }
