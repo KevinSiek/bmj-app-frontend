@@ -32,7 +32,7 @@ const createPdf = async (data, handOverName = '', receiverName = '') => {
         ['NO:', data.borrowNumber || ''],
         ['PO SERVICE:', purchaseOrder?.poNumber || purchaseOrder?.purchaseOrderNumber || ''],
         ['WORK ORDER:', workOrder?.workOrderNumber || ''],
-        ['BRANCH:', data.branch?.name || ''],
+        ['BRANCH:', data.branch || ''],
       ],
     },
     layout: {

@@ -4,7 +4,7 @@ import { getBase64FromUrl } from '@/utils/pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
-export const generateSparepartMovementPdf = async (data) => {
+export const generateSparepartMovementPdf = async (data, user) => {
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
   const itemsBody = data.details.map((item, index) => [
@@ -78,7 +78,7 @@ export const generateSparepartMovementPdf = async (data) => {
           },
           {
             width: '50%',
-            text: `Yang Mengirim,\n\n\n\n\n${data.employee.name}`,
+            text: `Yang Mengirim,\n\n\n\n\n${user.fullname}`,
             alignment: 'center'
           }
         ]
