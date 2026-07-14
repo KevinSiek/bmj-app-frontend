@@ -355,7 +355,7 @@ const createPdf = async (data) => {
         body: [
           [
             '',
-            { text: 'Balance Payment ' + downPayment + '%', bold: true, margin: [55, 0, 0, 0], italics: true },
+            { text: hasDownPaymentText, bold: true, margin: [55, 0, 0, 0], italics: true },
             '',
             '',
             '',
