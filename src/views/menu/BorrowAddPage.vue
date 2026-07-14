@@ -1,16 +1,23 @@
 <template>
   <div class="contain background shadow">
     <form class="form">
+      <div class="upper">
+        <div class="input form-group col-4">
+          <div class="title">Branch</div>
+          <BranchField v-model="borrow.branch" :show-director="isRoleDirector" :show-readonly="isRoleMarketing" />
+        </div>
+      </div>
       <div class="upper my-2 row">
         <div class="input form-group col-6">
           <div class="title">Service PO</div>
-          <PoSelect type="Service" placeholder="Search Service PO number"
+          <PoSelect type="Service" placeholder="Search Service PO number" class="mt-2"
             :model-value="borrow?.purchaseOrder?.poNumber || borrow?.purchaseOrder?.purchaseOrderNumber"
             @select="selectPurchaseOrder" />
         </div>
         <div class="input form-group col-6">
           <div class="title">Work Order</div>
-          <input type="text" class="form-control" :value="workOrderLabel" placeholder="Work order (from PO)" disabled>
+          <input type="text" class="form-control mt-2" :value="workOrderLabel" placeholder="Work order (from PO)"
+            disabled>
         </div>
       </div>
       <div class="my-2">
@@ -100,22 +107,24 @@
 <script setup>
 import { menuMapping as menuConfig, common } from '@/config'
 import { useBorrowStore } from '@/stores/borrow'
+import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { storeToRefs } from 'pinia'
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import debounce from '@/utils/debouncer'
 import { useModalStore } from '@/stores/modal'
 import { useRoute, useRouter } from 'vue-router'
 import PoSelect from '@/components/borrow/PoSelect.vue'
-import { useAuthStore } from '@/stores/auth'
+import BranchField from '@/components/BranchField.vue'
+import { useRole } from '@/composeable/useRole'
 
 const borrowStore = useBorrowStore()
+const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const router = useRouter()
 const route = useRoute()
-const authStore = useAuthStore()
 
-const { user } = storeToRefs(authStore)
 const { borrow, searchedSpareparts } = storeToRefs(borrowStore)
+const { user, isRoleDirector, isRoleMarketing } = useRole()
 
 const isProcessing = ref(false)
 const isSearching = ref(false)
@@ -129,11 +138,17 @@ const workOrderLabel = computed(() => {
 
 onBeforeMount(async () => {
   borrowStore.$resetBorrow()
-  borrowStore.resetPurchaseOrderOptions()
+  purchaseOrderStore.resetPurchaseOrderOptions()
   if (isEdit.value) {
     await borrowStore.getBorrow(route.params.id)
   }
 })
+
+watch([user, borrow], ([userVal, borrowVal]) => {
+  if (isRoleMarketing.value && borrowVal && !borrowVal.branch && userVal?.branch?.name) {
+    borrow.value.branch = userVal.branch.name
+  }
+}, { immediate: true })
 
 const selectPurchaseOrder = (po) => {
   borrow.value.purchaseOrder = {
