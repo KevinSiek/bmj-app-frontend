@@ -77,7 +77,7 @@ const toWords = new ToWords({
 })
 
 const createPdf = async (data) => {
-  const { purchaseOrder, invoice, customer, price, termOfPayment, paymentDue, ppn } = data
+  const { purchaseOrder, invoice, customer, price, termOfPayment, paymentDue, ppn, spareparts, services } = data
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
@@ -173,16 +173,15 @@ const createPdf = async (data) => {
   const sparepart = {
     header: {
       table: {
-        widths: [20, 20, 100, 100, 30, '*', '*'],
+        widths: [20, 20, 200, 30, '*', '*'],
         body: [
           [
-            { text: 'No', style: 'tableHeader' },
-            { text: 'PRD', style: 'tableHeader' },
-            { text: 'ITEM NUMBER', style: 'tableHeader' },
-            { text: 'DESCRIPTION', style: 'tableHeader' },
-            { text: 'QTY', style: 'tableHeader' },
-            { text: 'UNIT PRICE', style: 'tableHeader' },
-            { text: 'SUB TOTAL', style: 'tableHeader' }
+            { text: 'No', style: 'tableHeader', alignment: 'center' },
+            { text: 'PRD', style: 'tableHeader', alignment: 'center' },
+            { text: 'DESCRIPTION', style: 'tableHeader', alignment: 'center' },
+            { text: 'QTY', style: 'tableHeader', alignment: 'center' },
+            { text: 'UNIT PRICE', style: 'tableHeader', alignment: 'center' },
+            { text: 'SUB TOTAL', style: 'tableHeader', alignment: 'center' }
           ]
         ]
       },
@@ -197,7 +196,136 @@ const createPdf = async (data) => {
         paddingBottom: () => 3,
       },
       margin: [0, 5, 0, 0]
-    }
+    },
+    body: {
+      table: {
+        widths: [20, 20, 200, 30, '*', '*'],
+        body: [
+          [
+            '',
+            '',
+            { text: invoice.type === 'DP' ? 'Down Payment 1' : invoice.type === 'DP2' ? 'Down Payment 2' : 'Balance Payment', bold: true, margin: [55, 0, 0, 0], italics: true },
+            '',
+            '',
+            '',
+          ],
+          ...spareparts.map((item, idx) => [
+            { text: idx + 1, alignment: 'center' },
+            { text: '', alignment: 'center' },
+            {
+              columns: [
+                {
+                  text: item.sparepartName,
+                  width: '60%',
+                },
+                {
+                  text: item.sparepartNumber,
+                  width: '40%',
+                },
+              ]
+            },
+            { text: item.quantity, alignment: 'center' },
+            // { text: 'pcs', alignment: 'center' },
+            { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
+            { text: formatCurrency(item.totalPrice), alignment: 'right' }
+          ]),
+          // [
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          // ]
+        ]
+      },
+      layout: {
+        hLineWidth: () => 0,
+        vLineWidth: () => 0,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 0, 0, 0],
+      minHeight: 700
+    },
+    // footer: {
+    //   table: {
+    //     widths: [20, 200, 20, 20, 100, 100],
+    //     body: [
+    //       [
+    //         '1',
+    //         { text: 'Amount' },
+    //         '',
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.amount), alignment: 'right' }
+    //       ],
+    //       [
+    //         '2',
+    //         { text: 'Less: Discount' },
+    //         '',
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.discount), alignment: 'right' }
+    //       ],
+    //       [
+    //         '3',
+    //         { text: 'Sub Total ( 1-2 )' },
+    //         '',
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.subtotal), alignment: 'right' }
+    //       ],
+    //       [
+    //         '4',
+    //         { text: 'Less: Advance Payment' },
+    //         '',
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.advancePayment), alignment: 'right' }
+    //       ],
+    //       [
+    //         '5',
+    //         { text: 'Total ( 3-4 )' },
+    //         '',
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.total), alignment: 'right' }
+    //       ],
+    //       [
+    //         '6',
+    //         { text: 'VAT' },
+    //         '',
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.ppn), alignment: 'right' }
+    //       ],
+    //       [
+    //         '7',
+    //         { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
+    //         '',
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+    //       ],
+    //     ]
+    //   },
+    //   layout: {
+    //     hLineWidth: () => 1,
+    //     vLineWidth: () => 1,
+    //     hLineColor: () => '#000000',
+    //     vLineColor: () => '#000000',
+    //     paddingLeft: () => 5,
+    //     paddingRight: () => 5,
+    //     paddingTop: () => 3,
+    //     paddingBottom: () => 3,
+    //   },
+    //   margin: [0, 0, 0, 0]
+    // },
   }
 
   const service = {
@@ -226,7 +354,117 @@ const createPdf = async (data) => {
         paddingBottom: () => 3,
       },
       margin: [0, 5, 0, 0]
-    }
+    },
+    body: {
+      table: {
+        widths: [20, 20, 200, 30, '*', '*'],
+        body: [
+          [
+            '',
+            '',
+            { text: invoice.type === 'DP' ? 'Down Payment 1' : invoice.type === 'DP2' ? 'Down Payment 2' : 'Balance Payment', bold: true, margin: [55, 0, 0, 0], italics: true },
+            '',
+            '',
+            '',
+          ],
+          ...services.map((item, idx) => [
+            { text: idx + 1, alignment: 'center' },
+            { text: '', alignment: 'center' },
+            { text: item.service },
+            { text: item.quantity, alignment: 'center' },
+            { text: formatCurrency(item.unitPriceSell), alignment: 'right' },
+            { text: formatCurrency(item.totalPrice), alignment: 'right' }
+          ]),
+          // [
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
+          // ]
+        ]
+      },
+      layout: {
+        hLineWidth: () => 0,
+        vLineWidth: () => 0,
+        hLineColor: () => '#000000',
+        vLineColor: () => '#000000',
+        paddingLeft: () => 5,
+        paddingRight: () => 5,
+        paddingTop: () => 3,
+        paddingBottom: () => 3,
+      },
+      margin: [0, 0, 0, 0],
+      minHeight: 700
+    },
+    // footer: {
+    //   table: {
+    //     widths: [20, 200, 20, 115, 115],
+    //     body: [
+    //       [
+    //         '1',
+    //         { text: 'Amount' },
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.amount), alignment: 'right' }
+    //       ],
+    //       [
+    //         '2',
+    //         { text: 'Less: Discount' },
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.discount), alignment: 'right' }
+    //       ],
+    //       [
+    //         '3',
+    //         { text: 'Sub Total ( 1-2 )' },
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.subtotal), alignment: 'right' }
+    //       ],
+    //       [
+    //         '4',
+    //         { text: 'Less: Advance Payment' },
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.advancePayment), alignment: 'right' }
+    //       ],
+    //       [
+    //         '5',
+    //         { text: 'Total ( 3-4 )' },
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.total), alignment: 'right' }
+    //       ],
+    //       [
+    //         '6',
+    //         { text: 'VAT' },
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.ppn), alignment: 'right' }
+    //       ],
+    //       [
+    //         '7',
+    //         { text: 'TOTAL AMOUNT ( 5+6 )', bold: true },
+    //         '',
+    //         '',
+    //         { text: formatCurrency(price.totalAmount), alignment: 'right', bold: true }
+    //       ],
+    //     ]
+    //   },
+    //   layout: {
+    //     hLineWidth: () => 1,
+    //     vLineWidth: () => 1,
+    //     hLineColor: () => '#000000',
+    //     vLineColor: () => '#000000',
+    //     paddingLeft: () => 5,
+    //     paddingRight: () => 5,
+    //     paddingTop: () => 3,
+    //     paddingBottom: () => 3,
+    //   },
+    //   margin: [0, 0, 0, 0]
+    // },
   }
 
   const type = purchaseOrder.purchaseOrderType === common.type.sparepart ? 'SPAREPART' : 'SERVICE'
@@ -288,35 +526,37 @@ const createPdf = async (data) => {
 
       // // Table
       purchaseOrder.purchaseOrderType === common.type.sparepart ? sparepart.header : service.header,
-      {
-        table: {
-          widths: ['10%', '*', '30%'],
-          body: [
-            [
-              '',
-              { text: invoice.type === 'DP' ? 'Down Payment 1' : invoice.type === 'DP2' ? 'Down Payment 2' : 'Balance Payment', bold: true, margin: [55, 0, 0, 0], italics: true },
-              ''
-            ],
-            [
-              { text: '1', margin: [8, 0, 0, 0] },
-              { text: `${type} ATAS PO ${purchaseOrder.poNumber}`, margin: [8, 0, 0, 0] },
-              {
-                text: formatCurrency(price.subtotal),
-                margin: [0, 0, 30, 0],
-                alignment: 'right'
-              },
-            ],
-          ]
-        },
-        layout: {
-          hLineWidth: () => 0,
-          vLineWidth: () => 0,
-          paddingTop: () => 2,
-          paddingBottom: () => 2,
-          paddingLeft: () => 0,
-          paddingRight: () => 0
-        }
-      },
+      purchaseOrder.purchaseOrderType === common.type.sparepart ? sparepart.body : service.body,
+      // purchaseOrder.purchaseOrderType === common.type.sparepart ? sparepart.footer : service.footer,
+      // {
+      //   table: {
+      //     widths: ['10%', '*', '30%'],
+      //     body: [
+      //       [
+      //         '',
+      //         { text: invoice.type === 'DP' ? 'Down Payment 1' : invoice.type === 'DP2' ? 'Down Payment 2' : 'Balance Payment', bold: true, margin: [55, 0, 0, 0], italics: true },
+      //         ''
+      //       ],
+      //       [
+      //         { text: '1', margin: [8, 0, 0, 0] },
+      //         { text: `${type} ATAS PO ${purchaseOrder.poNumber}`, margin: [8, 0, 0, 0] },
+      //         {
+      //           text: formatCurrency(price.subtotal),
+      //           margin: [0, 0, 30, 0],
+      //           alignment: 'right'
+      //         },
+      //       ],
+      //     ]
+      //   },
+      //   layout: {
+      //     hLineWidth: () => 0,
+      //     vLineWidth: () => 0,
+      //     paddingTop: () => 2,
+      //     paddingBottom: () => 2,
+      //     paddingLeft: () => 0,
+      //     paddingRight: () => 0
+      //   }
+      // },
 
       {
         table: {
