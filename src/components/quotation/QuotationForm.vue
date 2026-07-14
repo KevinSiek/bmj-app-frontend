@@ -110,11 +110,6 @@
             <input type="email" class="form-control mt-2" v-model="quotation.customer.email" placeholder="Email"
               :disabled="disabled">
           </div>
-          <div class="input form-group col-12">
-            <label for="">NPWP <small class="text-muted">(optional)</small></label><br>
-            <input type="text" class="form-control mt-2" v-model="quotation.customer.npwp" placeholder="NPWP"
-              :disabled="disabled">
-          </div>
         </div>
       </div>
     </div>
@@ -216,22 +211,22 @@
         <div class="sparepart-scroll">
           <div class="form-group col-12 mx-3">
             <div class="row flex-nowrap">
-              <div class="col-2">
+              <div class="col-3">
                 <label for="">Sparepart Name</label>
               </div>
-              <div class="col-2">
+              <div class="col-3">
                 <label for="">Part Number</label>
               </div>
-              <div class="col-1">
+              <div class="col-2">
                 <label for="">Stock</label>
               </div>
-              <div class="col-1">
+              <div class="col-2">
                 <label for="">Quantity</label>
               </div>
-              <div class="col">
+              <div class="col-2">
                 <label for="">Unit Price</label>
               </div>
-              <div class="col">
+              <div class="col-2">
                 <label for="">Total Price</label>
               </div>
               <div class="col-1">
@@ -273,22 +268,22 @@
                   </li>
                 </ul>
               </div>
-              <div class="col-1">
+              <div class="col-2">
                 <input type="number" class="form-control mt-2" placeholder="Stock"
                   :value="sparepart.totalUnit?.[quotation.project.branch] ?? 0" @wheel.prevent
                   @input="updateSparepartCalculation(sparepartIndex, sparepart)" disabled min="0"
                   @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
               </div>
-              <div class="col-1">
+              <div class="col-2">
                 <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="sparepart.quantity"
                   @wheel.prevent @input="updateSparepartCalculation(sparepartIndex, sparepart)" min="0"
                   @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
               </div>
-              <div class="col">
+              <div class="col-2">
                 <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
                   @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
               </div>
-              <div class="col">
+              <div class="col-2">
                 <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
                   @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true" />
               </div>
@@ -370,13 +365,13 @@
                 <div class="col-4">
                   <label for="">Service Name</label>
                 </div>
-                <div class="col-2">
+                <div class="col-3">
                   <label for="">Quantity</label>
                 </div>
-                <div class="col">
+                <div class="col-3">
                   <label for="">Unit Price</label>
                 </div>
-                <div class="col">
+                <div class="col-2">
                   <label for="">Total Price</label>
                 </div>
               </div>
@@ -393,16 +388,16 @@
                 <div class="col-4">
                   <input type="text" class="form-control mt-2" v-model="service.service" placeholder="Service Name">
                 </div>
-                <div class="col-2">
+                <div class="col-3">
                   <input type="number" class="form-control mt-2" placeholder="Quantity" v-model="service.quantity"
                     @wheel.prevent @input="selectService(serviceIndex, service)" min="0"
                     @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
                 </div>
-                <div class="col">
+                <div class="col-3">
                   <CurrencyInput placeholder="Unit Price" v-model="service.unitPriceSell"
                     @update:model-value="selectService(serviceIndex, service)" />
                 </div>
-                <div class="col">
+                <div class="col-2">
                   <CurrencyInput placeholder="Total Price" v-model="service.totalPrice" :disabled="true" />
                 </div>
               </div>
