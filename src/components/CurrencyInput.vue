@@ -1,13 +1,10 @@
 <template>
-  <div class="input-group mt-2 custom-currency-input">
-    <span class="input-group-text bg-white border-end-0">Rp.</span>
-    <input type="text" inputmode="numeric" :class="[cleanedInputClass, 'text-end border-start-0']" :placeholder="placeholder" :disabled="disabled"
-      :value="display" @input="onInput" @blur="onBlur">
-  </div>
+  <input type="text" inputmode="numeric" :class="inputClass" :placeholder="placeholder" :disabled="disabled"
+    :value="display" @input="onInput" @blur="onBlur">
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 
 /**
  * Currency input that shows the value formatted as "1.250.000" inside an input-group with a static "Rp." prefix.
@@ -17,14 +14,10 @@ const props = defineProps({
   modelValue: { type: [Number, String], default: 0 },
   placeholder: { type: String, default: '' },
   disabled: { type: Boolean, default: false },
-  inputClass: { type: String, default: 'form-control mt-2' },
+  inputClass: { type: String, default: 'form-control' },
 })
 
 const emit = defineEmits(['update:modelValue'])
-
-const cleanedInputClass = computed(() => {
-  return (props.inputClass || 'form-control').replace('mt-2', '').trim()
-})
 
 const format = (num) => {
   if (num === null || num === undefined || num === '' || isNaN(num)) return ''
@@ -66,9 +59,11 @@ function onBlur() {
 .custom-currency-input {
   width: 100%;
 }
+
 .custom-currency-input .input-group-text {
   color: inherit;
 }
+
 .custom-currency-input input::placeholder {
   text-align: right;
 }

@@ -131,23 +131,53 @@
           </thead>
           <tbody class="table-group-divider">
             <tr v-for="(sparepart, index) in quotation.spareparts" :key="index" class="align-middle">
-              <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
-              <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
-              <td class="table-col table-name">{{ sparepart.sparepartNumber }}</td>
-              <td class="table-col table-name">{{ sparepart.quantity }}</td>
-              <td class="table-col table-name">{{ sparepart.unit || 'pcs' }}</td>
-              <td class="table-col table-name">
-                <PriceDisplay :value="sparepart.unitPriceSell" />
+              <td scope="row" class="table-col table-number">
+                <div :class="{ space: index === quotation.spareparts.length - 1 }">
+                  {{ index + 1 }}
+                </div>
+              </td>
+              <td class="table-col table-part-number">
+                <div :class="{ space: index === quotation.spareparts.length - 1 }">
+                  {{ sparepart.sparepartName }}
+                </div>
+              </td>
+              <td class="table-col table-part-number">
+                <div :class="{ space: index === quotation.spareparts.length - 1 }">
+                  {{ sparepart.sparepartNumber }}
+                </div>
               </td>
               <td class="table-col table-name">
-                <PriceDisplay :value="sparepart.totalPrice" />
+                <div :class="{ space: index === quotation.spareparts.length - 1 }">
+                  {{ sparepart.quantity }}
+                </div>
               </td>
-              <td class="table-col table-name">{{ sparepart.stock }}</td>
+              <td class="table-col table-name">
+                <div :class="{ space: index === quotation.spareparts.length - 1 }">
+                  {{ sparepart.unit || 'pcs' }}
+                </div>
+              </td>
+              <td class="table-col table-name">
+                <div :class="{ space: index === quotation.spareparts.length - 1 }">
+                  <PriceDisplay :value="sparepart.unitPriceSell" />
+                </div>
+              </td>
+              <td class="table-col table-name">
+                <div :class="{ space: index === quotation.spareparts.length - 1 }">
+                  <PriceDisplay :value="sparepart.totalPrice" />
+                </div>
+              </td>
+              <td class="table-col table-name">
+                <div :class="{ space: index === quotation.spareparts.length - 1 }">
+                  {{ sparepart.stock }}
+                </div>
+              </td>
             </tr>
+          </tbody>
+          <tbody class="table-group-divider">
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-part-number">Amount</td>
+              <td class="table-col table-name">Amount</td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
@@ -183,7 +213,7 @@
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
-              <td class="table-col table-name">PPN {{ Math.trunc(ppn) }}%</td>
+              <td class="table-col table-part-number">PPN {{ Math.trunc(ppn) }}%</td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
               <td class="table-col table-name"></td>
@@ -317,16 +347,34 @@
           </thead>
           <tbody class="table-group-divider">
             <tr v-for="(service, index) in quotation.services" :key="index" class="align-middle">
-              <td scope="row" class="table-col table-number">{{ index + 1 }}</td>
-              <td class="table-col table-name">{{ service.service }}</td>
-              <td class="table-col table-name">{{ service.quantity }}</td>
-              <td class="table-col table-name">
-                <PriceDisplay :value="service.unitPriceSell" />
+              <td scope="row" class="table-col table-number">
+                <div :class="{ space: index === quotation.services.length - 1 }">
+                  {{ index + 1 }}
+                </div>
               </td>
               <td class="table-col table-name">
-                <PriceDisplay :value="service.totalPrice" />
+                <div :class="{ space: index === quotation.services.length - 1 }">
+                  {{ service.service }}
+                </div>
+              </td>
+              <td class="table-col table-name">
+                <div :class="{ space: index === quotation.services.length - 1 }">
+                  {{ service.quantity }}
+                </div>
+              </td>
+              <td class="table-col table-name">
+                <div :class="{ space: index === quotation.services.length - 1 }">
+                  <PriceDisplay :value="service.unitPriceSell" />
+                </div>
+              </td>
+              <td class="table-col table-name">
+                <div :class="{ space: index === quotation.services.length - 1 }">
+                  <PriceDisplay :value="service.totalPrice" />
+                </div>
               </td>
             </tr>
+          </tbody>
+          <tbody class="table-group-divider">
             <tr class="align-middle">
               <td scope="row" class="table-col table-number"></td>
               <td class="table-col table-name"></td>
@@ -417,43 +465,44 @@
       </div>
     </div>
     <div class="price my-2">
-      <div class="amount type">
+      <div class="amount type mt-1">
         <div class="label">Total Amount</div>
-        <div>:
-          <PriceDisplay :value="quotation.price.amount" />
+        <div class="d-flex align-items-center">:
+          <PriceDisplay :value="quotation.price.amount" class="ms-2" />
         </div>
       </div>
-      <div class="total-discount type">
+      <div class="total-discount type mt-1">
         <div class="label d-flex align-items-center">Total Discount (%)</div>
         <div class="d-flex align-items-center">
-          : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2" style="width: 120px;"
-            placeholder="0" v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled" @wheel.prevent
-            @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()">
+          : <input type="number" min="0" max="100" step="0.01" class="form-control ms-2"
+            style="width: 140px; text-align: right;" placeholder="0"
+            v-model.number="quotation.price.totalDiscountPercent" :disabled="disabled" @wheel.prevent
+            @keydown="(e) => ['-', '+', 'e', 'E'].includes(e.key) && e.preventDefault()"> &nbsp; %
           <span class="ms-2 text-muted">Any value &gt; {{ discount }}% requires Director review.</span>
         </div>
       </div>
-      <div v-if="isTypeView" class="discount type">
+      <div v-if="isTypeView" class="discount type mt-1">
         <div class="label">Discount</div>
-        <div>:
-          <PriceDisplay :value="quotation.price.discount" />
+        <div class="d-flex align-items-center">:
+          <PriceDisplay :value="quotation.price.discount" class="ms-2" />
         </div>
       </div>
-      <div class="subtotal type">
+      <div class="subtotal type mt-1">
         <div class="label">Subtotal</div>
-        <div>:
-          <PriceDisplay :value="quotation.price.subtotal" />
+        <div class="d-flex align-items-center">:
+          <PriceDisplay :value="quotation.price.subtotal" class="ms-2" />
         </div>
       </div>
-      <div class="ppn type">
+      <div class="ppn type mt-1">
         <div class="label">PPN ({{ Math.trunc(ppn) }}%)</div>
-        <div>:
-          <PriceDisplay :value="quotation.price.ppn" />
+        <div class="d-flex align-items-center">:
+          <PriceDisplay :value="quotation.price.ppn" class="ms-2" />
         </div>
       </div>
-      <div class="grand-total type">
+      <div class="grand-total type mt-1">
         <div class="label">Grand Total</div>
-        <div>:
-          <PriceDisplay :value="quotation.price.grandTotal" />
+        <div class="d-flex align-items-center">:
+          <PriceDisplay :value="quotation.price.grandTotal" class="ms-2" />
         </div>
       </div>
     </div>
@@ -704,6 +753,10 @@ $secondary-color: rgb(98, 98, 98);
   border: 2px solid $primary-color;
   border-radius: 20px;
   overflow: auto;
+
+  .space {
+    min-height: 100px;
+  }
 }
 
 .dropdown-menu {
