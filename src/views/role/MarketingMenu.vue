@@ -12,6 +12,7 @@ import MenuQuotation from '@/components/menu/MenuQuotation.vue'
 import MenuPurchaseOrder from '@/components/menu/MenuPurchaseOrder.vue'
 import MenuSparepart from '@/components/menu/MenuSparepart.vue'
 import MenuBorrow from '@/components/menu/MenuBorrow.vue'
+import MenuWorkOrder from '@/components/menu/MenuWorkOrder.vue'
 import MenuDeliveryOrder from '@/components/menu/MenuDeliveryOrder.vue'
 import { menuMapping as menuConfig } from '@/config'
 
@@ -40,6 +41,11 @@ const componentList = ref([
     name: 'Borrow',
     component: MenuBorrow,
     path: menuConfig.borrow.path
+  },
+  {
+    name: 'Work Order',
+    component: MenuWorkOrder,
+    path: menuConfig.work_order.path
   }
 ])
 </script>
