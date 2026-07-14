@@ -39,6 +39,39 @@ $primary-color: black;
   z-index: 9998;
 }
 
+.paginate > .loader-overlay {
+  position: absolute;
+  border-radius: 20px;
+  z-index: 10;
+}
+
+.loader-small {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid $primary-color;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin-small 1s linear infinite;
+}
+
+.loader-overlay-small {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+@keyframes spin-small {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg) translate(-50%, -50%);
