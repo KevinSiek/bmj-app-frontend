@@ -251,6 +251,7 @@ $dark-white: #D1D1D1;
         align-items: center;
         border-style: solid;
         border-radius: 10px;
+        border-width: 2px;
         border-color: transparent;
         padding: 3.5% 0% 3.5% 10%;
         margin: 1%;
