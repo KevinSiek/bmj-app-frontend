@@ -1,5 +1,6 @@
 <template>
   <div class="dashboard-page">
+    <LoaderOverlay v-if="isLoading" />
     <div class="dashboard-header">
       <div class="title-block">
         <h1>Director Dashboard</h1>
@@ -194,6 +195,7 @@
 </template>
 
 <script setup>
+import LoaderOverlay from '@/components/LoaderOverlay.vue'
 import { ref, computed, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { Bar as BarChart, Line as LineChart, Doughnut as DoughnutChart } from 'vue-chartjs'
