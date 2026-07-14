@@ -194,7 +194,7 @@
                 </td>
               </tr>
             </tbody>
-            <tbody>
+            <!-- <tbody class="table-group-divider">
               <tr class="align-middle">
                 <td></td>
                 <td></td>
@@ -206,8 +206,8 @@
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
                 <td v-if="purchaseOrder.purchaseOrder.type === 'Spareparts'"></td>
               </tr>
-            </tbody>
-            <tbody v-if="!isRoleService">
+            </tbody> -->
+            <tbody v-if="!isRoleService" class="table-group-divider">
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">1</td>
                 <td class="table-col table-part-number">Amount</td>
@@ -638,6 +638,7 @@ $secondary-color: rgb(98, 98, 98);
     overflow: auto;
 
     .space {
+
       min-height: 100px;
     }
 

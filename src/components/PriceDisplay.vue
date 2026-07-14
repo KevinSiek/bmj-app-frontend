@@ -22,10 +22,17 @@ const formattedAmount = computed(() => {
 <style scoped>
 .price-display {
   display: inline-flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 200px;
+  min-width: 160px;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
+}
+
+.currency-symbol {
+  flex-shrink: 0;
+}
+
+.price-value {
+  flex: 1;
+  text-align: right;
 }
 </style>
