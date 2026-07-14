@@ -46,6 +46,7 @@ const PurchaseOrderReturnPage = () => import('@/views/menu/PurchaseOrderReturnPa
 const PurchaseOrderDetailPage = () => import('@/views/menu/PurchaseOrderDetailPage.vue')
 const WorkOrderPage = () => import('@/views/menu/WorkOrderPage.vue')
 const WorkOrderAddPage = () => import('@/views/menu/WorkOrderAddPage.vue')
+const WorkOrderEditPage = () => import('@/views/menu/WorkOrderEditPage.vue')
 const WorkOrderDetailPage = () => import('@/views/menu/WorkOrderDetailPage.vue')
 const SparepartsPage = () => import('@/views/menu/SparepartsPage.vue')
 const SparepartsAddPage = () => import('@/views/menu/SparepartsAddPage.vue')
@@ -411,6 +412,11 @@ const router = createRouter({
               name: menuConfig.work_order_add.name,
               component: WorkOrderAddPage
             },
+            {
+              path: menuConfig.work_order_edit.path,
+              name: menuConfig.work_order_edit.name,
+              component: WorkOrderEditPage
+            }
           ]
         },
         // Spareparts

@@ -209,11 +209,15 @@ const menuMapping = {
   },
   work_order_add: {
     name: 'Add Work Order',
-    path: '/work-order/add/:id'
+    path: '/work-order/add'
   },
   work_order_detail: {
     name: 'Detail Work Order',
     path: '/work-order/:id'
+  },
+  work_order_edit: {
+    name: 'Edit Work Order',
+    path: '/work-order/:id/edit'
   },
   delivery_order: {
     name: 'Delivery Order',
@@ -274,6 +278,7 @@ const common = {
       bo: 'BO'
     },
     work_order: {
+      wo: 'WO',
       ready: 'Sparepart Ready',
       wait_on_progress: 'Wait On Progress',
       on_progress: 'On Progress',
@@ -405,8 +410,7 @@ const accessFeature = {
         ]
       },
       'back_order',
-      'delivery_order',
-      'work_order'
+      'delivery_order'
     ]
   },
   'inventory purchase': {
@@ -441,8 +445,7 @@ const accessFeature = {
         ]
       },
       'back_order',
-      'delivery_order',
-      'work_order'
+      'delivery_order'
     ]
   },
   finance: {
