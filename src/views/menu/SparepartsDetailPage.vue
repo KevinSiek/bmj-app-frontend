@@ -37,11 +37,12 @@
             </div>
             <div v-if="canSeePurchasePrice" class="input form-group col-12">
               <label for="">Buy Price</label><br>
-              <CurrencyInput v-model="sparepart.unitPriceBuy" placeholder="Buy Price" :disabled="true" />
+              <CurrencyInput v-model="sparepart.unitPriceBuy" placeholder="Buy Price" :disabled="true" class="mt-2" />
             </div>
             <div class="input form-group col-12">
               <label for="">Selling Price</label><br>
-              <CurrencyInput v-model="sparepart.unitPriceSell" placeholder="Selling Price" :disabled="true" />
+              <CurrencyInput v-model="sparepart.unitPriceSell" placeholder="Selling Price" :disabled="true"
+                class="mt-2" />
             </div>
           </div>
         </div>
@@ -56,7 +57,7 @@
             </div>
             <div class="input form-group col-3">
               <label for="">Puchase Price</label><br>
-              <CurrencyInput v-model="list.price" placeholder="Purchase Price" :disabled="true" />
+              <CurrencyInput v-model="list.price" placeholder="Purchase Price" :disabled="true" class="mt-2" />
             </div>
             <div class="input form-group col-3">
               <label for="">Quantity</label><br>

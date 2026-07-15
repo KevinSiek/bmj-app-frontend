@@ -88,11 +88,12 @@
           </div>
           <div class="input form-group col-12">
             <label for="">Sub Total {{ invoice.invoice.type && `(${invoice.invoice.type})` }}</label><br>
-            <CurrencyInput v-model="invoice.invoice.subTotal" placeholder="Sub Total" :disabled="true" />
+            <CurrencyInput v-model="invoice.invoice.subTotal" placeholder="Sub Total" :disabled="true" class="mt-2" />
           </div>
           <div class="input form-group col-12">
             <label for="">Grand Total {{ invoice.invoice.type && `(${invoice.invoice.type})` }}</label><br>
-            <CurrencyInput v-model="invoice.invoice.grandTotal" placeholder="Grand Total" :disabled="true" />
+            <CurrencyInput v-model="invoice.invoice.grandTotal" placeholder="Grand Total" :disabled="true"
+              class="mt-2" />
           </div>
         </div>
         <div class="right">
@@ -119,7 +120,8 @@
           </div> -->
           <div class="input form-group col-12">
             <label for="">Discount</label><br>
-            <CurrencyInput v-model="invoice.purchaseOrder.discount" placeholder="Discount" :disabled="true" />
+            <CurrencyInput v-model="invoice.purchaseOrder.discount" placeholder="Discount" :disabled="true"
+              class="mt-2" />
           </div>
         </div>
       </div>

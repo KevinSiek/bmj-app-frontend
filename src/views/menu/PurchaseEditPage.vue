@@ -86,11 +86,11 @@
               </div>
               <div class="col-3">
                 <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceBuy"
-                  @update:model-value="selectItem(sparepartIndex, sparepart)" />
+                  @update:model-value="selectItem(sparepartIndex, sparepart)" class="mt-2" />
               </div>
               <div class="col-3">
                 <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
-                  @update:model-value="selectItem(sparepartIndex, sparepart)" :disabled="true" />
+                  @update:model-value="selectItem(sparepartIndex, sparepart)" :disabled="true" class="mt-2" />
               </div>
               <div class="col-1 d-flex justify-content-center align-items-end">
                 <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i

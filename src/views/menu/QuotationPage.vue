@@ -10,7 +10,7 @@
           </router-link>
         </div>
       </div>
-      <div class="btn-add">
+      <div v-if="canAdd" class="btn-add">
         <button class="btn btn-primary" @click="goToAdd">{{ addText }}</button>
       </div>
     </div>
@@ -79,13 +79,13 @@ const router = useRouter()
 const route = useRoute()
 const quotationStore = useQuotationStore()
 const { selectedMonth, selectedYear } = useDate()
-const { isRoleDirector } = useRole()
+const { isRoleDirector, isRoleMarketing } = useRole()
 
 const { isMobile } = storeToRefs(mainStore)
 const { quotations, paginationData, isLoading } = storeToRefs(quotationStore)
 
-
 const addText = computed(() => (isMobile.value ? 'Add' : 'Add Quotation'))
+const canAdd = computed(() => isRoleDirector.value || isRoleMarketing.value)
 
 onBeforeMount(() => {
   isLoading.value = true

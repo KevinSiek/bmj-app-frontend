@@ -311,11 +311,12 @@
               </div>
               <div class="col-2">
                 <CurrencyInput placeholder="Unit Price" v-model="sparepart.unitPriceSell"
-                  @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" />
+                  @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" class="mt-2" />
               </div>
               <div class="col-2">
                 <CurrencyInput placeholder="Total Price" v-model="sparepart.totalPrice"
-                  @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true" />
+                  @update:model-value="updateSparepartCalculation(sparepartIndex, sparepart)" :disabled="true"
+                  class="mt-2" />
               </div>
               <div class="col-1">
                 <button type="button" class="btn btn-outline-danger" @click="removeSparepart(sparepartIndex)"><i
@@ -443,10 +444,10 @@
                 </div>
                 <div class="col-3">
                   <CurrencyInput placeholder="Unit Price" v-model="service.unitPriceSell"
-                    @update:model-value="selectService(serviceIndex, service)" />
+                    @update:model-value="selectService(serviceIndex, service)" class="mt-2" />
                 </div>
                 <div class="col-2">
-                  <CurrencyInput placeholder="Total Price" v-model="service.totalPrice" :disabled="true" />
+                  <CurrencyInput placeholder="Total Price" v-model="service.totalPrice" :disabled="true" class="mt-2" />
                 </div>
               </div>
             </div>
