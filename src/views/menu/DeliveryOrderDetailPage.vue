@@ -241,9 +241,9 @@ const isSemarangBranch = computed(() => {
 })
 
 const isShowPrintDN = computed(() => {
+  if (isRoleDirector.value) return true
   if (!isSemarangBranch.value) return false
-  const status = deliveryOrder.value?.currentStatus
-  return status === common.status.work_order.on_progress || status === common.status.work_order.done
+  return true
 })
 
 

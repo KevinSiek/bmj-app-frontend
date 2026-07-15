@@ -177,13 +177,13 @@ const createPdf = async (data, notes, user) => {
               [
                 '', '', '', '', '',
                 { text: 'Amount', alignment: 'center', fontSize: 8 },
-                { text: formatPDFPrice(price.amount), alignment: 'right', fontSize: 8 },
+                formatPDFPrice(price.amount, { fontSize: 8 }),
                 ''
               ],
               [
                 '', '', '', '', '',
                 { text: 'Discount', alignment: 'center', fontSize: 8 },
-                { text: formatPDFPrice(price.discount), alignment: 'right', fontSize: 8 },
+                formatPDFPrice(price.amount, { fontSize: 8 }),
                 ''
               ],
             ] : []),
@@ -282,13 +282,13 @@ const createPdf = async (data, notes, user) => {
               [
                 '', '',
                 { text: 'Amount', alignment: 'center', fontSize: 8 },
-                { text: formatPDFPrice(price.amount), alignment: 'right', fontSize: 8 },
+                formatPDFPrice(price.amount, { fontSize: 8 }),
                 ''
               ],
               [
                 '', '',
                 { text: 'Discount', alignment: 'center', fontSize: 8 },
-                { text: formatPDFPrice(price.discount), alignment: 'right', fontSize: 8 },
+                formatPDFPrice(price.discount, { fontSize: 8 }),
                 ''
               ],
             ] : []),
