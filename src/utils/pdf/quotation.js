@@ -177,13 +177,13 @@ const createPdf = async (data, notes, user) => {
               [
                 '', '', '', '', '',
                 { text: 'Amount', alignment: 'center', fontSize: 8 },
-                { text: formatCurrency(price.amount), alignment: 'right', fontSize: 8 },
+                { text: formatPDFPrice(price.amount), alignment: 'right', fontSize: 8 },
                 ''
               ],
               [
                 '', '', '', '', '',
                 { text: 'Discount', alignment: 'center', fontSize: 8 },
-                { text: formatCurrency(price.discount), alignment: 'right', fontSize: 8 },
+                { text: formatPDFPrice(price.discount), alignment: 'right', fontSize: 8 },
                 ''
               ],
             ] : []),
@@ -334,7 +334,7 @@ const createPdf = async (data, notes, user) => {
   const revisionText = data.version > 1 ? `-Rev. ${data.version-1}` : ''
   const branchText = project.branch || ''
   const phoneNumber = user.phone || ''
-  
+
   const docDefinition = {
     header: {
       image: logoBase64, // your base64 logo string
