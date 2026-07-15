@@ -326,7 +326,6 @@ onBeforeMount(() => {
 onMounted(async () => {
   generalStore.getGeneralData()
   await invoiceStore.getInvoice(route.params.id)
-  trackStore.setTrackData(invoice.value.status)
   isLoading.value = false
 })
 
