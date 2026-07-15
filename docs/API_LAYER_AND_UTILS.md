@@ -61,7 +61,9 @@ axios.defaults.withCredentials = true
 - `setToken(key, value, ttl)` — store with TTL in days (converted to ms)
 - `getToken(key)` — retrieve if not expired, auto-remove if expired
 - `removeToken(key)` — remove from localStorage
-- Token key: `'token-bmj'`, TTL: 24 hours
+- Token key: `'token-bmj'`. 🐞 **Effective TTL is 24 *days*, not 24 hours** —
+  `setToken(...,24)` with `expiry = now + ttl*60*60*24*1000` treats `ttl` as
+  days (see Edge Cases below).
 
 ### `utils/debouncer.js` — Debounce Helper
 - Simple debounce wrapper for search inputs
@@ -110,4 +112,37 @@ Manages status track overlay:
 - `setGetTrackFunc(fn)` — set the data fetch function
 
 ### `useDate.js`
-Date formatting and filtering helpers.
+Date formatting and filtering helpers (month list, `selectedMonth`/`selectedYear`
+seeded from `route.query`, `yearRange` from 2020→current).
+
+## ⚠️ Edge Cases & Gotchas (verified 2026-07-16)
+
+> Cross-cutting findings live in [CODEBASE_GOTCHAS.md](./CODEBASE_GOTCHAS.md).
+
+- 🐞 **Token TTL bug.** `setToken(key, value, ttl)` computes
+  `expiry = now + ttl*60*60*24*1000` (`utils/local-storage.js:1-8`). That
+  multiplier is **one day in ms**, so `ttl` is *days*; `stores/auth.js:25` passes
+  `24` → a **24-day** session, not 24 hours. Hours would be `ttl*60*60*1000`.
+- **`http-api.js` re-throws `err.response`** (the raw HTTP response), not the
+  Error — which is why callers branch on `error.status` / `error.data`
+  (e.g. the `must_change_password` 403 handler in `main.js:20-36`).
+- **Actual `utils/form-util.js` exports:** `validatePassword`,
+  `formatCurrency`/`formatMoney` (`Intl.NumberFormat('id-ID')`, no "Rp", web
+  display), `formatPDFPrice` (returns a pdfmake **columns object with "Rp."** for
+  official docs), `formatDate`, `formatDateAndTime`. (The "form validation
+  helpers" description understates it.)
+- **`utils/pdf-util.js` exports:** `getBase64FromUrl(url)` (loads the logo into a
+  canvas → JPEG data URL) and `toDateString(date)` (`id-ID` long date). Every
+  `utils/pdf/*.js` generator ends with **`.print()`** — the `.download(...)` line
+  is commented out.
+- **`debounce(func, delay, id)`** keys its timer on `func + id`
+  (`utils/debouncer.js`), so pass a stable `id` per input to avoid cross-field
+  timer collisions. `SearchAutocomplete`/`QuotationForm` use their own inline
+  `setTimeout` debounce (300–500 ms) instead.
+- **Cross-wired endpoints (frontend surprise):** PO returns POST to the
+  **quotation** API (`api/purchase-order.js:104-114`); PO `fullPaid` posts to the
+  **proforma-invoice** endpoint (`:83-85`). Frontend "Purchase" hits backend
+  **`/api/buy`**.
+- **Backend failure codes are not uniform** (400 vs 422 vary by controller) and
+  several controllers read camelCase keys via a field map that silently drops
+  snake_case — see `docs/tests/LLM_HANDOVER.md` before asserting on the API.

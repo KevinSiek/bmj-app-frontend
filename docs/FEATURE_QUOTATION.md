@@ -146,3 +146,25 @@ The `processQuotation` endpoint now requires:
 - Pricing summary with discount, subtotal, PPN, grand total
 - **Creator name** from `created_by_name` (employee's fullname)
 - **Version stamp** ("Version N") to track document iterations
+
+## ⚠️ Edge Cases & Gotchas (verified 2026-07-16)
+
+> Cross-cutting findings live in [CODEBASE_GOTCHAS.md](./CODEBASE_GOTCHAS.md). Items below are specific to this feature; each cites file:line.
+
+### Status lifecycle — the On Review trigger is server-side
+- The form never computes the review flag. `updatePrice()` (`components/quotation/QuotationForm.vue:650-656`) only recomputes amount/subtotal/ppn/grandTotal — no review state. The backend flips status to **On Review** at create/edit when any item `unitPriceSell < basePrice×(1 − general.discount)` **OR** `price.totalDiscountPercent > 0` (Business Rules 7-8; backend `docs/FEATURE_QUOTATION.md`). WHY it matters: dropping a price or setting a total discount % in the form gives **no local signal** that the quote will bounce to Director review — you only find out after save.
+
+### Non-obvious logic
+- **`updatePrice()` ignores `totalDiscountPercent`** (`QuotationForm.vue:650-656`). Subtotal is computed as `amount − price.discount`; the manual whole-quote discount % is never subtracted client-side, and the Total Discount input is a plain `v-model.number` (`:478-481`) that does not even call `updatePrice`. So while you type a Total Discount %, the on-screen Subtotal / PPN / Grand Total stay **unadjusted** — the backend re-derives the real figures. Do not trust the displayed grand total when a total discount % is set.
+- **Sparepart select aborts hard if no ID resolves.** `onSelect` (`QuotationForm.vue:588-631`) tries `sparepartData.id || .sparepartId || .sparepart_id`; if all are empty it `alert()`s "Could not get sparepart ID…" and returns **without inserting the row** (`:616-621`). WHY: blocks saving a line item the backend can't match to stock.
+- **`$resetQuotation()` doubles as the blank-form factory.** It is `mapQuotation()` called with no argument (`stores/quotation.js:225-228`); mapping `undefined` yields an empty object, which is what the new-form mount relies on (`QuotationForm.vue:569-570`). There is no separate empty-quotation template.
+
+### Doc-code drift
+> ⚠️ Correction: the "Key Props" / QuotationForm sections above claim the form is driven by a **`formType`** prop with values `'Add'`/`'Edit'`. That prop does not exist. The real prop is **`type`** (`QuotationForm.vue:546-552`), and its values come from `common.form.type` = `Add` / `Edit` / **`View`** (`config/index.js:254-257`). One QuotationForm instance drives Add, Edit, Detail **and** Review-Detail; `View` (Detail/Review) sets `disabled` on every field (`:552-553`).
+
+- **Total-Discount hint prints a raw fraction.** The hint reads `Any value > {{ discount }}% requires Director review` (`QuotationForm.vue:482`), but `discount` is the General fraction (0.05 = 5%, Business Rule 7), so it renders literally "Any value > 0.05% requires Director review". It is also misleading vs the real rule: any value **> 0** forces review (Rule 8), not "> the per-item discount threshold". Cosmetic only — no calculation reads this text.
+
+### Roles / coupling
+- **Create = Marketing + Director.** `canAdd = isRoleDirector || isRoleMarketing` (`views/menu/QuotationPage.vue:88`) gates the Add button (`:13`). **Review = Director only**, but the gate is at navigation: the review entry on the list is `v-if="isRoleDirector"` (`QuotationPage.vue:7`). Note the approve/reject/needChange buttons on `views/menu/QuotationReviewDetailPage.vue:8-16` are **not independently role-guarded** — Director-only is enforced by who can reach the page, not by the buttons.
+- **Write/read casing is asymmetric.** `addQuotation()` / `editQuotation()` POST/PUT `quotation.value` as-is (camelCase) (`stores/quotation.js:181-198`), while GET responses are mapped snake→camel via `mapQuotation()` (`:15-71`). Backend accepts camelCase on write, emits snake_case on read. `addQuotation()` also carries a stale no-op comment about `requestPriceChange` (`:183`) that reflects no current logic.
+- **moveToPo captures the customer PO number.** `processQuotation(id, notes, poNumber)` → POST `/api/quotation/moveToPo/{slug}` with `{ notes, poNumber }` (`stores/quotation.js:200-202`, `api/quotation.js:67-69`). That `poNumber` is the customer PO entered in the moveToPo modal (`components/ModalNotes.vue`, `requirePoNumber` flag) — distinct from the internal auto-generated request number. See the Purchase Order doc's "Two PO numbers".

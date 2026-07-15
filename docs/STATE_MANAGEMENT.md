@@ -130,3 +130,33 @@ All list stores consume Laravel's pagination response:
 
 The `paginationData` ref stores the full response. The `Pagination.vue`
 component consumes it directly.
+
+## ⚠️ Edge Cases & Gotchas (verified 2026-07-16)
+
+> Cross-cutting findings live in [CODEBASE_GOTCHAS.md](./CODEBASE_GOTCHAS.md).
+> Store-layer specifics below; each cites `file:line`.
+
+- **Two response-envelope shapes.** `utils/http-api.js` unwraps `res.data` once,
+  so **auth** reads top-level fields (`response.access_token`, `response.user` —
+  `stores/auth.js:25-26`) while **every other store** destructures a nested
+  `.data`, then `data.data` for lists (`stores/employee.js:31-33`). Use the right
+  depth per domain.
+- **Write camelCase / read snake_case.** Stores **POST/PUT the camelCase ref**
+  directly (e.g. `addQuotation` sends `quotation.value`) but map **snake_case**
+  GET responses back via `mapXxx()`. The backend accepts camelCase via a field
+  map — watch the camelCase trap in [CODEBASE_GOTCHAS.md](./CODEBASE_GOTCHAS.md) §13.
+- **`$resetX()` is the blank-form factory**, not just a null: it's usually
+  `x.value = mapX()` (empty input → empty template), which Add pages mount.
+  Exception: **`$resetPurchases` clears `purchaseReviews`, not `purchases`**
+  (`stores/purchase.js:118-120`) — misleading name.
+- 🐞 **Three divergent `mapSparepart` copies** with different `totalUnit` shapes:
+  `sparepart.js:12-30` (array `{name,stock}`, seeds Jakarta/Semarang, seller has
+  `quantity`), `purchase.js:37-54` (array, seller no `quantity`),
+  `sparepart-movement.js:34-50` (**object** keyed by branch name). Editing one
+  won't fix the others — a real drift hazard.
+- **Grouping keys on the internal number.** The `{ number, versions[] }` grouping
+  (Quotation/PO/PI/Invoice/BO/WO/Return) keys on the *internal* document number
+  (e.g. `purchase_order_number`), **not** the customer PO number.
+- **Legacy/unused stores:** `counter.js` is the unused Pinia example; there are
+  **two Track implementations** — the live Pinia `stores/track.js` (used by
+  `Track.vue`) and an orphaned `composeable/useTrack.js`.

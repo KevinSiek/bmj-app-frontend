@@ -64,3 +64,21 @@ Allows moving stock from one branch to another (e.g., from Jakarta to Semarang).
 | `sendSparepartMovement` | POST | `/api/sparepart-movement/send/{id}` |
 | `receiveSparepartMovement` | POST | `/api/sparepart-movement/receive/{id}` |
 | `cancelSparepartMovement` | POST | `/api/sparepart-movement/cancel/{id}` |
+
+## ⚠️ Edge Cases & Gotchas (verified 2026-07-16)
+> Cross-cutting findings live in [CODEBASE_GOTCHAS.md](./CODEBASE_GOTCHAS.md). Items below are specific to this feature; each cites file:line.
+
+### Movement action gating (detail page)
+`isInventory` = Director | Head Inventory | Inventory Admin (SparepartMovementDetailPage.vue:129-130) — Finance and Inventory Purchase are excluded. Send & Cancel require status `Created`; Receive requires `Send`; all three also require `isInventory` (SparepartMovementDetailPage.vue:132-136).
+
+### Add form force-picks the opposite branch
+Only two branches exist, so watchers auto-set `target_branch` to the opposite of `source_branch` and vice-versa (SparepartMovementAddPage.vue:134-144). The stock preview reads `item.totalUnit?.[form.source_branch]` (SparepartMovementAddPage.vue:70) — this works ONLY because the movement store's `mapSparepart` returns `totalUnit` as an OBJECT keyed by branch (stores/sparepart-movement.js:40-42). The sparepart/purchase stores return `totalUnit` as an array and would break this lookup.
+
+### Detail page renders RAW snake_case
+The transfer detail table prints `item.sparepart.sparepart_number` / `sparepart_name` straight from the API — unmapped, inconsistent with the camelCase used elsewhere (SparepartMovementDetailPage.vue:57-58).
+
+### Stock is never mutated client-side (invariant)
+The frontend NEVER adjusts branch stock for Purchase or Movement. Every delta happens backend-side and writes a `stock_movements` ledger row (`delta`, `sourceType`, `sourceId`) — the ledger is the audit source of truth. Movement Cancel is safe only in `Created` (before stock moves); Send (source −) and Receive (target +) are the two half-transactions.
+
+### Stock History source deep-links
+`sourceTypes` (config/index.js:338) and `sourceRouteMap` (config/index.js:339-348) drive the ledger's source column: Buy→purchase_detail, PurchaseOrder→purchase_order_detail, BackOrder→back_order_detail, Return→return_detail, Borrow→borrow_detail, ManualEdit & Import→spareparts_detail, SparepartMovement→sparepart_movement_detail. `getSourceRoute` builds the link from `menuMapping[key].name`, so it couples to ROUTE names; an unmapped type returns `null`, and the row then shows the plain `sourceType` text with no link (StockHistoryPage.vue:54-56,105-110).

@@ -2,8 +2,9 @@
 
 > **Purpose**: This file is the LLM orchestrator for `bmj-app-frontend`. Read
 > this FIRST in every new session to understand the entire frontend codebase in
-> under 60 seconds. Then read the feature-specific `docs/*.md` files only when
-> you need to modify that feature.
+> under 60 seconds. Then read [`docs/CODEBASE_GOTCHAS.md`](./docs/CODEBASE_GOTCHAS.md)
+> for cross-cutting edge cases and latent bugs, and the feature-specific
+> `docs/*.md` files when you need to modify that feature.
 
 ---
 
@@ -114,20 +115,23 @@ Every store follows this structure:
 ### 4.4 Auth Flow
 
 1. Login via `POST /api/login` → receives Sanctum token
-2. Token stored in localStorage as `token-bmj` with 24-hour TTL
+2. Token stored in localStorage as `token-bmj` — ⚠️ TTL is effectively **24 days**, not 24 hours (unit bug; see `docs/CODEBASE_GOTCHAS.md` §4)
 3. Axios `Authorization: Bearer <token>` header set globally
 4. Router guard checks `authStore.authenticated` on `requireAuth` routes
-5. On 401/token expiry → `forceLogout()` clears state and redirects to `/login`
+5. `forceLogout()` clears state and redirects to `/login`, but it is called **manually** from `ProfileBar` — it is **not** wired to a 401 interceptor. The temp-password `403` is what's handled globally, by the response interceptor in `main.js` (see `docs/CODEBASE_GOTCHAS.md` §4)
 
 ### 4.5 Role-Based Access
 
-Six roles defined in `config/index.js → common.role`:
+**Seven** roles defined in `config/index.js → common.role` (feature lists below
+are approximate — the authority is `accessFeature`; note the "Head Inventory"
+name has three spellings, see `docs/CODEBASE_GOTCHAS.md` §5):
 - **Director** — full access to everything
-- **Marketing** — quotation, purchase_order
+- **Marketing** — quotation, purchase_order, spareparts, work_order
 - **Finance** — quotation, purchase_order, proforma_invoice, invoice
 - **Inventory Admin** — purchase_order, spareparts, back_order, delivery_order
 - **Inventory Purchase** — spareparts, back_order, purchase
-- **Service** — purchase_order, back_order, work_order
+- **Head Inventory** — purchase_order, spareparts, back_order, delivery_order, purchase, stock_history
+- **Service** — purchase_order, work_order
 
 The `accessFeature` config maps each role to its allowed feature keys. The
 `useRole()` composable provides computed booleans: `isRoleDirector`,
@@ -178,12 +182,19 @@ Components branch between desktop/mobile rendering accordingly. Two navbars:
 When starting a new session or task, read these files in order:
 
 1. **This file** (`AGENTS.MD`) — system overview
-2. **`.claude/ENGINEERING_DISCIPLINE.md`** — The absolute rules for coding and execution in this workspace.
-3. **`src/config/index.js`** — all route paths, statuses, roles, API endpoints
-4. **`src/router/index.js`** — full route tree with auth guards
-4. **The specific `docs/*.md`** for the feature you're modifying
-5. **The specific store** (`src/stores/xxx.js`) for state logic
-6. **The specific API file** (`src/api/xxx.js`) for endpoint calls
+2. **`docs/CODEBASE_GOTCHAS.md`** — cross-cutting edge cases, latent bugs, orphaned code, naming traps (read before trusting any single doc)
+3. **`.claude/ENGINEERING_DISCIPLINE.md`** — the absolute rules for coding and execution in this workspace
+4. **`src/config/index.js`** — all route paths, statuses, roles, API endpoints
+5. **`src/router/index.js`** — full route tree with auth guards
+6. **The specific `docs/FEATURE_*.md`** for the feature you're modifying (each ends with an "⚠️ Edge Cases & Gotchas" section)
+7. **The specific store** (`src/stores/xxx.js`) for state logic
+8. **The specific API file** (`src/api/xxx.js`) for endpoint calls
+
+> **GitNexus caveat:** the code-intelligence block below advertises `gitnexus_*`
+> MCP tools, but they are **not connected in every session**, and
+> `.claude/discipline-adapter.md` declares `indexed: no` as the degraded
+> default. If the tools aren't available (confirm via ToolSearch), fall back to
+> targeted Grep/Glob/Read on task-named symbols — do not assume the index exists.
 
 ---
 
@@ -276,7 +287,7 @@ npm run test:e2e:ui         # Playwright UI Mode — interactive visual debugger
 
 ---
 
-## 11. Environment Variables
+## 12. Environment Variables
 
 | Variable           | Purpose                         | Default                |
 | ------------------ | ------------------------------- | ---------------------- |
@@ -287,7 +298,7 @@ Production `.env.production` sets this to the deployed backend URL.
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **bmj-app-frontend** (4118 symbols, 9782 relationships, 300 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **bmj-app-frontend** (3287 symbols, 5238 relationships, 53 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
 
