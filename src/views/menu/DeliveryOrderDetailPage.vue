@@ -243,7 +243,8 @@ const isSemarangBranch = computed(() => {
 const isShowPrintDN = computed(() => {
   if (isRoleDirector.value) return true
   if (!isSemarangBranch.value) return false
-  return true
+  return !deliveryOrder.value?.purchaseOrder?.status?.some(item => item.state === common.track.ready) &&
+    !deliveryOrder.value?.purchaseOrder?.status?.some(item => item.state === common.track.dp_paid)
 })
 
 

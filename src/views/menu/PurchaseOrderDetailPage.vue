@@ -348,7 +348,7 @@ import { formatCurrency } from '@/utils/form-util'
 
 const router = useRouter()
 const route = useRoute()
-const { isRoleDirector, isRoleMarketing, isRoleInventoryAdmin, isRoleHeadInventory, isRoleFinance, isRoleService } = useRole()
+const { isRoleDirector, isRoleMarketing, isRoleInventoryAdmin, isRoleHeadInventory, isRoleFinance, isRoleService, user } = useRole()
 const purchaseOrderStore = usePurchaseOrderStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
@@ -380,7 +380,7 @@ const isShowCreatePi = computed(() =>
 )
 const isShowRelease = computed(() => {
   const hasDpPaid = purchaseOrder.value.status.some(item => item.state === common.track.dp_paid)
-  const isAdminOrDirector = isRoleInventoryAdmin.value || isRoleDirector.value
+  const isAdminOrDirector = isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value
   const dpConditionMet = hasDpPaid || isAdminOrDirector
 
   const baseConditions = !isLoading.value && (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
@@ -393,7 +393,7 @@ const isShowRelease = computed(() => {
 
   // If it's a Sparepart PO, restrict to Semarang/SMG branch only
   if (purchaseOrder.value.purchaseOrder.type === common.type.sparepart && !isRoleDirector.value) {
-    const branch = purchaseOrder.value.purchaseOrder.branch || ''
+    const branch = user.value?.branch.name || ''
     const isSemarang = branch.toLowerCase() === 'semarang' || branch.toUpperCase() === 'SMG'
     if (!isSemarang) return false
   }
