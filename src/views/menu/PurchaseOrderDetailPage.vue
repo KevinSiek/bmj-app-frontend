@@ -392,7 +392,7 @@ const isShowRelease = computed(() => {
   if (!baseConditions) return false
 
   // If it's a Sparepart PO, restrict to Semarang/SMG branch only
-  if (purchaseOrder.value.purchaseOrder.type === common.type.sparepart && !isRoleDirector.value) {
+  if (purchaseOrder.value.purchaseOrder.type === common.type.sparepart && !isRoleDirector.value && !isRoleHeadInventory.value) {
     const branch = user.value?.branch.name || ''
     const isSemarang = branch.toLowerCase() === 'semarang' || branch.toUpperCase() === 'SMG'
     if (!isSemarang) return false
