@@ -40,12 +40,12 @@
             <div class="input form-group col-12">
               <label for="">Delivery</label><br>
               <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.delivery"
-                placeholder="Delivery">
+                placeholder="Delivery" disabled>
             </div>
             <div class="input form-group col-12">
               <label for="">NPWP</label><br>
-              <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.npwp"
-                placeholder="NPWP">
+              <input type="text" class="form-control mt-2" v-model="deliveryOrder.deliveryOrder.npwp" placeholder="NPWP"
+                disabled>
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@ const doRelease = async () => {
   try {
     isProcessing.value = true
     await purchaseOrderStore.release(route.params.id, deliveryOrder.value)
-    
+
     const authStore = useAuthStore()
     if (authStore.user?.role?.toLowerCase() === 'marketing') {
       router.push(`${menuConfig.purchase_order.path}/${route.params.id}`)
