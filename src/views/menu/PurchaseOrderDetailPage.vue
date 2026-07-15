@@ -324,8 +324,8 @@
         PI</button>
       <button v-if="isShowRelease" type="button" class="btn btn-process mx-3" @click="doRelease"
         :disabled="isProcessing">Release</button>
-      <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setToDoneConfirmation"
-        :disabled="isProcessing">Done</button>
+      <!-- <button v-if="isShowDone" type="button" class="btn btn-process mx-3" @click="setToDoneConfirmation"
+        :disabled="isProcessing">Done</button> -->
       <button v-if="isShowReturn" type="button" class="btn btn-process mx-3" @click="doReturn"
         :disabled="isProcessing">Return</button>
     </div>
