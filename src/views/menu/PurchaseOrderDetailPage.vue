@@ -380,10 +380,10 @@ const isShowCreatePi = computed(() =>
 )
 const isShowRelease = computed(() => {
   const hasDpPaid = purchaseOrder.value.status.some(item => item.state === common.track.dp_paid)
-  const isMarketingOrDirector = isRoleMarketing.value || isRoleDirector.value
-  const dpConditionMet = hasDpPaid || isMarketingOrDirector
+  const isAdminOrDirector = isRoleInventoryAdmin.value || isRoleDirector.value
+  const dpConditionMet = hasDpPaid || isAdminOrDirector
 
-  const baseConditions = !isLoading.value && (isRoleMarketing.value || isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
+  const baseConditions = !isLoading.value && (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
     purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
     dpConditionMet &&
     !purchaseOrder.value.status.some(item => item.state === common.track.release) &&
@@ -392,7 +392,7 @@ const isShowRelease = computed(() => {
   if (!baseConditions) return false
 
   // If it's a Sparepart PO, restrict to Semarang/SMG branch only
-  if (purchaseOrder.value.purchaseOrder.type === common.type.sparepart) {
+  if (purchaseOrder.value.purchaseOrder.type === common.type.sparepart && !isRoleDirector.value) {
     const branch = purchaseOrder.value.purchaseOrder.branch || ''
     const isSemarang = branch.toLowerCase() === 'semarang' || branch.toUpperCase() === 'SMG'
     if (!isSemarang) return false
@@ -638,7 +638,6 @@ $secondary-color: rgb(98, 98, 98);
     overflow: auto;
 
     .space {
-
       min-height: 100px;
     }
 
