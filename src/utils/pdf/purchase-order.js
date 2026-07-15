@@ -2,7 +2,7 @@ import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatPDFPrice } from '../form-util'
 import { common } from '@/config'
-import { getBase64FromUrl } from '../pdf-util'
+import { getBase64FromUrl, toDateString } from '../pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -130,11 +130,7 @@ const createPdf = async (data, notes, user) => {
   // Top Right
 
   const revisionText = data.version > 1 ? `-Rev. ${data.version-1}` : ''
-  const poDate = purchaseOrder.purchaseOrderDate ? new Date(purchaseOrder.purchaseOrderDate).toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }) : ''
+  const poDate = toDateString(purchaseOrder.purchaseOrderDate)
 
   const purchaseOrderInfo = {
     table: {
@@ -287,7 +283,7 @@ const createPdf = async (data, notes, user) => {
                 '',
                 '',
                 { text: 'Amount' },
-                { text: formatPDFPrice(price.amount), alignment: 'right' }
+                formatPDFPrice(price.amount)
               ],
               [
                 '',
@@ -295,7 +291,7 @@ const createPdf = async (data, notes, user) => {
                 '',
                 '',
                 { text: 'Discount' },
-                { text: formatPDFPrice(price.discount), alignment: 'right' }
+                formatPDFPrice(price.discount)
               ],
             ] : []),
             [

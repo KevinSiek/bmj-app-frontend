@@ -16,6 +16,16 @@ function getBase64FromUrl(url) {
   });
 }
 
+function toDateString(date) {
+  const dateString = date ? new Date(date).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }) : ''
+
+  return dateString
+}
 export {
-  getBase64FromUrl
+  getBase64FromUrl,
+  toDateString
 }

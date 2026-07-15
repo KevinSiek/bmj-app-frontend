@@ -3,7 +3,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { formatPDFPrice } from '../form-util'
 import { ToWords } from 'to-words'
 import { common } from '@/config'
-import { getBase64FromUrl } from '../pdf-util'
+import { getBase64FromUrl, toDateString } from '../pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -129,7 +129,7 @@ const createPdf = async (data) => {
       widths: ['auto', 'auto','*'],
       body: [
         ['INV NO', ':', invoice.invoiceNumber],
-        ['INV DATE',':', invoice.date]
+        ['INV DATE',':', toDateString(invoice.date)]
       ]
     },
     layout: {
@@ -148,7 +148,7 @@ const createPdf = async (data) => {
       widths: ['auto', 'auto','*'],
       body: [
         ['PO NO',':', purchaseOrder.poNumber],
-        ['PO DATE', ':', purchaseOrder.purchaseOrderDate],
+        ['PO DATE', ':', toDateString(purchaseOrder.purchaseOrderDate)],
       ]
     },
     layout: {
@@ -226,8 +226,8 @@ const createPdf = async (data) => {
             },
             { text: item.quantity, alignment: 'center' },
             // { text: 'pcs', alignment: 'center' },
-            { text: formatPDFPrice(item.unitPriceSell), alignment: 'right' },
-            { text: formatPDFPrice(item.totalPrice), alignment: 'right' }
+            formatPDFPrice(item.unitPriceSell),
+            formatPDFPrice(item.totalPrice)
           ]),
           // [
           //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
@@ -298,8 +298,8 @@ const createPdf = async (data) => {
             { text: '', alignment: 'center' },
             { text: item.service },
             { text: item.quantity, alignment: 'center' },
-            { text: formatPDFPrice(item.unitPriceSell), alignment: 'right' },
-            { text: formatPDFPrice(item.totalPrice), alignment: 'right' }
+            formatPDFPrice(item.unitPriceSell),
+            formatPDFPrice(item.totalPrice)
           ]),
           // [
           //   { text: '', margin: [0, (90-spareparts.length*10), 0, (90-spareparts.length*10)] },
@@ -338,9 +338,9 @@ const createPdf = async (data) => {
   const totalAmountWord = toWords.convert(Math.ceil(totalAmount), { ignoreDecimal: true })
 
   const totalDP = [
-    [{ text: invoice.type === 'DP' ? 'Subtotal DP 1' : 'Subtotal DP 2', bold: true, margin: [0, 20, 0, 0] }, { text: formatPDFPrice(subtotalTypeDp), alignment: 'right', bold: true, margin: [0, 20, 0, 0] }],
-    [{ text: 'PPN 11%', bold: true }, { text: formatPDFPrice(ppnTypeDp), alignment: 'right', bold: true }],
-    [{ text: invoiceType === 'DP' ? 'Grand Total DP 1' :'Grand Total DP 2', bold: true }, { text: formatPDFPrice(grandTotalTypeDpWithPpn), alignment: 'right', bold: true }]
+    [{ text: invoice.type === 'DP' ? 'Subtotal DP 1' : 'Subtotal DP 2', bold: true, margin: [0, 20, 0, 0] }, formatPDFPrice(subtotalTypeDp, { bold: true, margin: [0, 20, 0, 0] })],
+    [{ text: 'PPN 11%', bold: true }, formatPDFPrice(ppnTypeDp, { bold: true })],
+    [{ text: invoiceType === 'DP' ? 'Grand Total DP 1' :'Grand Total DP 2', bold: true }, formatPDFPrice(grandTotalTypeDpWithPpn, { bold: true })]
   ]
 
   const hasDiscount = price.discount > 0
@@ -422,10 +422,10 @@ const createPdf = async (data) => {
           widths: [100, '*'],
           body: [
             ...(hasDiscount ? [
-              ['AMOUNT', { text: formatPDFPrice(price.amount), alignment: 'right' }],
-              ['DISC', { text: formatPDFPrice(price.discount), alignment: 'right' }],
+              ['AMOUNT', formatPDFPrice(price.amount)],
+              ['DISC', formatPDFPrice(price.discount)],
             ] : []),
-            ['SUB TOTAL', { text: formatPDFPrice(price.subtotal), alignment: 'right' }],
+            ['SUB TOTAL', formatPDFPrice(price.subtotal)],
             ...(invoice.type === 'Final' ? [
               ['PPN 11%', formatPDFPrice(price.ppn)],
               [{ text: 'GRAND TOTAL', bold: true }, formatPDFPrice(price.grandTotal, { bold: true })]

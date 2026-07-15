@@ -1,6 +1,6 @@
 import pdfMake from 'pdfmake/build/pdfmake'
 import pdfFonts from 'pdfmake/build/vfs_fonts'
-import { getBase64FromUrl } from '@/utils/pdf-util'
+import { getBase64FromUrl, toDateString } from '@/utils/pdf-util'
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -36,7 +36,7 @@ export const generateSparepartMovementPdf = async (data, user) => {
             width: '50%',
             text: [
               { text: 'Movement No: ', bold: true }, data.movementNumber, '\n',
-              { text: 'Date: ', bold: true }, new Date(data.createdAt).toLocaleDateString('id-ID'), '\n',
+              { text: 'Date: ', bold: true }, toDateString(data.createdAt), '\n',
               { text: 'Status: ', bold: true }, data.currentStatus, '\n'
             ]
           },
