@@ -128,6 +128,7 @@
                 <th scope="col" class="table-name">Delivery Order</th>
                 <th scope="col" class="table-name">Back Order</th>
                 <th scope="col" class="table-name">Stock</th>
+                <th scope="col" class="table-name">Status</th>
               </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -139,6 +140,7 @@
                 <td class="table-col table-name">{{ sparepart.deliveryOrder }}</td>
                 <td class="table-col table-name">{{ sparepart.backOrder }}</td>
                 <td class="table-col table-name text-uppercase">{{ sparepart.stock }}</td>
+                <td class="table-col table-name text-uppercase">{{ sparepart.status }}</td>
               </tr>
             </tbody>
           </table>

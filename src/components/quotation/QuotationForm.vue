@@ -530,11 +530,13 @@ import { useRole } from '@/composeable/useRole'
 import CurrencyInput from '@/components/CurrencyInput.vue'
 import BranchField from '@/components/BranchField.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useModalStore } from '@/stores/modal'
 
 const quotationStore = useQuotationStore()
 const customerStore = useCustomerStore()
 const generalStore = useGeneralStore()
 const authStore = useAuthStore()
+const modalStore = useModalStore()
 
 const { quotation, searchedSpareparts } = storeToRefs(quotationStore)
 const { customers } = storeToRefs(customerStore)
@@ -589,6 +591,14 @@ const onSelect = (index, purchaseData, sparepartData) => {
   // Ensure we have sparepartData (from dropdown selection)
   if (!sparepartData) {
     console.warn('No sparepart data provided for selection')
+    return
+  }
+
+  const newId = sparepartData.id || sparepartData.sparepartId || sparepartData.sparepart_id
+  const isDuplicate = quotation.value.spareparts.some((item, i) => i !== index && item.sparepartId === newId)
+  if (isDuplicate) {
+    modalStore.openMessageModal(common.modal.failed, 'Sparepart already added to the list')
+    quotation.value.spareparts.splice(index, 1, { sparepartId: '', sparepartName: '', sparepartNumber: '', quantity: 0, unitPriceSell: 0, totalPrice: 0, stock: 0 })
     return
   }
 

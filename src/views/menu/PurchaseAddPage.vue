@@ -166,6 +166,15 @@ const loadSellers = (sparepart, index) => {
 }
 
 const selectItem = (index, purchaseData, sparepartData) => {
+  if (sparepartData) {
+    const newId = sparepartData.sparepartId || sparepartData.id
+    const isDuplicate = purchase.value.spareparts.some((item, i) => i !== index && item.sparepartId === newId)
+    if (isDuplicate) {
+      modalStore.openMessageModal('Failed', 'Sparepart already added to the list')
+      purchase.value.spareparts.splice(index, 1, { sparepartId: '', sparepartName: '', sparepartNumber: '', quantity: 0, unitPriceSell: 0, unitPriceBuy: 0, totalPrice: 0, stock: '', unitPriceSeller: [], seller: '' })
+      return
+    }
+  }
   const data = {
     ...purchaseData,
     ...sparepartData

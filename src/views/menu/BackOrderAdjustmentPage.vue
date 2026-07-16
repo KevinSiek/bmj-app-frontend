@@ -156,6 +156,15 @@ const handleInputSearch = (search) => {
 }
 
 const selectItem = (index, backOrderData, sparepartData) => {
+  if (sparepartData) {
+    const newId = sparepartData.sparepartId || sparepartData.id
+    const isDuplicate = newBackOrder.value.spareparts.some((item, i) => i !== index && item.sparepartId === newId)
+    if (isDuplicate) {
+      modalStore.openMessageModal('Failed', 'Sparepart already added to the list')
+      newBackOrder.value.spareparts.splice(index, 1, { sparepartId: '', sparepartName: '', sparepartNumber: '', order: 0, deliveryOrder: 0, backOrder: 0, unitPriceSell: 0, unitPriceBuy: 0, totalPrice: 0, totalUnit: {}, new: true })
+      return
+    }
+  }
   const data = {
     ...backOrderData,
     ...sparepartData
