@@ -630,9 +630,6 @@ const onSelect = (index, purchaseData, sparepartData) => {
     return
   }
 
-  console.log('Selecting sparepart:', sparepartData)
-  console.log('Current purchase data:', purchaseData)
-
   // CRITICAL: Map sparepartId with comprehensive fallbacks
   const data = {
     ...purchaseData,
