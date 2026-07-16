@@ -80,9 +80,8 @@ test.describe('Back Order Double-Loop Fulfillment E2E Test', () => {
     const poId = body.data.id;
     const poNumber = body.data.purchase_order_number;
 
-    // Move to PI & Ready (Prerequisites for release in some backend states, but BO triggers on release)
+    // Move to PI (Prerequisite for release in some backend states, but BO triggers on release)
     await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'PI', poNumber: 'PO-DOUBLE' } });
-    await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready', poNumber: 'PO-DOUBLE' } });
 
     // Release PO -> This mints the Back Order due to shortfall
     response = await apiContext.post(`/api/purchase-order/release/${poId}`, { 

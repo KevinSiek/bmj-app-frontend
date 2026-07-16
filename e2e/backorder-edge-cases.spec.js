@@ -24,7 +24,7 @@ test.describe('Back Order Alternative Fulfillment & Edge Cases', () => {
     const spRes = await api.get('/api/sparepart?search=E2E');
     const spBody = await spRes.json();
     sparepartId = spBody.data?.data?.[0]?.id;
-    
+
     // Inject stock to Semarang using Buy
     if (sparepartId) {
       const buyRes = await api.post('/api/buy', {
@@ -54,19 +54,18 @@ test.describe('Back Order Alternative Fulfillment & Edge Cases', () => {
 
     // Approve
     await api.post(`/api/quotation/approve/${slug}`, { data: { notes: 'Approve', poNumber: `PO-EDGE-${Date.now()}` } });
-    
+
     // Move to PO
     res = await api.post(`/api/quotation/moveToPo/${slug}`, { data: { notes: 'Move', poNumber: `PO-EDGE-${Date.now()}` } });
     const poId = (await res.json()).data.id;
     const poNum = (await res.json()).data.purchase_order_number;
 
-    // PI and Ready
+    // PI
     await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'PI' } });
-    await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready' } });
-    
+
     // Release (Creates BO)
-    await api.post(`/api/purchase-order/release/${poId}`, { 
-      data: { notes: 'Rel', deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'Test', shipMode: 'Land', orderType: 'Normal' } } 
+    await api.post(`/api/purchase-order/release/${poId}`, {
+      data: { notes: 'Rel', deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'Test', shipMode: 'Land', orderType: 'Normal' } }
     });
 
     // Find BO

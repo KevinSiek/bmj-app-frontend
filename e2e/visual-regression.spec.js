@@ -49,12 +49,6 @@ test.describe('Visual Regression Tests', () => {
     const dpSprRes = await apiCtx.post(`/api/proforma-invoice/dpPaid/${piSpareId}`, { data: { notes: 'DP Paid' } });
     if (!dpSprRes.ok()) throw new Error(`dpSpr: ${await dpSprRes.text()}`);
 
-    // Set Ready
-    const readySvcRes = await apiCtx.post(`/api/purchase-order/ready/${poIdService}`);
-    if (!readySvcRes.ok()) throw new Error(`readySvc: ${await readySvcRes.text()}`);
-    const readySprRes = await apiCtx.post(`/api/purchase-order/ready/${poIdSpareparts}`);
-    if (!readySprRes.ok()) throw new Error(`readySpr: ${await readySprRes.text()}`);
-
     // Release POs
     const relSvcRes = await apiCtx.post(`/api/purchase-order/release/${poIdService}`, {
       data: {

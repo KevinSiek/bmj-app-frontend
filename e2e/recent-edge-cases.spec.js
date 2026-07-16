@@ -119,11 +119,6 @@ test.describe('Recent Features & Edge Cases (Customers, WO, DO, DN)', () => {
       // We need a PO. We can provision one directly using the helper.
       const { poId } = await provisionQuotationAndPo(adminContext);
 
-      // The PO is just created. It is NOT ready.
-      // Set to ready (normally done by Inventory, but Director can do it)
-      const resReady = await adminContext.post(`/api/purchase-order/ready/${poId}`);
-      expect(resReady.status()).toBe(200);
-
       // Now release DO (by Marketing, which was a bypass added recently, or Director)
       // Note: Marketing couldn't release DO originally, but we added a bypass for DO creation? 
       // Release DO by Director (Director and Marketing bypass DP check)
@@ -171,8 +166,7 @@ test.describe('Recent Features & Edge Cases (Customers, WO, DO, DN)', () => {
       const { poId: servicePoId } = await provisionQuotationAndPo(adminContext, 'Service');
       const { poId: sparepartPoId } = await provisionQuotationAndPo(adminContext, 'Spareparts');
 
-      // Set Service PO to Ready then Release so a WO is created
-      await adminContext.post(`/api/purchase-order/ready/${servicePoId}`);
+      // Release Service PO so a WO is created
       await adminContext.post(`/api/purchase-order/release/${servicePoId}`);
       
       // Get the WO created from this Service PO

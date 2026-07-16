@@ -86,11 +86,7 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
     const dp = await dir.post(`/api/proforma-invoice/dpPaid/${dpTargetId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(dp.status(), `dpPaid: ${await dp.text()}`).toBe(200);
 
-    // 6. Ready (PO -> Ready). Service POs have no back order, so this passes directly.
-    const ready = await dir.post(`/api/purchase-order/ready/${minted.poId}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-    expect(ready.status(), `ready: ${await ready.text()}`).toBe(200);
-
-    // 7. Release with the serviceOrder + poc + units payload -> mints the Work Order.
+    // 6. Release with the serviceOrder + poc + units payload -> mints the Work Order.
     const release = await dir.post(`/api/purchase-order/release/${minted.poId}`, {
       data: {
         serviceOrder: { receivedBy: 'Andi', startDate: '2026-06-09', endDate: '2026-06-20' },

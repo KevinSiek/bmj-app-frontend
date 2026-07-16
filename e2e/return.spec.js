@@ -77,11 +77,7 @@ test.describe('Return Flow E2E Tests (Live DB)', () => {
     res = await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Create PI for return', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(200);
 
-    // 5. Set Ready
-    res = await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-    expect(res.status()).toBe(200);
-
-    // 6. Release DO (Requires deliveryOrder payload)
+    // 5. Release DO (Requires deliveryOrder payload)
     res = await apiContext.post(`/api/purchase-order/release/${poId}`, { 
       data: { 
         deliveryOrder: {

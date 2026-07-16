@@ -63,10 +63,9 @@ test.describe('Quotation Split (Mixed Indent & Available) Edge Case', () => {
     const poId = (await res.json()).data.id;
     const poNum = (await res.json()).data.purchase_order_number;
 
-    // 4. PI and Ready
+    // 4. PI
     await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'PI' } });
-    await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready' } });
-    
+
     // 5. Release PO
     res = await api.post(`/api/purchase-order/release/${poId}`, { 
       data: { notes: 'Release Mixed', deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'Test', shipMode: 'Land', orderType: 'Normal' } } 

@@ -86,10 +86,6 @@ test.describe('Stock Math and Invariants API Tests', () => {
     // Move to PI (required for ready)
     await apiContext.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'Create PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
 
-    // Set Ready
-    const readyRes = await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready SP', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-    expect(readyRes.status()).toBe(200);
-
     return { poId, quotationSlug, quotationId };
   }
 

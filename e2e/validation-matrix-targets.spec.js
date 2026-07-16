@@ -98,7 +98,6 @@ test.describe('Per-Field Validation — Target-Bound Endpoints', () => {
     test.beforeAll(async () => {
       const { poId } = await makePO();
       await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-      await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       const rel = await api.post(`/api/purchase-order/release/${poId}`, {
         data: { deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'C', shipMode: 'Land', orderType: 'N' }, notes: 'r' },
       });

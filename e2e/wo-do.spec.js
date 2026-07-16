@@ -28,7 +28,7 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.close();
   });
 
-  test('WO-SETUP: Create Service Quotation, Move to PO, Move to PI, Pay DP, Set Ready', async () => {
+  test('WO-SETUP: Create Service Quotation, Move to PO, Move to PI, Pay DP, Release', async () => {
     test.setTimeout(120000);
     test.setTimeout(300000); // 180 seconds timeout for this long setup
     // 1. Create Service Quotation as Marketing
@@ -166,32 +166,13 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await closeModal(page);
     await page.waitForTimeout(2000);
 
-    // Logout Finance and Login as Director to set Service PO to Ready
+    // Logout Finance and Login as Director to Release the Service PO
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
     await page.fill('input[type="email"]', 'director.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
-
-    if (servicePoId) {
-      await page.goto(`/purchase-order/${servicePoId}`);
-    } else {
-      await page.goto('/purchase-order');
-      await page.waitForSelector('.list .item', { timeout: 10000 });
-      await page.locator('.list .item').first().click();
-    }
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
-    // Ready button is gated on the PO detail re-fetching its DP-paid status; wait for it
-    // to render rather than clicking immediately (mirrors purchase-order.spec.js PO-API-012).
-    const readyBtn = page.locator('button:has-text("Ready")');
-    await expect(readyBtn).toBeVisible({ timeout: 15000 });
-    await readyBtn.click();
-    await expect(page.locator('#modalConfirmation')).toBeVisible({ timeout: 10000 });
-    await page.click('#modalConfirmation button:has-text("Yes")');
-    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    await closeModal(page);
-    await page.waitForTimeout(2000);
 
     // We are already logged in as Director from the previous steps.
     // Navigate directly to the Service PO by ID (or fallback to list)
@@ -367,14 +348,6 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.goto('/purchase-order');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     await page.locator('.list .item').first().click();
-    const doReadyBtn = page.locator('button:has-text("Ready")');
-    await expect(doReadyBtn).toBeVisible({ timeout: 15000 });
-    await doReadyBtn.click();
-    await expect(page.locator('#modalConfirmation')).toBeVisible({ timeout: 10000 });
-    await page.click('#modalConfirmation button:has-text("Yes")');
-    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    await closeModal(page);
-    await page.waitForTimeout(1500);
 
     await page.screenshot({ path: 'e2e/screenshots/do-setup-before-release.png', fullPage: true });
 

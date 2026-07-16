@@ -64,13 +64,6 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
 
   // ---- AUTHZ: forbidden role (Inventory Purchase) → 403 on every mutation ----
 
-  test('GUARD-PO-001: Inventory Purchase cannot POST ready (role not in group) → 403', async () => {
-    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase → inventory_purchase
-    const res = await api.post('/api/purchase-order/ready/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-    expect(res.status()).toBe(403);
-    await api.dispose();
-  });
-
   test('GUARD-PO-002: Inventory Purchase cannot POST release → 403', async () => {
     const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase
     const res = await api.post('/api/purchase-order/release/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
@@ -154,19 +147,6 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
   test('GUARD-PO-011: Director POST done to nonexistent id → 404', async () => {
     const api = await ctxFor('director.jkt@bmj.com'); // authorized; isolates findOrFail
     const res = await api.post('/api/purchase-order/done/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-    expect(res.status()).toBe(404);
-    await api.dispose();
-  });
-
-  // ---- NEGATIVE: ready — REJECTED guard → 400; no validation/422 path exists ----
-  // ready() has NO request validation, so there is no 422 to assert. The only negative
-  // status reachable without crafting a REJECTED fixture is the 404 from findOrFail on a
-  // nonexistent id (same handleError rethrow path as done()). We assert that here; the
-  // REJECTED→400 guard is documented but needs a REJECTED PO fixture we cannot provision
-  // through the API alone.
-  test('GUARD-PO-012: Director POST ready to nonexistent id → 404', async () => {
-    const api = await ctxFor('director.jkt@bmj.com'); // authorized; isolates findOrFail
-    const res = await api.post('/api/purchase-order/ready/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });

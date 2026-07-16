@@ -48,7 +48,6 @@ test.describe('Quotation Return — Decline Flow', () => {
     res = await api.post(`/api/quotation/moveToPo/${quotationSlug}`, { data: { notes: 'po', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     const poId = (await res.json()).data.id;
     await api.post(`/api/purchase-order/moveToPi/${poId}`, { data: { notes: 'pi', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-    await api.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'rdy', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     await api.post(`/api/purchase-order/release/${poId}`, {
       data: { deliveryOrder: { deliveryOrderDate: '2026-06-06', pickedBy: 'C', shipMode: 'Land', orderType: 'N' }, notes: 'r' },
     });

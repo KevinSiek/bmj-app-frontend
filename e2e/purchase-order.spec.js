@@ -35,11 +35,11 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await page.fill('input[placeholder="Subdistrict"]', 'Kecamatan Test');
     await page.fill('input[placeholder="Postal Code"]', '12345');
     await page.fill('textarea[placeholder="Notes"]', 'Setup PO');
-    
+
     // Add Sparepart
     await page.click('button:has-text("Add Sparepart")');
     const firstRow = page.locator('.add-sparepart .list.row').first();
-    
+
     // Select E2E Guaranteed Stock Sparepart. Robust autocomplete: arm the search
     // waiter, type char-by-char (pressSequentially fires the debounced input events
     // that .fill() does not), await the API, then click the item.
@@ -51,11 +51,11 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Wait for the dropdown to render and click the exact item
     await expect(firstRow.locator('.dropdown-item', { hasText: 'E2E Guaranteed Stock Sparepart' }).first()).toBeVisible({ timeout: 10000 });
     await firstRow.locator('.dropdown-item', { hasText: 'E2E Guaranteed Stock Sparepart' }).first().click();
-    
+
     // Set quantity
     await firstRow.locator('input[placeholder="Quantity"]').fill('1');
     await firstRow.locator('input[placeholder="Unit Price"]').blur();
-    
+
     await page.click('button.btn-process:has-text("Add Quotation")');
     await page.click('button:has-text("Yes")');
     await closeModal(page);
@@ -93,17 +93,17 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
   test('UI-PO-031: PO detail page shows Track timeline', async () => {
     // We are still logged in as Director from the setup test!
     await page.goto('/purchase-order');
-    
+
     // Click on the created PO
     await page.locator('.list .item').first().click();
-    
+
     // Click Track button in the top navbar
     await page.click('.page-title .track .btn');
-    
+
     // Verify track component is visible
     await expect(page.locator('.popup')).toBeVisible();
     await expect(page.locator('.popup .step').first()).toBeVisible();
-    
+
     // Close the track modal/offcanvas
     await page.locator('.popup .bi-x').click();
     await page.screenshot({ path: 'e2e/screenshots/po-ui-track-modal.png', fullPage: true });
@@ -141,25 +141,25 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Should navigate to Proforma Invoice page
     await expect(page).toHaveURL(/.*proforma-invoice/, { timeout: 20000 });
     await closeModal(page);
-    
+
     // Verify it is now in the PI list
     await expect(page.locator('.list .item').first()).toBeVisible();
 
     // Click the PI to open detail
     await page.locator('.list .item').first().click();
-    
+
     // Click DP Paid
     const dpPaidBtn = page.locator('button:has-text("DP Paid")');
     await expect(dpPaidBtn).toBeVisible({ timeout: 15000 });
     await dpPaidBtn.click();
-    
+
     // Confirm
     await page.click('button:has-text("Yes")');
     await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
     await page.screenshot({ path: 'e2e/screenshots/po-api-008-move-to-pi.png', fullPage: true });
   });
 
-  test('PO-API-012: Set to Ready (Inventory Admin)', async () => {
+  test('PO-API-019: Release Spareparts PO (Inventory Admin)', async () => {
     // Login as Inventory Admin
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
@@ -172,51 +172,31 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await page.goto('/purchase-order');
     await page.locator('.list .item').first().click();
     await page.waitForLoadState('networkidle', { timeout: 10000 });
-    
-    // Click 'Ready'
-    const readyBtn = page.locator('button:has-text("Ready")');
-    await expect(readyBtn).toBeVisible({ timeout: 15000 });
-    await readyBtn.click();
-    
-    // Wait for confirmation modal then confirm
-    await expect(page.locator('#modalConfirmation')).toBeVisible({ timeout: 10000 });
-    await page.click('#modalConfirmation button:has-text("Yes")');
-    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    
-    // Close success modal
-    await closeModal(page);
-    await page.waitForTimeout(1500);
-    
-    await page.screenshot({ path: 'e2e/screenshots/po-api-012-ready.png', fullPage: true });
-  });
 
-  test('PO-API-019: Release Spareparts PO (Inventory Admin)', async () => {
-    // We are still logged in as Inventory Admin on the PO detail page
-    
     // Click 'Release'
     const releaseBtn = page.locator('button:has-text("Release")');
     await expect(releaseBtn).toBeVisible({ timeout: 15000 });
     await releaseBtn.click();
-    
+
     // Should navigate to DO Add page
     await expect(page).toHaveURL(/.*delivery-order\/add/, { timeout: 20000 });
-    
+
     // Fill release modal (Delivery Order form for Spareparts PO)
     await page.fill('input[type="date"]', '2026-06-03');
     await page.fill('input[placeholder="Received by"]', 'John Doe');
     await page.fill('input[placeholder="Picked by"]', 'Jane Smith');
     await page.fill('input[placeholder="Ship Mode"]', 'Land');
     await page.fill('input[placeholder="Order Type"]', 'Regular');
-    
+
     // Click Release on DO form
     await page.click('.button .btn-process');
-    
+
     // Confirm
     await page.click('button:has-text("Yes")');
-    
+
     // Verify success and Wait for API success
     await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    
+
     // Close success modal
     await closeModal(page);
     await expect(page).toHaveURL(/.*delivery-order.*/, { timeout: 20000 });
@@ -231,14 +211,14 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Verify Release button is NOT visible because DO already exists
     const releaseBtn = page.locator('button:has-text("Release")');
     await expect(releaseBtn).not.toBeVisible();
-    
+
     // Verify Marketing visibility restrictions:
     // Marketing shouldn't see Move to PI, Ready, or Release
     // Wait, we are logged in as Inventory Admin currently!
     // Inventory Admin shouldn't see Move to PI, but they saw Ready/Release before
     const createPiBtn = page.locator('button:has-text("Create PI")');
     await expect(createPiBtn).not.toBeVisible();
-    
+
     await page.screenshot({ path: 'e2e/screenshots/po-api-020-ui-blocks.png', fullPage: true });
   });
 
@@ -254,16 +234,16 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Navigate to PO detail
     await page.goto('/purchase-order');
     await page.locator('.list .item').first().click();
-    
+
     // Click 'Done'
     const doneBtn = page.locator('button:has-text("Done")');
     await expect(doneBtn).toBeVisible({ timeout: 15000 });
     await doneBtn.click();
-    
+
     // Confirm
     await page.click('button:has-text("Yes")');
     await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    
+
     // Verify Done button disappears
     await page.screenshot({ path: 'e2e/screenshots/po-done.png', fullPage: true });
     await expect(doneBtn).not.toBeVisible();
@@ -283,30 +263,30 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await page.fill('input[placeholder="Subdistrict"]', 'Kecamatan Test');
     await page.fill('input[placeholder="Postal Code"]', '12345');
     await page.fill('textarea[placeholder="Notes"]', 'Setup Service PO');
-    
+
     // Add Service Details
     await page.click('button:has-text("Add Service")');
     const firstRow = page.locator('.add-service .list.row').first();
     await firstRow.locator('input[placeholder="Service Name"]').fill('E2E Engine Repair');
     await firstRow.locator('input[placeholder="Quantity"]').fill('1');
     await firstRow.locator('input[placeholder="Unit Price"]').fill('5000000');
-    
+
     await page.click('button.btn-process:has-text("Add Quotation")');
     await page.click('button:has-text("Yes")');
     await closeModal(page);
-    
+
     // Move to PO — intercept API response to capture new PO ID
     await page.locator('.list .item').first().click();
     await page.click('button:has-text("Create PO")');
     await page.fill('.modal-body textarea', 'Move to Service PO');
     await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
     await page.click('.button-modal button:has-text("Create PO")');
-    
+
     const [poResponse] = await Promise.all([
       page.waitForResponse(res => res.url().includes('/api/quotation/moveToPo/') && res.status() === 200),
       page.click('button:has-text("Yes")')
     ]);
-    
+
     let servicePOId = null;
     if (poResponse) {
       const body = await poResponse.json();
@@ -319,7 +299,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await closeModal(page);
     // Fallback: if we didn't capture the ID, get the first PO from the list as Service later
     const usePOId = servicePOId;
-    
+
     // Logout Marketing and Login as Finance
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
@@ -340,19 +320,14 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await page.click('button:has-text("Create PI")');
     await page.fill('.modal-body textarea', 'DP 50% for Service');
     await page.click('.button-modal button:has-text("Create PI")');
-    
-    // Capture PI ID when confirming
+
+    // Capture PI creation response to ensure it succeeded
     const [piResponse] = await Promise.all([
       page.waitForResponse(res => res.url().includes('/api/purchase-order/moveToPi/') && res.status() === 200),
       page.click('button:has-text("Yes")')
     ]);
-    
-    let capturedPiId = null;
-    if (piResponse) {
-      const piBody = await piResponse.json();
-      if (piBody?.data?.id) capturedPiId = piBody.data.id;
-    }
-    
+    expect(piResponse).toBeTruthy();
+
     await closeModal(page);
 
     // Logout Finance and Login as Service
@@ -363,7 +338,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
 
-    // Verify Release Blocked (DP not paid) (PO-API-017)
+    // Verify Release Blocked (Service role not authorized) (PO-API-017)
     if (usePOId) {
       await page.goto(`/purchase-order/${usePOId}`);
     } else {
@@ -375,62 +350,13 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await expect(page.locator('button:has-text("Release")')).not.toBeVisible({ timeout: 8000 });
     await page.screenshot({ path: 'e2e/screenshots/po-api-017-release-blocked.png', fullPage: true });
 
-    // Login as Finance to pay DP
-    await page.evaluate(() => localStorage.clear());
-    await page.goto('/login');
-    await page.fill('input[type="email"]', 'finance.jkt@bmj.com');
-    await page.fill('input[type="password"]', 'password');
-    await page.click('button[type="submit"]');
-    await page.waitForURL('**/menu', { timeout: 20000 });
-    
-    if (capturedPiId) {
-      await page.goto(`/proforma-invoice/${capturedPiId}`);
-    } else {
-      await page.goto('/proforma-invoice');
-      await page.waitForSelector('.list .item', { timeout: 10000 });
-      await page.locator('.list .item').first().click();
-    }
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
-    
-    // Edit PI to set Down Payment
-    await page.click('button.btn-edit');
-    await page.fill('input[placeholder="Advance Payment"]', '100000');
-    await page.click('button:has-text("Save")');
-    await page.click('button:has-text("Yes")');
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
-    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    await closeModal(page);
-
-    await page.click('button:has-text("DP Paid")');
-    await page.click('button:has-text("Yes")');
-    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    await closeModal(page);
-    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
-
-    // Login as Director to set Service PO to Ready
-    // (isShowReady requires isRoleInventoryAdmin || isRoleDirector, and Inventory Admin
-    //  only sees Spareparts-type POs, so Director must handle Service POs)
+    // Login as Director to Release the Service PO (Release no longer requires DP Paid)
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
     await page.fill('input[type="email"]', 'director.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
-
-    if (usePOId) {
-      await page.goto(`/purchase-order/${usePOId}`);
-    } else {
-      await page.goto('/purchase-order');
-      await page.waitForSelector('.list .item', { timeout: 10000 });
-      await page.locator('.list .item').first().click();
-    }
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
-    await page.click('button:has-text("Ready")');
-    await expect(page.locator('#modalConfirmation')).toBeVisible({ timeout: 10000 });
-    await page.click('#modalConfirmation button:has-text("Yes")');
-    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    await closeModal(page);
-    await page.waitForTimeout(2000);
 
     // We are already logged in as Director from the previous steps.
     // Navigate directly to the Service PO by ID (or fallback to list)
@@ -442,7 +368,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
       await page.locator('.list .item').first().click();
     }
     await page.waitForLoadState('networkidle', { timeout: 10000 });
-    
+
     // Release Service PO (PO-API-016)
     const releaseBtn = page.locator('button:has-text("Release")');
     const isVisible = await releaseBtn.isVisible();
@@ -459,7 +385,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await expect(releaseBtn).toBeVisible({ timeout: 15000 });
     await releaseBtn.click();
     await expect(page).toHaveURL(/.*work-order\/add/, { timeout: 20000 });
-    
+
     const dateInputs = await page.locator('input[type="date"]').all();
     for (const input of dateInputs) {
       await input.fill('2026-06-01');
@@ -470,7 +396,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     await page.fill('input[placeholder="Dept Head Service"]', 'Bob');
     await page.fill('input[placeholder="Work Performed by"]', 'Mike');
     await page.fill('input[placeholder="Scope of Work"]', 'Full overhaul');
-    
+
     await page.click('button:has-text("Add Unit")');
     await page.locator('input[placeholder="Job Desc"]').first().fill('Engine repair');
     await page.locator('input[placeholder="Unit Type"]').first().fill('Generator');

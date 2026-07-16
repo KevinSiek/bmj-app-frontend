@@ -117,10 +117,6 @@ test.describe('Order Updates API Tests (PO, PI, WO, DO Updates)', () => {
       body = await response.json();
       let servicePoId = body.data.id;
 
-      // Ensure Ready state to release
-      await apiContext.post(`/api/purchase-order/ready/${poId}`, { data: { notes: 'Ready SP', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-      await apiContext.post(`/api/purchase-order/ready/${servicePoId}`, { data: { notes: 'Ready SRV', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
-
       // Create PI for Service PO and Pay DP (required before releasing Work Order)
       response = await apiContext.post(`/api/purchase-order/moveToPi/${servicePoId}`, { data: { notes: 'Move Service to PI', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
       body = await response.json();
