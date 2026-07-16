@@ -120,11 +120,11 @@ const menuMapping = {
     path: '/sparepart-movement'
   },
   sparepart_movement_add: {
-    name: 'Add Sparepart Movement',
+    name: 'Add Movement',
     path: '/sparepart-movement/add'
   },
   sparepart_movement_detail: {
-    name: 'Detail Sparepart Movement',
+    name: 'Detail Movement',
     path: '/sparepart-movement/:id'
   },
   back_order: {

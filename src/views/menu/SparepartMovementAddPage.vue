@@ -160,6 +160,14 @@ const onNumberInput = (index, search) => {
 }
 
 const onSelect = (index, sp) => {
+  const newId = sp.sparepartId || sp.id
+  const isDuplicate = form.value.details.some((item, i) => i !== index && item.sparepart_id === newId)
+  if (isDuplicate) {
+    modalStore.openMessageModal(common.modal.failed, 'Sparepart already added to the list')
+    form.value.details.splice(index, 1, { sparepart_id: '', sparepartName: '', sparepartNumber: '', quantity: 1 })
+    return
+  }
+
   form.value.details.splice(index, 1, {
     ...form.value.details[index],
     sparepart_id: sp.sparepartId,
