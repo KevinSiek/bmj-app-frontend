@@ -108,3 +108,44 @@ Each role has a dedicated menu page showing only their allowed features:
 ### TrackNav.vue (1.7KB)
 - Navigation header for tracked entities
 - Shows current status badge + track toggle button
+- Actually a `Teleport`-to-body slide-in overlay wrapping `Track.vue`, driven by
+  `useTrackStore.isShowTrack`.
+
+## ⚠️ Edge Cases & Gotchas (verified 2026-07-16)
+
+> Cross-cutting findings live in [CODEBASE_GOTCHAS.md](./CODEBASE_GOTCHAS.md).
+
+- 🐞 **`SparepartSelector.vue` and `PurchaseItemRow.vue` are ORPHANED.**
+  `PurchaseItemRow.vue` is imported by no file; `SparepartSelector.vue` is
+  imported only by `PurchaseItemRow.vue`. The live Purchase/Movement forms use
+  inline inputs + Bootstrap dropdowns.
+  > ⚠️ Correction: the "Used in QuotationForm and PurchaseAdd" claim above is
+  > stale. `SparepartSelector` also calls `axios.get('/api/spareparts')`
+  > directly (wrong endpoint — real is `/api/sparepart`), bypasses `http-api`,
+  > and expects a field shape that doesn't match the stores.
+- **Two globally-registered components** (missing from the list above):
+  `PriceDisplay` (read-only "Rp. …") and `CurrencyInput` (`v-model` stays a raw
+  `Number`) are registered in `main.js:43-44`, so they're usable in any template
+  without import.
+- **`BranchField.vue` encodes role policy:** Director → `<select>`
+  (Jakarta/Semarang), Marketing → read-only; falls back to `useRole()` when its
+  `showDirector`/`showReadonly` props are `undefined`. Uses Vue 3.4 `defineModel`.
+- **`SearchAutocomplete.vue` is a global typed search** hitting
+  `stockMovementApi.getSuggestions` — returns mixed types (Sparepart/PO/Employee/
+  Customer) and emits either free-text `searched` or a structured `selected`
+  filter (`{filter_type, filter_id}`).
+- **`ItemComponent.vue` status→color is a substring match**
+  (`statusColour.red.some(s => currentStatus.includes(s))`) and it collapses
+  second/third columns on mobile via `mainStore.isMobile`.
+- 🐞 **`Pagination.vue`** is URL-driven (`route.query.page` + `updateQuery`) but
+  has leftover `console.log`s and assigns to the computed `currentPage` at
+  `onClickPage` (a no-op; navigation still works via `updateQuery`).
+- **Modal flow:** `ModalConfirmation`/`ModalNotes` `await modalStore.action()`
+  then pop a success/failure `ModalMessage`; `openNotesModal(..., {requirePo})`
+  adds an inline PO-number field (used by `moveToPo`).
+- **Two Track implementations:** the live Pinia `stores/track.js` (used by
+  `Track.vue`/`TrackNav.vue`) vs the orphaned `composeable/useTrack.js`.
+- **Sidebar reality:** the persistent desktop sidebar is `NavbarDesktop.vue`
+  (per-role from `accessFeature`, with nested submenu groups); `NavbarMobile.vue`
+  is the mobile hamburger and still carries a large **commented-out legacy
+  `menus` array** beside the live config-driven version.
