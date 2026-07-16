@@ -43,7 +43,7 @@
         <div class="card-header bg-white">
           <h5 class="mb-0">Spareparts</h5>
         </div>
-        <div class="card-body p-0" style="height: 33vh; overflow-y: auto;">
+        <div class="card-body p-0" style="height: 38vh; overflow-y: auto;">
           <table class="table table-hover mb-0">
             <thead class="table-light">
               <tr>
@@ -66,14 +66,14 @@
   </div>
   <div v-if="detail" class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit" @click="printPdf">Print PDF</button>
+      <button v-if="canCancel" type="button" class="btn btn-danger me-3" @click="handleCancel"
+        :disabled="isProcessing">Cancel</button>
+      <button type="button" class="btn btn-edit me-3" @click="printPdf">Print PDF</button>
     </div>
     <div class="right">
-      <button v-if="canCancel" type="button" class="btn btn-edit me-3" @click="handleCancel"
-        :disabled="isProcessing">Cancel</button>
-      <button v-if="canSend" type="button" class="btn btn-process" @click="handleSend"
+      <button v-if="canSend" type="button" class="btn btn-process me-3" @click="handleSend"
         :disabled="isProcessing">Send</button>
-      <button v-if="canReceive" type="button" class="btn btn-process" @click="handleReceive"
+      <button v-if="canReceive" type="button" class="btn btn-process me-3" @click="handleReceive"
         :disabled="isProcessing">Receive</button>
     </div>
   </div>
@@ -129,11 +129,11 @@ const goBack = () => {
 const isInventory = computed(() =>
   isRoleInventoryAdmin.value || isRoleHeadInventory.value || isRoleDirector.value)
 
-const canSend = computed(() => isInventory.value && detail.value?.currentStatus === 'Created')
+const canSend = computed(() => isInventory.value && detail.value?.currentStatus === 'Created' && user.value?.branch?.name === detail.value?.sourceBranch)
 
 const canCancel = computed(() => isInventory.value && detail.value?.currentStatus === 'Created')
 
-const canReceive = computed(() => isInventory.value && detail.value?.currentStatus === 'Send')
+const canReceive = computed(() => isInventory.value && detail.value?.currentStatus === 'Send' && user.value?.branch?.name === detail.value?.targetBranch)
 
 const runTransition = async (fn, failMessage) => {
   if (isProcessing.value) return
@@ -177,6 +177,7 @@ $secondary-color: rgb(98, 98, 98);
 
 .contain {
   padding: 0 2rem;
+  height: 75vh;
   position: relative;
 }
 
