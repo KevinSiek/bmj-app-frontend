@@ -509,7 +509,18 @@
     </div>
     <div class="notes my-2">
       <div class="title">Notes</div>
-      <div class="inputform-floating">
+      <template v-if="isTypeEdit">
+        <div class="inputform-floating">
+          <textarea class="form-control" placeholder="No notes available" id="floatingTextarea2" style="height: 150px"
+            v-model="editableNotes" disabled></textarea>
+        </div>
+        <div class="inputform-floating mt-2">
+          <label class="text-muted fw-bold mb-1">Add New Note</label>
+          <textarea class="form-control" placeholder="Type new note to add note..." id="floatingNewNote"
+            style="height: 80px" v-model="newNote"></textarea>
+        </div>
+      </template>
+      <div v-else class="inputform-floating">
         <textarea class="form-control" placeholder="Notes" id="floatingTextarea2" style="height: 150px"
           v-model="quotation.notes" :disabled="disabled"></textarea>
       </div>
@@ -518,7 +529,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { common } from '@/config'
 import { useQuotationStore } from '@/stores/quotation'
 import { storeToRefs } from 'pinia'
@@ -553,6 +564,8 @@ const props = defineProps({
 const isTypeEdit = props.type == common.form.type.edit
 const isTypeView = props.type == common.form.type.view
 const disabled = computed(() => isTypeView ? true : false)
+const editableNotes = ref('')
+const newNote = ref('')
 
 const handleInputSearch = (search) => {
   if (search !== '') debounce(() => quotationStore.getSpareparts({ page: 1, search }), 300, `search-quotation-sparepart-${search}`)
@@ -577,6 +590,21 @@ watch([user, quotation], ([userVal, quotationVal]) => {
     quotation.value.project.branch = userVal.branch.name
   }
 }, { immediate: true })
+
+watch(() => quotation.value?.id, () => {
+  if (!isTypeEdit || !quotation.value) return
+  editableNotes.value = quotation.value.notes || ''
+  newNote.value = ''
+  quotation.value.notes = editableNotes.value
+}, { immediate: true })
+
+watch(newNote, (value) => {
+  if (!isTypeEdit || !quotation.value) return
+  const trimmedValue = value.trim()
+  quotation.value.notes = trimmedValue
+    ? [editableNotes.value, trimmedValue].filter(Boolean).join('\n')
+    : editableNotes.value
+})
 
 const amount = computed(() => {
   if (quotation.value.project.type === 'Spareparts') {
