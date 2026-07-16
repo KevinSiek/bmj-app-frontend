@@ -45,6 +45,7 @@ test.describe('Stock Concurrency / TOCTOU API Tests', () => {
         customer: {
           companyName, address: 'Jl. T', city: 'Jakarta', province: 'DKI Jakarta',
           postalCode: '12345', office: '021-1', urban: 'U', subdistrict: 'S',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: qty * 50000 },
         spareparts: [{ sparepartId: lowPartId, quantity: qty, unitPriceSell: 50000 }],
@@ -73,6 +74,7 @@ test.describe('Stock Concurrency / TOCTOU API Tests', () => {
         customer: {
           companyName, address: 'Jl. T', city: 'Jakarta', province: 'DKI Jakarta',
           postalCode: '12345', office: '021-1', urban: 'U', subdistrict: 'S',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: qty * 50000 },
         spareparts: [{ sparepartId: partId, quantity: qty, unitPriceSell: 50000 }],

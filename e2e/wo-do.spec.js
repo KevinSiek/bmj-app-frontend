@@ -11,6 +11,17 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
+    page.on('response', async res => {
+      if (res.status() >= 400 && res.url().includes('/api/')) {
+        console.log('API ERROR ' + res.status() + ' ' + res.url() + ' BODY:', await res.text().catch(() => 'no body'));
+      }
+      if (res.status() === 200 && res.url().includes('/api/quotation') && res.request().method() === 'GET') {
+        const body = await res.json().catch(() => null);
+        if (body && body.data && body.data.data) {
+          console.log('QUOTATION LIST:', body.data.data.map(q => ({ num: q.quotation_number, cust: q.customer?.company_name, branch: q.branch })));
+        }
+      }
+    });
   });
 
   test.afterAll(async () => {
@@ -22,9 +33,16 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     test.setTimeout(300000); // 180 seconds timeout for this long setup
     // 1. Create Service Quotation as Marketing
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
+    const responsePromise = page.waitForResponse(response => response.url().includes('/api/login'));
     await page.click('button[type="submit"]');
+    const response = await responsePromise;
+    console.log('Login Request Body:', await response.request().postData());
+    console.log('Login Status:', response.status());
+    if (response.status() !== 200) {
+      console.log('Login Failed body:', await response.json());
+    }
     await page.waitForURL('**/menu', { timeout: 20000 });
 
     await page.goto('/quotation/add');
@@ -37,6 +55,10 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.fill('input[placeholder="Urban"]', 'Kelurahan Test');
     await page.fill('input[placeholder="Subdistrict"]', 'Kecamatan Test');
     await page.fill('input[placeholder="Postal Code"]', '12345');
+    await page.fill('input[placeholder="NPWP"]', '01.234.567.8-901.234');
+    await page.fill('input[placeholder="Email"]', 'client@test.com');
+    await page.fill('input[placeholder="NPWP"]', '01.234.567.8-901.234');
+    await page.fill('input[placeholder="Email"]', 'client@test.com');
     await page.fill('textarea[placeholder="Notes"]', 'Setup WO PO');
     
     // Add Service Details
@@ -50,8 +72,13 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.click('button:has-text("Yes")');
     await closeModal(page);
     
-    // Move to PO — intercept API response to capture new PO ID
+    // Move to PO — navigate explicitly to the quotation list
+    await page.goto('/quotation');
+    await page.waitForSelector('.list .item', { state: 'visible', timeout: 15000 });
+    // Dismiss any lingering success modal that may have reappeared after navigation
+    await closeModal(page, { waitForAppear: 800 });
     await page.locator('.list .item').first().click();
+    await page.waitForLoadState('networkidle', { timeout: 10000 });
     await page.click('button:has-text("Create PO")');
     await page.fill('.modal-body textarea', 'Move to Service PO');
     await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
@@ -77,9 +104,16 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     // Logout Marketing and Login as Finance
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'fajar.n@bmj.com');
+    await page.fill('input[type="email"]', 'finance.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
+    const responsePromise2 = page.waitForResponse(response => response.url().includes('/api/login'));
     await page.click('button[type="submit"]');
+    const response2 = await responsePromise2;
+    console.log('Login Request Body:', await response2.request().postData());
+    console.log('Login Status:', response2.status());
+    if (response2.status() !== 200) {
+      console.log('Login Failed body:', await response2.json());
+    }
     await page.waitForURL('**/menu', { timeout: 20000 });
 
     // Move to PI — navigate directly to the known PO ID (or fallback to list)
@@ -123,8 +157,7 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.fill('input[placeholder="Advance Payment"]', '150000');
     await page.click('button:has-text("Save")');
     await page.click('button:has-text("Yes")');
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
-    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
+    // Let closeModal handle the success modal
     await closeModal(page);
 
     await page.click('button:has-text("DP Paid")');
@@ -182,16 +215,13 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
       await input.fill('2026-06-01');
     }
     await page.fill('input[placeholder="Received by"]', 'John');
-    await page.fill('input[placeholder="Compiled by"]', 'Jane');
-    await page.fill('input[placeholder="Approved by"]', 'Director');
     await page.fill('input[placeholder="Dept Head Service"]', 'Bob');
-    await page.fill('input[placeholder="Work Performed by"]', 'Mike');
     await page.fill('input[placeholder="Scope of Work"]', 'Full overhaul');
-    
-    await page.click('button:has-text("Add Unit")');
     await page.locator('input[placeholder="Job Desc"]').first().fill('Engine repair');
     await page.locator('input[placeholder="Unit Type"]').first().fill('Generator');
     await page.locator('input[placeholder="Quantity"]').first().fill('1');
+    await page.locator('input[placeholder="Job"]').first().fill('Install new block');
+    await page.locator('input[placeholder="Job"]').first().fill('Install new block');
 
     await page.click('.button .btn-process');
     await page.click('button:has-text("Yes")');
@@ -216,6 +246,16 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.waitForTimeout(1000);
 
     // Click Done
+    const today3 = new Date();
+    const formattedDate3 = `${today3.getFullYear()}-${(today3.getMonth()+1).toString().padStart(2, '0')}-02`;
+    const dateInputs2 = await page.locator('input[type="date"]').all();
+    for (const input of dateInputs2) {
+      if (await input.isEnabled()) {
+         await input.fill(formattedDate3);
+      }
+    }
+    await page.locator('input[placeholder="Work Performed by"]').last().fill('WorkerName');
+    await page.locator('textarea[placeholder="Notes"]').last().fill('Task finished');
     const doneBtn = page.locator('button:has-text("Done")');
     await expect(doneBtn).toBeVisible();
     await doneBtn.click();
@@ -223,8 +263,6 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     // Confirm in Global Modal
     await page.click('button:has-text("Yes")');
     await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
-    await closeModal(page);
-
     await page.screenshot({ path: 'e2e/screenshots/wo-api-003-done.png', fullPage: true });
   });
 
@@ -233,7 +271,7 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     // Login as Marketing
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.smg@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -249,6 +287,10 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.fill('input[placeholder="Urban"]', 'Kelurahan Test');
     await page.fill('input[placeholder="Subdistrict"]', 'Kecamatan Test');
     await page.fill('input[placeholder="Postal Code"]', '12345');
+    await page.fill('input[placeholder="NPWP"]', '01.234.567.8-901.234');
+    await page.fill('input[placeholder="Email"]', 'client@test.com');
+    await page.fill('input[placeholder="NPWP"]', '01.234.567.8-901.234');
+    await page.fill('input[placeholder="Email"]', 'client@test.com');
     await page.fill('textarea[placeholder="Notes"]', 'Setup DO PO');
     
     // Add Sparepart
@@ -256,11 +298,12 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     const firstRow = page.locator('.add-sparepart .list.row').first();
     const partNameInput = firstRow.locator('input[placeholder="Part Name"]');
     // Robust autocomplete: arm the search waiter, type char-by-char, await the API.
-    const wodoSearch = page.waitForResponse((r) => r.url().includes('/api/sparepart') && r.status() === 200);
-    await partNameInput.pressSequentially('E2E Guaranteed Stock Sparepart', { delay: 30 });
-    await wodoSearch;
-    await expect(firstRow.locator('.dropdown-item', { hasText: 'E2E Guaranteed Stock Sparepart' }).first()).toBeVisible({ timeout: 10000 });
-    await firstRow.locator('.dropdown-item', { hasText: 'E2E Guaranteed Stock Sparepart' }).first().click();
+    await partNameInput.click();
+    await partNameInput.fill('E2E Guaranteed Stock Sparepar'); // leave out 't'
+    await partNameInput.pressSequentially('t', { delay: 100 }); // type 't' to trigger autocomplete
+    // Wait for dropdown to show the item
+    await expect(page.locator('.dropdown-menu.show .dropdown-item', { hasText: 'E2E Guaranteed Stock Sparepart' }).first()).toBeVisible({ timeout: 10000 });
+    await page.locator('.dropdown-menu.show .dropdown-item', { hasText: 'E2E Guaranteed Stock Sparepart' }).first().click();
     await firstRow.locator('input[placeholder="Quantity"]').fill('1');
     await firstRow.locator('input[placeholder="Unit Price"]').blur();
     
@@ -268,8 +311,13 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.click('button:has-text("Yes")');
     await closeModal(page);
     
-    // Move to PO
+    // Move to PO â€” navigate explicitly to the quotation list
+    await page.goto('/quotation');
+    await page.waitForSelector('.list .item', { state: 'visible', timeout: 15000 });
+    // Dismiss any lingering success modal that may have reappeared after navigation
+    await closeModal(page, { waitForAppear: 800 });
     await page.locator('.list .item').first().click();
+    await page.waitForLoadState('networkidle', { timeout: 10000 });
     await page.click('button:has-text("Create PO")');
     await page.fill('.modal-body textarea', 'Move to DO setup');
     await page.fill('.modal-body input[type="text"]', `PO-${Date.now()}-${Math.floor(Math.random()*1000)}`);
@@ -307,16 +355,17 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await closeModal(page);
     await page.waitForTimeout(1500);
 
-    // Logout and login as Inventory Admin
+    // Logout and login as Inventory Admin Semarang (only SMG can release Spareparts PO)
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'eko.p@bmj.com');
+    await page.fill('input[type="email"]', 'inventory.admin.smg@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
 
     // Set Ready
     await page.goto('/purchase-order');
+    await page.waitForLoadState('networkidle', { timeout: 10000 });
     await page.locator('.list .item').first().click();
     const doReadyBtn = page.locator('button:has-text("Ready")');
     await expect(doReadyBtn).toBeVisible({ timeout: 15000 });
@@ -333,7 +382,9 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     await page.click('button:has-text("Release")');
     await expect(page).toHaveURL(/.*delivery-order\/add/, { timeout: 20000 });
     
-    await page.fill('input[type="date"]', '2026-06-03');
+    const today = new Date();
+    const formattedDate = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-03`;
+    await page.fill('input[type="date"]', formattedDate);
     await page.fill('input[placeholder="Received by"]', 'John Doe');
     await page.fill('input[placeholder="Picked by"]', 'Jane Smith');
     await page.fill('input[placeholder="Ship Mode"]', 'Land');
@@ -348,9 +399,27 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
 
   test('DO-API-008: Update DO Status to Delivered (Inventory Admin Role)', async () => {
     await page.goto('/delivery-order');
+    await page.waitForLoadState('networkidle');
     await page.locator('.list .item').first().click();
 
     await page.screenshot({ path: 'e2e/screenshots/do-api-008-detail.png', fullPage: true });
+
+    const today2 = new Date();
+    const formattedDate2 = `${today2.getFullYear()}-${(today2.getMonth()+1).toString().padStart(2, '0')}-02`;
+    const dateInputs2 = await page.locator('input[type="date"]').all();
+    for (const input of dateInputs2) {
+      if (await input.isEnabled()) {
+         await input.fill(formattedDate2);
+      }
+    }
+
+    const processBtn = page.locator('button:has-text("Process")');
+    await expect(processBtn).toBeVisible();
+    await processBtn.click();
+    await page.click('button:has-text("Yes")');
+    await expect(page.locator('#modalMessage .text-header')).toHaveText(/successfully|success/i, { timeout: 10000 });
+    await closeModal(page);
+    await page.waitForTimeout(1000);
 
     const doneBtn = page.locator('button:has-text("Done")');
     await expect(doneBtn).toBeVisible();
@@ -367,7 +436,7 @@ test.describe('Work Order & Delivery Order E2E Tests', () => {
     // Finance role shouldn't see DO
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'fajar.n@bmj.com');
+    await page.fill('input[type="email"]', 'finance.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });

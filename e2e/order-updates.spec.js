@@ -66,7 +66,7 @@ test.describe('Order Updates API Tests (PO, PI, WO, DO Updates)', () => {
             office: '021-123456',
             urban: 'Urban',
             subdistrict: 'Sub'
-          },
+          , npwp: '123', email: 'e2e@bmj.com' },
           spareparts: [{ sparepartId: sparepartId, quantity: 1, unitPriceSell: 50000 }]
         }
       });
@@ -105,7 +105,7 @@ test.describe('Order Updates API Tests (PO, PI, WO, DO Updates)', () => {
             office: '021-123456',
             urban: 'Urban',
             subdistrict: 'Sub'
-          },
+          , npwp: '123', email: 'e2e@bmj.com' },
           services: [{ service: 'Repair', quantity: 1, unitPriceSell: 150000 }]
         }
       });

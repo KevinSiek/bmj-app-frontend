@@ -40,7 +40,7 @@ test.describe('RoleMiddleware Write-Path 403 Security Tests', () => {
   });
 
   test('SECW-002: Marketing cannot POST to employee (Director-only) → 403', async () => {
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing
     const res = await api.post('/api/employee', {
       data: { fullname: 'Hacker', email: 'h@bmj.com', username: 'hacker', role: 'Marketing', branch: 'Jakarta' },
     });
@@ -49,14 +49,14 @@ test.describe('RoleMiddleware Write-Path 403 Security Tests', () => {
   });
 
   test('SECW-003: Marketing cannot POST work-order process (Service-only) → 403', async () => {
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing
     const res = await api.post('/api/work-order/process/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('SECW-004: Finance cannot POST buy (Inventory/Director-only) → 403', async () => {
-    const api = await ctxFor('fajar.n@bmj.com'); // Finance
+    const api = await ctxFor('finance.jkt@bmj.com'); // Finance
     const res = await api.post('/api/buy', {
       data: { totalAmount: 1, branch: 'Jakarta', spareparts: [] },
     });
@@ -65,21 +65,21 @@ test.describe('RoleMiddleware Write-Path 403 Security Tests', () => {
   });
 
   test('SECW-005: Service cannot POST proforma-invoice dpPaid (Finance-only) → 403', async () => {
-    const api = await ctxFor('hadi.s@bmj.com'); // Service
+    const api = await ctxFor('service.jkt@bmj.com'); // Service
     const res = await api.post('/api/proforma-invoice/dpPaid/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('SECW-006: Inventory Admin cannot PUT proforma-invoice (Finance-only) → 403', async () => {
-    const api = await ctxFor('eko.p@bmj.com'); // Inventory Admin
+    const api = await ctxFor('inventory.admin.jkt@bmj.com'); // Inventory Admin
     const res = await api.put('/api/proforma-invoice/1', { data: { downPayment: 1 } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('SECW-007: Marketing cannot PUT general settings (Director-only) → 403', async () => {
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing
     const res = await api.put('/api/general', { data: { discount: 0.5 } });
     expect(res.status()).toBe(403);
     await api.dispose();

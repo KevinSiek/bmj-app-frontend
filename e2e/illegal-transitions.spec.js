@@ -29,7 +29,8 @@ test.describe('Illegal State Transitions', () => {
   const customer = {
     companyName: 'PT Illegal', address: 'A', city: 'Jakarta', province: 'DKI',
     postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S',
-  };
+  npwp: '123', email: 'e2e@bmj.com',
+        };
 
   async function quotation(qty = 1) {
     const res = await api.post('/api/quotation', {

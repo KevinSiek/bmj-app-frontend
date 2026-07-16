@@ -41,7 +41,7 @@ test.describe('RoleMiddleware API 403 Security Tests', () => {
   });
 
   test('SEC-API-002: Marketing role restrictions (403)', async () => {
-    const api = await getAuthenticatedContext('citra.k@bmj.com');
+    const api = await getAuthenticatedContext('marketing.jkt@bmj.com');
 
     // Marketing cannot access employees
     let res = await api.get('/api/employee');
@@ -63,7 +63,7 @@ test.describe('RoleMiddleware API 403 Security Tests', () => {
   });
 
   test('SEC-API-003: Finance role restrictions (403)', async () => {
-    const api = await getAuthenticatedContext('fajar.n@bmj.com');
+    const api = await getAuthenticatedContext('finance.jkt@bmj.com');
 
     // Finance cannot access employees
     let res = await api.get('/api/employee');
@@ -85,7 +85,7 @@ test.describe('RoleMiddleware API 403 Security Tests', () => {
   });
 
   test('SEC-API-004: Inventory Admin role restrictions (403)', async () => {
-    const api = await getAuthenticatedContext('eko.p@bmj.com');
+    const api = await getAuthenticatedContext('inventory.admin.jkt@bmj.com');
 
     // Inventory Admin cannot access employees
     let res = await api.get('/api/employee');
@@ -103,7 +103,7 @@ test.describe('RoleMiddleware API 403 Security Tests', () => {
   });
 
   test('SEC-API-005: Service role restrictions (403)', async () => {
-    const api = await getAuthenticatedContext('hadi.s@bmj.com');
+    const api = await getAuthenticatedContext('service.jkt@bmj.com');
 
     // Service cannot access invoices
     let res = await api.get('/api/invoice');

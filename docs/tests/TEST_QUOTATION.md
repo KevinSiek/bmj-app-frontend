@@ -300,6 +300,15 @@
 - Status history array appended with PO entry
 - Sparepart stock **decremented** for branch
 
+### QUOT-API-034B: Move to PO / Release — Mixed Quotation Splits into DO and BO (P0, Integration)
+**Preconditions**: Quotation contains Item A (Available) and Item B (Indent/Out of Stock).
+**Steps**:
+1. `POST /api/quotation/moveToPo/{slug}`
+2. Process PO (moveToPi, ready, release)
+**Expected**:
+- Exactly 1 Delivery Order created containing only Item A.
+- Exactly 1 Back Order created containing only Item B.
+
 ### QUOT-API-035: Move to PO — blocks if quotation already has PO (P0, Integration)
 **Steps**:
 1. `POST /api/quotation/moveToPo/{slug}` on quotation that already has PO

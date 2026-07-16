@@ -64,8 +64,8 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
   // ---- POST /api/quotation/approve/{slug} ----
 
   test('GUARD-QUOTHR-001: Service approve (route-gated role) → 403', async () => {
-    const api = await ctxFor('hadi.s@bmj.com'); // Service — not in marketing,finance,director
-    const res = await api.post(`/api/quotation/approve/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const api = await ctxFor('service.jkt@bmj.com'); // Service — not in marketing,finance,director
+    const res = await api.post(`/api/quotation/approve/${NONEXISTENT_SLUG}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
@@ -83,8 +83,8 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
     const slug = await firstQuotationSlug(dir);
     await dir.dispose();
 
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing — passes route gate, fails row lookup
-    const res = await api.post(`/api/quotation/approve/${slug}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing — passes route gate, fails row lookup
+    const res = await api.post(`/api/quotation/approve/${slug}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
@@ -93,7 +93,7 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
     // Director bypasses the gate and reaches the controller; first() returns null →
     // handleNotFound → 404 'Quotation not found'.
     const api = await ctxFor('director.jkt@bmj.com'); // Director
-    const res = await api.post(`/api/quotation/approve/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const res = await api.post(`/api/quotation/approve/${NONEXISTENT_SLUG}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
@@ -102,7 +102,7 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
     const api = await ctxFor('director.jkt@bmj.com'); // Director
     const slug = await firstQuotationSlug(api);
     test.skip(!slug, 'No quotation in list for the allow-case');
-    const res = await api.post(`/api/quotation/approve/${slug}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const res = await api.post(`/api/quotation/approve/${slug}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     // Director is authorized at both layers — outcome may be 200 or a 400 business guard
     // (already in PO), but it must NOT be a 403.
     expect(res.status()).not.toBe(403);
@@ -112,8 +112,8 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
   // ---- POST /api/quotation/reject/{slug}  (controller method: decline) ----
 
   test('GUARD-QUOTHR-005: Service reject (route-gated role) → 403', async () => {
-    const api = await ctxFor('hadi.s@bmj.com'); // Service
-    const res = await api.post(`/api/quotation/reject/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const api = await ctxFor('service.jkt@bmj.com'); // Service
+    const res = await api.post(`/api/quotation/reject/${NONEXISTENT_SLUG}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
@@ -127,7 +127,7 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
     const slug = await firstQuotationSlug(dir);
     await dir.dispose();
 
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing — passes route gate, fails row lookup
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing — passes route gate, fails row lookup
     const res = await api.post(`/api/quotation/reject/${slug}`, { data: { notes: 'test rejection notes' } });
     expect(res.status()).toBe(404);
     await api.dispose();
@@ -144,7 +144,7 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
     const api = await ctxFor('director.jkt@bmj.com'); // Director
     const slug = await firstQuotationSlug(api);
     test.skip(!slug, 'No quotation in list for the allow-case');
-    const res = await api.post(`/api/quotation/reject/${slug}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const res = await api.post(`/api/quotation/reject/${slug}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).not.toBe(403);
     await api.dispose();
   });
@@ -154,8 +154,8 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
   test('GUARD-QUOTHR-009: Inventory Admin needChange (route-gated role) → 403', async () => {
     // needChange has NO controller-internal role check — authz is enforced ENTIRELY by the
     // route middleware. Inventory Admin is not in marketing,finance,director → 403 at the gate.
-    const api = await ctxFor('eko.p@bmj.com'); // Inventory Admin
-    const res = await api.post(`/api/quotation/needChange/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const api = await ctxFor('inventory.admin.jkt@bmj.com'); // Inventory Admin
+    const res = await api.post(`/api/quotation/needChange/${NONEXISTENT_SLUG}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
@@ -163,7 +163,7 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
   test('GUARD-QUOTHR-010: Director needChange nonexistent slug → 404', async () => {
     // first() returns null → handleNotFound → 404 'Quotation not found'.
     const api = await ctxFor('director.jkt@bmj.com'); // Director
-    const res = await api.post(`/api/quotation/needChange/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const res = await api.post(`/api/quotation/needChange/${NONEXISTENT_SLUG}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
   });
@@ -176,8 +176,8 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
     await dir.dispose();
     test.skip(!slug, 'No quotation in list for the allow-case');
 
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing
-    const res = await api.post(`/api/quotation/needChange/${slug}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing
+    const res = await api.post(`/api/quotation/needChange/${slug}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).not.toBe(403);
     await api.dispose();
   });
@@ -186,8 +186,8 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
 
   test('GUARD-QUOTHR-012: Inventory Admin update (route-gated role) → 403', async () => {
     // Route middleware blocks before any validation runs.
-    const api = await ctxFor('eko.p@bmj.com'); // Inventory Admin
-    const res = await api.put(`/api/quotation/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const api = await ctxFor('inventory.admin.jkt@bmj.com'); // Inventory Admin
+    const res = await api.put(`/api/quotation/${NONEXISTENT_SLUG}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
@@ -195,15 +195,15 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
   test('GUARD-QUOTHR-013: Marketing update with missing required fields → 422', async () => {
     // $request->validate() (lines 371-395) runs BEFORE firstOrFail, so an empty/partial body
     // fails validation with 422 regardless of slug existence.
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing — authorized for this route
-    const res = await api.put(`/api/quotation/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing — authorized for this route
+    const res = await api.put(`/api/quotation/${NONEXISTENT_SLUG}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(422);
     await api.dispose();
   });
 
   test('GUARD-QUOTHR-014: Marketing update invalid enum project.type → 422', async () => {
     // project.type must be in {Service, Spareparts}; an out-of-enum value fails the validator.
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing
     const res = await api.put(`/api/quotation/${NONEXISTENT_SLUG}`, {
       data: {
         project: { quotationNumber: 'GUARD-QN-1', type: 'NotAType', date: '2026-01-01' },
@@ -221,7 +221,7 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
   test('GUARD-QUOTHR-015: Marketing update valid body, nonexistent slug → 404', async () => {
     // With all required fields present and a valid enum, validation passes and firstOrFail
     // (line 403) throws ModelNotFoundException → 404 for a guaranteed-nonexistent slug.
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing
     const res = await api.put(`/api/quotation/${NONEXISTENT_SLUG}`, {
       data: {
         project: { quotationNumber: 'GUARD-QN-1', type: 'Service', date: '2026-01-01' },
@@ -239,7 +239,7 @@ test.describe('GUARD quotation_high_risk — negative-path & authz', () => {
   });
 
   test('GUARD-QUOTHR-016: Unauthenticated approve → 401', async () => {
-    const res = await anon.post(`/api/quotation/approve/${NONEXISTENT_SLUG}`, { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
+    const res = await anon.post(`/api/quotation/approve/${NONEXISTENT_SLUG}`, { data: { notes: 'test', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(401);
   });
 });

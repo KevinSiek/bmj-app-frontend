@@ -29,7 +29,7 @@ test.describe('Role Summary — Value Assertions', () => {
   test.afterAll(async () => { await anon.dispose(); });
 
   test('SUMV-001: inventory summary (as Inventory Admin) returns numeric PO counts', async () => {
-    const api = await ctxFor('eko.p@bmj.com'); // Inventory Admin
+    const api = await ctxFor('inventory.admin.jkt@bmj.com'); // Inventory Admin
     const data = (await (await api.get('/api/summary/inventory')).json()).data;
     expect(data.purchase_order).toBeDefined();
     for (const k of ['total', 'prepare', 'ready', 'release']) {
@@ -43,7 +43,7 @@ test.describe('Role Summary — Value Assertions', () => {
   });
 
   test('SUMV-002: finance summary (as Finance) returns numeric payment-state counts', async () => {
-    const api = await ctxFor('fajar.n@bmj.com'); // Finance
+    const api = await ctxFor('finance.jkt@bmj.com'); // Finance
     const data = (await (await api.get('/api/summary/finance')).json()).data;
     expect(data.purchase_order).toBeDefined();
     for (const k of ['wait_for_payment', 'dp_paid', 'full_paid']) {
@@ -54,7 +54,7 @@ test.describe('Role Summary — Value Assertions', () => {
   });
 
   test('SUMV-003: service summary (as Service) returns numeric work-order counts', async () => {
-    const api = await ctxFor('hadi.s@bmj.com'); // Service
+    const api = await ctxFor('service.jkt@bmj.com'); // Service
     const data = (await (await api.get('/api/summary/service')).json()).data;
     expect(data.work_order).toBeDefined();
     for (const k of ['total', 'on_progress', 'done']) {
@@ -69,7 +69,7 @@ test.describe('Role Summary — Value Assertions', () => {
     // The summary counts only this month's POs; create one as Director, then read the count
     // as Inventory Admin and confirm it went up by exactly 1.
     const director = await ctxFor('director.jkt@bmj.com');
-    const inv = await ctxFor('eko.p@bmj.com');
+    const inv = await ctxFor('inventory.admin.jkt@bmj.com');
 
     const before = (await (await inv.get('/api/summary/inventory')).json()).data.purchase_order.total;
 
@@ -77,7 +77,7 @@ test.describe('Role Summary — Value Assertions', () => {
     const q = (await (await director.post('/api/quotation', {
       data: {
         project: { type: 'Spareparts' },
-        customer: { companyName: `PT SUMV ${Date.now()}`, address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' },
+        customer: { companyName: `PT SUMV ${Date.now()}`, address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' , npwp: '123', email: 'e2e@bmj.com' },
         price: { amount: 50000 },
         spareparts: [{ sparepartId: sp.id, quantity: 1, unitPriceSell: 50000 }],
       },

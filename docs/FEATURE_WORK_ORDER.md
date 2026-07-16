@@ -3,45 +3,46 @@
 ## Overview
 Work Orders (WO) are service job tickets created when a Purchase Order is
 **released**. They track the execution of service work including workers,
-timelines, and sparepart usage.
+timelines, jobs, and sparepart usage from related POs.
 
 ## File Map
 | File | Purpose |
 | ---- | ------- |
 | `views/menu/WorkOrderPage.vue` | List all work orders |
-| `views/menu/WorkOrderAddPage.vue` | Create WO (from PO release) |
-| `views/menu/WorkOrderDetailPage.vue` | WO detail with status tracking |
-| `views/menu/WorkOrderEditPage.vue` | Edit WO details |
+| `views/menu/WorkOrderAddPage.vue` | Create WO (from PO release or standalone) |
+| `views/menu/WorkOrderDetailPage.vue` | WO detail with status tracking and report |
+| `views/menu/WorkOrderEditPage.vue` | Edit WO details, jobs, units, and PO relationships |
 | `stores/work-order.js` | Pinia store |
 | `api/work-order.js` | API wrappers |
 | `utils/pdf/work-order.js` | PDF generation (13KB — detailed) |
 
 ## Key Business Rules
-1. WO is created during PO **Release** action, in status **Wait On Progress**.
-2. Status lifecycle: `Wait On Progress → Process → Progress → Done`.
+1. WO is typically created during PO **Release** action (or manually added via WorkOrderAddPage), starting in status **Wait On Progress**.
+2. Status lifecycle: `Wait On Progress → Progress → Done`.
    - **Process** button (shown in Wait On Progress) → `POST /api/work-order/process/{id}` → Progress.
    - **Done** button (shown in Progress) → `POST /api/work-order/done/{id}` → Done; propagates
-     DONE to the PO + quotation. (Legacy "On Progress" rows can still go straight to Done.)
-3. WO tracks: worker name, expected days, start/end dates, scope, units.
-4. Vaccine, APD, and Peduli Lindungi safety fields have been removed from the UI,
-   API responses, and model fillable (DB columns remain but are no longer used).
-5. `WoUnit` child records track individual units being serviced.
-6. WO actions are gated to Service + Director roles.
-7. WO detail displays the related PO's "No Internal Request" (purchase_order_number) and "No PO"
-   (po_number).
+     DONE to the PO + quotation.
+3. WO tracks: multiple `units` (unit type, quantity, job descriptions), an array of `jobs`, expected days, and start/end dates.
+4. WO can be explicitly linked to both a **Service Purchase Order** and a **Sparepart Purchase Order**.
+5. The Report section (completed when Done) tracks `startDate`, `endDate`, `worker`, and `descriptionCompleted`.
+6. Vaccine, APD, and Peduli Lindungi safety fields have been removed.
+7. WO actions are gated to Service + Director roles (Marketing can view and create/edit in certain statuses).
+8. WO detail displays the related PO's "No Internal Request" and "No PO".
 
 ## Data Model
 ```
 WorkOrder
   ├── purchase_order_id (FK → PurchaseOrder)
+  ├── sparepart_purchase_order_id (FK → PurchaseOrder for used spareparts)
   ├── work_order_number
   ├── received_by, worker, head_of_service, approver, compiled
   ├── expected_days, expected_start_date, expected_end_date
   ├── start_date, end_date
   ├── current_status, is_done
-  ├── spareparts, backup_sparepart
-  ├── scope, vaccine, apd, peduli_lindungi
-  ├── execution_time, notes
+  ├── jobs[] (Array of job strings)
+  ├── backup_sparepart
+  ├── scope
+  ├── execution_time, notes, description_completed
   └── woUnits[] (WoUnit child records)
 ```
 
@@ -50,8 +51,10 @@ WorkOrder
 | -------- | ------ | -------- |
 | `getAllWorkOrder(param)` | GET | `/api/work-order` |
 | `getWorkOrderById(id)` | GET | `/api/work-order/{id}` |
+| `addWorkOrder(data)` | POST | `/api/work-order` |
 | `updateWorkOrder(id, data)` | PUT | `/api/work-order/{id}` |
 | `processWorkOrder(id, data)` | POST | `/api/work-order/process/{id}` |
+| `doneWorkOrder(id, data)` | POST | `/api/work-order/done/{id}` |
 
 ## ⚠️ Edge Cases & Gotchas (verified 2026-07-16)
 > Cross-cutting findings live in [CODEBASE_GOTCHAS.md](./CODEBASE_GOTCHAS.md). Items below are specific to this feature; each cites file:line.
@@ -98,6 +101,6 @@ Process/Done require `isRoleService || isRoleDirector` (`:332`). Rule #6 ("gated
 is only true for the Process/Done actions.
 
 ### API-endpoint table is incomplete
-`api/work-order.js` also exports `addWorkOrder` (POST `/api/work-order`, `:65`), `deleteWorkOrder`
-(DELETE `/api/work-order/{id}`, `:77`), and `done` (POST `/api/work-order/done/{id}`, `:85`) — none of
-which appear in the "API Endpoints" table above.
+`api/work-order.js` also exports `addWorkOrder` (POST `/api/work-order`, `:65`) and `deleteWorkOrder`
+(DELETE `/api/work-order/{id}`, `:77`), which don't appear in the "API Endpoints" table above (the
+`done` endpoint is now listed in the table).

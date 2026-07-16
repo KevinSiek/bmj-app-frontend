@@ -26,7 +26,7 @@ test.describe('Dashboard E2E Tests', () => {
   test('DASH-UI: Verify Dashboard Role Access (Marketing)', async ({ page }) => {
     // Login as Marketing
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });

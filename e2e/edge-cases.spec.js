@@ -73,7 +73,7 @@ test.describe('Edge Cases', () => {
   test('EDGE-CHARS-001: special characters in a customer name round-trip exactly', async () => {
     const name = 'PT Tëst & Co. <"#%> 日本語';
     const created = (await (await api.post('/api/customer', {
-      data: { company_name: name, office: '021', address: 'A', urban: 'U', subdistrict: 'S', city: 'Jakarta', province: 'DKI', postal_code: 12345 },
+      data: { company_name: name, office: '021', address: 'A', urban: 'U', subdistrict: 'S', city: 'Jakarta', province: 'DKI', postal_code: 12345, npwp: '123', email: 'test@bmj.com' },
     })).json()).data;
     expect(created.company_name).toBe(name);
     // Read-back confirms persistence.
@@ -82,7 +82,7 @@ test.describe('Edge Cases', () => {
   });
 
   test('EDGE-CHARS-002: a name at the 255-char max length is accepted; 256 is rejected (422)', async () => {
-    const base = { office: '021', address: 'A', urban: 'U', subdistrict: 'S', city: 'Jakarta', province: 'DKI', postal_code: 12345 };
+    const base = { office: '021', address: 'A', urban: 'U', subdistrict: 'S', city: 'Jakarta', province: 'DKI', postal_code: 12345, npwp: '123', email: 'test2@bmj.com' };
     const ok = await api.post('/api/customer', { data: { ...base, company_name: 'A'.repeat(255) } });
     expect(ok.status()).toBe(201);
     const tooLong = await api.post('/api/customer', { data: { ...base, company_name: 'A'.repeat(256) } });
@@ -94,7 +94,7 @@ test.describe('Edge Cases', () => {
     const q = (await (await api.post('/api/quotation', {
       data: {
         project: { type: 'Spareparts' },
-        customer: { companyName: 'PT Money', address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' },
+        customer: { companyName: 'PT Money', address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S', npwp: '123', email: 'money@bmj.com' },
         price: { amount: 30000 },
         spareparts: [{ sparepartId, quantity: 3, unitPriceSell: 10000 }],
       },
@@ -112,7 +112,7 @@ test.describe('Edge Cases', () => {
     const q = (await (await api.post('/api/quotation', {
       data: {
         project: { type: 'Spareparts' },
-        customer: { companyName: 'PT BigMoney', address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' },
+        customer: { companyName: 'PT BigMoney', address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S', npwp: '123', email: 'bigmoney@bmj.com' },
         price: { amount: qty * unit },
         spareparts: [{ sparepartId, quantity: qty, unitPriceSell: unit }],
       },

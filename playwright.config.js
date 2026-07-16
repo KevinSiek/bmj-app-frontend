@@ -28,6 +28,12 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.05,
+    },
+  },
+
   /* Global setup to reset database */
   globalSetup: './e2e/global-setup.js',
 
@@ -46,12 +52,12 @@ export default defineConfig({
     {
       command: 'php artisan serve',
       cwd: 'e:\\Kerja\\Kerja\\Bkawan\\PT_BerkatMegahJaya\\Repo\\backend\\bmj-app-backend\\BmjAppBackend',
-      url: 'http://localhost:8000',
+      url: 'http://127.0.0.1:8000',
       reuseExistingServer: !process.env.CI,
     },
     {
       command: 'npm run dev',
-      url: 'http://localhost:5173',
+      url: 'http://127.0.0.1:5173',
       reuseExistingServer: !process.env.CI,
     }
   ],

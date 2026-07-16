@@ -19,7 +19,7 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
     test.setTimeout(600000); // 5 minutes for this mega-test for this long flow
     // 1. Login as Marketing
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -81,7 +81,7 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
     // First, Create PI and Pay DP as Finance
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'fajar.n@bmj.com');
+    await page.fill('input[type="email"]', 'finance.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -140,7 +140,7 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
     // Now Login as Inventory Admin
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'eko.p@bmj.com');
+    await page.fill('input[type="email"]', 'inventory.admin.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -277,7 +277,7 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
     // Login as Inventory Admin (Eko)
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'eko.p@bmj.com');
+    await page.fill('input[type="email"]', 'inventory.admin.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -306,7 +306,7 @@ test.describe('Back Order & Buy (Procurement) E2E Tests', () => {
     // Login as Marketing
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });

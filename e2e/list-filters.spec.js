@@ -63,7 +63,7 @@ test.describe('List-Filter Correctness', () => {
     const created = (await (await api.post('/api/quotation', {
       data: {
         project: { type: 'Spareparts' },
-        customer: { companyName: `PT LF ${Date.now()}`, address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' },
+        customer: { companyName: `PT LF ${Date.now()}`, address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' , npwp: '123', email: 'e2e@bmj.com' },
         price: { amount: 100 },
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 100 }], // low price → On Review
       },
@@ -106,7 +106,7 @@ test.describe('List-Filter Correctness', () => {
     const resQ = await api.post('/api/quotation', {
       data: {
         project: { type: 'Spareparts' },
-        customer: { companyName: `PT LFR ${Date.now()}`, address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' },
+        customer: { companyName: `PT LFR ${Date.now()}`, address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' , npwp: '123', email: 'e2e@bmj.com' },
         price: { amount: 50000 },
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }],
       },

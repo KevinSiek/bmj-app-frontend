@@ -16,7 +16,24 @@
 **Expected**:
 - BackOrder automatically created
 - `detail_back_orders` populated with missing spareparts
-- BackOrder status = "Prepare"
+- BackOrder status = "Process"
+
+### BO-API-002B: Fulfill BO via Stock Movement / Upload (P0, Integration)
+**Preconditions**: BackOrder exists with missing items.
+**Steps**:
+1. User manually injects stock via `api/sparepart-movement` or `Upload Data`.
+2. `POST /api/back-order/process/{id}`
+**Expected**:
+- Status 200
+- BackOrder status updated to "Ready" (fulfilled) because stock was satisfied without a Buy.
+
+### BO-API-002C: Adjust BO via API (P1, Integration)
+**Preconditions**: BackOrder exists.
+**Steps**:
+1. `POST /api/back-order/adjust/{id}` with `{ spareparts: [{ sparepartId, order: 0 }] }`
+**Expected**:
+- Status 200
+- BackOrder requirement drops to 0. Status becomes "Ready" (fulfilled).
 
 ### BO-API-003: Move BO to Buy (P0, Integration)
 **Preconditions**: BackOrder exists in "Prepare" state

@@ -72,7 +72,7 @@ test.describe('Recent Features & Edge Cases (Customers, WO, DO, DN)', () => {
         data: { fullname: mktSmg.fullname, role: mktSmg.role, branch: mktSmg.branch, email: mktSmg.email, username: mktSmg.username, group: 'Group Beta' }
       });
 
-      mktA = await ctxFor('citra.k@bmj.com');
+      mktA = await ctxFor('marketing.jkt@bmj.com');
       mktB = await ctxFor('marketing.jkt@bmj.com'); // Same group as A
       mktC = await ctxFor('marketing.smg@bmj.com'); // Different group
     });
@@ -114,7 +114,7 @@ test.describe('Recent Features & Edge Cases (Customers, WO, DO, DN)', () => {
     
     test('DO-EDGE-001 & 002: DO Release Bypass & DN Sequential Numbering', async () => {
       // Marketing creates Goods PO and releases DO without PI being paid
-      const mktApi = await ctxFor('citra.k@bmj.com');
+      const mktApi = await ctxFor('marketing.jkt@bmj.com');
       
       // We need a PO. We can provision one directly using the helper.
       const { poId } = await provisionQuotationAndPo(adminContext);
@@ -164,6 +164,63 @@ test.describe('Recent Features & Edge Cases (Customers, WO, DO, DN)', () => {
       expect(doData.delivery_order.delivery_note_number).toContain('DN/'); // Sequential format check
       
       await mktApi.dispose();
+    });
+
+    test('WO-EDGE-001: WO with Jobs, Units, Service and Sparepart PO selection, and Reporting', async () => {
+      // Create a Service PO and Sparepart PO
+      const { poId: servicePoId } = await provisionQuotationAndPo(adminContext, 'Service');
+      const { poId: sparepartPoId } = await provisionQuotationAndPo(adminContext, 'Spareparts');
+
+      // Set Service PO to Ready then Release so a WO is created
+      await adminContext.post(`/api/purchase-order/ready/${servicePoId}`);
+      await adminContext.post(`/api/purchase-order/release/${servicePoId}`);
+      
+      // Get the WO created from this Service PO
+      const woRes = await adminContext.get(`/api/work-order`);
+      const wos = (await woRes.json()).data.data;
+      const wo = wos.find(w => w.purchase_order_id === servicePoId);
+      expect(wo).toBeDefined();
+
+      // Update WO (Add Jobs, Units, Sparepart PO)
+      const updateRes = await adminContext.put(`/api/work-order/${wo.id}`, {
+        data: {
+          jobs: ["Change Oil", "Fix Engine"],
+          units: [
+            { jobDescriptions: "Engine check", unitType: "Truck", quantity: 1 }
+          ],
+          servicePurchaseOrder: { id: servicePoId },
+          sparepartPurchaseOrder: { id: sparepartPoId },
+          poc: { compiled: "Marketing" },
+          notes: "Updated WO notes"
+        }
+      });
+      if (updateRes.status() !== 200) console.error(await updateRes.text());
+      expect(updateRes.status()).toBe(200);
+      
+      // Service role processes the WO
+      const processRes = await adminContext.post(`/api/work-order/process/${wo.id}`, {
+        data: { id: wo.id }
+      });
+      expect(processRes.status()).toBe(200);
+
+      // Service role marks WO as done with report
+      const doneRes = await adminContext.post(`/api/work-order/done/${wo.id}`, {
+        data: { 
+          id: wo.id,
+          date: { startDate: "2026-06-01", endDate: "2026-06-02" },
+          poc: { worker: "John Service" },
+          descriptionCompleted: "Completed successfully"
+        }
+      });
+      expect(doneRes.status()).toBe(200);
+
+      // Verify the final WO state
+      const finalWoRes = await adminContext.get(`/api/work-order/${wo.id}`);
+      const finalWo = (await finalWoRes.json()).data;
+      expect(finalWo.current_status).toBe('Done');
+      expect(finalWo.jobs.length).toBe(2);
+      expect(finalWo.units[0].unitType).toBe("Truck");
+      expect(finalWo.sparepart_purchase_order_id).toBe(sparepartPoId);
     });
 
   });

@@ -62,7 +62,8 @@ test.describe('Quotation Extended API Tests (Update, Versioning, Return)', () =>
             office: '021-123456',
             urban: 'Urban Test',
             subdistrict: 'Sub Test',
-          },
+          npwp: '123', email: 'e2e@bmj.com',
+        },
           price: {
             amount: globalThis.realPrice * 2,
           },
@@ -102,7 +103,8 @@ test.describe('Quotation Extended API Tests (Update, Versioning, Return)', () =>
             office: '021-123456',
             urban: 'Urban Test',
             subdistrict: 'Sub Test',
-          },
+          npwp: '123', email: 'e2e@bmj.com',
+        },
           price: {
             amount: globalThis.realPrice * 5,
           },

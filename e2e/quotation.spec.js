@@ -7,7 +7,7 @@ test.describe('Quotation E2E Tests (Live DB)', () => {
   test.beforeEach(async ({ page }) => {
     // Login as Marketing (from EmployeeSeeder.php)
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -213,7 +213,7 @@ test.describe('Quotation E2E Tests (Live DB)', () => {
     await page.waitForURL('**/login', { timeout: 20000 });
 
     // Login as Marketing
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });

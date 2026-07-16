@@ -4,7 +4,7 @@
 Pinjaman is a Marketing-driven request to lend out spareparts for a Service job.
 It is tied to a **Service Purchase Order** and its Work Order, reviewed by Head
 Inventory or Director, handed over with a signed PDF and a **Send** action that
-deducts stock, returned with **Kembali**, and reconciled per-line with a
+deducts stock, returned with **Return**, and reconciled per-line with a
 **Quantity Return** column before **Done**. Any shortfall (sold spareparts) must
 be justified by a covering Spareparts PO.
 
@@ -28,8 +28,9 @@ be justified by a covering Spareparts PO.
 | Create / Edit / Cancel | Marketing | Created |
 | Approve / Reject | Head Inventory, Director | Created |
 | Print PDF / Send | Inventory (Admin/Purchase/Head), Director | Approved |
-| Kembali | Marketing | Borrowed |
-| Quantity Return + Done | Inventory, Director | Returned |
+| Return | Marketing | Borrowed |
+| Receive | Inventory, Director | Returned |
+| Quantity Return + Done | Inventory, Director | Received (or Returned context) |
 
 Director bypasses role gating everywhere (backend `RoleMiddleware`).
 
@@ -39,6 +40,7 @@ Director bypasses role gating everywhere (backend `RoleMiddleware`).
 3. Once Approved, Marketing can no longer cancel or edit.
 4. **Print PDF** is repeatable; it collects the receiver name ("Yang Menerima") via the notes modal, and stamps the logged-in user as "Yang Menyerahkan".
 5. At reconciliation, each line's Quantity Return is 0..borrowed. If any line is short, a Spareparts PO that covers the missing quantities is required before Done.
+6. The `return` API accepts `returnNotes` and `returned` array. The `receive` API is then called by Inventory to verify receipt.
 
 ## API Endpoints
 | Function | Method | Endpoint |

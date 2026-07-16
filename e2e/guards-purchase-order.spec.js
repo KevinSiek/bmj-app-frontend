@@ -11,7 +11,7 @@ import { provisionQuotationAndPo } from './helpers.js';
  *   role:marketing,finance,inventory,inventory_admin,director,service
  * The findings name "service_manager" as the forbidden role, but no such account is
  * seeded. The only SEEDED role that falls outside the allowed list is
- * "Inventory Purchase" (→ inventory_purchase), so indah.s@bmj.com is used as the real,
+ * "Inventory Purchase" (→ inventory_purchase), so inventory.purchase.jkt@bmj.com is used as the real,
  * loggable forbidden principal. Director is the paired ALLOW-case (authorized → not 403),
  * to rule out a blanket-deny false positive.
  *
@@ -65,35 +65,35 @@ test.describe('GUARD: PurchaseOrderController negative-path & authz', () => {
   // ---- AUTHZ: forbidden role (Inventory Purchase) → 403 on every mutation ----
 
   test('GUARD-PO-001: Inventory Purchase cannot POST ready (role not in group) → 403', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase → inventory_purchase
+    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase → inventory_purchase
     const res = await api.post('/api/purchase-order/ready/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-PO-002: Inventory Purchase cannot POST release → 403', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase
+    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase
     const res = await api.post('/api/purchase-order/release/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-PO-003: Inventory Purchase cannot POST done → 403', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase
+    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase
     const res = await api.post('/api/purchase-order/done/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-PO-004: Inventory Purchase cannot POST decline → 403', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase
+    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase
     const res = await api.post('/api/purchase-order/decline/1', { data: { notes: 'x', poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
   });
 
   test('GUARD-PO-005: Inventory Purchase cannot POST status → 403', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase
+    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase
     const res = await api.post('/api/purchase-order/status/1', { data: { status: 'Ready' } });
     expect(res.status()).toBe(403);
     await api.dispose();

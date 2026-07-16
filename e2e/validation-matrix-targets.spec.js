@@ -43,7 +43,7 @@ test.describe('Per-Field Validation — Target-Bound Endpoints', () => {
 
   test.afterAll(async () => { await api.dispose(); });
 
-  const customer = { companyName: 'PT VMT', address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' };
+  const customer = { companyName: 'PT VMT', address: 'A', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S' , npwp: '123', email: 'e2e@bmj.com' };
 
   async function makePO() {
     const q = (await (await api.post('/api/quotation', {

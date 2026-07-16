@@ -58,6 +58,7 @@ test.describe('Negative Paths: Validation (422) and Not Found (404)', () => {
         customer: {
           companyName: 'PT Neg Qty', address: 'A', city: 'Jakarta', province: 'DKI',
           postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: 1000 },
         spareparts: [{ sparepartId: sp.id, quantity: -5, unitPriceSell: 1000 }],

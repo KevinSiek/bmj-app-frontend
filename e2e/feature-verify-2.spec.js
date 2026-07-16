@@ -28,7 +28,7 @@ test.describe('Feature batch 2 — live UI verification', () => {
   });
 
   test('FV2-2: Marketing sparepart detail hides Selling Price + sellers', async ({ page }) => {
-    await login(page, 'citra.k@bmj.com'); // Marketing
+    await login(page, 'marketing.jkt@bmj.com'); // Marketing
     await page.goto('/spareparts');
     await page.waitForSelector('.list .item', { timeout: 10000 });
     await page.locator('.list .item').first().click();

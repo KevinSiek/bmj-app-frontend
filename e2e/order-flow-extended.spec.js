@@ -37,6 +37,7 @@ test.describe('Order Flow Extended API Tests', () => {
         customer: {
           companyName, address: 'Jl. Test', city: 'Jakarta', province: 'DKI Jakarta',
           postalCode: '12345', office: '021-1', urban: 'U', subdistrict: 'S',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: qty * 50000 },
         spareparts: [{ sparepartId, quantity: qty, unitPriceSell: 50000 }],
@@ -124,6 +125,7 @@ test.describe('Order Flow Extended API Tests', () => {
         customer: {
           companyName: 'PT OFE DeclineReturn', address: 'Jl. T', city: 'Jakarta',
           province: 'DKI Jakarta', postalCode: '12345', office: '021-1', urban: 'U', subdistrict: 'S',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: 50000 },
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }],
