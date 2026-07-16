@@ -28,8 +28,12 @@
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.seller || '-' }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceBuy" /></td>
-                <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="sparepart.unitPriceBuy" />
+                </td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="sparepart.totalPrice" />
+                </td>
               </tr>
             </tbody>
           </table>
@@ -37,11 +41,14 @@
       </div>
       <div class="notes my-2">
         <div class="title">Description</div>
-        <div class="text">{{ purchase.notes }}</div>
+        <textarea class="form-control" placeholder="Description" id="floatingTextarea2" style="height: 100px"
+          v-model="purchase.notes" disabled></textarea>
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
-        <div class="text"><PriceDisplay :value="purchase.totalAmount" /></div>
+        <div class="text">
+          <PriceDisplay :value="purchase.totalAmount" />
+        </div>
       </div>
     </form>
   </div>

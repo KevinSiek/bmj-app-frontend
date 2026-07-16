@@ -108,8 +108,13 @@
       </div>
       <div class="notes my-2">
         <div class="title">Description</div>
-        <textarea class="form-control" placeholder="Description" id="floatingTextarea2" style="height: 100px"
-          v-model="purchase.notes"></textarea>
+        <textarea class="form-control" placeholder="No notes available" id="floatingTextarea2" style="height: 100px"
+          v-model="editableNotes" disabled></textarea>
+        <div class="mt-2">
+          <label class="text-muted fw-bold mb-1">Add New Note</label>
+          <textarea class="form-control" placeholder="Type new note to add note..." id="floatingNewNote"
+            style="height: 80px" v-model="newNote"></textarea>
+        </div>
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
@@ -151,13 +156,25 @@ const isProcessing = ref(false)
 const totalPurchase = computed(() => purchase.value.spareparts.reduce((sum, item) => sum + item.totalPrice, 0))
 
 const isLoading = ref(true)
+const editableNotes = ref('')
+const newNote = ref('')
 
 onBeforeMount(() => {
   if (!purchase.value) purchaseStore.$resetPurchase()
 })
 onMounted(async () => {
   await purchaseStore.getPurchase(route.params.id)
+  editableNotes.value = purchase.value.notes || ''
+  newNote.value = ''
+  purchase.value.notes = editableNotes.value
   isLoading.value = false
+})
+
+watch(newNote, (value) => {
+  const trimmedValue = value.trim()
+  purchase.value.notes = trimmedValue
+    ? [editableNotes.value, trimmedValue].filter(Boolean).join('\n')
+    : editableNotes.value
 })
 
 const searchSparepart = (search) => {
