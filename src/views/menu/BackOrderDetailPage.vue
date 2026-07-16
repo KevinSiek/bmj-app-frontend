@@ -108,11 +108,6 @@
               <input type="text" class="form-control mt-2" v-model="backOrder.customer.postalCode"
                 placeholder="Postal Code" disabled>
             </div>
-            <div class="input form-group col-12">
-              <label for="">Delivery</label><br>
-              <input type="text" class="form-control mt-2" v-model="backOrder.customer.delivery" placeholder="Delivery"
-                disabled>
-            </div>
           </div>
         </div>
       </div>
