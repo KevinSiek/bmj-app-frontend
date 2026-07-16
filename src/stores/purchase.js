@@ -119,18 +119,18 @@ export const usePurchaseStore = defineStore('purchase', () => {
     purchaseReviews.value = []
   }
 
-  async function approvePurchase (id) {
-    const response = await purchaseApi.approvePurchase(id)
+  async function approvePurchase (id, notes) {
+    const response = await purchaseApi.approvePurchase(id, { notes })
     return response
   }
 
-  async function rejectPurchase (id) {
-    const response = await purchaseApi.rejectPurchase(id)
+  async function rejectPurchase (id, notes) {
+    const response = await purchaseApi.rejectPurchase(id, { notes })
     return response
   }
 
-  async function needChangePurchase (id) {
-    const response = await purchaseApi.needChangePurchase(id)
+  async function needChangePurchase (id, notes) {
+    const response = await purchaseApi.needChangePurchase(id, { notes })
   }
 
   return {

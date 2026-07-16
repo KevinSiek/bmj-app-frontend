@@ -22,8 +22,12 @@
                 <td class="table-col table-part-number">{{ sparepart.sparepartName }}</td>
                 <td class="table-col table-part-number">{{ sparepart.sparepartNumber }}</td>
                 <td class="table-col table-name">{{ sparepart.quantity }}</td>
-                <td class="table-col table-name"><PriceDisplay :value="sparepart.unitPriceBuy" /></td>
-                <td class="table-col table-name"><PriceDisplay :value="sparepart.totalPrice" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="sparepart.unitPriceBuy" />
+                </td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="sparepart.totalPrice" />
+                </td>
               </tr>
             </tbody>
           </table>
@@ -31,11 +35,14 @@
       </div>
       <div class="notes my-2">
         <div class="title">Description</div>
-        <div class="text">{{ purchase.notes }}</div>
+        <textarea class="form-control" placeholder="Description" id="floatingTextarea2" style="height: 100px"
+          v-model="purchase.notes" disabled></textarea>
       </div>
       <div class="total my-2">
         <div class="title">Total Purchase</div>
-        <div class="text"><PriceDisplay :value="purchase.totalAmount" /></div>
+        <div class="text">
+          <PriceDisplay :value="purchase.totalAmount" />
+        </div>
       </div>
     </form>
   </div>
@@ -82,11 +89,11 @@ onMounted(async () => {
   isLoading.value = false
 })
 
-const reject = async () => {
+const reject = async (notes) => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await purchaseStore.rejectPurchase(route.params.id)
+    await purchaseStore.rejectPurchase(route.params.id, notes)
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
@@ -95,13 +102,17 @@ const reject = async () => {
   }
 }
 const rejectConfirmation = () => {
-  modalStore.openConfirmationModal('reject this purchase ?', 'Purchase has been Rejected', reject)
+  modalStore.openNotesModal('Reject', async () => {
+    modalStore.openConfirmationModal('reject this purchase ?', 'Purchase has been Rejected', async () => {
+      await reject(modalStore.notes)
+    })
+  })
 }
-const needChange = async () => {
+const needChange = async (notes) => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await purchaseStore.needChangePurchase(route.params.id)
+    await purchaseStore.needChangePurchase(route.params.id, notes)
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
@@ -110,13 +121,17 @@ const needChange = async () => {
   }
 }
 const needChangeConfirmation = () => {
-  modalStore.openConfirmationModal('this purchase need change ?', 'Purchase need to be changed', needChange)
+  modalStore.openNotesModal('Need Change', async () => {
+    modalStore.openConfirmationModal('this purchase need change ?', 'Purchase need to be changed', async () => {
+      await needChange(modalStore.notes)
+    })
+  })
 }
-const approve = async () => {
+const approve = async (notes) => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
-    await purchaseStore.approvePurchase(route.params.id)
+    await purchaseStore.approvePurchase(route.params.id, notes)
   } catch (error) {
     throw error.data.error || error.data.message
   } finally {
@@ -125,7 +140,11 @@ const approve = async () => {
   }
 }
 const approveConfirmation = () => {
-  modalStore.openConfirmationModal('approve this purchase ?', 'Purchase has been Approved', approve)
+  modalStore.openNotesModal('Approve', async () => {
+    modalStore.openConfirmationModal('approve this purchase ?', 'Purchase has been Approved', async () => {
+      await approve(modalStore.notes)
+    })
+  }, { label: 'Notes (optional)' })
 }
 </script>
 

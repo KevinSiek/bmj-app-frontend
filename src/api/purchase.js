@@ -47,16 +47,16 @@ const done = (id) => {
   return httpApi.postDataViaApi(`${api.purchase}/done/${id}`)
 }
 
-const approvePurchase = (id) => {
-  return httpApi.postDataViaApi(`${api.purchase}/approve/${id}`)
+const approvePurchase = (id, data) => {
+  return httpApi.postDataViaApi(`${api.purchase}/approve/${id}`, data)
 }
 
-const rejectPurchase = (id) => {
-  return httpApi.postDataViaApi(`${api.purchase}/reject/${id}`)
+const rejectPurchase = (id, data) => {
+  return httpApi.postDataViaApi(`${api.purchase}/reject/${id}`, data)
 }
 
-const needChangePurchase = (id) => {
-  return httpApi.postDataViaApi(`${api.purchase}/needChange/${id}`)
+const needChangePurchase = (id, data) => {
+  return httpApi.postDataViaApi(`${api.purchase}/needChange/${id}`, data)
 }
 
 export default {
