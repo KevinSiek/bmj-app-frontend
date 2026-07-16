@@ -193,7 +193,7 @@ const submit = async () => {
     await movementStore.create(form.value)
     router.push(menuMapping.sparepart_movement.path)
   } catch (error) {
-    modalStore.openMessageModal(common.modal.failed, error.response?.data?.message || 'Failed to create movement')
+    throw error.data.error || error.data.message
   } finally {
     isSubmitting.value = false
   }

@@ -64,7 +64,7 @@
                 </div>
                 <div class="col-3">
                   <input type="text" class="form-control mt-2"
-                    :value="isSearching ? 'Loading...' : (sparepart.totalUnit?.[user?.branch?.name] ?? sparepart.stockInBranch)"
+                    :value="isSearching ? 'Loading...' : (sparepart.totalUnit?.[borrow?.branch] ?? sparepart.stockInBranch)"
                     :placeholder="isSearching ? 'Loading...' : 'Stock'" disabled>
                 </div>
                 <div class="col-3">
@@ -177,6 +177,15 @@ const handleInputSearch = (search) => {
 }
 
 const selectItem = (index, borrowData, sparepartData) => {
+  if (sparepartData) {
+    const newId = sparepartData.sparepartId || sparepartData.id
+    const isDuplicate = borrow.value.spareparts.some((item, i) => i !== index && item.sparepartId === newId)
+    if (isDuplicate) {
+      modalStore.openMessageModal('Failed', 'Sparepart already added to the list')
+      borrow.value.spareparts.splice(index, 1, { sparepartId: '', sparepartName: '', sparepartNumber: '', totalUnit: {}, quantity: 0, quantityReturn: null, stockInBranch: 0 })
+      return
+    }
+  }
   borrow.value.spareparts.splice(index, 1, { ...borrowData, ...sparepartData })
 }
 
@@ -201,8 +210,10 @@ const doBorrow = async () => {
   try {
     isProcessing.value = true
     if (isEdit.value) {
+      console.log('EDIT')
       await borrowStore.updateBorrow()
     } else {
+      console.log('ADD')
       await borrowStore.addBorrow()
     }
     router.push(menuConfig.borrow.path)

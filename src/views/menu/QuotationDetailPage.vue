@@ -5,7 +5,7 @@
   </div>
   <div class="button">
     <div class="left">
-      <button type="button" class="btn btn-edit" @click="goToEdit">Edit</button>
+      <button type="button" class="btn btn-edit" @click="goToEdit" v-if="canEdit">Edit</button>
       <button type="button" class="btn btn-process mx-3" @click="download">Print</button>
     </div>
     <div class="right" v-if="canCreatePO">
@@ -41,6 +41,7 @@ const { quotation } = storeToRefs(quotationStore)
 
 const isProcessing = ref(false)
 
+const canEdit = computed(() => quotation.value?.status.length === 0)
 const canCreatePO = computed(() => !quotation.value?.status?.some(s => s.state === 'Po'))
 
 const isLoading = ref(true)
@@ -55,6 +56,7 @@ onMounted(async () => {
 })
 
 const goToEdit = () => {
+  if (!canEdit.value) return
   router.push(`${menuConfig.quotation.path}/${quotation.value.slug}/edit`)
 }
 
