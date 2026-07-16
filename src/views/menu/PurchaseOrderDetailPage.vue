@@ -316,9 +316,6 @@
       <button v-if="isShowFullPaid" type="button" class="btn btn-process mx-3" @click="setFullPaidConfirmation"
         :disabled="isProcessing">Full
         Paid</button>
-      <button v-if="isShowReady" type="button" class="btn btn-process mx-3" @click="setToReadyConfirmation"
-        :disabled="isProcessing">Sparepart
-        Ready</button>
       <button v-if="isShowCreatePi" type="button" class="btn btn-process mx-3" @click="createPiConfirmation"
         :disabled="isProcessing">Create
         PI</button>
@@ -368,24 +365,13 @@ const isShowFullPaid = computed(() =>
   purchaseOrder.value.proformaInvoice.isDpPaid &&
   !purchaseOrder.value.proformaInvoice.isFullPaid
 )
-const isShowReady = computed(() =>
-  !isLoading.value &&
-  (isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value) &&
-  !purchaseOrder.value.status.some(item => item.state === common.track.ready)
-)
 const isShowCreatePi = computed(() =>
   !isLoading.value &&
   (isRoleFinance.value || isRoleDirector.value) &&
   !purchaseOrder.value.status.some(item => item.state === common.track.pi)
 )
 const isShowRelease = computed(() => {
-  const hasDpPaid = purchaseOrder.value.status.some(item => item.state === common.track.dp_paid)
-  const isAdminOrDirector = isRoleInventoryAdmin.value || isRoleDirector.value || isRoleHeadInventory.value
-  const dpConditionMet = hasDpPaid || isAdminOrDirector
-
   const baseConditions = !isLoading.value && (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
-    purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
-    dpConditionMet &&
     !purchaseOrder.value.status.some(item => item.state === common.track.release) &&
     purchaseOrder.value.purchaseOrder.type == common.type.sparepart
 
@@ -445,22 +431,6 @@ const fullPaid = async () => {
 const setFullPaidConfirmation = () => {
   modalStore.openConfirmationModal('Purchase Order has been Paid ?', 'Purchase Order has been paid', fullPaid)
 }
-const setToReady = async () => {
-  if (isProcessing.value) return
-  try {
-    isProcessing.value = true
-    await purchaseOrderStore.ready(route.params.id)
-    fetchData()
-  } catch (error) {
-    throw error.data.error || error.data.message
-  } finally {
-    isProcessing.value = false
-  }
-}
-const setToReadyConfirmation = () => {
-  modalStore.openConfirmationModal('Sparepart is Ready ?', 'Spareparts are Ready', setToReady)
-}
-
 const createProformaInvoice = async () => {
   if (isProcessing.value) return
   try {

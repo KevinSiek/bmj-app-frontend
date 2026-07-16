@@ -177,10 +177,6 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     const response = await purchaseOrderApi.fullPaid(id)
   }
 
-  async function ready(id) {
-    const response = await purchaseOrderApi.ready(id)
-  }
-
   async function release(id, workOrder) {
     const response = await purchaseOrderApi.release(id, workOrder)
   }
@@ -246,7 +242,6 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     processToProformaInvoice,
     updateStatus,
     fullPaid,
-    ready,
     release,
     done,
     reject,
