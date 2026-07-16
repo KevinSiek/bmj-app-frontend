@@ -97,8 +97,7 @@
 
   <div class="button">
     <div class="left">
-      <button v-if="canCancel" type="button" class="btn btn-edit" @click="goToEdit"
-        :disabled="isProcessing">Edit</button>
+      <button v-if="canEdit" type="button" class="btn btn-edit" @click="goToEdit" :disabled="isProcessing">Edit</button>
       <button v-if="canCancel" type="button" class="btn btn-danger" @click="cancelConfirmation"
         :disabled="isProcessing">Cancel</button>
       <button v-if="canHandover" type="button" class="btn btn-secondary" @click="printPdfPrompt"
@@ -160,6 +159,7 @@ const isReviewer = computed(() => isRoleHeadInventory.value || isRoleDirector.va
 const isReceived = computed(() => borrow.value?.currentStatus === status.received)
 const isDone = computed(() => borrow.value?.currentStatus === status.done)
 
+const canEdit = computed(() => !isLoading.value && isMarketing.value && (borrow.value?.currentStatus === status.created || borrow.value?.currentStatus === status.approved || borrow.value?.currentStatus === status.rejected))
 const canCancel = computed(() => !isLoading.value && isMarketing.value && borrow.value?.currentStatus === status.created)
 const canReview = computed(() => !isLoading.value && isReviewer.value && borrow.value?.currentStatus === status.created)
 const canHandover = computed(() => !isLoading.value && isInventory.value && borrow.value?.currentStatus === status.approved)

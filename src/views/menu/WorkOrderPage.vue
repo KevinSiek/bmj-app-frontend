@@ -5,7 +5,7 @@
         <SearchBar @searched="handleUpdateSearch" />
         <RefreshButton @refresh="fetchWorkOrder" />
       </div>
-      <div class="btn-add">
+      <div class="btn-add" v-if="canCreateWO">
         <button class="btn btn-primary" @click="goToAdd">{{ addText }}</button>
       </div>
     </div>
@@ -64,6 +64,7 @@ import { onBeforeMount, onMounted, watch, computed } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
 import { useMainStore } from '@/stores/main'
+import { useRole } from '@/composeable/useRole'
 
 const mainStore = useMainStore()
 const route = useRoute()
@@ -71,10 +72,12 @@ const router = useRouter()
 const workOrderStore = useWorkOrderStore()
 const { isMobile } = storeToRefs(mainStore)
 const { selectedMonth, selectedYear } = useDate()
+const { isRoleDirector, isRoleMarketing } = useRole()
 
 const { workOrders, paginationData, isLoading } = storeToRefs(workOrderStore)
 
 const addText = computed(() => (isMobile.value ? 'Add' : 'Add Work Order'))
+const canCreateWO = computed(() => isRoleDirector.value || isRoleMarketing.value)
 
 onBeforeMount(() => {
   isLoading.value = true

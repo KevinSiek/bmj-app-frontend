@@ -34,7 +34,7 @@
                 <th>Date</th>
                 <th>Sparepart</th>
                 <th>Change</th>
-                <th v-if="canViewSource">Source</th>
+                <th>Source</th>
                 <th>Reason</th>
                 <th>Branch</th>
                 <th>By</th>
@@ -50,9 +50,10 @@
                 <td :class="movement.delta >= 0 ? 'delta-in' : 'delta-out'">
                   {{ movement.delta > 0 ? `+${movement.delta}` : movement.delta }}
                 </td>
-                <td v-if="canViewSource">
+                <td>
                   {{ movement.sourceType }}
-                  <router-link v-if="movement.sourceId && getSourceRoute(movement.sourceType, movement.sourceId)"
+                  <router-link
+                    v-if="movement.sourceId && getSourceRoute(movement.sourceType, movement.sourceId) && canViewSource(movement)"
                     :to="getSourceRoute(movement.sourceType, movement.sourceId)" class="source-link">
                     #{{ movement.sourceId }}
                   </router-link>
@@ -133,10 +134,12 @@ watch(() => route.query, (before, after) => {
   }
 })
 
-const canViewSource = computed(() => {
-  if (isRoleInventoryAdmin.value && user.value.branch.name === common.branch.jakarta) return false
+const canViewSource = (movement) => {
+  if (isRoleInventoryAdmin.value && user.value?.branch?.name === common.branch.jakarta) {
+    return movement.branch?.name === user.value.branch.name
+  }
   return true
-})
+}
 
 const fetchStockMovements = async () => {
   const { page, search, branch: branchQuery, source_type, month, year, filter_type, filter_id, start_date, end_date } = route.query
