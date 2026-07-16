@@ -74,6 +74,7 @@ export const useBorrowStore = defineStore('borrow', () => {
 
   function buildPayload() {
     return {
+      branch: borrow.value.branch,
       purchaseOrderId: borrow.value.purchaseOrder.id,
       notes: borrow.value.notes,
       spareparts: borrow.value.spareparts.map(sparepart => ({

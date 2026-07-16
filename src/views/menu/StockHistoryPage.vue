@@ -34,7 +34,7 @@
                 <th>Date</th>
                 <th>Sparepart</th>
                 <th>Change</th>
-                <th>Source</th>
+                <th v-if="canViewSource">Source</th>
                 <th>Reason</th>
                 <th>Branch</th>
                 <th>By</th>
@@ -50,7 +50,7 @@
                 <td :class="movement.delta >= 0 ? 'delta-in' : 'delta-out'">
                   {{ movement.delta > 0 ? `+${movement.delta}` : movement.delta }}
                 </td>
-                <td>
+                <td v-if="canViewSource">
                   {{ movement.sourceType }}
                   <router-link v-if="movement.sourceId && getSourceRoute(movement.sourceType, movement.sourceId)"
                     :to="getSourceRoute(movement.sourceType, movement.sourceId)" class="source-link">
@@ -84,14 +84,16 @@ import { useRoute, useRouter } from 'vue-router'
 import { useStockMovementStore } from '@/stores/stock-movement'
 import { storeToRefs } from 'pinia'
 import debounce from '@/utils/debouncer'
-import { onBeforeMount, onMounted, ref, watch } from 'vue'
+import { onBeforeMount, onMounted, ref, watch, computed } from 'vue'
 import { updateQuery } from '@/utils/route-util'
 import { useDate } from '@/composeable/useDate'
+import { useRole } from '@/composeable/useRole'
 
 const route = useRoute()
 const router = useRouter()
 const stockMovementStore = useStockMovementStore()
 const { selectedMonth, selectedYear } = useDate()
+const { isRoleInventoryAdmin, user } = useRole()
 
 const { stockMovements, paginationData, isLoading } = storeToRefs(stockMovementStore)
 
@@ -129,6 +131,11 @@ watch(() => route.query, (before, after) => {
   if (JSON.stringify(before) !== JSON.stringify(after)) {
     debounce(() => fetchStockMovements(), 500, 'fetch-stock-movement')
   }
+})
+
+const canViewSource = computed(() => {
+  if (isRoleInventoryAdmin.value && user.value.branch.name === common.branch.jakarta) return false
+  return true
 })
 
 const fetchStockMovements = async () => {

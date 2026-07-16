@@ -64,7 +64,7 @@
                 </div>
                 <div class="col-3">
                   <input type="text" class="form-control mt-2"
-                    :value="isSearching ? 'Loading...' : (sparepart.totalUnit?.[user?.branch?.name] ?? sparepart.stockInBranch)"
+                    :value="isSearching ? 'Loading...' : (sparepart.totalUnit?.[borrow?.branch] ?? sparepart.stockInBranch)"
                     :placeholder="isSearching ? 'Loading...' : 'Stock'" disabled>
                 </div>
                 <div class="col-3">
@@ -201,8 +201,10 @@ const doBorrow = async () => {
   try {
     isProcessing.value = true
     if (isEdit.value) {
+      console.log('EDIT')
       await borrowStore.updateBorrow()
     } else {
+      console.log('ADD')
       await borrowStore.addBorrow()
     }
     router.push(menuConfig.borrow.path)
