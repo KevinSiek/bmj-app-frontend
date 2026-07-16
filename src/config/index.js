@@ -225,7 +225,7 @@ const menuMapping = {
   },
   delivery_order_add: {
     name: 'Add Delivery Order',
-    path: '/delivery-order/add/:id'
+    path: '/delivery-order/add/:id?'
   },
   delivery_order_detail: {
     name: 'Detail Delivery Order',

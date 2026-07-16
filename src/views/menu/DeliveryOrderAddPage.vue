@@ -1,6 +1,12 @@
 <template>
   <div class="contain background shadow">
     <form class="row form">
+      <div v-if="!route.params.id" class="upper my-2">
+        <div class="title">Sparepart PO</div>
+        <PoSelect type="Spareparts" placeholder="Search PO Sparepart number"
+          :model-value="deliveryOrder?.purchaseOrder?.poNumber || deliveryOrder?.purchaseOrder?.purchaseOrderNumber"
+          @select="selectSparepartPurchaseOrder" @clear="clearSparepartPurchaseOrder" class="mt-2" />
+      </div>
       <div class="upper my-2">
         <div class="title">Delivery Order</div>
         <div class="data">
@@ -73,6 +79,7 @@
 </template>
 
 <script setup>
+import PoSelect from '@/components/borrow/PoSelect.vue'
 import { useModalStore } from '@/stores/modal'
 import { usePurchaseOrderStore } from '@/stores/purchase-order'
 import { useDeliveryOrderStore } from '@/stores/delivery-order'
@@ -97,6 +104,7 @@ onBeforeMount(() => {
 })
 
 onMounted(async () => {
+  if (!route.params.id) return
   await purchaseOrderStore.getPurchaseOrder(route.params.id)
   if (purchaseOrder.value) {
     deliveryOrder.value.deliveryOrder.delivery = purchaseOrder.value.customer.companyName || ''
@@ -106,10 +114,38 @@ onMounted(async () => {
 
 import { useAuthStore } from '@/stores/auth'
 
+const selectSparepartPurchaseOrder = async (po) => {
+  deliveryOrder.value.purchaseOrder = {
+    id: po.id,
+    poNumber: po.poNumber,
+    purchaseOrderNumber: po.purchaseOrderNumber,
+    purchaseOrderDate: po.purchaseOrderDate
+  }
+
+  await purchaseOrderStore.getPurchaseOrder(po.id)
+  if (purchaseOrder.value) {
+    deliveryOrder.value.deliveryOrder.delivery = purchaseOrder.value.customer.companyName || ''
+    deliveryOrder.value.deliveryOrder.npwp = purchaseOrder.value.customer.npwp || ''
+  }
+}
+
+const clearSparepartPurchaseOrder = () => {
+  deliveryOrder.value.purchaseOrder = null
+  deliveryOrder.value.deliveryOrder.delivery = ''
+  deliveryOrder.value.deliveryOrder.npwp = ''
+}
+
 const doRelease = async () => {
   if (isProcessing.value) return
   try {
     isProcessing.value = true
+
+    if (!route.params.id) {
+      await deliveryOrderStore.addDeliveryOrder()
+      router.push(menuConfig.delivery_order.path)
+      return
+    }
+
     await purchaseOrderStore.release(route.params.id, deliveryOrder.value)
 
     const authStore = useAuthStore()
@@ -130,7 +166,7 @@ const doReleaseConfirmation = () => {
 
 const back = () => {
   const authStore = useAuthStore()
-  if (authStore.user?.role?.toLowerCase() === 'marketing') {
+  if (route.params.id && authStore.user?.role?.toLowerCase() === 'marketing') {
     router.push(`${menuConfig.purchase_order.path}/${route.params.id}`)
   } else {
     router.push(menuConfig.delivery_order.path)

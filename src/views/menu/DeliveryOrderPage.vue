@@ -116,7 +116,7 @@ const handleUpdateSearch = (search) => {
 
 const goToAdd = () => {
   deliveryOrderStore.$resetDeliveryOrders()
-  router.push(menuConfig.delivery_order_add.path)
+  router.push(menuConfig.delivery_order_add.path.replace('/:id?', ''))
 }
 const goToDetail = async (deliveryOrder) => {
   await deliveryOrderStore.setDeliveryOrder(deliveryOrder)

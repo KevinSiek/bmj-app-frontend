@@ -372,7 +372,7 @@ const isShowCreatePi = computed(() =>
 )
 const isShowRelease = computed(() => {
   const baseConditions = !isLoading.value && (isRoleHeadInventory.value || isRoleInventoryAdmin.value || isRoleDirector.value) &&
-    !purchaseOrder.value.status.some(item => item.state === common.track.release) &&
+    !purchaseOrder.value.status.some(item => item.state === common.track.ready) &&
     purchaseOrder.value.purchaseOrder.type == common.type.sparepart
 
   if (!baseConditions) return false

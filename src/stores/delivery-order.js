@@ -86,7 +86,7 @@ export const useDeliveryOrderStore = defineStore('delivery-order', () => {
 
   async function addDeliveryOrder() {
     console.log(deliveryOrder.value)
-    await deliveryOrderApi.addDeliveryOrder(deliveryOrder)
+    await deliveryOrderApi.addDeliveryOrder(deliveryOrder.value)
   }
 
   async function setDeliveryOrder(selectedDeliveryOrder) {
