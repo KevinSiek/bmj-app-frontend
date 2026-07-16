@@ -255,6 +255,15 @@ verified 328-test Playwright suite in `e2e/` is the source of truth; the
   (`api/purchase-order.js:104-114`); PO **fullPaid** posts to the **proforma-invoice**
   endpoint `/api/proforma-invoice/fullPaid/{id}` (`api/purchase-order.js:83-85`).
 - **Frontend "Purchase" = backend "Buy"** (`api.purchase = '/api/buy'`).
+- 🐞 **Borrow returns `branch` as an object `{id,name}`.** `BorrowController::formatBorrow`
+  (backend, `BorrowController.php:639-642`) is the **only** formatter that nests the
+  Branch relation; every other entity resolves `branch` to a `->name` **string**
+  (e.g. `QuotationController.php:2533`, `PurchaseOrderController.php:94`). This
+  object reached `utils/pdf/borrow.js` and crashed pdfmake with
+  *"Unrecognized document structure: {"id":2,"name":"Semarang"}"* (and showed
+  `[object Object]` in the Borrow detail's Branch input). The frontend now
+  flattens it to a string in `stores/borrow.js` `mapBorrow()`; the **true** fix is
+  backend consistency (make `formatBorrow` emit `$borrow->branch?->name`).
 
 ---
 

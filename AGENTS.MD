@@ -8,6 +8,31 @@
 
 ---
 
+## 0. Operating Rules — read before any change (every tool: Claude, Codex, Cursor, …)
+
+Non-negotiable working rules for this repo. Claude Code also loads these from
+[`CLAUDE.md`](./CLAUDE.md); they are restated here so tools that read only
+`AGENTS.md` (Codex, Cursor, …) inherit the same guardrails. The single authority
+for anything below is [`.claude/ENGINEERING_DISCIPLINE.md`](./.claude/ENGINEERING_DISCIPLINE.md)
+— if a rule here ever conflicts with it, that file wins.
+
+- ⛔ **NEVER auto-commit.** No `git commit` / `git push` / PR without an explicit,
+  in-conversation request for *that specific action*. Leave changes staged and let
+  the human commit. Applies to all subagents — no exceptions.
+- 🧭 **Follow the engineering pipeline** on every coding task: understand →
+  brainstorm (design approved before code) → plan → execute (test-first where a
+  harness exists — this repo has **no** unit harness, see
+  [`.claude/discipline-adapter.md`](./.claude/discipline-adapter.md); verify with
+  `npm run build`) → review → verify (show the command output) → finish. If your
+  tool cannot open `.claude/`, the rules in this section are the floor.
+- 🖥️ **Browser / QA via gstack only** (win32) — no other browser-automation path.
+- 🎯 **Prime directive — code quality.** Write every line as a senior engineer
+  would: simple, human-readable, no redundancy, reuse before adding, maintainable.
+- 📎 **Before editing, skim [`docs/CODEBASE_GOTCHAS.md`](./docs/CODEBASE_GOTCHAS.md)**
+  for landmines, latent bugs, and this repo's naming traps.
+
+---
+
 ## 1. What This Application Is
 
 **BMJ App** is an internal ERP / order-management system for **PT Berkat Megah
@@ -195,6 +220,8 @@ When starting a new session or task, read these files in order:
 > `.claude/discipline-adapter.md` declares `indexed: no` as the degraded
 > default. If the tools aren't available (confirm via ToolSearch), fall back to
 > targeted Grep/Glob/Read on task-named symbols — do not assume the index exists.
+> Non-Claude tools (Codex, Cursor, …) never have the `gitnexus_*` MCP tools at all —
+> use plain search or the CLI hints inside that block.
 
 ---
 
