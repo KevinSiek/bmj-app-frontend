@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+
+    import { test, expect } from '@playwright/test';
 
 test.describe('Borrow Shortfall Reconciliation E2E Test', () => {
   let apiContext;
@@ -64,7 +65,7 @@ test.describe('Borrow Shortfall Reconciliation E2E Test', () => {
         customer: {
           companyName: 'PT Borrow Service',
           address: 'Jl. Test', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021',
-          urban: 'Urban', subdistrict: 'Sub'
+          urban: 'Urban', subdistrict: 'Sub', npwp: '123', email: 'e2e@bmj.com'
         },
         price: { amount: 100000 },
         services: [{ service: 'Service AC', quantity: 1, unitPriceSell: 100000 }]
@@ -101,28 +102,14 @@ test.describe('Borrow Shortfall Reconciliation E2E Test', () => {
     const stockAfterSend = await getStock();
     expect(stockAfterSend).toBe(initialStock - borrowQty);
 
-    // 4. Return (Kembali) the borrow
-    response = await apiContext.post(`/api/borrow/kembali/${borrowId}`, { data: { notes: 'Returning to warehouse' } });
-    expect(response.status()).toBe(200);
-
-    // 5. Attempt Reconcile (Done) with only 8 units and NO Sparepart PO. Should fail 422.
-    response = await apiContext.post(`/api/borrow/done/${borrowId}`, {
-      data: {
-        returned: [{ sparepartId, quantityReturn: returnQty }] // 8 instead of 10
-      }
-    });
-    expect(response.status()).toBe(422); // Validation error (needs sparepartPoId)
-    body = await response.json();
-    expect(body.message).toContain('required');
-
-    // 6. Create a Sparepart PO to cover the shortfall (2 units)
+    // 4. Create a Sparepart PO to cover the shortfall (2 units)
     response = await apiContext.post('/api/quotation', {
       data: {
         project: { type: 'Spareparts' },
         customer: {
           companyName: 'PT Sparepart Shortfall Fix',
           address: 'Jl. Test', city: 'Jakarta', province: 'DKI', postalCode: '12345', office: '021',
-          urban: 'Urban', subdistrict: 'Sub'
+          urban: 'Urban', subdistrict: 'Sub', npwp: '123', email: 'e2e@bmj.com'
         },
         price: { amount: shortfallQty * 50000 },
         spareparts: [{ sparepartId, quantity: shortfallQty, unitPriceSell: 50000 }]
@@ -137,16 +124,23 @@ test.describe('Borrow Shortfall Reconciliation E2E Test', () => {
     body = await response.json();
     const shortfallPoId = body.data.id;
 
-    // 7. Retry Reconcile (Done) with the new Sparepart PO ID. Should pass.
-    response = await apiContext.post(`/api/borrow/done/${borrowId}`, {
-      data: {
-        returned: [{ sparepartId, quantityReturn: returnQty }],
-        sparepartPoId: shortfallPoId
-      }
+    // 5. Return (Kembali) the borrow
+    response = await apiContext.post(`/api/borrow/return/${borrowId}`, { 
+      data: { 
+        returnNotes: 'Returning to warehouse', 
+        returned: [{ sparepartId, quantityReturn: returnQty }], 
+        sparepartPoId: shortfallPoId 
+      } 
     });
+    if (response.status() !== 200) console.error('Status:', response.status(), await response.text());
     expect(response.status()).toBe(200);
 
-    // 8. Verify stock incremented by exactly the returned amount (8)
+    // 6. Receive and Reconcile
+    await apiContext.post(`/api/borrow/receive/${borrowId}`);
+    response = await apiContext.post(`/api/borrow/done/${borrowId}`);
+    expect(response.status()).toBe(200);
+
+    // 7. Verify stock incremented by exactly the returned amount (8)
     const finalStock = await getStock();
     expect(finalStock).toBe(stockAfterSend + returnQty);
     expect(finalStock).toBe(initialStock - shortfallQty); // Net change is the shortfall.

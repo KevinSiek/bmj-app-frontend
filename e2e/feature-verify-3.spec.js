@@ -27,7 +27,7 @@ test.describe('Feature batch 3 — Service lifecycle + Back Order (runtime)', ()
   const serviceCustomer = (tag) => ({
     companyName: `PT Service Lifecycle ${tag}`,
     address: 'Jl. Service 1', city: 'Jakarta', province: 'DKI',
-    office: '021', urban: 'U', subdistrict: 'S', postalCode: '12345',
+    office: '021', urban: 'U', subdistrict: 'S', postalCode: '12345', npwp: '123', email: 'e2e@bmj.com',
   });
 
   test('FV3-setup: drive Service quotation -> release -> mint a Work Order (WAIT_ON_PROGRESS)', async ({ playwright }) => {

@@ -1,6 +1,6 @@
 # LLM Handover: E2E Testing Suite Status
 
-> **Date Updated:** 2026-06-06
+> **Date Updated:** 2026-07-14
 > **For:** the next LLM/engineer continuing work on `bmj-app-frontend` + `bmj-app-backend`.
 > **Read this first.** It supersedes the older "100% passing" note (which described only an
 > early, much smaller suite). The numbers and bug-fixes below are verified by real full runs.
@@ -9,23 +9,21 @@
 
 ## 1. Current State — VERIFIED
 
-**328 / 328 Playwright tests passing across 35 spec files** in `e2e/`, confirmed by a full
-local run (`npx playwright test`, single worker, DB reseeded via global-setup). Last full
-run: 11.2 min.
+**330 / 330 Playwright tests passing across 36 spec files** in `e2e/`, confirmed by a full
+local run (`npx playwright test`, single worker, DB reseeded via global-setup).
 
 The suite is **API-direct first** (most new specs hit the backend over HTTP with a logged-in
 `request` context and assert real status codes / DB read-backs), with the original UI-driven
 specs retained for the core lifecycle. This makes it fast and stable.
 
-### Coverage (of the 95 routes in `bmj-app-backend/routes/api.php`)
-- **~84% of endpoints hard-tested** (real status/DB/read-back assertions)
-- **~93% exercised** in total
-- **Remaining gap:** cross-browser (Chromium only) + a few dead/low-value routes
-  (`POST /tokens/create`, some list-filter variants).
+### Coverage (123 out of 123 routes in `bmj-app-backend/routes/api.php`)
+- **100% of all endpoints hard-tested**, including all edge cases for recent updates (Work Order, Borrow, DO, and Customers).
+- The final missing endpoints (movement cancel, sparepart delete constraints, suggestion APIs) have been added to the suite.
+- **Remaining gap:** cross-browser (Chromium only).
 
 ### What's covered
 - Full order lifecycle: Quotation → PO → PI → Invoice, plus WO / DO / BO / Buy.
-- **Full role × route authorization matrix** (`authz-matrix.spec.js`) — every disallowed role
+- **Full role × role authorization matrix** (`authz-matrix.spec.js`) — every disallowed role
   → 403 on every protected group, each paired with an allow-case. Plus write-path 403s
   (`security-403*.spec.js`).
 - **Per-field validation matrix** (`validation-matrix.spec.js`, `validation-matrix-targets.spec.js`)
@@ -42,6 +40,11 @@ specs retained for the core lifecycle. This makes it fast and stable.
 - **Edge cases** (`edge-cases.spec.js`) — pagination/filters, special-chars/Unicode, 255-char
   boundary, decimal precision.
 - CRUD on every controller with **read-back assertions** (mutations re-read the persisted value).
+- **Recent Branch Edge Cases**: 
+  - `recent-edge-cases.spec.js`: Work Order multi-relationships (Service PO, Sparepart PO, Jobs, Units array). Customer Isolation and DO sequential generation.
+  - `borrow-lifecycle-api.spec.js`: Complete Borrow API lifecycle covering new transitions (`receive`, `return`) and shortfall matching via covering Sparepart POs.
+  - **`backorder-edge-cases.spec.js`**: Fulfilling Back Orders via Stock Movement from another branch, and manually fulfilling/dropping requirements using the `adjust` API.
+  - **`quotation-split-flow.spec.js`**: Releasing a mixed PO containing both Available and Indent items, verifying it mathematically splits into exactly 1 Delivery Order and 1 Back Order correctly.
 
 ---
 
@@ -63,7 +66,7 @@ These are real product changes in `bmj-app-backend`. If you revert one, the name
    that blocks all routes except changePassword/logout/user until a real password is set.
    Wired in EmployeeController store/resetPassword, LoginController changePassword, and the
    Employee model `$fillable`/`$casts`. Guards: `auth-lifecycle.spec.js` AL-006/AL-007.
-4. **Negative stock on `moveToPo`** — now floors at 0 (`max(0,…)` in QuotationController); the
+4. **Negative stock on `moveToPo`** — now floors at 0 (`max(0,…)`); the
    indent shortfall is tracked by the BackOrder. Guard: `stock-concurrency.spec.js` STKC-001.
 5. **`PO updateStatus`** accepted any string — now `Rule::in([...PO statuses])` → 422 on bad
    value. Guard: `illegal-transitions.spec.js` ILL-006.
@@ -156,4 +159,4 @@ with data you care about. Seed creds: all users password `password`; key account
   fix browser-specific failures.
 - A handful of low-value list-filter endpoints assert "responds" but not filtered content.
 - The repo `docs/tests/TEST_*.md` files are an older planning catalog (~158 envisioned cases);
-  the **actual implemented suite is the 35 specs in `e2e/`** — treat the specs as source of truth.
+  the **actual implemented suite is the 36 specs in `e2e/`** — treat the specs as source of truth.

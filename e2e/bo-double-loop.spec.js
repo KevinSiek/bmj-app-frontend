@@ -60,6 +60,7 @@ test.describe('Back Order Double-Loop Fulfillment E2E Test', () => {
           office: '021-123456',
           urban: 'Urban',
           subdistrict: 'Sub',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: orderQty * 50000 },
         spareparts: [{ sparepartId, quantity: orderQty, unitPriceSell: 50000 }]

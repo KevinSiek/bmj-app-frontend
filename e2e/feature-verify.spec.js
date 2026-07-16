@@ -23,7 +23,7 @@ test.describe('Feature batch — live UI verification', () => {
   }
 
   test('FV-1: realtime Rp formatting on the quotation unit-price input', async ({ page }) => {
-    await login(page, 'citra.k@bmj.com'); // Marketing
+    await login(page, 'marketing.jkt@bmj.com'); // Marketing
     await page.goto('/quotation/add');
     await page.selectOption('select[aria-label="Project Type"]', 'Spareparts');
 
@@ -56,7 +56,7 @@ test.describe('Feature batch — live UI verification', () => {
   });
 
   test('FV-3: total-discount % field appears below the total amount', async ({ page }) => {
-    await login(page, 'citra.k@bmj.com');
+    await login(page, 'marketing.jkt@bmj.com');
     await page.goto('/quotation/add');
     await page.selectOption('select[aria-label="Project Type"]', 'Spareparts');
     // The "Total Discount (%)" field must be visible in add mode.

@@ -61,6 +61,19 @@ To give a sense of the automated test, here is a screenshot captured automatical
 
 ![PO Done screenshot](file:///e:/Kerja/Kerja/Bkawan/PT_BerkatMegahJaya/Code/FrontEnd/bmj-app-frontend/e2e/screenshots/po-done.png)
 
+## 👁️ Visual Regression Testing
+
+The E2E suite now includes **Visual Regression Testing** to guarantee that UI layouts, component sizing, and CSS styling remain intact. 
+These assertions use Playwright's `expect(page).toHaveScreenshot()` to do pixel-by-pixel comparisons against established baselines (stored in `e2e/__screenshots__`).
+
+If you make intentional UI changes (or if tests fail due to minor anti-aliasing differences on your OS), you must update the baseline snapshots locally by running:
+
+```bash
+npx playwright test e2e/visual-regression.spec.js --update-snapshots
+```
+
+*Note: The threshold for pixel differences is configured in `playwright.config.js` (`maxDiffPixelRatio: 0.05`) to reduce flakiness across environments.*
+
 ## 📋 Next Steps (Pending Tests)
 
 While the happy path and initial rejection flows are complete, we must continue adding test cases for remaining Edge Cases and Negative Scenarios as outlined in `TEST_PURCHASE_ORDER.md`. 
@@ -73,9 +86,9 @@ While the happy path and initial rejection flows are complete, we must continue 
 
 ---
 
-## ✅ Verified Status (2026-06-06)
+## ✅ Verified Status (2026-07-14)
 
-**328/328 tests passing** across **35 spec files** — confirmed by a full local run
+**330/330 tests passing** across **36 spec files** — confirmed by a full local run
 (`npx playwright test`, single worker, DB reseeded via global-setup). Latest additions:
 a **per-field validation matrix** (`validation-matrix*.spec.js` — every create/update
 endpoint, each field broken with multiple invalid values, asserting the correct 422 — or
@@ -99,6 +112,10 @@ endpoint, each field broken with multiple invalid values, asserting the correct 
   (valid/weak/mismatch), temp-password issuance + reset.
 - CRUD + update/delete on every controller, with **read-back assertions** (mutations re-read
   and verify the persisted value, not just HTTP 200).
+- **Recent updates (`recent-edge-cases.spec.js` & `borrow-lifecycle-api.spec.js`)**:
+  - Work Order advanced relationships (jobs, units, service/sparepart PO matching).
+  - Borrow Lifecycle transitions (`receive`, `return`) with shortfall handling via covering Spareparts PO.
+  - Delivery Order sequential note generation & Customer isolated groups.
 
 **Backend bugs FIXED during this work (with regression-guard tests):**
 - **Systemic 500-instead-of-404/422**: every controller's `handleError`, plus

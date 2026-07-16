@@ -19,7 +19,7 @@ test.describe('Invoice E2E Tests (Live DB)', () => {
     
     // Login as Marketing
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -76,7 +76,7 @@ test.describe('Invoice E2E Tests (Live DB)', () => {
     // Login Finance
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'fajar.n@bmj.com');
+    await page.fill('input[type="email"]', 'finance.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });

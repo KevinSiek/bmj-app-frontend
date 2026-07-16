@@ -36,6 +36,7 @@ test.describe('Quotation Return — Decline Flow', () => {
         customer: {
           companyName, address: 'A', city: 'Jakarta', province: 'DKI',
           postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: 50000 },
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }],
@@ -78,6 +79,7 @@ test.describe('Quotation Return — Decline Flow', () => {
         customer: {
           companyName: 'PT Not Returned', address: 'A', city: 'Jakarta', province: 'DKI',
           postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: 50000 },
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }],

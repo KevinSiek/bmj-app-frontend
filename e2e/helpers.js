@@ -64,7 +64,7 @@ export async function confirmYesAwaiting(page, urlPart, { status = 200, timeout 
 // flow the app uses — create quotation → approve → moveToPo — so the assertions actually run.
 // All are API-direct (Director Bearer token), no browser.
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'http://127.0.0.1:8000';
 
 /** Log in and return a Bearer-token request context for a seeded account. */
 export async function apiContextFor(playwright, email, password = 'password') {
@@ -88,19 +88,23 @@ export async function apiContextFor(playwright, email, password = 'password') {
  * (status 'Prepare'). Throws on any step failure so a setup bug surfaces loudly rather than
  * masquerading as a skipped test.
  */
-export async function provisionQuotationAndPo(director) {
+export async function provisionQuotationAndPo(director, type = 'Spareparts', quantity = 1) {
   const sp = (await (await director.get('/api/sparepart?search=E2E+Guaranteed')).json()).data.data[0];
   if (!sp) throw new Error("provision: 'E2E Guaranteed Stock Sparepart' not found — check SparepartSeeder");
 
   const create = await director.post('/api/quotation', {
     data: {
-      project: { type: 'Spareparts', branch: 'Semarang' },
+      project: { type, branch: 'Semarang' },
       customer: {
         companyName: `PT Guard Provision ${Date.now()}`, address: 'A', city: 'Jakarta',
         province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S',
+        npwp: '123456789', email: 'test@example.com'
       },
       price: { amount: 50000 },
-      spareparts: [{ sparepartId: sp.id, quantity: 1, unitPriceSell: 50000 }],
+      ...(type === 'Service' 
+          ? { services: [{ service: 'Test Service', unitPriceSell: 50000, quantity: 1 }] } 
+          : { spareparts: [{ sparepartId: sp.id, quantity: quantity, unitPriceSell: 50000 }] }
+      )
     },
   });
   if (create.status() !== 201) throw new Error(`provision: create quotation -> ${create.status()}: ${await create.text()}`);
@@ -151,7 +155,8 @@ export async function provisionApprovedQuotation(director) {
       customer: {
         companyName: `PT Guard Quot ${Date.now()}`, address: 'A', city: 'Jakarta',
         province: 'DKI', postalCode: '12345', office: '021', urban: 'U', subdistrict: 'S',
-      },
+      npwp: '123', email: 'e2e@bmj.com',
+        },
       price: { amount: 50000 },
       spareparts: [{ sparepartId: sp.id, quantity: 1, unitPriceSell: 50000 }],
     },

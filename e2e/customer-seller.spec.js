@@ -50,7 +50,8 @@ test.describe('Customer and Seller API CRUD Tests', () => {
           urban: 'Test Urban',
           subdistrict: 'Test Subdistrict',
           pic_name: 'Test PIC',
-          pic_phone: '08123456789'
+          pic_phone: '08123456789',
+          npwp: '123', email: 'e2e@bmj.com'
         }
       });
       const body = await response.json();
@@ -91,7 +92,7 @@ test.describe('Customer and Seller API CRUD Tests', () => {
           office: '021-9876543',
           urban: 'Test Urban',
           subdistrict: 'Test Subdistrict'
-        }
+        , npwp: '123', email: 'e2e@bmj.com' }
       });
       expect(response.status()).toBe(200);
       

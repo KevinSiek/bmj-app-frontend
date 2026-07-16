@@ -93,7 +93,7 @@ test.describe('Stock History (standalone page) — runtime verification', () => 
   });
 
   test('SH-4: Marketing gets 403 on the global endpoint; sparepart still visible', async ({ playwright }) => {
-    const mkt = await apiContextFor(playwright, 'citra.k@bmj.com');
+    const mkt = await apiContextFor(playwright, 'marketing.jkt@bmj.com');
     const res = await mkt.get('/api/stock-movement');
     expect(res.status()).toBe(403);
     const sp = await mkt.get(`/api/sparepart/${minted.sparepartId}`);

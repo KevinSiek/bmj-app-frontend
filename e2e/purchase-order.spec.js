@@ -18,7 +18,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
   test('PO-SETUP: Create a Purchase Order for testing', async () => {
     // 1. Login as Marketing
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -113,7 +113,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Logout Marketing and Login as Finance
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'fajar.n@bmj.com');
+    await page.fill('input[type="email"]', 'finance.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -163,7 +163,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Login as Inventory Admin
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'eko.p@bmj.com');
+    await page.fill('input[type="email"]', 'inventory.admin.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -246,7 +246,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Logout Inventory Admin and Login as Marketing
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'citra.k@bmj.com');
+    await page.fill('input[type="email"]', 'marketing.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -323,7 +323,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Logout Marketing and Login as Finance
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'fajar.n@bmj.com');
+    await page.fill('input[type="email"]', 'finance.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -358,7 +358,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Logout Finance and Login as Service
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'hadi.s@bmj.com');
+    await page.fill('input[type="email"]', 'service.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });
@@ -378,7 +378,7 @@ test.describe('Purchase Order E2E Tests (Live DB)', () => {
     // Login as Finance to pay DP
     await page.evaluate(() => localStorage.clear());
     await page.goto('/login');
-    await page.fill('input[type="email"]', 'fajar.n@bmj.com');
+    await page.fill('input[type="email"]', 'finance.jkt@bmj.com');
     await page.fill('input[type="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/menu', { timeout: 20000 });

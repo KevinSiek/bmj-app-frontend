@@ -1,7 +1,7 @@
 import { test, expect, request } from '@playwright/test';
 
 /**
- * Auth lifecycle: logout token revocation, changePassword (valid + weak), and the
+ * Auth lifecycle: logout token revocation, changePasswordOrPhone (valid + weak), and the
  * temp-password issuance/login flow. Uses freshly-created employees so seeded accounts
  * are not mutated mid-run.
  */
@@ -69,28 +69,28 @@ test.describe('Auth Lifecycle', () => {
     expect(body.access_token).toBeDefined();
   });
 
-  test('AL-003: changePassword rejects a weak password (422) and accepts a strong one (200)', async () => {
+  test('AL-003: changePasswordOrPhone rejects a weak password (422) and accepts a strong one (200)', async () => {
     const emp = await newEmployee('al3');
     const token = (await (await login(emp.email, emp.tempPassword)).json()).access_token;
     const api = await ctxFromToken(token);
 
     // Weak (no uppercase / too short) → 422 validation.
-    const weak = await api.post('/api/user/changePassword', { data: { password: 'weak', confirm_password: 'weak' } });
+    const weak = await api.post('/api/user/changePasswordOrPhone', { data: { password: 'weak', confirm_password: 'weak' } });
     expect(weak.status()).toBe(422);
 
     // Strong + matching confirmation → 200, and the new password then logs in.
-    const strong = await api.post('/api/user/changePassword', { data: { password: 'StrongPass1', confirm_password: 'StrongPass1' } });
+    const strong = await api.post('/api/user/changePasswordOrPhone', { data: { password: 'StrongPass1', confirm_password: 'StrongPass1' } });
     expect(strong.status()).toBe(200);
     await api.dispose();
 
     expect((await login(emp.email, 'StrongPass1')).status()).toBe(200);
   });
 
-  test('AL-004: changePassword requires matching confirm_password (422)', async () => {
+  test('AL-004: changePasswordOrPhone requires matching confirm_password (422)', async () => {
     const emp = await newEmployee('al4');
     const token = (await (await login(emp.email, emp.tempPassword)).json()).access_token;
     const api = await ctxFromToken(token);
-    const res = await api.post('/api/user/changePassword', { data: { password: 'StrongPass1', confirm_password: 'Mismatch9' } });
+    const res = await api.post('/api/user/changePasswordOrPhone', { data: { password: 'StrongPass1', confirm_password: 'Mismatch9' } });
     expect(res.status()).toBe(422);
     await api.dispose();
   });
@@ -100,7 +100,7 @@ test.describe('Auth Lifecycle', () => {
     // Consume the initial temp password by changing to a real one.
     const t = (await (await login(emp.email, emp.tempPassword)).json()).access_token;
     const api = await ctxFromToken(t);
-    await api.post('/api/user/changePassword', { data: { password: 'StrongPass1', confirm_password: 'StrongPass1' } });
+    await api.post('/api/user/changePasswordOrPhone', { data: { password: 'StrongPass1', confirm_password: 'StrongPass1' } });
     await api.dispose();
 
     // Director resets → a fresh temp password is issued and works.
@@ -115,7 +115,7 @@ test.describe('Auth Lifecycle', () => {
   // Regression guard for the temp-password single-use fix: a temp password authenticates
   // only far enough to change it (gated by must_change_password). Once the user sets a real
   // password, the temp password no longer works — so it is single-use in effect.
-  test('AL-006: temp password is single-use — reuse fails after changePassword', async () => {
+  test('AL-006: temp password is single-use — reuse fails after changePasswordOrPhone', async () => {
     const emp = await newEmployee('al6');
 
     // First login with the temp password succeeds and flags use_temp_password.
@@ -131,7 +131,7 @@ test.describe('Auth Lifecycle', () => {
     expect((await gated.json()).must_change_password).toBe(true);
 
     // Changing the password lifts the gate.
-    expect((await api.post('/api/user/changePassword', { data: { password: 'StrongPass1', confirm_password: 'StrongPass1' } })).status()).toBe(200);
+    expect((await api.post('/api/user/changePasswordOrPhone', { data: { password: 'StrongPass1', confirm_password: 'StrongPass1' } })).status()).toBe(200);
     await api.dispose();
 
     // The temp password no longer works (real password replaced it).

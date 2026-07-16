@@ -112,7 +112,8 @@ test.describe('Access and Summary API Tests', () => {
           customer: {
             companyName: 'PT Summary Count', address: 'Jl. T', city: 'Jakarta',
             province: 'DKI Jakarta', postalCode: '12345', office: '021-1', urban: 'U', subdistrict: 'S',
-          },
+          npwp: '123', email: 'e2e@bmj.com',
+        },
           price: { amount: 50000 },
           spareparts: [{ sparepartId: spId, quantity: 1, unitPriceSell: 50000 }],
         },

@@ -60,7 +60,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   // ---------------------------------------------------------------------------
 
   test('GUARD-HRE-001: Marketing POST delivery-order/process (inventory/director-only) → 403', async () => {
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing — forbidden by route middleware
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing — forbidden by route middleware
     const res = await api.post('/api/delivery-order/process/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
@@ -72,7 +72,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-003: ALLOW-case — Inventory Admin POST delivery-order/process is NOT 403', async () => {
-    const api = await ctxFor('eko.p@bmj.com'); // Inventory Admin — authorized
+    const api = await ctxFor('inventory.admin.jkt@bmj.com'); // Inventory Admin — authorized
     const items = await listItems(api, '/api/delivery-order');
     if (items.length === 0) {
       test.skip(true, 'No seeded delivery orders to exercise the authorized path');
@@ -84,7 +84,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-004: Inventory Admin POST delivery-order/process on an already-Done order → 400', async () => {
-    const api = await ctxFor('eko.p@bmj.com'); // Inventory Admin — authorized
+    const api = await ctxFor('inventory.admin.jkt@bmj.com'); // Inventory Admin — authorized
     const items = await listItems(api, '/api/delivery-order');
     const done = items.find((d) => d.current_status === 'Done');
     if (!done) {
@@ -96,7 +96,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-005: Inventory Admin POST delivery-order/process on nonexistent id → 404', async () => {
-    const api = await ctxFor('eko.p@bmj.com'); // Inventory Admin — authorized
+    const api = await ctxFor('inventory.admin.jkt@bmj.com'); // Inventory Admin — authorized
     const res = await api.post('/api/delivery-order/process/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
@@ -109,7 +109,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   // ---------------------------------------------------------------------------
 
   test('GUARD-HRE-006: Marketing POST back-order/process → 403', async () => {
-    const api = await ctxFor('citra.k@bmj.com'); // Marketing — forbidden by route middleware
+    const api = await ctxFor('marketing.jkt@bmj.com'); // Marketing — forbidden by route middleware
     const res = await api.post('/api/back-order/process/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
@@ -121,7 +121,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-008: ALLOW-case — Inventory Purchase POST back-order/process is NOT 403', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized (route + in-controller)
+    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase — authorized (route + in-controller)
     const items = await listItems(api, '/api/back-order');
     if (items.length === 0) {
       test.skip(true, 'No seeded back orders to exercise the authorized path');
@@ -133,7 +133,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-009: Inventory Purchase POST back-order/process on a Ready/Rejected order → 400', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized
+    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase — authorized
     const items = await listItems(api, '/api/back-order');
     const stale = items.find((b) => b.current_status === 'Ready' || b.current_status === 'Rejected');
     if (!stale) {
@@ -145,7 +145,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-010: Inventory Purchase POST back-order/process on nonexistent id → 404', async () => {
-    const api = await ctxFor('indah.s@bmj.com'); // Inventory Purchase — authorized
+    const api = await ctxFor('inventory.purchase.jkt@bmj.com'); // Inventory Purchase — authorized
     const res = await api.post('/api/back-order/process/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();
@@ -156,7 +156,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   // ---------------------------------------------------------------------------
 
   test('GUARD-HRE-011: Service POST proforma-invoice/fullPaid (finance/director-only) → 403', async () => {
-    const api = await ctxFor('hadi.s@bmj.com'); // Service — forbidden by route middleware
+    const api = await ctxFor('service.jkt@bmj.com'); // Service — forbidden by route middleware
     const res = await api.post('/api/proforma-invoice/fullPaid/1', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(403);
     await api.dispose();
@@ -168,7 +168,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-013: ALLOW-case — Finance POST proforma-invoice/fullPaid is NOT 403', async () => {
-    const api = await ctxFor('fajar.n@bmj.com'); // Finance — authorized
+    const api = await ctxFor('finance.jkt@bmj.com'); // Finance — authorized
     // fullPaid takes a PO id; pull a real one from the PO list, provisioning one (quotation→
     // approve→moveToPo) if the seeders left it empty, so the allow-case actually runs.
     const dir = await ctxFor('director.jkt@bmj.com');
@@ -182,7 +182,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-014: Finance POST proforma-invoice/fullPaid on a Rejected PO → 400', async () => {
-    const api = await ctxFor('fajar.n@bmj.com'); // Finance — authorized
+    const api = await ctxFor('finance.jkt@bmj.com'); // Finance — authorized
     // Self-provision a PO whose current_status is 'Rejected' (the business-rule trigger).
     const dir = await ctxFor('director.jkt@bmj.com');
     const pos = await listItems(dir, '/api/purchase-order');
@@ -197,7 +197,7 @@ test.describe('Guards: High-Risk Endpoints (delivery-order, back-order, proforma
   });
 
   test('GUARD-HRE-015: Finance POST proforma-invoice/fullPaid on nonexistent po_id → 404', async () => {
-    const api = await ctxFor('fajar.n@bmj.com'); // Finance — authorized
+    const api = await ctxFor('finance.jkt@bmj.com'); // Finance — authorized
     const res = await api.post('/api/proforma-invoice/fullPaid/999999', { data: { poNumber: `PO-${Date.now()}-${Math.floor(Math.random()*1000)}` } });
     expect(res.status()).toBe(404);
     await api.dispose();

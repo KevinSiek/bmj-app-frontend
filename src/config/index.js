@@ -209,7 +209,7 @@ const menuMapping = {
   },
   work_order_add: {
     name: 'Add Work Order',
-    path: '/work-order/add'
+    path: '/work-order/add/:id'
   },
   work_order_detail: {
     name: 'Detail Work Order',

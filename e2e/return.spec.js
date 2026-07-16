@@ -54,6 +54,7 @@ test.describe('Return Flow E2E Tests (Live DB)', () => {
           office: '021-123456',
           urban: 'Kelurahan Test',
           subdistrict: 'Kecamatan Test',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: 50000 },
         spareparts: [{ sparepartId, quantity: 1, unitPriceSell: 50000 }]

@@ -53,10 +53,10 @@ test.describe('BMJ App Backend Controllers - Rejection Behavior Analysis', () =>
 
   // Seeded accounts (all password 'password')
   const DIRECTOR = 'director.jkt@bmj.com';
-  const MARKETING = 'citra.k@bmj.com';
-  const INVENTORY_ADMIN = 'eko.p@bmj.com';
-  const FINANCE = 'fajar.n@bmj.com';
-  const SERVICE = 'hadi.s@bmj.com';
+  const MARKETING = 'marketing.jkt@bmj.com';
+  const INVENTORY_ADMIN = 'inventory.admin.jkt@bmj.com';
+  const FINANCE = 'finance.jkt@bmj.com';
+  const SERVICE = 'service.jkt@bmj.com';
 
   // Guaranteed-nonexistent identifiers for not-found assertions.
   const MISSING_ID = 999999;

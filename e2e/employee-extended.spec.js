@@ -116,7 +116,7 @@ test.describe('Employee Extended API Tests (Update, Delete, Credentials)', () =>
         }
       });
 
-      const changeRes = await authUserContext.post('/api/user/changePassword', {
+      const changeRes = await authUserContext.post('/api/user/changePasswordOrPhone', {
         data: {
           password: 'NewPassword123!',
           confirm_password: 'NewPassword123!'

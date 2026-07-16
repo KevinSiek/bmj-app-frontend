@@ -65,6 +65,7 @@ test.describe('Stock Math and Invariants API Tests', () => {
           office: '021-123456',
           urban: 'Urban',
           subdistrict: 'Sub',
+        npwp: '123', email: 'e2e@bmj.com',
         },
         price: { amount: qty * 50000 },
         spareparts: [{ sparepartId, quantity: qty, unitPriceSell: 50000 }]

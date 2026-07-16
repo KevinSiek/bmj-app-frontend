@@ -11,10 +11,10 @@ import { test, expect, request } from '@playwright/test';
 // Seeded accounts (all password 'password').
 const ROLES = {
   director: 'director.jkt@bmj.com',
-  marketing: 'citra.k@bmj.com',
-  finance: 'fajar.n@bmj.com',
-  inventory_admin: 'eko.p@bmj.com',
-  service: 'hadi.s@bmj.com',
+  marketing: 'marketing.jkt@bmj.com',
+  finance: 'finance.jkt@bmj.com',
+  inventory_admin: 'inventory.admin.jkt@bmj.com',
+  service: 'service.jkt@bmj.com',
 };
 
 // Route group → { probe (a cheap GET in the group), allowed roles } from routes/api.php.
