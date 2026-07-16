@@ -19,6 +19,20 @@ auto-commit (ask first), browser/QA via gstack only. Prime directive: code as
 a senior expert would — simple, human-readable, no redundancy, reuse first,
 maintainable.
 
+## Codebase Orientation (read before changing code)
+
+This file carries the **rules**; the codebase **map** lives next door:
+
+- **[AGENTS.MD](AGENTS.MD)** — the fast orientation doc: what the app is, tech
+  stack, structure, architecture patterns, feature index, dev commands. Read it
+  first to understand the code. It also restates the rules above (§0) so
+  non-Claude tools — Codex, Cursor — inherit the same guardrails.
+- **[docs/CODEBASE_GOTCHAS.md](docs/CODEBASE_GOTCHAS.md)** — cross-cutting edge
+  cases, latent bugs, orphaned code, and naming traps. Skim before editing.
+- **[docs/](docs/)** — per-feature guides (`FEATURE_*.md`), the state/API/component
+  references, and the verified e2e handover
+  ([docs/tests/LLM_HANDOVER.md](docs/tests/LLM_HANDOVER.md)).
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
