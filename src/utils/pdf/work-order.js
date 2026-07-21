@@ -117,8 +117,8 @@ const createPdf = async (data) => {
       table: {
         widths: ['auto', '*'],
         body: [
-          ['EXPECTED START DATE', serviceOrder.startDate],
-          ['EXPECTED END DATE', serviceOrder.endDate],
+          ['EXPECTED START DATE', serviceOrder.expectedStartDate],
+          ['EXPECTED END DATE', serviceOrder.expectedEndDate],
         ]
       },
       layout: {

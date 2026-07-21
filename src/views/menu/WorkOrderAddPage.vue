@@ -12,12 +12,12 @@
             <div class="row">
               <div class="col-6">
                 <label for="">Expected Start Date</label><br>
-                <input type="date" class="form-control mt-2" v-model="workOrder.serviceOrder.startDate"
+                <input type="date" class="form-control mt-2" v-model="workOrder.serviceOrder.expectedStartDate"
                   placeholder="Expected Start Date">
               </div>
               <div class="col-6">
                 <label for="">Expected End Date</label><br>
-                <input type="date" class="form-control mt-2" v-model="workOrder.serviceOrder.endDate"
+                <input type="date" class="form-control mt-2" v-model="workOrder.serviceOrder.expectedEndDate"
                   placeholder="Expected End Date">
               </div>
             </div>

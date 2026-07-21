@@ -16,8 +16,8 @@ export const useWorkOrderStore = defineStore('work-order', () => {
         serviceOrderNumber: data?.service_order?.service_order_number || '',
         date: data?.service_order?.date || '',
         receivedBy: data?.service_order?.received_by || '',
-        startDate: data?.service_order?.start_date || '',
-        endDate: data?.service_order?.end_date || ''
+        expectedStartDate: data?.service_order?.start_date || '',
+        expectedEndDate: data?.service_order?.end_date || ''
       },
       currentStatus: data?.current_status || '',
       servicePurchaseOrder: {
