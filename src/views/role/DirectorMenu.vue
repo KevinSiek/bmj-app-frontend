@@ -22,9 +22,15 @@ import MenuWorkOrder from '@/components/menu/MenuWorkOrder.vue'
 import MenuEmployee from '@/components/menu/MenuEmployee.vue'
 import MenuUpload from '@/components/menu/MenuUpload.vue'
 import MenuSparepartMovement from '@/components/menu/MenuSparepartMovement.vue'
+import MenuDashboard from '@/components/menu/MenuDashboard.vue'
 import { menuMapping as menuConfig } from '@/config'
 
 const componentList = ref([
+  {
+    name: 'Dashboard',
+    component: MenuDashboard,
+    path: menuConfig.dashboard.path
+  },
   {
     name: 'Quotation',
     component: MenuQuotation,
