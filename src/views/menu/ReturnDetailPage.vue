@@ -171,7 +171,9 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.amount" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.amount" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -181,7 +183,9 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.discount" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.discount" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -191,7 +195,9 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.subtotal" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.subtotal" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -201,7 +207,9 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.ppn" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.ppn" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -211,7 +219,9 @@
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="purchaseOrder.price.grandTotal" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="purchaseOrder.price.grandTotal" />
+                </td>
                 <td class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
               </tr>
@@ -256,7 +266,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { menuMapping as menuConfig } from '@/config'
 import { useModalStore } from '@/stores/modal'
 import { useTrackStore } from '@/stores/track'
-import { formatCurrency } from '@/utils/form-util'
 
 const router = useRouter()
 const route = useRoute()
