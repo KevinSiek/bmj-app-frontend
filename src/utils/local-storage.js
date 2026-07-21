@@ -4,14 +4,26 @@ const setToken = async (key, value, ttl) => {
       value: value,
       expiry: now.getTime() + (ttl*60*60*24*1000) //in ms
   }
-  localStorage.setItem(key, JSON.stringify(item))
+  try {
+    localStorage.setItem(key, JSON.stringify(item))
+  } catch (error) {
+    console.error(`Failed to store token for key "${key}":`, error)
+  }
 }
 
 const getToken = (key) => {
   const itemStr = localStorage.getItem(key)
     if (!itemStr) return null
 
-    const item = JSON.parse(itemStr)
+    let item
+    try {
+      item = JSON.parse(itemStr)
+    } catch (error) {
+      console.error(`Failed to parse token for key "${key}":`, error)
+      localStorage.removeItem(key)
+      return null
+    }
+
     const now = new Date()
 
     if (now.getTime() > item.expiry) {
