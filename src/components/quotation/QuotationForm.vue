@@ -659,9 +659,6 @@ const onSelect = (index, purchaseData, sparepartData) => {
   quotation.value.spareparts.splice(index, 1, data)
   updatePrice()
 
-  // FIXED: Close dropdown after successful selection
-  closeDropdown(index)
-
   console.log('Sparepart selection completed successfully with sparepartId:', data.sparepartId)
 }
 

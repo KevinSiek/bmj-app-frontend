@@ -27,7 +27,7 @@ import { useModalStore } from '@/stores/modal'
 import { useAuthStore } from '@/stores/auth'
 import { createPdf } from '@/utils/pdf/quotation'
 import { useGeneralStore } from '@/stores/general'
-
+import { useRole } from '@/composeable/useRole'
 import QuotationForm from '@/components/quotation/QuotationForm.vue'
 
 const route = useRoute()
@@ -41,11 +41,12 @@ const generalStore = useGeneralStore()
 const { user } = storeToRefs(authStore)
 const { quotation } = storeToRefs(quotationStore)
 const { ppn } = storeToRefs(generalStore)
+const { isRoleDirector, isRoleMarketing } = useRole()
 
 const isProcessing = ref(false)
 
-const canEdit = computed(() => quotation.value?.status.length === 0)
-const canCreatePO = computed(() => !quotation.value?.status?.some(s => s.state === 'Po'))
+const canEdit = computed(() => quotation.value?.status.length === 0 && (isRoleDirector.value || isRoleMarketing.value))
+const canCreatePO = computed(() => !quotation.value?.status?.some(s => s.state === 'Po') && (isRoleDirector.value || isRoleMarketing.value))
 
 const isLoading = ref(true)
 
@@ -126,8 +127,7 @@ $secondary-color: rgb(98, 98, 98);
   }
 }
 
-@media only screen and (max-width: 769px) {
-}
+@media only screen and (max-width: 769px) {}
 
 @media only screen and (max-width: 767px) {
 
