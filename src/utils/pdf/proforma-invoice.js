@@ -108,14 +108,15 @@ const toWords = new ToWords({
 //   ]
 // }
 
-const createPdf = async (data) => {
+const createPdf = async (data, ppn = 11) => {
   const { project, customer, price, downPayment, spareparts, services } = data
+  const ppnRate = Number(ppn) / 100
 
   const dp = downPayment || 0
   let amountToSpell = price.totalAmount
   if (dp > 0) {
     const subtotalTypeDp = Math.ceil(price.subtotal) * dp / 100
-    const ppnTypeDp = Math.ceil(subtotalTypeDp * 0.11)
+    const ppnTypeDp = Math.ceil(subtotalTypeDp * ppnRate)
     amountToSpell = subtotalTypeDp + ppnTypeDp
   }
   const totalAmountWord = toWords.convert(Math.ceil(amountToSpell), { ignoreDecimal: true })

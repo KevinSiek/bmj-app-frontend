@@ -87,8 +87,9 @@ import { getBase64FromUrl } from '@/utils/pdf-util'
 //   ]
 // }
 
-const createPdf = async (data, notes, user) => {
+const createPdf = async (data, notes, user, ppn = 0) => {
   const { project, customer, price, spareparts, services } = data
+  const ppnValue = Math.trunc(Number(ppn) || 0)
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
@@ -203,7 +204,7 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               '',
-              { text: 'PPN 11%', alignment: 'center', fontSize: 8 },
+              { text: `PPN ${ppnValue}%`, alignment: 'center', fontSize: 8 },
               formatPDFPrice(price.ppn, { fontSize: 8 }),
               ''
             ],
@@ -303,7 +304,7 @@ const createPdf = async (data, notes, user) => {
               '',
               '',
               '',
-              { text: 'PPN 11%', alignment: 'center', fontSize: 8 },
+              { text: `PPN ${ppnValue}%`, alignment: 'center', fontSize: 8 },
               formatPDFPrice(price.ppn, { fontSize: 8 }),
             ],
             [

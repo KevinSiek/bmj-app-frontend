@@ -78,6 +78,7 @@ const toWords = new ToWords({
 
 const createPdf = async (data) => {
   const { purchaseOrder, invoice, customer, price, termOfPayment, paymentDue, ppn, spareparts, services } = data
+  const ppnValue = Math.trunc(Number(ppn) || 0)
 
   const logoBase64 = await getBase64FromUrl('/images/logo-header.png')
 
@@ -339,7 +340,7 @@ const createPdf = async (data) => {
 
   const totalDP = [
     [{ text: invoice.type === 'DP' ? 'Subtotal DP 1' : 'Subtotal DP 2', bold: true, margin: [0, 20, 0, 0] }, formatPDFPrice(subtotalTypeDp, { bold: true, margin: [0, 20, 0, 0] })],
-    [{ text: 'PPN 11%', bold: true }, formatPDFPrice(ppnTypeDp, { bold: true })],
+    [{ text: `PPN ${ppnValue}%`, bold: true }, formatPDFPrice(ppnTypeDp, { bold: true })],
     [{ text: invoiceType === 'DP' ? 'Grand Total DP 1' :'Grand Total DP 2', bold: true }, formatPDFPrice(grandTotalTypeDpWithPpn, { bold: true })]
   ]
 
@@ -427,7 +428,7 @@ const createPdf = async (data) => {
             ] : []),
             ['SUB TOTAL', formatPDFPrice(price.subtotal)],
             ...(invoice.type === 'Final' ? [
-              ['PPN 11%', formatPDFPrice(price.ppn)],
+              [`PPN ${ppnValue}%`, formatPDFPrice(price.ppn)],
               [{ text: 'GRAND TOTAL', bold: true }, formatPDFPrice(price.grandTotal, { bold: true })]
             ] : totalDP)
           ]

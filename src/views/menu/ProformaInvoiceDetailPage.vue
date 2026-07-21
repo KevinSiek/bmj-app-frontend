@@ -194,7 +194,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.amount" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="proformaInvoice.price.amount" />
+                </td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">2</td>
@@ -202,7 +204,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.discount" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="proformaInvoice.price.discount" />
+                </td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">3</td>
@@ -210,7 +214,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.subtotal" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="proformaInvoice.price.subtotal" />
+                </td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">4</td>
@@ -218,7 +224,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.advancePayment" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="proformaInvoice.price.advancePayment" />
+                </td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">5</td>
@@ -226,7 +234,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.total" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="proformaInvoice.price.total" />
+                </td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">6</td>
@@ -234,7 +244,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.ppn" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="proformaInvoice.price.ppn" />
+                </td>
               </tr>
               <tr class="align-middle">
                 <td scope="row" class="table-col table-number">7</td>
@@ -242,7 +254,9 @@
                 <td class="table-col table-name"></td>
                 <td v-if="proformaInvoice.project.type === 'Spareparts'" class="table-col table-name"></td>
                 <td class="table-col table-name"></td>
-                <td class="table-col table-name"><PriceDisplay :value="proformaInvoice.price.totalAmount" /></td>
+                <td class="table-col table-name">
+                  <PriceDisplay :value="proformaInvoice.price.totalAmount" />
+                </td>
               </tr>
             </tbody>
           </table>
@@ -291,15 +305,17 @@ import LoaderOverlaySmall from '@/components/LoaderOverlaySmall.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { formatCurrency } from '@/utils/form-util'
+import { useGeneralStore } from '@/stores/general'
 
 const route = useRoute()
 const router = useRouter()
 const proformaInvoiceStore = useProformaInvoiceStore()
 const modalStore = useModalStore()
 const trackStore = useTrackStore()
+const generalStore = useGeneralStore()
 
 const { proformaInvoice } = storeToRefs(proformaInvoiceStore)
+const { ppn } = storeToRefs(generalStore)
 
 const { isRoleDirector, isRoleFinance } = useRole()
 
@@ -362,7 +378,7 @@ const createInvoiceConfirmation = () => {
 }
 
 const download = () => {
-  createPdf(proformaInvoice.value)
+  createPdf(proformaInvoice.value, ppn.value)
 }
 </script>
 

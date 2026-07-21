@@ -26,6 +26,7 @@ import { useTrackStore } from '@/stores/track'
 import { useModalStore } from '@/stores/modal'
 import { useAuthStore } from '@/stores/auth'
 import { createPdf } from '@/utils/pdf/quotation'
+import { useGeneralStore } from '@/stores/general'
 
 import QuotationForm from '@/components/quotation/QuotationForm.vue'
 
@@ -35,9 +36,11 @@ const quotationStore = useQuotationStore()
 const trackStore = useTrackStore()
 const modalStore = useModalStore()
 const authStore = useAuthStore()
+const generalStore = useGeneralStore()
 
 const { user } = storeToRefs(authStore)
 const { quotation } = storeToRefs(quotationStore)
+const { ppn } = storeToRefs(generalStore)
 
 const isProcessing = ref(false)
 
@@ -85,7 +88,7 @@ const processQuotationConfirmation = () => {
 
 const download = () => {
   modalStore.openNotesModal('Print Quotation', async () => {
-    await createPdf(quotation.value, modalStore.notes, user.value)
+    await createPdf(quotation.value, modalStore.notes, user.value, ppn.value)
     modalStore.closeModal()
   })
 }
@@ -124,7 +127,6 @@ $secondary-color: rgb(98, 98, 98);
 }
 
 @media only screen and (max-width: 769px) {
-  .contain {}
 }
 
 @media only screen and (max-width: 767px) {
