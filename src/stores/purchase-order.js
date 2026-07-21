@@ -161,10 +161,6 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     const response = await purchaseOrderApi.processToProformaInvoice(id, { notes })
   }
 
-  async function updateStatus(id, status) {
-    const response = await purchaseOrderApi.updateStatusPurchaseOrder(id, { status })
-  }
-
   async function $resetPurchaseOrder() {
     purchaseOrder.value = mapPurchaseOrder()
   }
@@ -240,7 +236,6 @@ export const usePurchaseOrderStore = defineStore('purchase-order', () => {
     addPurchaseOrder,
     setPurchaseOrder,
     processToProformaInvoice,
-    updateStatus,
     fullPaid,
     release,
     done,
