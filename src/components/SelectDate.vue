@@ -1,13 +1,13 @@
 <template>
-  <div class="date m-1">
-    <div class="month m-3">
+  <div class="date">
+    <div class="month">
       <select class="form-select" v-model="selectedMonth" @change="selectMonth()">
         <option v-for="(month) in months" :key="month" :value="month">
           {{ month }}
         </option>
       </select>
     </div>
-    <div class="year m-3">
+    <div class="year">
       <select class="form-select" v-model="selectedYear" @change="selectYear()">
         <option v-for="n in yearRange" :key="n" :value="n">
           {{ n }}
@@ -41,7 +41,8 @@ const selectYear = () => {
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  padding-left: 2%;
+  margin: 0.5% 4% 1% 4%;
+  gap: 3%;
 
   select {
     width: 100%;
@@ -51,6 +52,7 @@ const selectYear = () => {
 
   .month {
     width: 17%;
+    margin: 2% 0% 0% 0%;
 
     select {
       padding-left: 2.2vw;
@@ -59,6 +61,7 @@ const selectYear = () => {
 
   .year {
     width: 10%;
+    margin: 2% 0% 0% 0%;
 
     select {
       text-align: center;

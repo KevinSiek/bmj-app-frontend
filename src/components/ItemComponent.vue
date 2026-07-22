@@ -76,7 +76,7 @@ $primary-color: black;
   border: 1px solid $primary-color;
   border-radius: 5px;
   padding: 0.8% 3%;
-  margin: 0% 4% 1.5% 4%;
+  margin: 1.5% 4% 1% 4%;
   align-items: center;
   min-height: 7.5vh;
 

@@ -229,7 +229,7 @@ $dark-white: #D1D1D1;
           display: flex;
           align-items: center;
           margin-bottom: 3%;
-          font-size: 20px;
+          font-size: 1.4vw;
         }
 
         .text {
