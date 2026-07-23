@@ -184,7 +184,7 @@ const createPdf = async (data, notes, user, ppn = 0) => {
               [
                 '', '', '', '', '',
                 { text: 'Discount', alignment: 'center', fontSize: 8 },
-                formatPDFPrice(price.amount, { fontSize: 8 }),
+                formatPDFPrice(price.discount, { fontSize: 8 }),
                 ''
               ],
             ] : []),
