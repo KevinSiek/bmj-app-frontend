@@ -201,9 +201,9 @@ export const useQuotationStore = defineStore('quotation', () => {
     await quotationApi.processQuotation(id, { notes, poNumber })
   }
 
-  async function approveQuotation(id) {
-    console.log('APPROVE QUOTATION')
-    await quotationApi.approveQuotation(id)
+  async function approveQuotation(id, notes) {
+    console.log('APPROVE QUOTATION', notes)
+    await quotationApi.approveQuotation(id, notes)
   }
 
   async function needChangeQuotation(id, notes) {
